@@ -12,7 +12,7 @@ The initial investigation covers the **ALFA AWUS036AXML / MediaTek MT7921AUN** o
 |---|---|---|
 | Linux mt76 / MT7921 USB | TSF read/write callbacks, RX descriptor timing, USB TX-status processing, defined TX timestamp field | A reliable error-reporting snapshot API, TX semantics, reset epochs, PHC/socket timestamp integration |
 | Windows MediaTek 1.0.0.119 x64 | Static private register read/write and firmware response paths | Live hardware qualification; standard NDIS timestamp exposure unproven |
-| Windows Qualcomm 1.0.4374.1300 ARM64 | Live private host getters; a TSF read request accepted; internal command/report path traced | No raw TSF returned to the caller; firmware report delivery and clock correlation unverified |
+| Windows Qualcomm 1.0.4374.1300 ARM64 | Live private host getters and one firmware TSF report captured through ETW | IOCTL does not return TSF; repeated sampling, hardware cross-timestamps, and accuracy remain unqualified |
 
 On the inspected Qualcomm system, standard timestamp-capability and cross-timestamp APIs returned Win32 **23 / ERROR_CRC**. Failed queries are not interpreted as capability absence. Cached beacon timestamps and an FTM responder advertisement were observed; neither establishes local hardware packet timestamp accuracy.
 
@@ -23,6 +23,7 @@ On the inspected Qualcomm system, standard timestamp-capability and cross-timest
 - [Validation ledger and limits](docs/validation.md)
 - [Proposed API boundary](docs/api-direction.md)
 - [Operations and reproducibility](docs/OPERATIONS.md)
+- [TSF capture and offline series analysis](docs/OPERATIONS.md#capture-and-analyze-a-tsf-series)
 - [Pinned sources and provenance](docs/sources.md)
 
 ## Quick start

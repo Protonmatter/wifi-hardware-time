@@ -11,13 +11,16 @@ This is a sanitized summary of observations from the initial 2026-10-01/02 inves
 | Qualcomm standard timestamp APIs | Live, Python and native C | Return code 23, no valid capabilities/tuple |
 | Cached beacon timestamps | Live | AP Timestamp field and Windows host receive timestamp accessible |
 | FTM | Capability observation | Initiator supported; current AP advertised responder support; no exchange tested |
-| ETW report capture | Attempted | Non-elevated access denied; subsequent native elevation did not complete |
-| Firmware delivery/order | Unvalidated | No correlated report captured |
+| ETW report capture | Live, original local harness | One elevated capture succeeded; trace header reported zero lost events/buffers |
+| Firmware report delivery/order | Live, one observation | Matching-vdev report logged 552.9 us after observed IOCTL completion; firmware sampling/completion instant unknown |
+| Repeated TSF capture | Prepared; not executed | A subsequent 12-read elevation was canceled; offline analyzer tests are not repeatability evidence |
 | Raw-register safety | Unvalidated | No qualified Windows memory-type/address target |
 | Arbitrary hardware RX/TX stamps | Unvalidated | No complete interface demonstrated |
 | Absolute/relative timing accuracy | Unvalidated | No independent reference or qualified local TSF/QPC samples |
 
 The public packaging adds explicit interface selection and preview-by-default behavior. Offline checks and local discovery/preview can validate packaging; they do not replace the original hardware evidence. Hosted CI never accesses a wireless adapter and does not contain proprietary driver fixtures.
+
+The public ETL decoder and analyzer were also checked against the saved single-read trace without publishing that trace. Their repeated-series behavior is tested with synthetic inputs. The public elevated wrapper and optional capability collection remain untested in an elevated live run. No independent reference, raw-register read, hardware RX/TX packet stamp, or FTM exchange was qualified by these updates.
 
 ## Qualification requirements
 

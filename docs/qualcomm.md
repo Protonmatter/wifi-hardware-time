@@ -47,7 +47,9 @@ The original local harness successfully opened and closed the control device. A 
 
 The wrapper selects firmware action 3 for the fixed positive argument. A public Qualcomm firmware definition labels action 3 `TSF_TSTAMP_READ_VALUE`. The public header is a semantic reference from a different source revision, not proof of firmware parity.
 
-The firmware report handler processes TSF, global-TSF, and SoC timer fields. No synchronous raw timestamp return or QPC relationship was established. Diagnostic messages use TraceClassic events; the inspected debug-output mode permits ETW output when enabled. An elevated capture was not completed.
+The firmware report handler processes TSF, global-TSF, and SoC timer fields. A subsequent elevated capture with the original local harness observed one READ_VALUE command and one matching-vdev report. The IOCTL returned 100 zero bytes; the TSF and SoC counter values appeared separately in ETW. The raw trace clock was QPC at 10 MHz, and the report log followed observed IOCTL completion by 552.9 microseconds. The observed host request bracket was 57.9 microseconds.
+
+These are host-observed intervals, not firmware sampling instants or timing accuracy. There is no exposed firmware transaction identifier. A new 12-read capture was prepared, but its elevation was canceled before execution; repeated delivery remains unvalidated. The public wrapper has been parser-checked, not executed against hardware. See the [validation ledger](validation.md).
 
 Standard Windows timestamp queries returned error 23 / ERROR_CRC in both Python and native ARM64 callers. Output fields from failed queries were not interpreted. The error does not identify a hardware fault or conclusively establish unsupported timestamping.
 

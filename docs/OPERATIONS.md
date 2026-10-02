@@ -50,7 +50,17 @@ Exit 0 means preview completed or the request succeeded and the device handle cl
 
 ## Native probes
 
-From a Windows SDK developer command prompt, compile `tools/native_caps.c` with `iphlpapi.lib` and `kernel32.lib`. Compile `tools/cached_beacon.c` with `wlanapi.lib`, `ole32.lib`, and `kernel32.lib`. Put outputs under ignored `artifacts/`.
+From an MSVC/Windows SDK developer PowerShell configured for the target architecture, compile into ignored `artifacts/`:
+
+```powershell
+New-Item -ItemType Directory -Force artifacts | Out-Null
+cl /nologo /W4 /WX tools/native_caps.c /Fo:artifacts/native_caps.obj /Fe:artifacts/native_caps.exe /link iphlpapi.lib kernel32.lib
+if ($LASTEXITCODE -ne 0) { throw 'Native capability build failed' }
+cl /nologo /W4 /WX tools/cached_beacon.c /Fo:artifacts/cached_beacon.obj /Fe:artifacts/cached_beacon.exe /link wlanapi.lib ole32.lib kernel32.lib
+if ($LASTEXITCODE -ne 0) { throw 'Cached beacon build failed' }
+cl /nologo /W4 /WX tools/decode_tsf_etl.c /Fo:artifacts/decode_tsf_etl.obj /Fe:artifacts/decode_tsf_etl.exe /link advapi32.lib kernel32.lib
+if ($LASTEXITCODE -ne 0) { throw 'ETL decoder build failed' }
+```
 
 `native_caps` takes an interface index. `cached_beacon` takes an interface GUID and queries the existing cache only; it never calls WlanScan. The latter omits SSID/BSSID identifiers from its JSON, bounds-checks information elements, and reports FTM responder advertisement separately from execution.
 
@@ -58,7 +68,40 @@ From a Windows SDK developer command prompt, compile `tools/native_caps.c` with 
 
 Firmware delivery/ordering qualification requires an appropriately privileged trace and correlation between request and report. No elevation is attempted by the public tools. The identified Qualcomm TraceClassic event keyword is `0x2000000000000000`; static event descriptors alone do not prove capture availability.
 
-`tools/Capture-TsfReport.ps1 -InterfaceIndex 7` must be started by the user from an elevated shell. It validates the target in preview mode, starts a unique temporary trace capped at 4 MB, sends one TSF read, waits 1.5 seconds, and stops tracing in `finally`. Its outputs go to ignored `artifacts/`. The public wrapper is parser-checked only; elevated capture remains unvalidated. If externally interrupted, use the session name in its `session.json` with `logman stop <SessionName> -ets`. The private probe's cancellation-drain limitation still applies.
+`tools/Capture-TsfReport.ps1 -InterfaceIndex 7` must be started from an elevated Windows PowerShell. Its default remains one read with a 4 MB trace. It validates the exact active driver through the existing probe before starting ETW. It waits 1.5 seconds after the final request and stops tracing in `finally`. The public wrapper is parser-checked only; its elevated execution remains unvalidated, despite one successful capture by the original local harness. The private probe's cancellation-drain limitation still applies.
+
+## Capture and analyze a TSF series
+
+Select the actual interface index; `7` below is an example. From an elevated shell:
+
+```powershell
+./tools/Capture-TsfReport.ps1 -InterfaceIndex 7 -SampleCount 12 -IncludeCapabilityChecks
+```
+
+- `SampleCount`: integer 1-12, default 1. Multiple reads use a 32 MB circular trace, separate `request-NNN.json` records, and at least 250 ms between probe processes. Each request revalidates the driver and adapter. The interval includes process/discovery time and is not a precision sampling schedule.
+- `IncludeCapabilityChecks`: optional. Requires the compiled `artifacts/native_caps.exe` and `artifacts/cached_beacon.exe`; reads standard supported/active timestamp capabilities, independently repeats the queries through the native SDK probe, and queries cached BSS/device-service information. It does not scan or send FTM. The Python capability tool requests a cross-timestamp only when active capabilities advertise it. Individual API errors are recorded in output and are not evidence of absent capabilities.
+- Outputs: a unique ignored `artifacts/WifiTime-...` directory with session metadata, preview, before/after adapter snapshots, request records, ETL, start/stop status, optional capability output, and `capture-error.json` on a caught failure.
+- Exit 0: request collection and cleanup completed, with the selected adapter still Up on the original version/identity. It does not prove that all firmware reports arrived. Exit 1: prerequisite, request, cleanup, or final state check failed. Invalid parameters/elevation requirements also fail before collection.
+- Rollback: the temporary trace is stopped in `finally`. If externally interrupted, run `logman stop <SessionName> -ets` as administrator using `session.json`. No driver restart, TSF reset, automatic reporting, profile change, or clock adjustment is requested.
+
+After capture, decode and analyze offline without elevation:
+
+```powershell
+$run = 'artifacts/WifiTime-<actual-run-id>'
+./artifacts/decode_tsf_etl.exe "$run/tsf.etl" |
+    Set-Content -LiteralPath "$run/raw-timing.jsonl" -Encoding UTF8
+if ($LASTEXITCODE -ne 0) { throw 'ETL decoding failed' }
+python tools/analyze_tsf_series.py $run
+if ($LASTEXITCODE -ne 0) { throw 'Incomplete or inconsistent series evidence' }
+```
+
+The decoder emits numeric-only timing records, trace clock/frequency/loss fields, and event counts. It never prints arbitrary event text, machine names, or diagnostic addresses. Exit codes: 0 for successful decoding, 1 for a trace API failure, 2 for invalid usage. A successful decode can contain no TSF records; analysis determines whether the required evidence exists.
+
+The analyzer requires `session.json`, request files, and `raw-timing.jsonl`. It rejects missing planned samples, extra/missing timing records, mixed adapter/build evidence, overlapping request windows, mismatched vdev IDs, reported trace loss, and QPC frequency mismatches. It emits `analysis-series.json` with latency distributions, counter monotonicity, and raw ticks per host second. Exit 0 means evidence passed these consistency checks; nonzero means analysis failed. Check the exit code before consuming an output left from a previous analysis.
+
+Correlation is limited to one command/report per request window, with no firmware transaction ID. ETW timestamps describe host logging. Counter rates are relative to host event time; counter discontinuities are reported rather than interpreted as calibrated oscillator rates. The output explicitly leaves exact firmware sampling and absolute accuracy unvalidated. Raw ETL and even numeric timing artifacts remain local unless separately reviewed for publication.
+
+## Remaining hardware qualifications
 
 Actual FTM tests require a reviewed submission/result API and a controlled responder. Timing accuracy requires an independent reference such as a qualified PHC or GPS/PPS source. A Windows host timestamp attached to a cached AP beacon is not a substitute for a calibrated local hardware clock.
 
