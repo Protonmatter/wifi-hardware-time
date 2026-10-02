@@ -1,0 +1,134 @@
+"""Exact-build Qualcomm bounded private request validation.
+
+Only host-variable getters or one-shot TSF READ_VALUE action are allowed.
+No raw register access, auto-report, reset, or arbitrary IOCTL is accepted.
+Uses an overlapped request, waits 2 seconds, then cancels and drains completion.
+Cancellation completion is waited for before buffers are released.
+"""
+import ctypes as ct
+import argparse
+import datetime
+import json
+from pathlib import Path
+import struct
+import subprocess
+import os
+
+from qualcomm_protocol import QUALIFIED_SHA256, build_request, validate_driver
+
+
+class Overlapped(ct.Structure):
+    _fields_ = [('Internal', ct.c_size_t), ('InternalHigh', ct.c_size_t),
+                ('Offset', ct.c_uint32), ('OffsetHigh', ct.c_uint32),
+                ('hEvent', ct.c_void_p)]
+
+
+def main() -> None:
+    ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument('--if-index', type=int, required=True, help='Exact active Qualcomm interface index')
+    ap.add_argument('--command', choices=('get_hostdbglvl', 'get_hostdbgout', 'tsf_read_value'), default='get_hostdbglvl')
+    ap.add_argument('--execute', action='store_true', help='Send one private request; default is validation/preview only')
+    ap.add_argument('--output', type=Path, help='Optional local JSON output; parent must exist')
+    args = ap.parse_args()
+    if os.name != 'nt' or not 0 < args.if_index <= 0x7FFFFFFF:
+        ap.error('Requires Windows and a positive interface index below 2^31')
+    discovery = Path(__file__).with_name('Get-QualcommAdapter.ps1')
+    adapter = json.loads(subprocess.check_output(
+        ['powershell.exe', '-NoProfile', '-File', str(discovery), '-InterfaceIndex', str(args.if_index)], text=True))
+    if (adapter['Status'] != 'Up' or adapter['ServiceState'] != 'Running'
+            or adapter['DriverFileName'].lower() != 'qcwlanhmt8380.sys'
+            or adapter['DriverVersion'] != '1.0.4374.1300'):
+        raise RuntimeError('Active adapter does not match the qualified driver profile')
+    data = Path(adapter['DriverPath']).read_bytes()
+    validate_driver(data)
+    is_tsf = args.command == 'tsf_read_value'
+    mac = bytes.fromhex(adapter['MacAddress'].replace('-', '').replace(':', ''))
+    payload = build_request(args.command, mac)
+    if not args.execute:
+        preview = {'execute': False, 'interface_index': args.if_index,
+                   'command': args.command, 'driver_sha256': QUALIFIED_SHA256,
+                   'input_bytes': len(payload), 'private_device_opened': False,
+                   'firmware_action_if_executed': 3 if is_tsf else None}
+        print(json.dumps(preview, indent=2))
+        if args.output:
+            args.output.write_text(json.dumps(preview, indent=2) + '\n', encoding='utf-8')
+        return
+    incoming = (ct.c_ubyte * 128).from_buffer_copy(payload)
+    outgoing = (ct.c_ubyte * 100)()
+    k = ct.WinDLL('kernel32', use_last_error=True)
+    k.CreateFileW.argtypes = [ct.c_wchar_p, ct.c_uint32, ct.c_uint32, ct.c_void_p, ct.c_uint32, ct.c_uint32, ct.c_void_p]
+    k.CreateFileW.restype = ct.c_void_p
+    k.CreateEventW.argtypes = [ct.c_void_p, ct.c_int, ct.c_int, ct.c_wchar_p]
+    k.CreateEventW.restype = ct.c_void_p
+    k.CloseHandle.argtypes = [ct.c_void_p]
+    k.CloseHandle.restype = ct.c_int
+    k.DeviceIoControl.argtypes = [ct.c_void_p, ct.c_uint32, ct.c_void_p, ct.c_uint32, ct.c_void_p, ct.c_uint32, ct.POINTER(ct.c_uint32), ct.POINTER(Overlapped)]
+    k.DeviceIoControl.restype = ct.c_int
+    k.WaitForSingleObject.argtypes = [ct.c_void_p, ct.c_uint32]
+    k.WaitForSingleObject.restype = ct.c_uint32
+    k.CancelIoEx.argtypes = [ct.c_void_p, ct.POINTER(Overlapped)]
+    k.CancelIoEx.restype = ct.c_int
+    k.GetOverlappedResult.argtypes = [ct.c_void_p, ct.POINTER(Overlapped), ct.POINTER(ct.c_uint32), ct.c_int]
+    k.GetOverlappedResult.restype = ct.c_int
+    k.QueryPerformanceCounter.argtypes = [ct.POINTER(ct.c_int64)]
+    k.QueryPerformanceCounter.restype = ct.c_int
+    k.QueryPerformanceFrequency.argtypes = [ct.POINTER(ct.c_int64)]
+    k.QueryPerformanceFrequency.restype = ct.c_int
+    frequency = ct.c_int64()
+    if not k.QueryPerformanceFrequency(ct.byref(frequency)) or frequency.value <= 0:
+        raise RuntimeError('QPC frequency unavailable')
+    handle = k.CreateFileW(r'\\.\QcomWifi', 0x80000000, 3, None, 3, 0x40000000, None)
+    if handle == ct.c_void_p(-1).value:
+        raise ct.WinError(ct.get_last_error())
+    event = None
+    report = {'observed_utc': datetime.datetime.now(datetime.timezone.utc).isoformat(),
+              'command': args.command, 'ioctl': '0x00220182',
+              'interface_index': adapter['ifIndex'], 'driver_sha256': QUALIFIED_SHA256,
+              'input_bytes': 128, 'output_capacity': 100, 'firmware_command_requested': is_tsf,
+              'firmware_action': 3 if is_tsf else None, 'qpc_frequency_hz': frequency.value}
+    try:
+        event = k.CreateEventW(None, True, False, None)
+        if not event:
+            raise ct.WinError(ct.get_last_error())
+        ov = Overlapped(hEvent=event)
+        returned = ct.c_uint32()
+        counter = ct.c_int64()
+        if not k.QueryPerformanceCounter(ct.byref(counter)):
+            raise RuntimeError('QPC read failed')
+        report['qpc_request_before'] = counter.value
+        ok = k.DeviceIoControl(handle, 0x00220182, incoming, 128, outgoing, 100, ct.byref(returned), ct.byref(ov))
+        error = 0 if ok else ct.get_last_error()
+        report['initial_error'] = error
+        if not ok and error == 997:
+            wait = k.WaitForSingleObject(event, 2000)
+            report['wait_result'] = wait
+            if wait != 0:
+                report['cancel_requested'] = True
+                report['cancel_accepted'] = bool(k.CancelIoEx(handle, ct.byref(ov)))
+            ok = k.GetOverlappedResult(handle, ct.byref(ov), ct.byref(returned), True)
+            error = 0 if ok else ct.get_last_error()
+        if k.QueryPerformanceCounter(ct.byref(counter)):
+            report['qpc_request_completed'] = counter.value
+        report.update(success=bool(ok), error=error, message=ct.FormatError(error).strip(), returned_bytes=returned.value)
+        if returned.value > 100:
+            raise RuntimeError('Driver reported output beyond supplied capacity')
+        raw = bytes(outgoing[:returned.value]) if ok else b''
+        report['response_hex'] = raw.hex()
+        if len(raw) >= 4 and raw[0] <= 8:
+            count = raw[0]
+            if len(raw) >= 4 + count * 4:
+                report['integer_results'] = list(struct.unpack_from('<' + 'i' * count, raw, 4))
+                report['string_count'] = raw[1]
+    finally:
+        if event:
+            k.CloseHandle(event)
+        report['handle_closed'] = bool(k.CloseHandle(handle))
+        if args.output:
+            args.output.write_text(json.dumps(report, indent=2) + '\n', encoding='utf-8')
+    print(json.dumps(report, indent=2))
+    if not report.get('success') or not report.get('handle_closed'):
+        raise SystemExit(1)
+
+
+if __name__ == '__main__':
+    main()
