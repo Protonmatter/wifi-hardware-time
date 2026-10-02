@@ -50,7 +50,7 @@ try {
             $resultName=if($SampleCount -eq 1){'request-result.json'}else{'request-{0:D3}.json' -f $i}
             & $nativeProbe --execute $InterfaceIndex (Join-Path $output $responseName) |
                 Set-Content -LiteralPath (Join-Path $output $resultName) -Encoding UTF8
-            if($LASTEXITCODE -ne 0){throw 'FTM prerequisite or collection failed.'}
+            if($LASTEXITCODE -ne 0){throw ('FTM prerequisite or target-result validation failed; inspect '+$resultName)}
             $requestResult=Get-Content -LiteralPath (Join-Path $output $resultName) -Raw | ConvertFrom-Json
             if($requestResult.request_api_rc -ne 0 -or -not $requestResult.callback_received -or $requestResult.callback_status -ne 0){throw 'FTM request did not complete successfully; no automatic retry.'}
             if($i -lt $SampleCount){Start-Sleep -Milliseconds 1000}

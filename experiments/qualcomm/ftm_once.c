@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
+#include "ftm_result.h"
 
 /* Experiment for the pinned wlanapi/locationframework builds only.
  * Invoke through Capture-FtmOnce.ps1, which enforces DLL and driver hashes.
@@ -56,6 +57,8 @@ int main(int argc,char **argv)
     HMODULE module;FARPROC address;DWORD rc,version,size,index,i,matches=0,wait=0xffffffff,cancel_rc=0xffffffff;
     char *end=NULL;int result=1;FILE *raw=NULL;DWORD target_status=0xffffffff;
     BOOL target_matches=FALSE,received=FALSE;
+    unsigned short measurement_count=0;
+    BOOL response_complete=FALSE;
     if(argc!=4 || strcmp(argv[1],"--execute") || argv[2][0]<'1' || argv[2][0]>'9'){
         fputs("Use Capture-FtmOnce.ps1; native usage: ftm_once.exe --execute INDEX LOCAL_RESPONSE_FILE\n",stderr);return 2;
     }
@@ -88,17 +91,21 @@ int main(int argc,char **argv)
     received=rc==0 && wait==WAIT_OBJECT_0;
     if(received && response_copied){
         memcpy(&target_status,response+8,sizeof(target_status));
+        memcpy(&measurement_count,response+14,sizeof(measurement_count));
         target_matches=memcmp(response,target.bssid,6)==0;
+        response_complete=ftm_result_complete(response,sizeof(response),target.bssid);
     }
     printf("{\"request_api_rc\":%lu,\"callback_received\":%s,\"callback_status\":%lu,\"result_count\":%lu,\"wait_result\":%lu,\"cancel_rc\":%lu,\"frequency_khz\":%lu,\"one_current_bss_target\":true,\"active_scan_requested\":false,\"target_status\":%lu,\"response_matches_target\":%s",
         rc,received?"true":"false",received?callback_status:0xffffffff,
         received?callback_count:0,wait,cancel_rc,target.frequency_khz,target_status,target_matches?"true":"false");
+    printf(",\"measurement_count\":%u,\"response_complete\":%s",
+        measurement_count,response_complete?"true":"false");
     if(received && response_copied && target_matches){
         if(fopen_s(&raw,argv[3],"wb")!=0 || !raw){puts(",\"response_save_failed\":true}");goto cleanup;}
         if(fwrite(response,1,sizeof(response),raw)!=sizeof(response)){fclose(raw);puts(",\"response_save_failed\":true}");goto cleanup;}
         fclose(raw);printf(",\"response_bytes_saved\":104");
     }
-    puts("}");result=received && target_matches && target_status==0 ? 0 : 1;
+    puts("}");result=received && response_complete ? 0 : 1;
 cleanup:
     if(result)fprintf(stderr,"FTM prerequisite or output failed; no arbitrary target was selected.\n");
     if(list)WlanFreeMemory(list);if(connection)WlanFreeMemory(connection);

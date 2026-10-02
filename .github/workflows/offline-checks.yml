@@ -13,6 +13,11 @@ jobs:
       - run: python -m pip install -r requirements.txt
       - run: python -m compileall -q tools experiments tests
       - run: python -m unittest discover -s tests -v
+      - name: Native FTM result regression (offline)
+        run: |
+          mkdir -p artifacts
+          cc -std=c11 -Wall -Wextra -Werror tests/native_ftm_result.c -o artifacts/native_ftm_result
+          ./artifacts/native_ftm_result
       - run: python tools/qualcomm_probe.py --help
       - run: python tools/analyze_tsf_series.py --help
       - run: python experiments/qualcomm/analyze_latch.py --help

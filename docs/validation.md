@@ -15,13 +15,20 @@ This is a sanitized summary of observations from the initial 2026-10-01/02 inves
 | Firmware report delivery/order | Live, bounded series | Twelve matching reports; eleven logs after userspace completion observation and one before; firmware sampling/completion instant unknown |
 | Repeated TSF capture | Live, public wrapper at c960dcc | Twelve reads over 14.39 s, zero trace loss, successful cleanup; driver version/hash and final Up state preserved |
 | SoC latch refresh | Live, exact-build experiment | Three capture actions refreshed the SoC field; subsequent reads reused it; simultaneous counter latching unproven |
+| Adapter restart/reassociation | Live, one targeted restart | Same profile recovered automatically; Up observed after 7.18 s; pre/post captures and one nonempty FTM result succeeded; no continuity claim during the gap |
 | Raw-register safety | Unvalidated | No qualified Windows memory-type/address target |
 | Arbitrary hardware RX/TX stamps | Unvalidated | No complete interface demonstrated |
 | Absolute/relative timing accuracy | Unvalidated | No independent reference or qualified local TSF/QPC samples |
 
 The public packaging adds explicit interface selection and preview-by-default behavior. Offline checks and local discovery/preview can validate packaging; they do not replace the original hardware evidence. Hosted CI never accesses a wireless adapter and does not contain proprietary driver fixtures.
 
-The decoder and analyzers were checked offline against saved live traces without publishing those traces. The public 12-read wrapper and optional capability collection completed an elevated run at `c960dcc`. Local latch/FTM helpers subsequently completed live experiments; their public packaging adds path/CLI changes, shared action selection, and stricter FTM target-result checks. That repackaged version has offline tests/builds but has not been rerun in an elevated hardware experiment.
+The decoder and analyzers were checked offline against saved live traces without publishing those traces. The public 12-read wrapper and optional capability collection completed an elevated run at `c960dcc`. A later live rerun of the published `e7da355` latch/FTM wrappers reproduced the latch behavior but exposed a remaining FTM validation gap: one result had successful API/target status and a matching BSSID, but zero measurements and RTT -1. The offline decoder rejected it while the native helper accepted it.
+
+The native helper now requires a nonzero measurement count. A new bounded live run observed three nonempty results, then rejected another zero-measurement result and stopped before a fifth request, with trace cleanup and Wi-Fi Up. An offline C regression covers the zero-measurement counterexample and preserves signed RTT handling when measurements exist. This validates result completeness, not accuracy.
+
+Two local cancellation probes received `ERROR_CANCELLED` callbacks and normal follow-up API requests completed. Firmware/WDI work was also observed after cancellation; the internal Windows path calls nonabortive `RpcAsyncCancelCall`. Client completion cancellation is not evidence of immediate RF cessation. One follow-up response was empty despite success status, so cancellation recovery is not universally qualified.
+
+One subsequent host-driven adapter restart recovered automatically without the prepared fallback reconnect. TSF and SoC endpoint values advanced, but no samples cover the restart gap; association can resynchronize timing. The post-restart FTM result matched the prior observed AP and contained four measurements. This does not qualify a firmware power cycle, fallback failure paths, cancellation during reset, or roaming. Standard timestamp queries still failed after restart.
 
 Five additional FTM RTT estimates ranged from -1.353 to 3.694 ns. Conditional on a rough same-AP distance estimate, these did not pass a distance sanity check. No measured separation or independent clock reference was available, so no calibration or accuracy bound is claimed. See [experiment results](experiments.md#observed-results).
 
