@@ -12,9 +12,9 @@ The initial investigation covers the **ALFA AWUS036AXML / MediaTek MT7921AUN** o
 |---|---|---|
 | Linux mt76 / MT7921 USB | TSF read/write callbacks, RX descriptor timing, USB TX-status processing, defined TX timestamp field | A reliable error-reporting snapshot API, TX semantics, reset epochs, PHC/socket timestamp integration |
 | Windows MediaTek 1.0.0.119 x64 | Static private register read/write and firmware response paths | Live hardware qualification; standard NDIS timestamp exposure unproven |
-| Windows Qualcomm 1.0.4374.1300 ARM64 | Live private host getters and one firmware TSF report captured through ETW | IOCTL does not return TSF; repeated sampling, hardware cross-timestamps, and accuracy remain unqualified |
+| Windows Qualcomm 1.0.4374.1300 ARM64 | Repeated TSF reports, action-dependent SoC refresh, and six successful FTM operations | Exact sampling/simultaneity, independent-reference accuracy, safe registers, and arbitrary packet timestamps remain unqualified |
 
-On the inspected Qualcomm system, standard timestamp-capability and cross-timestamp APIs returned Win32 **23 / ERROR_CRC**. Failed queries are not interpreted as capability absence. Cached beacon timestamps and an FTM responder advertisement were observed; neither establishes local hardware packet timestamp accuracy.
+On the inspected Qualcomm system, standard timestamp-capability and cross-timestamp APIs returned Win32 **23 / ERROR_CRC**, including elevated queries. Failed queries are not interpreted as capability absence. FTM operations succeeded, but their reported RTT values did not agree with a rough distance estimate; no calibrated ranging accuracy is claimed.
 
 ## Contents
 
@@ -24,6 +24,7 @@ On the inspected Qualcomm system, standard timestamp-capability and cross-timest
 - [Proposed API boundary](docs/api-direction.md)
 - [Operations and reproducibility](docs/OPERATIONS.md)
 - [TSF capture and offline series analysis](docs/OPERATIONS.md#capture-and-analyze-a-tsf-series)
+- [Exact-build latch and FTM experiments](docs/experiments.md)
 - [Pinned sources and provenance](docs/sources.md)
 
 ## Quick start

@@ -1,6 +1,6 @@
 """Exact-build Qualcomm bounded private request validation.
 
-Only host-variable getters or one-shot TSF READ_VALUE action are allowed.
+Only host-variable getters or one-shot TSF READ_VALUE/QTIMER_CAPTURE are allowed.
 No raw register access, auto-report, reset, or arbitrary IOCTL is accepted.
 Uses an overlapped request, waits 2 seconds, then cancels and drains completion.
 Cancellation completion is waited for before buffers are released.
@@ -28,10 +28,14 @@ def main() -> None:
     ap.add_argument('--if-index', type=int, required=True, help='Exact active Qualcomm interface index')
     ap.add_argument('--command', choices=('get_hostdbglvl', 'get_hostdbgout', 'tsf_read_value'), default='get_hostdbglvl')
     ap.add_argument('--execute', action='store_true', help='Send one private request; default is validation/preview only')
+    ap.add_argument('--tsf-action', type=int, choices=(3, 4), default=3,
+                    help='TSF only: 3 READ_VALUE (default), 4 QTIMER_CAPTURE; changes capture state')
     ap.add_argument('--output', type=Path, help='Optional local JSON output; parent must exist')
     args = ap.parse_args()
     if os.name != 'nt' or not 0 < args.if_index <= 0x7FFFFFFF:
         ap.error('Requires Windows and a positive interface index below 2^31')
+    if args.command != 'tsf_read_value' and args.tsf_action != 3:
+        ap.error('--tsf-action 4 requires --command tsf_read_value')
     discovery = Path(__file__).with_name('Get-QualcommAdapter.ps1')
     adapter = json.loads(subprocess.check_output(
         ['powershell.exe', '-NoProfile', '-File', str(discovery), '-InterfaceIndex', str(args.if_index)], text=True))
@@ -43,12 +47,12 @@ def main() -> None:
     validate_driver(data)
     is_tsf = args.command == 'tsf_read_value'
     mac = bytes.fromhex(adapter['MacAddress'].replace('-', '').replace(':', ''))
-    payload = build_request(args.command, mac)
+    payload = build_request(args.command, mac, tsf_action=args.tsf_action)
     if not args.execute:
         preview = {'execute': False, 'interface_index': args.if_index,
                    'command': args.command, 'driver_sha256': QUALIFIED_SHA256,
                    'input_bytes': len(payload), 'private_device_opened': False,
-                   'firmware_action_if_executed': 3 if is_tsf else None}
+                   'firmware_action_if_executed': args.tsf_action if is_tsf else None}
         print(json.dumps(preview, indent=2))
         if args.output:
             args.output.write_text(json.dumps(preview, indent=2) + '\n', encoding='utf-8')
@@ -85,7 +89,7 @@ def main() -> None:
               'command': args.command, 'ioctl': '0x00220182',
               'interface_index': adapter['ifIndex'], 'driver_sha256': QUALIFIED_SHA256,
               'input_bytes': 128, 'output_capacity': 100, 'firmware_command_requested': is_tsf,
-              'firmware_action': 3 if is_tsf else None, 'qpc_frequency_hz': frequency.value}
+              'firmware_action': args.tsf_action if is_tsf else None, 'qpc_frequency_hz': frequency.value}
     try:
         event = k.CreateEventW(None, True, False, None)
         if not event:

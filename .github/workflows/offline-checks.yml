@@ -11,10 +11,12 @@ jobs:
         with:
           python-version: '3.11'
       - run: python -m pip install -r requirements.txt
-      - run: python -m compileall -q tools tests
+      - run: python -m compileall -q tools experiments tests
       - run: python -m unittest discover -s tests -v
       - run: python tools/qualcomm_probe.py --help
       - run: python tools/analyze_tsf_series.py --help
+      - run: python experiments/qualcomm/analyze_latch.py --help
+      - run: python experiments/qualcomm/decode_ftm_response.py --help
   windows-syntax:
     runs-on: windows-2022
     steps:
@@ -23,7 +25,7 @@ jobs:
         shell: powershell
         run: |
           $ErrorActionPreference = 'Stop'
-          Get-ChildItem tools -Filter '*.ps1' | ForEach-Object {
+          Get-ChildItem tools,experiments -Recurse -Filter '*.ps1' | ForEach-Object {
               $tokens = $null
               $parseErrors = $null
               [System.Management.Automation.Language.Parser]::ParseFile($_.FullName, [ref]$tokens, [ref]$parseErrors) | Out-Null

@@ -10,17 +10,20 @@ This is a sanitized summary of observations from the initial 2026-10-01/02 inves
 | Qualcomm TSF request | Live, original local harness | IOCTL accepted; empty timestamp result |
 | Qualcomm standard timestamp APIs | Live, Python and native C | Return code 23, no valid capabilities/tuple |
 | Cached beacon timestamps | Live | AP Timestamp field and Windows host receive timestamp accessible |
-| FTM | Capability observation | Initiator supported; current AP advertised responder support; no exchange tested |
+| FTM | Live, exact-build experiment | Six same-target operations had firmware responses, successful WDI completions, and successful callback target results; no independent RF capture |
 | ETW report capture | Live, original local harness | One elevated capture succeeded; trace header reported zero lost events/buffers |
-| Firmware report delivery/order | Live, one observation | Matching-vdev report logged 552.9 us after observed IOCTL completion; firmware sampling/completion instant unknown |
-| Repeated TSF capture | Prepared; not executed | A subsequent 12-read elevation was canceled; offline analyzer tests are not repeatability evidence |
+| Firmware report delivery/order | Live, bounded series | Twelve matching reports; eleven logs after userspace completion observation and one before; firmware sampling/completion instant unknown |
+| Repeated TSF capture | Live, public wrapper at c960dcc | Twelve reads over 14.39 s, zero trace loss, successful cleanup; driver version/hash and final Up state preserved |
+| SoC latch refresh | Live, exact-build experiment | Three capture actions refreshed the SoC field; subsequent reads reused it; simultaneous counter latching unproven |
 | Raw-register safety | Unvalidated | No qualified Windows memory-type/address target |
 | Arbitrary hardware RX/TX stamps | Unvalidated | No complete interface demonstrated |
 | Absolute/relative timing accuracy | Unvalidated | No independent reference or qualified local TSF/QPC samples |
 
 The public packaging adds explicit interface selection and preview-by-default behavior. Offline checks and local discovery/preview can validate packaging; they do not replace the original hardware evidence. Hosted CI never accesses a wireless adapter and does not contain proprietary driver fixtures.
 
-The public ETL decoder and analyzer were also checked against the saved single-read trace without publishing that trace. Their repeated-series behavior is tested with synthetic inputs. The public elevated wrapper and optional capability collection remain untested in an elevated live run. No independent reference, raw-register read, hardware RX/TX packet stamp, or FTM exchange was qualified by these updates.
+The decoder and analyzers were checked offline against saved live traces without publishing those traces. The public 12-read wrapper and optional capability collection completed an elevated run at `c960dcc`. Local latch/FTM helpers subsequently completed live experiments; their public packaging adds path/CLI changes, shared action selection, and stricter FTM target-result checks. That repackaged version has offline tests/builds but has not been rerun in an elevated hardware experiment.
+
+Five additional FTM RTT estimates ranged from -1.353 to 3.694 ns. Conditional on a rough same-AP distance estimate, these did not pass a distance sanity check. No measured separation or independent clock reference was available, so no calibration or accuracy bound is claimed. See [experiment results](experiments.md#observed-results).
 
 ## Qualification requirements
 

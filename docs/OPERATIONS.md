@@ -4,12 +4,12 @@
 
 Use a test system and exact interface targeting. Python tools target Python 3.11+. Only the static PE/protocol tools require `pefile`; it is the sole declared dependency. Native probes require Windows SDK headers/libraries and a compiler for the target architecture.
 
-No tool installs a driver, changes a WLAN profile, changes a system clock, enables monitor mode, or sends FTM/ranging requests. The private TSF command requests a firmware action and may interact with internal timing state. It is not a production-qualified timing service.
+No tool installs a driver, changes a WLAN profile, changes a system clock, or enables monitor mode. The private TSF commands request firmware actions and may change internal capture state. The explicitly enabled [FTM experiment](experiments.md) sends ranging requests to the current associated responder. These are research tools, not a production-qualified timing service.
 
 ## Offline checks
 
 ```powershell
-python -m compileall -q tools tests
+python -m compileall -q tools experiments tests
 python -m unittest discover -s tests -v
 ```
 
@@ -40,7 +40,7 @@ To perform one host-only query after reviewing the preview:
 python tools/qualcomm_probe.py --if-index 7 --command get_hostdbglvl --execute
 ```
 
-The other host-only query is `get_hostdbgout`. The one-shot TSF command is `tsf_read_value`; its fixed positive argument selects firmware READ_VALUE action 3. Do not treat a successful request with an empty result as a TSF measurement.
+The other host-only query is `get_hostdbgout`. The one-shot TSF command is `tsf_read_value`; its default positive argument selects firmware READ_VALUE action 3. Explicit `--tsf-action 4` selects QTIMER_CAPTURE using a zero argument and refreshes capture state. Action 4 is rejected for host getters; reset and automatic-report actions remain rejected. Do not treat a successful request with an empty result as a TSF measurement. The existing `Capture-TsfReport.ps1` wrapper still uses action 3 only; use the dedicated experiment for action comparisons.
 
 Optional `--output` writes JSON to an existing local directory. Use ignored `local/` or `artifacts/`. Runtime discovery includes a MAC address internally; public probe output omits it. Do not publish raw discovery output or unsanitized logs.
 
@@ -60,15 +60,19 @@ cl /nologo /W4 /WX tools/cached_beacon.c /Fo:artifacts/cached_beacon.obj /Fe:art
 if ($LASTEXITCODE -ne 0) { throw 'Cached beacon build failed' }
 cl /nologo /W4 /WX tools/decode_tsf_etl.c /Fo:artifacts/decode_tsf_etl.obj /Fe:artifacts/decode_tsf_etl.exe /link advapi32.lib kernel32.lib
 if ($LASTEXITCODE -ne 0) { throw 'ETL decoder build failed' }
+cl /nologo /W4 /WX tools/device_services.c /Fo:artifacts/device_services.obj /Fe:artifacts/device_services.exe /link wlanapi.lib iphlpapi.lib kernel32.lib
+if ($LASTEXITCODE -ne 0) { throw 'Device-service query build failed' }
 ```
 
 `native_caps` takes an interface index. `cached_beacon` takes an interface GUID and queries the existing cache only; it never calls WlanScan. The latter omits SSID/BSSID identifiers from its JSON, bounds-checks information elements, and reports FTM responder advertisement separately from execution.
+
+`device_services.exe 7` takes an explicit interface index and directly queries the documented hardware cross-timestamp API and WLAN device-service GUID list. Run elevated for device-service enumeration. GUID output identifies service contracts, not the interface or AP. It sends zero device-service commands. Exit 0 means the API checks completed; individual error codes remain in JSON. Exit 1 means interface lookup failed, and exit 2 means invalid arguments. An enumerated service is not evidence of an FTM operation.
 
 ## Trace and reference prerequisites
 
 Firmware delivery/ordering qualification requires an appropriately privileged trace and correlation between request and report. No elevation is attempted by the public tools. The identified Qualcomm TraceClassic event keyword is `0x2000000000000000`; static event descriptors alone do not prove capture availability.
 
-`tools/Capture-TsfReport.ps1 -InterfaceIndex 7` must be started from an elevated Windows PowerShell. Its default remains one read with a 4 MB trace. It validates the exact active driver through the existing probe before starting ETW. It waits 1.5 seconds after the final request and stops tracing in `finally`. The public wrapper is parser-checked only; its elevated execution remains unvalidated, despite one successful capture by the original local harness. The private probe's cancellation-drain limitation still applies.
+`tools/Capture-TsfReport.ps1 -InterfaceIndex 7` must be started from an elevated Windows PowerShell. Its default remains one read with a 4 MB trace. It validates the exact active driver through the existing probe before starting ETW. It waits 1.5 seconds after the final request and stops tracing in `finally`. A live 12-read run of the public wrapper at commit `c960dcc` completed with 12 matching reports and successful cleanup. The private probe's cancellation-drain limitation still applies.
 
 ## Capture and analyze a TSF series
 
@@ -104,6 +108,8 @@ Correlation is limited to one command/report per request window, with no firmwar
 ## Remaining hardware qualifications
 
 Actual FTM tests require a reviewed submission/result API and a controlled responder. Timing accuracy requires an independent reference such as a qualified PHC or GPS/PPS source. A Windows host timestamp attached to a cached AP beacon is not a substitute for a calibrated local hardware clock.
+
+The [experiment guide](experiments.md) describes the separately qualified Windows internal FTM request path, native ARM64 build, explicit execution switch, and recorded six-request result. This does not establish arbitrary packet timestamping or calibrated ranging.
 
 ## Data and publication
 
