@@ -21,7 +21,7 @@ sequenceDiagram
   participant A as Responder / AP clock A
   participant B as Initiator / station clock B
   participant U as Userspace reader
-  Note over A,B: Model: one matched FTM exchange; negotiation omitted
+  Note over A,B: Model: one matched FTM exchange.<br/>Negotiation omitted
   Note over A: t1: hardware departure time
   A->>B: FTM frame n
   Note over B: t2: hardware arrival time
@@ -32,7 +32,7 @@ sequenceDiagram
   Note over B: Full exchange needs local t2 / t3 and peer t1 / t4
   B-->>U: Observed API output: aggregate RTT, count, status, raw auxiliary fields
   Note over U: Not exposed: four individual timestamps or clock mapping
-  Note over A,U: Model needs four valid times and rate correction; delay asymmetry still limits offset estimation
+  Note over A,U: Model needs four valid times and rate correction.<br/>Delay asymmetry still limits offset estimation
 ```
 
 Diagram key: solid arrows are modeled radio frames; the dashed arrow is the observed application result. Notes labeled **Model**, **Observed API output**, and **Not exposed** distinguish assumptions, findings, and limits without relying on color. Time labels belong to the local clock shown above each participant. Unequal delay in the two directions still limits clock-offset estimates even when all four times are available.

@@ -12,6 +12,22 @@ def documents():
 
 
 class DocumentationTests(unittest.TestCase):
+    def test_sequence_message_text_has_no_unescaped_statement_separators(self):
+        # Mermaid uses a bare semicolon as a statement separator even in notes.
+        # Entity codes such as #59; are valid literal text, not separators.
+        for path in documents():
+            text = path.read_text(encoding='utf-8-sig')
+            for block in re.findall(r'```mermaid\n(.*?)\n```', text, re.S):
+                if not block.lstrip().startswith('sequenceDiagram'):
+                    continue
+                for line in block.splitlines():
+                    if ':' not in line or line.lstrip().startswith('%%'):
+                        continue
+                    message = re.sub(r'#[A-Za-z0-9]+;', '', line.split(':', 1)[1])
+                    with self.subTest(document=str(path.relative_to(ROOT)), line=line):
+                        self.assertNotIn(';', message,
+                                         'Use a period, <br/>, or escaped #59; in sequence text')
+
     def test_relative_file_links_resolve(self):
         for path in documents():
             for target in re.findall(r'\]\(([^)]+)\)', path.read_text(encoding='utf-8-sig')):
