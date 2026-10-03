@@ -9,6 +9,10 @@ remain comparative probes; their failure does not gate the private backend.
 This plan changes the research priority. It does not claim a new live command,
 raw timestamp export or calibrated clock has already been qualified.
 
+Latest execution state: the subsequent [private campaign quarantined on unmatched
+reports](private-campaign-2026-10-03-quarantine.md). Its marker remains in place;
+the passive observer qualification does not authorize automatic rearm.
+
 Related exact-build work: [private TSF/TX routes](private-tsf-fast-paths.md) and
 [saved-capture latency decomposition](private-acquisition-latency.md).
 
@@ -67,11 +71,11 @@ and complete controller plus offline trace-loss validation.
 The local observer source now emits `controller-query/v1` health using an actual
 ControlTrace QUERY outside the ETW callback. The gate rejects the legacy ready
 record and unused-counter health format before private admission. Rebuild the
-observer before running the campaign: the preserved legacy `artifacts/live_observer.exe`
-is intentionally incompatible with the stricter gate. The corrected source was
-compiled separately as `artifacts/live_observer-health.exe`; this is not a live
-qualification of the new observer. From an installed ARM64 MSVC developer shell,
-the existing campaign executable can be rebuilt after retaining the old binary:
+observer before running the campaign after a source change. The corrected observer
+is now selected at `artifacts/live_observer.exe` and has passed
+[two passive live checks](observer-passive-qualification-2026-10-03.md). The legacy
+binary is retained in the qualification backup directory. Future builds can use
+an installed ARM64 MSVC developer shell after retaining the previous executable:
 
 ```powershell
 cl.exe /nologo /W4 /WX /O2 experiments/qualcomm/live_observer.c /Foartifacts/live_observer.obj /Feartifacts/live_observer.exe /link /MACHINE:ARM64 advapi32.lib wlanapi.lib iphlpapi.lib

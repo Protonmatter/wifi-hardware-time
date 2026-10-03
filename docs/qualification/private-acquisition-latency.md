@@ -4,6 +4,11 @@ Audit date: 2026-10-03. This is a source audit and fresh offline recomputation o
 the existing `QualcommCampaign-ecfaed68f20e` artifacts. No private request, trace,
 elevation, adapter change, or clock write was performed for this document.
 
+Subsequent qualification: the corrected observer has been rebuilt, selected and
+passed [two passive live checks](observer-passive-qualification-2026-10-03.md).
+The historical measurements and source-audit findings below remain separate from
+that later pass; private-command delivery latency has not been remeasured.
+
 The tested private path already returns host-observed IOCTL completion in tens
 of microseconds and emits its driver report log in hundreds of microseconds.
 The roughly 1.6-second report-delivery delay is a separate collection problem.
