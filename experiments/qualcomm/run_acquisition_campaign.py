@@ -117,7 +117,7 @@ def same_identity(current: dict,baseline: dict) -> None:
 
 class Observer:
     def __init__(self,session: str,index: int,folder: Path,clock: Clock):
-        self.clock=clock;self.queue=queue.Queue();self.records=[];self.association=None
+        self.folder=folder;self.clock=clock;self.queue=queue.Queue();self.records=[];self.association=None
         self.ready=False;self.stopped=None;self.closing=False
         self.stop_name='Local\\WifiTimeStop-'+uuid.uuid4().hex
         self.stop=clock.k.CreateEventW(None,True,False,self.stop_name)
@@ -138,27 +138,49 @@ class Observer:
         finally:self.queue.put((self.clock.now(),None))
 
     def pump(self,gate: ReportGate) -> None:
-        while True:
+        first_error=None
+        remaining=self.queue.qsize() if self.closing else None
+        while remaining is None or remaining>0:
             try:received,line=self.queue.get_nowait()
             except queue.Empty:break
-            if line is None:
-                if not self.closing:raise RuntimeError('Observer ended unexpectedly')
-                continue
-            record=json.loads(line);record['received_qpc']=received
-            self.records.append(record);self.file.write(json.dumps(record)+'\n');self.file.flush()
-            if record['kind']=='observer_stopped':
-                self.stopped=record
-                if not self.closing:raise RuntimeError('Observer stopped unexpectedly')
-                continue
-            if record['kind']=='ready':
-                if self.ready or record['perf_frequency_hz']!=self.clock.frequency:raise RuntimeError('Observer clock mismatch')
-                self.ready=True
-            if record['kind']=='connection' and record.get('connected'):
-                association=record['association']
-                if self.association is not None and self.association!=association:raise RuntimeError('Observed AP changed')
-                self.association=association
-            gate.consume(record)
+            if remaining is not None:remaining-=1
+            try:
+                if line is None:
+                    if not self.closing:raise RuntimeError('Observer ended unexpectedly')
+                    continue
+                try:
+                    record=json.loads(line)
+                    if type(record) is not dict:raise ValueError('Observer record is not an object')
+                except (ValueError,TypeError):
+                    # Raw malformed output is private evidence, never an admitted sample.
+                    self.file.write(json.dumps(dict(kind='invalid_observer_line',received_qpc=received,raw_line=line))+'\n');self.file.flush()
+                    raise
+                record['received_qpc']=received
+                self.records.append(record);self.file.write(json.dumps(record)+'\n');self.file.flush()
+                if record['kind']=='observer_stopped':
+                    if type(record.get('failed')) is not bool or any(type(record.get(k)) is not int or not 0<=record[k]<=0xffffffff for k in ('process_status','close_status')):
+                        raise ValueError('Malformed observer stop record')
+                    if self.stopped is not None:raise RuntimeError('Duplicate observer stop record')
+                    self.stopped=record
+                    if not self.closing:raise RuntimeError('Observer stopped unexpectedly')
+                    continue
+                # Rejection is permanent. Cleanup preserves the tail without feeding
+                # any further record into admission or resetting the original reason.
+                if self.closing and gate.reason is not None:continue
+                if record['kind']=='ready':
+                    if self.ready or record['perf_frequency_hz']!=self.clock.frequency:raise RuntimeError('Observer clock mismatch')
+                    self.ready=True
+                if record['kind']=='connection' and record.get('connected'):
+                    association=record['association']
+                    if self.association is not None and self.association!=association:raise RuntimeError('Observed AP changed')
+                    self.association=association
+                gate.consume(record)
+            except BaseException as error:
+                if not self.closing:raise
+                gate.quarantine(str(error))
+                if first_error is None:first_error=error
         if self.process.poll() is not None and not self.closing:raise RuntimeError('Observer process exited')
+        if first_error is not None:raise first_error
 
     def wait(self,seconds: float,gate: ReportGate) -> None:
         end=time.monotonic()+seconds
@@ -168,25 +190,46 @@ class Observer:
 
     def close(self,gate: ReportGate) -> None:
         self.closing=True
-        # The controller stopped the ETW session first, allowing its final buffers
-        # to drain naturally. Signal only if the consumer fails to finish in time.
+        error=None;signaled=False;forced=False
+        # Only the passive observer may be terminated here. Private IOCTL probe
+        # lifetime/drain handling is separate and is never changed by this method.
         try:
-            self.process.wait(timeout=8)
-        except subprocess.TimeoutExpired:
-            self.clock.k.SetEvent(self.stop)
             try:self.process.wait(timeout=8)
             except subprocess.TimeoutExpired:
-                self.process.kill();self.process.wait(timeout=5)
-                raise RuntimeError('Observer forced termination; cleanup unqualified')
+                signaled=True
+                if not self.clock.k.SetEvent(self.stop):error=RuntimeError('Observer stop signal failed')
+                try:self.process.wait(timeout=8)
+                except subprocess.TimeoutExpired:
+                    forced=True;self.process.kill();self.process.wait(timeout=5)
+                    if error is None:error=RuntimeError('Observer forced termination; cleanup unqualified')
+        except BaseException as caught:
+            if error is None:error=caught
         finally:
-            self.reader.join(timeout=2)
-            self.clock.k.CloseHandle(self.stop)
-        try:
-            self.pump(gate)
-            if self.reader.is_alive() or self.process.returncode or not self.stopped or self.stopped['failed']:
-                raise RuntimeError('Observer cleanup failed')
+            try:
+                self.reader.join(timeout=2)
+                if not self.clock.k.CloseHandle(self.stop):raise RuntimeError('Observer stop handle close failed')
+            except BaseException as caught:
+                if error is None:error=caught
+        try:self.pump(gate)
+        except BaseException as caught:
+            if error is None:error=caught
+        drained=not self.reader.is_alive() and self.queue.empty()
+        # Match the native observer's allowed cancellation/close-pending statuses.
+        clean=bool(drained and self.process.returncode==0 and self.stopped and not self.stopped['failed']
+            and self.stopped['process_status'] in (0,1223) and self.stopped['close_status'] in (0,7007)
+            and not forced and error is None)
+        if not clean and error is None:error=RuntimeError('Observer cleanup failed')
+        receipt=dict(evidence_drained=drained,observer_clean_stop=clean,
+            process_return_code=self.process.returncode,stop_record=self.stopped,
+            stop_signal_requested=signaled,forced_termination=forced,
+            admission_quarantined=gate.reason is not None,quarantine_reason=gate.reason,
+            cleanup_error=str(error) if error is not None else None)
+        try:save(self.folder/'observer-cleanup.json',receipt)
         finally:
-            self.file.close();self.errors.close();self.process.stdout.close()
+            self.file.close();self.errors.close()
+            # A stuck reader can own the stream lock; do not block cleanup closing it.
+            if not self.reader.is_alive():self.process.stdout.close()
+        if error is not None:raise error
 
 
 def workload(stop_path: Path,output: Path) -> int:

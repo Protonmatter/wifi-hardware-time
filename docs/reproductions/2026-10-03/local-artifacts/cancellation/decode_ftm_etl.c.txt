@@ -1,0 +1,61 @@
+#define WIN32_LEAN_AND_MEAN
+#define _CRT_SECURE_NO_WARNINGS
+#include <windows.h>
+#include <evntrace.h>
+#include <evntcons.h>
+#include <stdio.h>
+#include <string.h>
+
+/* Offline decoder: emits only numeric timing fields, never arbitrary log text. */
+static const GUID wlan_logger = {0xbb6f5b93, 0x635c, 0x47be,
+    {0x81, 0x6f, 0xe8, 0x95, 0xe7, 0x70, 0x64, 0xa8}};
+static unsigned long long event_count;
+static unsigned long long match_count;
+static unsigned long long wlan_count;
+
+static void WINAPI on_event(PEVENT_RECORD event)
+{
+    char message[2049];
+    const char *kind = NULL;
+    ++event_count;
+    if (memcmp(&event->EventHeader.ProviderId, &wlan_logger, sizeof(GUID)) != 0) return;
+    ++wlan_count;
+    if (event->EventHeader.EventDescriptor.Id != 1 || event->UserData == NULL ||
+        event->UserDataLength == 0 || event->UserDataLength > sizeof(message)-1) return;
+    memcpy(message, event->UserData, event->UserDataLength);
+    message[event->UserDataLength] = '\0';
+    if (strstr(message, "Got WDI OID 0x88, WDI_TASK_REQUEST_FTM")) kind="wdi_request";
+    else if (strstr(message,"got RTT event from the firmware")) kind="firmware_rtt_event";
+    else if (strstr(message,"the measurement was canceled")) kind="firmware_canceled";
+    else if (strstr(message,"ol_ath_rtt_oem_meas_cancel: ENTER")) kind="firmware_cancel_command";
+    else if (strstr(message,"WdiAbortFtmHdlr")) kind="wdi_abort";
+    else if (strstr(message,"StatusCode:REQUEST_FTM_COMPLETE,TransactionId:")) kind="wdi_complete";
+    if (kind) {
+        ++match_count;
+        printf("{\"kind\":\"%s\",\"raw_timestamp\":%lld}\n",kind,event->EventHeader.TimeStamp.QuadPart);
+    }
+
+}
+
+int wmain(int argc, wchar_t **argv)
+{
+    EVENT_TRACE_LOGFILEW logfile = {0};
+    TRACEHANDLE trace;
+    ULONG status, close_status;
+    if (argc != 2) { fputs("Usage: decode_tsf_etl.exe trace.etl\n", stderr); return 2; }
+    logfile.LogFileName = argv[1];
+    logfile.ProcessTraceMode = PROCESS_TRACE_MODE_EVENT_RECORD | PROCESS_TRACE_MODE_RAW_TIMESTAMP;
+    logfile.EventRecordCallback = on_event;
+    trace = OpenTraceW(&logfile);
+    if (trace == INVALID_PROCESSTRACE_HANDLE) {
+        fprintf(stderr, "OpenTrace failed: %lu\n", GetLastError()); return 1;
+    }
+    printf("{\"kind\":\"header\",\"clock_type\":%lu,\"perf_frequency_hz\":%lld,\"events_lost\":%lu,\"buffers_lost\":%lu}\n",
+        logfile.LogfileHeader.ReservedFlags, logfile.LogfileHeader.PerfFreq.QuadPart,
+        logfile.LogfileHeader.EventsLost, logfile.LogfileHeader.BuffersLost);
+    status = ProcessTrace(&trace, 1, NULL, NULL);
+    close_status = CloseTrace(trace);
+    printf("{\"kind\":\"summary\",\"events\":%llu,\"wlan_events\":%llu,\"other_events\":%llu,\"matches\":%llu,\"process_status\":%lu,\"close_status\":%lu}\n",
+        event_count, wlan_count, event_count - wlan_count, match_count, status, close_status);
+    return status == ERROR_SUCCESS && close_status == ERROR_SUCCESS ? 0 : 1;
+}

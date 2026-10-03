@@ -1,0 +1,73 @@
+"""Extract verified Qualcomm TSF code ranges from the saved dumpbin output.
+
+Uses the discovered driver path in qualcomm-pe.json. Reads files only; never
+opens a device or invokes an IOCTL. Requires the already installed pefile.
+Run from the research workspace. Exit 0 means static evidence checks passed.
+"""
+from pathlib import Path
+import hashlib
+import json
+import re
+import struct
+
+import pefile
+
+
+def main() -> None:
+    root = Path('evidence/current-wlan')
+    identity = json.loads((root / 'qualcomm-pe.json').read_text(encoding='utf-8'))
+    driver = Path(identity['path'])
+    if hashlib.sha256(driver.read_bytes()).hexdigest() != identity['sha256']:
+        raise ValueError('Installed driver changed since inspection')
+    pe = pefile.PE(str(driver))
+    if pe.FILE_HEADER.Machine != 0xAA64:
+        raise ValueError('Expected inspected ARM64 driver')
+    commands = []
+    for rva, command, name, target in (
+        (0x33DF3C, 0xE5, 'tsf_auto_report', 0x1263B4),
+        (0x33DF58, 0xE6, 'tsf_read_value', 0x1263C8),
+    ):
+        record = pe.get_data(rva, 28)
+        fields = struct.unpack_from('<IIH', record)
+        actual_name = record[10:].split(b'\0')[0].decode('ascii')
+        delta = struct.unpack('<i', pe.get_data(0x12677C + command * 4, 4))[0]
+        branch = 0x1257FC + delta * 4
+        if fields != (1, command, 1) or actual_name != name or branch != target:
+            raise ValueError(f'Unexpected command record or branch: {name}')
+        commands.append({'name': name, 'record_rva': hex(rva),
+                         'record_fields': fields, 'branch_rva': hex(branch)})
+    ranges = {
+        'private-tsf-switch': (0x124C00, 0x124C78),
+        'private-tsf-cases': (0x1263B4, 0x1263D8),
+        'indirect-call-site': (0x126110, 0x126138),
+        'tsf-operation-wrappers': (0x18E910, 0x18EA28),
+        'tsf-operation-registration': (0x18EFFC, 0x18F01C),
+        'tsf-firmware-command': (0x1955E8, 0x1956E8),
+        'tsf-report-registration': (0x21599C, 0x2159B4),
+        'tsf-report-handler': (0x216B00, 0x216CCC),
+        'ihv-request-handler': (0x12E4F0, 0x12E8E4),
+        'control-device-names': (0x436000, 0x4360AC),
+    }
+    instructions = []
+    for line in (root / 'qualcomm-disassembly.txt').read_text(encoding='utf-8-sig').splitlines():
+        match = re.match(r'\s+([0-9A-F]{16}):', line)
+        if match:
+            instructions.append((int(match[1], 16) - pe.OPTIONAL_HEADER.ImageBase, line))
+    output = []
+    for name, (lo, hi) in ranges.items():
+        body = [line for address, line in instructions if lo <= address < hi]
+        if not body:
+            raise ValueError(f'Missing range {name}')
+        output.append(f'## {name}: RVA {lo:#x} to {hi:#x}\n' + '\n'.join(body))
+    (root / 'qualcomm-tsf-paths.txt').write_text('\n\n'.join(output) + '\n', encoding='utf-8')
+    (root / 'tsf-path-manifest.json').write_text(json.dumps({
+        'driver_sha256': identity['sha256'], 'commands': commands,
+        'code_ranges': {name: [hex(lo), hex(hi)] for name, (lo, hi) in ranges.items()},
+        'firmware_command': '0x5012', 'registered_report_event': '0x5005',
+        'private_commands_executed': False,
+    }, indent=2) + '\n', encoding='utf-8')
+    print('PASS: installed driver hash, two command records and jump targets, ten code ranges')
+
+
+if __name__ == '__main__':
+    main()

@@ -6,6 +6,10 @@ The initial investigation covers the **ALFA AWUS036AXML / MediaTek MT7921AUN** o
 
 **Status: research and diagnostic prototypes. No end-to-end PTP synchronization or timing-accuracy claim has been validated.**
 
+The latest [private campaign is quarantined](docs/qualification/private-campaign-2026-10-03-quarantine.md)
+after unmatched TSF reports. The follow-up cleanup fix has offline validation;
+it does not rearm acquisition or qualify the rejected capture.
+
 ## What has been established
 
 | Backend | Evidence | Remaining gap |
@@ -17,6 +21,8 @@ The initial investigation covers the **ALFA AWUS036AXML / MediaTek MT7921AUN** o
 On the inspected Qualcomm system, standard timestamp-capability and cross-timestamp APIs returned Win32 **23 / ERROR_CRC**, including elevated queries. Failed queries are not interpreted as capability absence. FTM operations succeeded, but their reported RTT values did not agree with a rough distance estimate; no calibrated ranging accuracy is claimed.
 
 ## Contents
+
+- [Findings, validation scripts and historical source catalog](docs/validation-execution-catalog.md)
 
 Current direction: [private timing acquisition](docs/qualification/private-timing-acquisition-plan.md).
 Private exact-build interfaces are first-class research candidates; public NDIS

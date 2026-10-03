@@ -1,0 +1,24 @@
+#requires -Version 5.1
+#requires -RunAsAdministrator
+[CmdletBinding()]
+param([Parameter(Mandatory=$true)][ValidateRange(1,2147483647)][int]$InterfaceIndex,
+      [Parameter(Mandatory=$true)][string]$OutputDirectory)
+$ErrorActionPreference = 'Stop'
+Set-StrictMode -Version Latest
+$repoRoot = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '..')).Path
+$output = (Resolve-Path -LiteralPath $OutputDirectory).Path
+try {
+    & python (Join-Path $repoRoot 'tools/qualcomm_probe.py') --if-index $InterfaceIndex --command tsf_read_value |
+        Set-Content -LiteralPath (Join-Path $output 'followup-preview.json') -Encoding UTF8
+    if ($LASTEXITCODE -ne 0) { throw 'Qualified driver preview failed.' }
+    & (Join-Path $PSScriptRoot 'device_services.exe') $InterfaceIndex |
+        Set-Content -LiteralPath (Join-Path $output 'device-services-elevated.json') -Encoding UTF8
+    if ($LASTEXITCODE -ne 0) { throw 'Read-only query process failed.' }
+    [pscustomobject]@{ObservedUtc=[DateTime]::UtcNow.ToString('o');Elevated=$true;Completed=$true} |
+        ConvertTo-Json | Set-Content -LiteralPath (Join-Path $output 'followup-complete.json') -Encoding UTF8
+    exit 0
+} catch {
+    [pscustomobject]@{ObservedUtc=[DateTime]::UtcNow.ToString('o');Error=$_.Exception.Message} |
+        ConvertTo-Json | Set-Content -LiteralPath (Join-Path $output 'followup-error.json') -Encoding UTF8
+    exit 1
+}

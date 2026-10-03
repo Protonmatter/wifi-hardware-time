@@ -1,0 +1,449 @@
+{
+  "schema": "validation-source-archive/v1",
+  "scope": "Retained authored py/ps1/c files in local artifacts and current-WLAN evidence at archive time; data, binaries and third-party reference source excluded",
+  "entries": [
+    {
+      "source": "local-artifacts/cancellation/Capture-Cancellation.ps1",
+      "original_sha256": "094f0d3a7191bc73e90e9a4a65136fa9fb5a2ecf83b104a792a25782e8740a76",
+      "original_bytes": 3173,
+      "archive": "local-artifacts/cancellation/Capture-Cancellation.ps1.txt",
+      "archived_sha256": "32c9dfc653e175d7992e1844f0b34b3c28e6da8fd6d45f015a57ef5d5c2312be",
+      "normalization": "UTF-8 without BOM; LF line endings",
+      "redactions": [
+        {
+          "kind": "local-interface-default",
+          "count": 1
+        }
+      ],
+      "normalized_equivalent_maintained_paths": [],
+      "execution_status": "retained historical source; retention alone is not evidence of execution"
+    },
+    {
+      "source": "local-artifacts/cancellation/decode_ftm_etl.c",
+      "original_sha256": "1cc1c387a3718976dfbe0b5ceb9c2d2821865916dfcee1ae9d1c1838732cc43d",
+      "original_bytes": 3005,
+      "archive": "local-artifacts/cancellation/decode_ftm_etl.c.txt",
+      "archived_sha256": "eaf3e6b34092045e535531535f7ac97a18fdee8de646d11c1329c0e4336eca94",
+      "normalization": "UTF-8 without BOM; LF line endings",
+      "redactions": [],
+      "normalized_equivalent_maintained_paths": [],
+      "execution_status": "retained historical source; retention alone is not evidence of execution"
+    },
+    {
+      "source": "local-artifacts/cancellation/ftm_cancel_once.c",
+      "original_sha256": "590ece02e68c17c64bea916346da67b5c2aa689e797db3f3b9b22e22e6653191",
+      "original_bytes": 7512,
+      "archive": "local-artifacts/cancellation/ftm_cancel_once.c.txt",
+      "archived_sha256": "590ece02e68c17c64bea916346da67b5c2aa689e797db3f3b9b22e22e6653191",
+      "normalization": "UTF-8 without BOM; LF line endings",
+      "redactions": [],
+      "normalized_equivalent_maintained_paths": [],
+      "execution_status": "retained historical source; retention alone is not evidence of execution"
+    },
+    {
+      "source": "local-artifacts/device_services.c",
+      "original_sha256": "fc64611878ac760b90d31b9eee6872c67ea7bf231f5974fb97b3aa029aa594eb",
+      "original_bytes": 2243,
+      "archive": "local-artifacts/device_services.c.txt",
+      "archived_sha256": "fc64611878ac760b90d31b9eee6872c67ea7bf231f5974fb97b3aa029aa594eb",
+      "normalization": "UTF-8 without BOM; LF line endings",
+      "redactions": [],
+      "normalized_equivalent_maintained_paths": [],
+      "execution_status": "retained historical source; retention alone is not evidence of execution"
+    },
+    {
+      "source": "local-artifacts/Inspect-DeviceServices.ps1",
+      "original_sha256": "b77fc4bb650d51461ee5cb89ad6f3ac07fa6f6c0484cd83858ae116aaff751a7",
+      "original_bytes": 1396,
+      "archive": "local-artifacts/Inspect-DeviceServices.ps1.txt",
+      "archived_sha256": "b77fc4bb650d51461ee5cb89ad6f3ac07fa6f6c0484cd83858ae116aaff751a7",
+      "normalization": "UTF-8 without BOM; LF line endings",
+      "redactions": [],
+      "normalized_equivalent_maintained_paths": [],
+      "execution_status": "retained historical source; retention alone is not evidence of execution"
+    },
+    {
+      "source": "local-artifacts/latch-experiment/analyze_latch.py",
+      "original_sha256": "635cc37be62e07ad62310130404b6c401798d0a7603a558d80f3b398c872d6e1",
+      "original_bytes": 3856,
+      "archive": "local-artifacts/latch-experiment/analyze_latch.py.txt",
+      "archived_sha256": "635cc37be62e07ad62310130404b6c401798d0a7603a558d80f3b398c872d6e1",
+      "normalization": "UTF-8 without BOM; LF line endings",
+      "redactions": [],
+      "normalized_equivalent_maintained_paths": [],
+      "execution_status": "retained historical source; retention alone is not evidence of execution"
+    },
+    {
+      "source": "local-artifacts/latch-experiment/Capture-FtmOnce.ps1",
+      "original_sha256": "dd165f22f81f603ea2bbb458acc295134c6d8cb38a390b3b11c16a07acae4788",
+      "original_bytes": 3999,
+      "archive": "local-artifacts/latch-experiment/Capture-FtmOnce.ps1.txt",
+      "archived_sha256": "dd165f22f81f603ea2bbb458acc295134c6d8cb38a390b3b11c16a07acae4788",
+      "normalization": "UTF-8 without BOM; LF line endings",
+      "redactions": [],
+      "normalized_equivalent_maintained_paths": [],
+      "execution_status": "retained historical source; retention alone is not evidence of execution"
+    },
+    {
+      "source": "local-artifacts/latch-experiment/Capture-LatchExperiment.ps1",
+      "original_sha256": "be83096cc96f42c44169fa79037f437d6779a2e9fd78dffd10ac4afce47d8704",
+      "original_bytes": 3388,
+      "archive": "local-artifacts/latch-experiment/Capture-LatchExperiment.ps1.txt",
+      "archived_sha256": "be83096cc96f42c44169fa79037f437d6779a2e9fd78dffd10ac4afce47d8704",
+      "normalization": "UTF-8 without BOM; LF line endings",
+      "redactions": [],
+      "normalized_equivalent_maintained_paths": [],
+      "execution_status": "retained historical source; retention alone is not evidence of execution"
+    },
+    {
+      "source": "local-artifacts/latch-experiment/decode_ftm_response.py",
+      "original_sha256": "1796ec4271d69875447c63dc4d465680be549ab9b0501a978360196cab50f62a",
+      "original_bytes": 1495,
+      "archive": "local-artifacts/latch-experiment/decode_ftm_response.py.txt",
+      "archived_sha256": "1796ec4271d69875447c63dc4d465680be549ab9b0501a978360196cab50f62a",
+      "normalization": "UTF-8 without BOM; LF line endings",
+      "redactions": [],
+      "normalized_equivalent_maintained_paths": [],
+      "execution_status": "retained historical source; retention alone is not evidence of execution"
+    },
+    {
+      "source": "local-artifacts/latch-experiment/ftm_once.c",
+      "original_sha256": "55b01a881f5cb2523323cd27ae0dc927514a055cde14e04be03b59c42b9ef33c",
+      "original_bytes": 5180,
+      "archive": "local-artifacts/latch-experiment/ftm_once.c.txt",
+      "archived_sha256": "55b01a881f5cb2523323cd27ae0dc927514a055cde14e04be03b59c42b9ef33c",
+      "normalization": "UTF-8 without BOM; LF line endings",
+      "redactions": [],
+      "normalized_equivalent_maintained_paths": [],
+      "execution_status": "retained historical source; retention alone is not evidence of execution"
+    },
+    {
+      "source": "local-artifacts/latch-experiment/latch_probe.py",
+      "original_sha256": "0d7f84ca57daf20347c8e584ab5b72eeff3e1cafac5003739d76982f5e2072c6",
+      "original_bytes": 7101,
+      "archive": "local-artifacts/latch-experiment/latch_probe.py.txt",
+      "archived_sha256": "0d7f84ca57daf20347c8e584ab5b72eeff3e1cafac5003739d76982f5e2072c6",
+      "normalization": "UTF-8 without BOM; LF line endings",
+      "redactions": [],
+      "normalized_equivalent_maintained_paths": [],
+      "execution_status": "retained historical source; retention alone is not evidence of execution"
+    },
+    {
+      "source": "local-artifacts/latch-experiment/latch_protocol.py",
+      "original_sha256": "fd6951c7ad8358fdff6cbede9d87e3312191d52959cd91b3a2ca36bf98b2f885",
+      "original_bytes": 907,
+      "archive": "local-artifacts/latch-experiment/latch_protocol.py.txt",
+      "archived_sha256": "738436c4835cb2c67dd209df62620f6ec6ed397a7daf2b147471af0fa9cbee63",
+      "normalization": "UTF-8 without BOM; LF line endings",
+      "redactions": [
+        {
+          "kind": "historical-instruction-signature",
+          "count": 1
+        }
+      ],
+      "normalized_equivalent_maintained_paths": [],
+      "execution_status": "retained historical source; retention alone is not evidence of execution"
+    },
+    {
+      "source": "local-artifacts/latch-experiment/test_ftm_response.py",
+      "original_sha256": "2cf129752afeb3a40a5e2aaf437ebb2bd3697926289a05a6a4d7e1b039dec14f",
+      "original_bytes": 1063,
+      "archive": "local-artifacts/latch-experiment/test_ftm_response.py.txt",
+      "archived_sha256": "2cf129752afeb3a40a5e2aaf437ebb2bd3697926289a05a6a4d7e1b039dec14f",
+      "normalization": "UTF-8 without BOM; LF line endings",
+      "redactions": [],
+      "normalized_equivalent_maintained_paths": [],
+      "execution_status": "retained historical source; retention alone is not evidence of execution"
+    },
+    {
+      "source": "local-artifacts/latch-experiment/test_latch_protocol.py",
+      "original_sha256": "3f0b04604762088d1111d1fdb44a7e0c6e3f70f2e17054b139f7655e4be3739b",
+      "original_bytes": 1066,
+      "archive": "local-artifacts/latch-experiment/test_latch_protocol.py.txt",
+      "archived_sha256": "3f0b04604762088d1111d1fdb44a7e0c6e3f70f2e17054b139f7655e4be3739b",
+      "normalization": "UTF-8 without BOM; LF line endings",
+      "redactions": [],
+      "normalized_equivalent_maintained_paths": [],
+      "execution_status": "retained historical source; retention alone is not evidence of execution"
+    },
+    {
+      "source": "local-artifacts/Launch-AcquisitionCampaign.ps1",
+      "original_sha256": "970796864d49b4164343ff6b76c7fb23eee73d1f47160928d3f32ec906aa7257",
+      "original_bytes": 1264,
+      "archive": "local-artifacts/Launch-AcquisitionCampaign.ps1.txt",
+      "archived_sha256": "970796864d49b4164343ff6b76c7fb23eee73d1f47160928d3f32ec906aa7257",
+      "normalization": "UTF-8 without BOM; LF line endings",
+      "redactions": [],
+      "normalized_equivalent_maintained_paths": [],
+      "execution_status": "retained historical source; retention alone is not evidence of execution"
+    },
+    {
+      "source": "local-artifacts/NdisStatus-59568b625be1/inspect_stack_local.py",
+      "original_sha256": "d5e07cb727aa10efbe40a76a38dd243b012a1af38b6ebbade41727618abb5543",
+      "original_bytes": 5870,
+      "archive": "local-artifacts/NdisStatus-59568b625be1/inspect_stack_local.py.txt",
+      "archived_sha256": "d5e07cb727aa10efbe40a76a38dd243b012a1af38b6ebbade41727618abb5543",
+      "normalization": "UTF-8 without BOM; LF line endings",
+      "redactions": [],
+      "normalized_equivalent_maintained_paths": [],
+      "execution_status": "retained historical source; retention alone is not evidence of execution"
+    },
+    {
+      "source": "local-artifacts/NdisStatusV2-791fd1e90c60/acquisition-ndis_evidence.py",
+      "original_sha256": "b9813401f05c38aaa86f9733cbe025435590fe3300c734eac66a1140f30c8ba5",
+      "original_bytes": 24653,
+      "archive": "local-artifacts/NdisStatusV2-791fd1e90c60/acquisition-ndis_evidence.py.txt",
+      "archived_sha256": "b9813401f05c38aaa86f9733cbe025435590fe3300c734eac66a1140f30c8ba5",
+      "normalization": "UTF-8 without BOM; LF line endings",
+      "redactions": [],
+      "normalized_equivalent_maintained_paths": [],
+      "execution_status": "retained historical source; retention alone is not evidence of execution"
+    },
+    {
+      "source": "local-artifacts/ObserverQualification-a52d80148dd5/qualify_passive.py",
+      "original_sha256": "00dcd883bdd23bd19d25bc7c3a582476408ca508be60296fb030490a8aef0d70",
+      "original_bytes": 4993,
+      "archive": "local-artifacts/ObserverQualification-a52d80148dd5/qualify_passive.py.txt",
+      "archived_sha256": "6e89377a44fb63bebc023a94bb560d04be46229e3359be10378601fe35d7030c",
+      "normalization": "UTF-8 without BOM; LF line endings",
+      "redactions": [],
+      "normalized_equivalent_maintained_paths": [],
+      "execution_status": "retained historical source; retention alone is not evidence of execution"
+    },
+    {
+      "source": "local-artifacts/ObserverQualification-a52d80148dd5/run-elevated.ps1",
+      "original_sha256": "857902adb58ec57f6b215c11119857f4ec9c980b687b26dd8fc4cb158a3df9f8",
+      "original_bytes": 953,
+      "archive": "local-artifacts/ObserverQualification-a52d80148dd5/run-elevated.ps1.txt",
+      "archived_sha256": "3f19017f99e5bfc0e838c370c8024537055edabc1f187db1f49f825d51cd55dc",
+      "normalization": "UTF-8 without BOM; LF line endings",
+      "redactions": [
+        {
+          "kind": "absolute-workspace-path",
+          "count": 4
+        },
+        {
+          "kind": "local-python-path",
+          "count": 1
+        }
+      ],
+      "normalized_equivalent_maintained_paths": [],
+      "execution_status": "retained historical source; retention alone is not evidence of execution"
+    },
+    {
+      "source": "local-artifacts/PrivateCampaignLaunch-f82642d1695b/run-elevated.ps1",
+      "original_sha256": "11d90c8f623e16b569225720b7e152498e9aeb2cf693bedd33f6c06a56cc9caa",
+      "original_bytes": 1500,
+      "archive": "local-artifacts/PrivateCampaignLaunch-f82642d1695b/run-elevated.ps1.txt",
+      "archived_sha256": "6f8b27da3235c1162e0929ff142ab9f63773f25351b77988e1249e98baeef06f",
+      "normalization": "UTF-8 without BOM; LF line endings",
+      "redactions": [],
+      "normalized_equivalent_maintained_paths": [],
+      "execution_status": "retained historical source; retention alone is not evidence of execution"
+    },
+    {
+      "source": "local-artifacts/reset/profile_reconnect.c",
+      "original_sha256": "225956c67dcdcecae29f5dc273cbb075be4f0d15982ae4a0841597492fec6e32",
+      "original_bytes": 2915,
+      "archive": "local-artifacts/reset/profile_reconnect.c.txt",
+      "archived_sha256": "225956c67dcdcecae29f5dc273cbb075be4f0d15982ae4a0841597492fec6e32",
+      "normalization": "UTF-8 without BOM; LF line endings",
+      "redactions": [],
+      "normalized_equivalent_maintained_paths": [],
+      "execution_status": "retained historical source; retention alone is not evidence of execution"
+    },
+    {
+      "source": "local-artifacts/reset/Restart-WifiQualified.ps1",
+      "original_sha256": "631f50f26e329eacdf4d72fe8cc413765f45f0da63de011472956c2aa258efa2",
+      "original_bytes": 6389,
+      "archive": "local-artifacts/reset/Restart-WifiQualified.ps1.txt",
+      "archived_sha256": "631f50f26e329eacdf4d72fe8cc413765f45f0da63de011472956c2aa258efa2",
+      "normalization": "UTF-8 without BOM; LF line endings",
+      "redactions": [],
+      "normalized_equivalent_maintained_paths": [],
+      "execution_status": "retained historical source; retention alone is not evidence of execution"
+    },
+    {
+      "source": "local-artifacts/Run-PublishedQualification.ps1",
+      "original_sha256": "fc27a9e962de54ec930ba51a22774d93a71932984c6e3d97d615602d9458296b",
+      "original_bytes": 1062,
+      "archive": "local-artifacts/Run-PublishedQualification.ps1.txt",
+      "archived_sha256": "b6bbf9acb51962d7534a443c03c8adf46f3ad88cd39f3a9acdf9622aa805294d",
+      "normalization": "UTF-8 without BOM; LF line endings",
+      "redactions": [
+        {
+          "kind": "local-interface-default",
+          "count": 1
+        }
+      ],
+      "normalized_equivalent_maintained_paths": [],
+      "execution_status": "retained historical source; retention alone is not evidence of execution"
+    },
+    {
+      "source": "local-artifacts/summarize_live_campaign.py",
+      "original_sha256": "10fb1069a3f503457e670f2f539408f70ee24db32d31265086b69e1401b56245",
+      "original_bytes": 4155,
+      "archive": "local-artifacts/summarize_live_campaign.py.txt",
+      "archived_sha256": "10fb1069a3f503457e670f2f539408f70ee24db32d31265086b69e1401b56245",
+      "normalization": "UTF-8 without BOM; LF line endings",
+      "redactions": [],
+      "normalized_equivalent_maintained_paths": [],
+      "execution_status": "retained historical source; retention alone is not evidence of execution"
+    },
+    {
+      "source": "local-evidence/current-wlan/build_static_evidence.py",
+      "original_sha256": "43a0e8d951e4b2d5ae797e5487af13bec21098ff85aa82cfbdc4fe9dd49d5aea",
+      "original_bytes": 3355,
+      "archive": "local-evidence/current-wlan/build_static_evidence.py.txt",
+      "archived_sha256": "43a0e8d951e4b2d5ae797e5487af13bec21098ff85aa82cfbdc4fe9dd49d5aea",
+      "normalization": "UTF-8 without BOM; LF line endings",
+      "redactions": [],
+      "normalized_equivalent_maintained_paths": [],
+      "execution_status": "retained historical source; retention alone is not evidence of execution"
+    },
+    {
+      "source": "local-evidence/current-wlan/native_caps.c",
+      "original_sha256": "c6b4cb3ba76185e9040c9e70517d782c85b321da3159dc0a41b5cb07da6006e0",
+      "original_bytes": 1213,
+      "archive": "local-evidence/current-wlan/native_caps.c.txt",
+      "archived_sha256": "c6b4cb3ba76185e9040c9e70517d782c85b321da3159dc0a41b5cb07da6006e0",
+      "normalization": "UTF-8 without BOM; LF line endings",
+      "redactions": [],
+      "normalized_equivalent_maintained_paths": [
+        "tools/native_caps.c"
+      ],
+      "execution_status": "retained historical source; retention alone is not evidence of execution"
+    },
+    {
+      "source": "local-evidence/current-wlan/probe_timestamp_caps.py",
+      "original_sha256": "2579f81fa71f800b70973f303c3295ab1544b884cd171bbe1033b5f15138b1c4",
+      "original_bytes": 4553,
+      "archive": "local-evidence/current-wlan/probe_timestamp_caps.py.txt",
+      "archived_sha256": "30cad4ba9a9b5092de5cecc44371725868f2c2e4fa034eacb8d08d7ffc187826",
+      "normalization": "UTF-8 without BOM; LF line endings",
+      "redactions": [
+        {
+          "kind": "interface-example",
+          "count": 1
+        }
+      ],
+      "normalized_equivalent_maintained_paths": [],
+      "execution_status": "retained historical source; retention alone is not evidence of execution"
+    },
+    {
+      "source": "local-evidence/current-wlan/validation/analyze_tsf_series.py",
+      "original_sha256": "b504192c9b2bb75607a175026129eac4aeb7d1c9947c7b7077ec7153dfe01695",
+      "original_bytes": 6617,
+      "archive": "local-evidence/current-wlan/validation/analyze_tsf_series.py.txt",
+      "archived_sha256": "b504192c9b2bb75607a175026129eac4aeb7d1c9947c7b7077ec7153dfe01695",
+      "normalization": "UTF-8 without BOM; LF line endings",
+      "redactions": [],
+      "normalized_equivalent_maintained_paths": [],
+      "execution_status": "retained historical source; retention alone is not evidence of execution"
+    },
+    {
+      "source": "local-evidence/current-wlan/validation/cached_beacon.c",
+      "original_sha256": "c6ac75115a8215d4384a5b9e99887199021ad522bede00fd88a245269c08ad18",
+      "original_bytes": 3546,
+      "archive": "local-evidence/current-wlan/validation/cached_beacon.c.txt",
+      "archived_sha256": "c6ac75115a8215d4384a5b9e99887199021ad522bede00fd88a245269c08ad18",
+      "normalization": "UTF-8 without BOM; LF line endings",
+      "redactions": [],
+      "normalized_equivalent_maintained_paths": [
+        "tools/cached_beacon.c"
+      ],
+      "execution_status": "retained historical source; retention alone is not evidence of execution"
+    },
+    {
+      "source": "local-evidence/current-wlan/validation/Capture-TsfReport.ps1",
+      "original_sha256": "3f4e77d3c7899722545c9bc10400b8e36f502291740f43ce8a59cb1dc20874a2",
+      "original_bytes": 6643,
+      "archive": "local-evidence/current-wlan/validation/Capture-TsfReport.ps1.txt",
+      "archived_sha256": "3f4e77d3c7899722545c9bc10400b8e36f502291740f43ce8a59cb1dc20874a2",
+      "normalization": "UTF-8 without BOM; LF line endings",
+      "redactions": [],
+      "normalized_equivalent_maintained_paths": [],
+      "execution_status": "retained historical source; retention alone is not evidence of execution"
+    },
+    {
+      "source": "local-evidence/current-wlan/validation/decode_tsf_etl.c",
+      "original_sha256": "5cb31b87aed849c006295cbd53461c3fdc820660668d4b7d4a242dc18683cea9",
+      "original_bytes": 3610,
+      "archive": "local-evidence/current-wlan/validation/decode_tsf_etl.c.txt",
+      "archived_sha256": "5cb31b87aed849c006295cbd53461c3fdc820660668d4b7d4a242dc18683cea9",
+      "normalization": "UTF-8 without BOM; LF line endings",
+      "redactions": [],
+      "normalized_equivalent_maintained_paths": [
+        "tools/decode_tsf_etl.c"
+      ],
+      "execution_status": "retained historical source; retention alone is not evidence of execution"
+    },
+    {
+      "source": "local-evidence/current-wlan/validation/live_basics.py",
+      "original_sha256": "a8b71483572197c16f78af9e4c8afd21fc19d80973e51077bf429561a4d4be1e",
+      "original_bytes": 3335,
+      "archive": "local-evidence/current-wlan/validation/live_basics.py.txt",
+      "archived_sha256": "425d3845e6c1ea664d185c1572cc8c127a7b254400819872f75f63782284561c",
+      "normalization": "UTF-8 without BOM; LF line endings",
+      "redactions": [
+        {
+          "kind": "interface-example",
+          "count": 1
+        }
+      ],
+      "normalized_equivalent_maintained_paths": [],
+      "execution_status": "retained historical source; retention alone is not evidence of execution"
+    },
+    {
+      "source": "local-evidence/current-wlan/validation/private_getter.py",
+      "original_sha256": "67b9ec9ab928e1756c828901ba3e07ea0e113354f24c99812674c53c5d593830",
+      "original_bytes": 6482,
+      "archive": "local-evidence/current-wlan/validation/private_getter.py.txt",
+      "archived_sha256": "67b9ec9ab928e1756c828901ba3e07ea0e113354f24c99812674c53c5d593830",
+      "normalization": "UTF-8 without BOM; LF line endings",
+      "redactions": [],
+      "normalized_equivalent_maintained_paths": [],
+      "execution_status": "retained historical source; retention alone is not evidence of execution"
+    },
+    {
+      "source": "local-evidence/current-wlan/validation/qualcomm_protocol.py",
+      "original_sha256": "886c48c0425f925393790a86b412e561d398e347c626bc54264faabcb2e05110",
+      "original_bytes": 1885,
+      "archive": "local-evidence/current-wlan/validation/qualcomm_protocol.py.txt",
+      "archived_sha256": "886c48c0425f925393790a86b412e561d398e347c626bc54264faabcb2e05110",
+      "normalization": "UTF-8 without BOM; LF line endings",
+      "redactions": [],
+      "normalized_equivalent_maintained_paths": [],
+      "execution_status": "retained historical source; retention alone is not evidence of execution"
+    },
+    {
+      "source": "local-evidence/current-wlan/validation/test_analyze_tsf_series.py",
+      "original_sha256": "d1a6c087f2e106c4144f1297b8a86452e20551f83521dafddb4e5a2340a84a10",
+      "original_bytes": 2842,
+      "archive": "local-evidence/current-wlan/validation/test_analyze_tsf_series.py.txt",
+      "archived_sha256": "d1a6c087f2e106c4144f1297b8a86452e20551f83521dafddb4e5a2340a84a10",
+      "normalization": "UTF-8 without BOM; LF line endings",
+      "redactions": [],
+      "normalized_equivalent_maintained_paths": [],
+      "execution_status": "retained historical source; retention alone is not evidence of execution"
+    },
+    {
+      "source": "local-evidence/current-wlan/validation/test_qualcomm_protocol.py",
+      "original_sha256": "bd6b08129e8482ba01e84c2efedae8288745564a083b5ba3cf3835395b48cf8e",
+      "original_bytes": 1974,
+      "archive": "local-evidence/current-wlan/validation/test_qualcomm_protocol.py.txt",
+      "archived_sha256": "bd6b08129e8482ba01e84c2efedae8288745564a083b5ba3cf3835395b48cf8e",
+      "normalization": "UTF-8 without BOM; LF line endings",
+      "redactions": [],
+      "normalized_equivalent_maintained_paths": [],
+      "execution_status": "retained historical source; retention alone is not evidence of execution"
+    }
+  ],
+  "excluded": [
+    {
+      "source": "local-evidence/current-wlan/validation/cnss2-qmi-reference.c",
+      "sha256": "f26191b1da50870f29a0e535f561343e02fb9f8c1f4c7e9d4ee394d3e24350f3",
+      "reason": "Third-party upstream reference, not an authored validation harness; vendor/reference source is not republished."
+    }
+  ]
+}

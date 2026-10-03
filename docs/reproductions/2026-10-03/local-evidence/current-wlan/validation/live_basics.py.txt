@@ -1,0 +1,69 @@
+"""Bounded live checks: handle open/close and documented cross-timestamp query.
+
+No private DeviceIoControl calls, configuration changes, packet sends, or register
+access. Usage: python live_basics.py --if-index <INTERFACE_INDEX> --output result.json
+Exit 0 means the checks completed; each API result is recorded independently.
+"""
+import argparse
+import ctypes as ct
+import datetime
+import hashlib
+import json
+from pathlib import Path
+
+
+class Cross(ct.Structure):
+    _fields_ = [(n, ct.c_uint64) for n in ('qpc_before', 'hardware_ticks', 'qpc_after')]
+
+
+def main() -> None:
+    ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument('--if-index', type=int, required=True)
+    ap.add_argument('--output', type=Path, required=True)
+    args = ap.parse_args()
+    if not 0 < args.if_index <= 0xFFFFFFFF:
+        ap.error('Interface index must be a positive DWORD')
+    identity = json.loads(Path('evidence/current-wlan/qualcomm-pe.json').read_text())
+    if hashlib.sha256(Path(identity['path']).read_bytes()).hexdigest() != identity['sha256']:
+        raise RuntimeError('Installed driver changed')
+    k = ct.WinDLL('kernel32', use_last_error=True)
+    k.CreateFileW.argtypes = [ct.c_wchar_p, ct.c_uint32, ct.c_uint32, ct.c_void_p,
+                              ct.c_uint32, ct.c_uint32, ct.c_void_p]
+    k.CreateFileW.restype = ct.c_void_p
+    k.CloseHandle.argtypes = [ct.c_void_p]
+    k.CloseHandle.restype = ct.c_int
+    report = {'observed_utc': datetime.datetime.now(datetime.timezone.utc).isoformat(),
+              'driver_sha256': identity['sha256'], 'interface_index': args.if_index,
+              'device_opens': [], 'private_ioctl_count': 0}
+    for label, access in [('metadata_only', 0), ('generic_read', 0x80000000)]:
+        handle = k.CreateFileW(r'\\.\QcomWifi', access, 3, None, 3, 0x40000000, None)
+        error = ct.get_last_error() if handle == ct.c_void_p(-1).value else 0
+        entry = {'access': label, 'opened': error == 0, 'error': error,
+                 'message': ct.FormatError(error).strip()}
+        if not error:
+            try:
+                pass  # Deliberately no requests on the private handle.
+            finally:
+                entry['closed'] = bool(k.CloseHandle(handle))
+                if not entry['closed']:
+                    raise ct.WinError(ct.get_last_error())
+        report['device_opens'].append(entry)
+    ip = ct.WinDLL('iphlpapi')
+    ip.ConvertInterfaceIndexToLuid.argtypes = [ct.c_uint32, ct.POINTER(ct.c_uint64)]
+    ip.ConvertInterfaceIndexToLuid.restype = ct.c_uint32
+    luid = ct.c_uint64()
+    rc = ip.ConvertInterfaceIndexToLuid(args.if_index, ct.byref(luid))
+    if rc:
+        raise OSError(rc, ct.FormatError(rc))
+    ip.CaptureInterfaceHardwareCrossTimestamp.argtypes = [ct.POINTER(ct.c_uint64), ct.POINTER(Cross)]
+    ip.CaptureInterfaceHardwareCrossTimestamp.restype = ct.c_uint32
+    cross = Cross()
+    rc = ip.CaptureInterfaceHardwareCrossTimestamp(ct.byref(luid), ct.byref(cross))
+    report['cross_timestamp'] = {'return_code': rc, 'message': ct.FormatError(rc).strip(),
+                                'values': {n: getattr(cross, n) for n, _ in cross._fields_} if rc == 0 else None}
+    args.output.write_text(json.dumps(report, indent=2) + '\n', encoding='utf-8')
+    print(json.dumps(report, indent=2))
+
+
+if __name__ == '__main__':
+    main()

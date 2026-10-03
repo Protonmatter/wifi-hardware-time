@@ -1,0 +1,5 @@
+$ErrorActionPreference = 'Stop'
+& '<PYTHON_EXE>' '<REPO>\artifacts\ObserverQualification-a52d80148dd5\qualify_passive.py' 63680dd4b1e0264a4ee2539379434a9a8debdb6532f508ba3f9e5b64b61ff4dc 1> '<REPO>\artifacts\ObserverQualification-a52d80148dd5\qualification.stdout.txt' 2> '<REPO>\artifacts\ObserverQualification-a52d80148dd5\qualification.stderr.txt'
+$code=$LASTEXITCODE
+[pscustomobject]@{ExitCode=$code} | ConvertTo-Json | Set-Content -LiteralPath '<REPO>\artifacts\ObserverQualification-a52d80148dd5\process-result.json' -Encoding UTF8
+exit $code

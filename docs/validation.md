@@ -1,6 +1,12 @@
 # Validation ledger
 
-This is a sanitized summary of observations from the initial 2026-10-01/02 investigation. Original endpoint logs, local identifiers, absolute paths, raw disassembly, and captures are not public artifacts. These observations do not describe another machine or a later driver release.
+This is a sanitized summary of observations from the 2026-10-01 through 2026-10-03 investigation. Original endpoint logs, local identifiers, absolute paths, raw disassembly, and captures are not public artifacts. These observations do not describe another machine or a later driver release.
+
+**Latest state: private acquisition remains quarantined.** The corrected observer
+passed two passive checks, then its private campaign stopped during the third
+capture on unmatched reports. The earlier complete campaign below is a separate
+experiment. See the [latest campaign report](qualification/private-campaign-2026-10-03-quarantine.md)
+and the [findings and execution catalog](validation-execution-catalog.md).
 
 | Item | Evidence level | Result |
 |---|---|---|
@@ -16,6 +22,10 @@ This is a sanitized summary of observations from the initial 2026-10-01/02 inves
 | Repeated TSF capture | Live, public wrapper at c960dcc | Twelve reads over 14.39 s, zero trace loss, successful cleanup; driver version/hash and final Up state preserved |
 | SoC latch refresh | Live, exact-build experiment | Three capture actions refreshed the SoC field; subsequent reads reused it; simultaneous counter latching unproven |
 | Guarded idle/workload acquisition | Live, new controller | 12/12 captures, 138/138 requests, zero reported trace loss; 18 capture refreshes and 108 eligible cached-read reuses; all 14 observer sessions cleaned up |
+| Corrected controller-query observer | Live, passive | Two zero-request captures passed; loss counters zero and cleanup succeeded |
+| Corrected-observer private repeat | Live, quarantined | 33 action-3 requests issued; two complete bundles contain 24 observations; third capture rejected, mixed/workload phases not reached |
+| Unmatched-report postmortem | Saved ETL replay | Nine command groups plus two unassigned report/timer/delay groups; WMI dispatch precedes each extra group; origin unknown |
+| Post-quarantine evidence draining | Offline regression | Tail persistence and separate cleanup receipts validated synthetically, including failed stop signaling; modified controller not live-qualified |
 | FTM result aggregation | Static binary and saved-trace replay | Post-filter selection model matches count, RTT and auxiliary field in 10/10 callbacks; empty-array selection explains two zero-count results |
 | Adapter restart/reassociation | Live, one targeted restart | Same profile recovered automatically; Up observed after 7.18 s; pre/post captures and one nonempty FTM result succeeded; no continuity claim during the gap |
 | Raw-register safety | Unvalidated | No qualified Windows memory-type/address target |
