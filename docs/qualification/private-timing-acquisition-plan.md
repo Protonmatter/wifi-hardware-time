@@ -15,6 +15,10 @@ the passive observer qualification does not authorize automatic rearm.
 
 Related exact-build work: [private TSF/TX routes](private-tsf-fast-paths.md) and
 [saved-capture latency decomposition](private-acquisition-latency.md).
+The latest offline follow-up identifies [changed SoC values in the unmatched
+reports and a pre-ETW host-memory ring](unmatched-tsf-and-memory-log.md).
+The ring has internal copy/file consumers; a safe userspace retrieval contract
+and concurrent-copy consistency are not yet established.
 
 ## Four quantities that must remain separate
 

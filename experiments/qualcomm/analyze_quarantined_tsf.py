@@ -42,7 +42,7 @@ def summarize_timing(rows: list[dict[str,Any]]) -> dict[str,Any]:
         if kind=='report':integer(event['tsf_raw'])
         if kind=='soc_timer':integer(event['soc_timer_raw']);integer(event['g_tsf_raw'])
         if kind=='delay':integer(event['tsf_delay_raw'],32)
-    position=0;commands=0;unmatched=[];actions=Counter()
+    position=0;commands=0;unmatched=[];actions=Counter();diagnostics=[];previous_by_vdev={}
     while position<len(timing):
         command=timing[position] if timing[position]['kind']=='command' else None
         start=position+(command is not None)
@@ -53,11 +53,27 @@ def summarize_timing(rows: list[dict[str,Any]]) -> dict[str,Any]:
             commands+=1;actions[str(command['action'])]+=1
         else:
             unmatched.append(dict(timing_record_offset=position,origin='unattributed'))
+        report,timer,delay=group
+        values=(report['tsf_raw'],timer['soc_timer_raw'],timer['g_tsf_raw'])
+        prior=previous_by_vdev.get(report['vdev'])
+        diagnostics.append(dict(report_ordinal=len(diagnostics)+1,
+            structurally_preceded_by_command=command is not None,
+            preceding_action=command['action'] if command else None,
+            report_gap_qpc=report['raw_timestamp']-prior[0] if prior else None,
+            tsf_change_raw=values[0]-prior[1][0] if prior else None,
+            soc_change_raw=values[1]-prior[1][1] if prior else None,
+            global_tsf_change_raw=values[2]-prior[1][2] if prior else None,
+            same_counter_tuple_as_previous=values==prior[1] if prior else None,
+            delay_matches_low_word_difference=delay['tsf_delay_raw']==(values[0]-values[1])%(1<<32)))
+        previous_by_vdev[report['vdev']]=(report['raw_timestamp'],values)
         position=start+3
     return dict(schema='tsf-structural-postmortem/v1',timing_records=len(timing),
         counts={kind:sum(r['kind']==kind for r in timing) for kind in KINDS},
         command_groups=commands,commands_by_action=dict(actions),
         unmatched_report_groups=len(unmatched),unmatched=unmatched,
+        qpc_frequency_hz=header['perf_frequency_hz'],report_diagnostics=diagnostics,
+        diagnostic_deltas='signed differences from previous same-vdev report; no wrap or epoch inference',
+        fresh_sampling_qualified=False,
         request_association_qualified=False,firmware_origin_identified=False,
         calibrated_accuracy_validated=False)
 
@@ -92,7 +108,7 @@ def main() -> int:
             admission_receipts=len(admissions),submission_states=dict(states),input_sha256=inputs,
             quarantine_modified=False)
         write_json_new(args.output,result)
-        print(json.dumps({k:v for k,v in result.items() if k not in ('unmatched','input_sha256')},indent=2))
+        print(json.dumps({k:v for k,v in result.items() if k not in ('unmatched','input_sha256','report_diagnostics')},indent=2))
         return 0
     except (OSError,ValueError,TypeError,KeyError,OverflowError) as error:
         parser.exit(1,f'Postmortem rejected: {error}\n')

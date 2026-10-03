@@ -25,6 +25,8 @@ and the [findings and execution catalog](validation-execution-catalog.md).
 | Corrected controller-query observer | Live, passive | Two zero-request captures passed; loss counters zero and cleanup succeeded |
 | Corrected-observer private repeat | Live, quarantined | 33 action-3 requests issued; two complete bundles contain 24 observations; third capture rejected, mixed/workload phases not reached |
 | Unmatched-report postmortem | Saved ETL replay | Nine command groups plus two unassigned report/timer/delay groups; WMI dispatch precedes each extra group; origin unknown |
+| Unmatched-report counter changes | Saved ETL replay | Both extra groups change the SoC value cached across the preceding nine reads; changed values do not establish freshness or simultaneous sampling |
+| Pre-ETW memory log | Exact-build static | 2 MiB text ring and copy/file consumers identified; userspace retrieval, concurrency and latency remain unqualified |
 | Post-quarantine evidence draining | Offline regression | Tail persistence and separate cleanup receipts validated synthetically, including failed stop signaling; modified controller not live-qualified |
 | FTM result aggregation | Static binary and saved-trace replay | Post-filter selection model matches count, RTT and auxiliary field in 10/10 callbacks; empty-array selection explains two zero-count results |
 | Adapter restart/reassociation | Live, one targeted restart | Same profile recovered automatically; Up observed after 7.18 s; pre/post captures and one nonempty FTM result succeeded; no continuity claim during the gap |

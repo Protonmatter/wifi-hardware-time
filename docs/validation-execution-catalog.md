@@ -28,6 +28,7 @@ permissions, exact-build prerequisites and explicit execution switches.
 | Evidence export/lifecycle | `tools/export_clock_evidence.py`, `tools/validate_research_bundle.py`, `tools/observation_lifecycle.py` | Strict offline admission/fixtures; no automatic clock conversion |
 | Clock-model investigation | `experiments/qualcomm/analyze_observation_quality.py`, `experiments/qualcomm/analyze_clock_pairing_hypothesis.py` | Conditional/held-out models; residual and feasibility are not calibrated uncertainty |
 | Quarantine postmortem | `experiments/qualcomm/analyze_quarantined_tsf.py`, `experiments/qualcomm/Export-TsfContext.ps1` | New maintained offline tools, actually replayed on the failed capture in this follow-up |
+| TSF routes and memory-log lead | `experiments/qualcomm/inspect_tsf_routes.py` | Exact-driver direct-branch/import inventory; no complete call-graph or live retrieval claim |
 | Cancellation/restart tests | Historical cancellation/reset sources in archive below | Prior bounded experiments only; not current live entry points or general reset/drain qualification |
 
 The [operations guide](OPERATIONS.md), [experiment guide](experiments.md), and
@@ -131,6 +132,7 @@ has changed and the unmatched-report producer remains unresolved.
 
 ## Findings index
 
+- [Unmatched TSF counter behavior and the host-memory log path](qualification/unmatched-tsf-and-memory-log.md)
 - [Proposed hardware-time boundary](api-direction.md)
 - [ALFA AWUS036AXML / MT7921AUN](axml.md)
 - [Clock evidence contract v1](evidence-contract.md)

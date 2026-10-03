@@ -17,6 +17,35 @@ def stream(extra=0):
 
 
 class TimingTests(unittest.TestCase):
+    def test_counter_changes_do_not_establish_freshness(self):
+        rows=stream(2)
+        rows[6]['soc_timer_raw']=rows[3]['soc_timer_raw']
+        result=summarize_timing(rows)
+        reports=result['report_diagnostics']
+        self.assertIsNone(reports[0]['soc_change_raw'])
+        self.assertEqual(reports[1]['soc_change_raw'],0)
+        self.assertEqual(reports[2]['soc_change_raw'],20)
+        self.assertEqual(reports[2]['report_gap_qpc'],10)
+        self.assertFalse(reports[1]['delay_matches_low_word_difference'])
+        self.assertFalse(result['fresh_sampling_qualified'])
+
+    def test_counter_decrease_is_signed_not_invented_wrap(self):
+        rows=stream(1)
+        rows[5]['tsf_raw']=1;rows[6]['soc_timer_raw']=2
+        reports=summarize_timing(rows)['report_diagnostics']
+        self.assertEqual(reports[1]['tsf_change_raw'],-1100)
+        self.assertEqual(reports[1]['soc_change_raw'],-599)
+        self.assertFalse(reports[1]['same_counter_tuple_as_previous'])
+
+    def test_identical_values_and_other_vdev_are_distinguished(self):
+        rows=stream(2)
+        rows[5]['tsf_raw']=rows[2]['tsf_raw'];rows[6]['soc_timer_raw']=rows[3]['soc_timer_raw']
+        rows[8]['vdev']=1;rows[10]['vdev']=1
+        reports=summarize_timing(rows)['report_diagnostics']
+        self.assertTrue(reports[1]['same_counter_tuple_as_previous'])
+        self.assertIsNone(reports[2]['soc_change_raw'])
+        self.assertIsNone(reports[2]['report_gap_qpc'])
+
     def test_unmatched_reports_remain_unassigned(self):
         result=summarize_timing(stream(2))
         self.assertEqual(result['command_groups'],1)

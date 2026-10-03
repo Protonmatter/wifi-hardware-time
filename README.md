@@ -23,6 +23,7 @@ On the inspected Qualcomm system, standard timestamp-capability and cross-timest
 ## Contents
 
 - [Findings, validation scripts and historical source catalog](docs/validation-execution-catalog.md)
+- [Unmatched TSF reports and a pre-ETW memory-log lead](docs/qualification/unmatched-tsf-and-memory-log.md)
 
 Current direction: [private timing acquisition](docs/qualification/private-timing-acquisition-plan.md).
 Private exact-build interfaces are first-class research candidates; public NDIS
