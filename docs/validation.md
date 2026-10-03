@@ -29,6 +29,7 @@ and the [findings and execution catalog](validation-execution-catalog.md).
 | Pre-ETW memory log | Exact-build static | 2 MiB text ring and copy/file consumers identified; userspace retrieval, concurrency and latency remain unqualified |
 | Passive follow-up after cleanup repair | Live, zero private requests | One 30-second observation passed; 111 health/connection records each, zero timing events/loss, normal observer stop and unchanged quarantine |
 | Scan attribution lead | Saved ETL context | START_SCAN logged about 28.6 ms before first unmatched TSF report; temporal overlap, not causal attribution |
+| Controlled scan comparison | Live, three calls and failed four-second profile | Quiet baseline then two TSF reports per call; final diagnostic tail observed scan completion at about six seconds; no private requests, no clock qualification |
 | Post-quarantine evidence draining | Offline regression plus passive live check | Tail persistence and failure cases validated synthetically; normal shutdown passed one passive live run; no private campaign requalification |
 | FTM result aggregation | Static binary and saved-trace replay | Post-filter selection model matches count, RTT and auxiliary field in 10/10 callbacks; empty-array selection explains two zero-count results |
 | Adapter restart/reassociation | Live, one targeted restart | Same profile recovered automatically; Up observed after 7.18 s; pre/post captures and one nonempty FTM result succeeded; no continuity claim during the gap |

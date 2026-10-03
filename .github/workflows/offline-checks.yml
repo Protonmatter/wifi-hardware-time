@@ -42,6 +42,9 @@ jobs:
       - name: Check passive launcher exit codes (no acquisition)
         shell: powershell
         run: ./tests/Test-PassiveLauncher.ps1
+      - name: Check scan context classification (no acquisition)
+        shell: powershell
+        run: ./tests/Test-ScanContextSummary.ps1
       - name: Check bounded NDIS child helper (no tracing)
         shell: powershell
         run: |

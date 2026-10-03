@@ -11,6 +11,23 @@ param(
 )
 $ErrorActionPreference='Stop'
 Set-StrictMode -Version Latest
+function Get-ScanContextSummary {
+    param([object[]]$Rows)
+    $commands=New-Object 'System.Collections.Generic.List[object]'
+    $callbacks=New-Object 'System.Collections.Generic.List[object]'
+    foreach($row in $Rows){
+        if($row.message -cmatch '^wmi cmd endpoint\[\d+\]: buf (?:0x)?[0-9a-fA-F]+, cmd WMI_START_SCAN_CMDID\b'){
+            $commands.Add([pscustomobject]@{ordinal=$row.ordinal;utc=$row.utc})
+        }
+        if($row.message -cmatch '^MP:\s+StaHandleTaskScanEvent\b'){
+            $type=[regex]::Match($row.message,'\btype\s*[=:]\s*([A-Z_]+)')
+            $reason=[regex]::Match($row.message,'\breason\s*[=:]\s*([A-Z_]+)')
+            if(-not $type.Success -or -not $reason.Success){throw 'Unrecognized scan callback format.'}
+            $callbacks.Add([pscustomobject]@{ordinal=$row.ordinal;utc=$row.utc;type=$type.Groups[1].Value;reason=$reason.Groups[1].Value})
+        }
+    }
+    return [pscustomobject]@{scan_start_commands=@($commands.ToArray());scan_callbacks=@($callbacks.ToArray())}
+}
 $stream=$null;$writer=$null
 try {
     if((Get-Item -LiteralPath $EtlPath).Length -gt 32MB){throw 'ETL exceeds reviewed 32 MiB bound.'}
@@ -39,7 +56,7 @@ try {
             if([Math]::Abs(($time-[DateTimeOffset]::Parse($target.utc)).TotalMilliseconds) -le $ContextMilliseconds){$selected.Add($row);break}
         }
     }
-    $result=[pscustomobject]@{schema='tsf-context/v1';etl_sha256=(Get-FileHash -LiteralPath $EtlPath).Hash.ToLowerInvariant();report_count=$ordinal;context_ms=$ContextMilliseconds;targets=@($targets.ToArray());events=@($selected.ToArray());private_request_sent=$false}
+    $result=[pscustomobject]@{schema='tsf-context/v1';etl_sha256=(Get-FileHash -LiteralPath $EtlPath).Hash.ToLowerInvariant();report_count=$ordinal;context_ms=$ContextMilliseconds;targets=@($targets.ToArray());events=@($selected.ToArray());whole_trace_scan_summary=(Get-ScanContextSummary -Rows $rows.ToArray());private_request_sent=$false}
     $json=ConvertTo-Json -InputObject $result -Depth 6
     $stream=[IO.File]::Open([IO.Path]::GetFullPath($OutputPath),[IO.FileMode]::CreateNew,[IO.FileAccess]::Write,[IO.FileShare]::None)
     $writer=New-Object IO.StreamWriter($stream,(New-Object Text.UTF8Encoding($false)))

@@ -1,16 +1,19 @@
 #requires -Version 5.1
 #requires -RunAsAdministrator
-<# Elevated child wrapper for the bounded passive-only runner.
+<# Elevated child wrapper for bounded observation.
 Requires an exact-source manifest under ignored artifacts and an existing Python.
 Start this script with RunAs for UAC; it does not elevate itself or install anything.
 Exit code mirrors the runner (0 healthy observation, 1 rejection/failure, 2 usage).
 No private requests, adapter reset, firmware settings or clock writes.
+Default is passive. Explicit -ScanComparison selects up to three documented
+WlanScan requests; scans can temporarily increase network latency.
 Keeps an exclusive launch receipt; use a fresh manifest directory for a new run. #>
 [CmdletBinding()]
 param(
     [Parameter(Mandatory=$true)][string]$ManifestPath,
     [Parameter(Mandatory=$true)][ValidatePattern('^[0-9a-f]{64}$')][string]$ManifestSha256,
-    [Parameter(Mandatory=$true)][string]$PythonPath
+    [Parameter(Mandatory=$true)][string]$PythonPath,
+    [switch]$ScanComparison
 )
 $ErrorActionPreference='Stop'
 Set-StrictMode -Version Latest
@@ -23,7 +26,8 @@ function Invoke-PassivePython {
 $ManifestPath=(Resolve-Path -LiteralPath $ManifestPath).Path
 $PythonPath=(Resolve-Path -LiteralPath $PythonPath).Path
 $folder=Split-Path -Parent $ManifestPath
-$runner=Join-Path $PSScriptRoot 'run_passive_observation.py'
+$runnerName=if($ScanComparison){'run_scan_comparison.py'}else{'run_passive_observation.py'}
+$runner=Join-Path $PSScriptRoot $runnerName
 $stream=[IO.File]::Open((Join-Path $folder 'launch-start.json'),[IO.FileMode]::CreateNew,[IO.FileAccess]::Write,[IO.FileShare]::None)
 try {
     $bytes=[Text.Encoding]::UTF8.GetBytes(([pscustomobject]@{Pid=$PID;StartedUtc=[DateTime]::UtcNow.ToString('o');ManifestSha256=$ManifestSha256}|ConvertTo-Json))

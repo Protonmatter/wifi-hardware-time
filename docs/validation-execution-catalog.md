@@ -30,6 +30,7 @@ permissions, exact-build prerequisites and explicit execution switches.
 | Quarantine postmortem | `experiments/qualcomm/analyze_quarantined_tsf.py`, `experiments/qualcomm/Export-TsfContext.ps1` | New maintained offline tools, actually replayed on the failed capture in this follow-up |
 | TSF routes and memory-log lead | `experiments/qualcomm/inspect_tsf_routes.py` | Exact-driver direct-branch/import inventory; no complete call-graph or live retrieval claim |
 | Passive quarantine follow-up | `experiments/qualcomm/run_passive_observation.py`, `experiments/qualcomm/Invoke-PassiveObservation.ps1` | One elevated 30-second window passed with zero requests/timing events and clean shutdown; no firmware-drain or ring-retrieval claim |
+| Scan-source comparison | `experiments/qualcomm/run_scan_comparison.py`, `experiments/qualcomm/analyze_scan_comparison.py`, explicit launcher `-ScanComparison` | Three scans reproduced two-report pattern; all fail the four-second completion profile; final diagnostic tail identified late completion |
 | Cancellation/restart tests | Historical cancellation/reset sources in archive below | Prior bounded experiments only; not current live entry points or general reset/drain qualification |
 
 The [operations guide](OPERATIONS.md), [experiment guide](experiments.md), and
@@ -138,6 +139,9 @@ has changed and the unmatched-report producer remains unresolved.
 
 ## Findings index
 
+- [Controlled scan comparison plan](qualification/scan-comparison-plan.md)
+- [Controlled scan/TSF results](qualification/scan-tsf-results-2026-10-03.md)
+- [Qualification gap closure ledger](qualification/gap-closure-ledger.md)
 - [Live passive check, memory-log consumers and scan attribution lead](qualification/passive-and-retrieval-validation-2026-10-03.md)
 - [Unmatched TSF counter behavior and the host-memory log path](qualification/unmatched-tsf-and-memory-log.md)
 - [Proposed hardware-time boundary](api-direction.md)

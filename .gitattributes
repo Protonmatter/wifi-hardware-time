@@ -5,3 +5,5 @@
 *.yml text eol=lf
 *.ps1 text eol=crlf
 docs/reproductions/** text eol=lf
+experiments/qualcomm/live_observer.c text eol=lf
+tools/decode_tsf_etl.c text eol=lf
