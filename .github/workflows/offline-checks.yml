@@ -39,3 +39,19 @@ jobs:
       - name: Reject malformed FTM delta logs (offline)
         shell: powershell
         run: ./tests/Test-FtmDeltaLogParser.ps1
+      - name: Check bounded NDIS child helper (no tracing)
+        shell: powershell
+        run: |
+          ./tests/Test-NdisCaptureHelpers.ps1
+          ./tests/Test-NdisCaptureHelpers.ps1 -CaptureScript ./experiments/qualcomm/Capture-NdisTimestampStatusV2.ps1
+          ./tests/Test-NdisV2Preflight.ps1
+          ./tests/Test-NdisV2Health.ps1
+      - name: Build documented-query and health helpers (no acquisition)
+        shell: powershell
+        run: |
+          ./experiments/qualcomm/Build-NdisExperiment.ps1 -Architecture x64
+          if ($LASTEXITCODE -ne 0) { throw 'Native build failed' }
+          ./artifacts/ndis-experiment-x64/ndis_query_probe.exe --help
+          if ($LASTEXITCODE -ne 0) { throw 'Probe help failed' }
+          ./artifacts/ndis-experiment-x64/ndis_trace_health.exe --help
+          if ($LASTEXITCODE -ne 0) { throw 'Health help failed' }

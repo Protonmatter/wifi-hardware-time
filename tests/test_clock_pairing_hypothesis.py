@@ -3,10 +3,26 @@ from fractions import Fraction
 import sys
 import unittest
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'experiments/qualcomm'))
-from analyze_clock_pairing_hypothesis import assess
+from analyze_clock_pairing_hypothesis import assess, compare_counters
 
 
 class PairingTests(unittest.TestCase):
+    def test_common_rate_can_fit_nonconstant_reported_difference(self):
+        result=compare_counters([(100,100,990,1010),(200,201,1990,2020),(300,302,2990,3040)])
+        self.assertTrue(result['common_rate_feasible_under_assumptions'])
+        self.assertEqual(result['reported_tsf_minus_soc_span_raw'],'2')
+        self.assertFalse(result['simultaneous_sampling_validated'])
+        self.assertFalse(result['conversion_qualified'])
+
+    def test_disjoint_conditional_slopes_do_not_fit_common_rate(self):
+        result=compare_counters([(100,200,999,1001),(200,400,1999,2001),(300,600,2999,3001)])
+        self.assertFalse(result['common_rate_feasible_under_assumptions'])
+        self.assertIsNone(result['common_rate_interval'])
+
+    def test_counter_comparison_rejects_bad_dimensions_and_stale_soc(self):
+        for rows in ([(1,2,3)]*3,[(1,1,10,11),(2,1,20,21),(3,3,30,31)]):
+            with self.assertRaises(ValueError):compare_counters(rows)
+
     def test_nominal_scale_with_constant_offset(self):
         points=[(10**12+i*1000000,10*(10**12+i*1000000)+99,10*(10**12+i*1000000)+101) for i in range(3)]
         result=assess(points)

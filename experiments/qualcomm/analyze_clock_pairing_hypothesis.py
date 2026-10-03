@@ -59,15 +59,51 @@ def assess(points: list[tuple[int,int,int]]) -> dict[str,Any]:
         fresh_sampling_validated=False,conversion_qualified=False,external_uncertainty_ns=None)
 
 
+def compare_counters(points: list[tuple[int,int,int,int]]) -> dict[str,Any]:
+    """Compare reported TSF/SoC, without assuming the two samples are simultaneous.
+
+    Rows are (TSF, SoC, lower QPC, upper QPC). A common rate means two
+    independent constant offsets can fit; it never implies shared phase/clock.
+    """
+    if any(len(point)!=4 for point in points):raise ValueError('Require TSF/SoC/window quadruples')
+    tsf=assess([(t,lo,hi) for t,s,lo,hi in points])
+    soc=assess([(s,lo,hi) for t,s,lo,hi in points])
+    bounds=None
+    if tsf['affine_feasible'] and soc['affine_feasible']:
+        def endpoint(result: dict[str,Any],key: str) -> Fraction:
+            ratio=result['slope_interval'][key]
+            return Fraction(int(ratio['numerator']),int(ratio['denominator']))
+        lower=max(endpoint(result,'lower') for result in (tsf,soc))
+        upper=min(endpoint(result,'upper') for result in (tsf,soc))
+        if 0<upper and lower<=upper:
+            bounds=dict(lower=_ratio(lower),upper=_ratio(upper))
+    differences=[t-s for t,s,lo,hi in points]
+    endpoint_ratio=Fraction(points[-1][0]-points[0][0],points[-1][1]-points[0][1])
+    return dict(sample_count=len(points),tsf_model=tsf,soc_model=soc,
+        common_rate_feasible_under_assumptions=bounds is not None,common_rate_interval=bounds,
+        reported_tsf_minus_soc_span_raw=str(max(differences)-min(differences)),
+        reported_endpoint_increment_ratio=_ratio(endpoint_ratio),
+        reported_endpoint_increment_difference_ppm=_ratio((endpoint_ratio-1)*1_000_000),
+        interpretation='reported increments only; sampling skew and rate are not separated',
+        required_unproven_assumptions=['each counter freshly sampled inside its host window',
+                                      'both counters use the same raw unit scale',
+                                      'one affine relation per counter within one epoch'],
+        simultaneous_sampling_validated=False,conversion_qualified=False,external_uncertainty_ns=None)
+
+
 def main() -> int:
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('bundle',type=Path)
+    parser.add_argument('--compare-counters',action='store_true',help='Compare conditional TSF and SoC rate intervals')
     args=parser.parse_args()
     try:
         if args.bundle.stat().st_size>1048576:raise ValueError('Bundle exceeds 1 MiB')
         data=json.loads(args.bundle.read_text(encoding='utf-8'));validate_bundle(data)
         samples=[s for s in data['observations'] if s['action']==4]
-        result=assess([(int(s['soc_raw']),int(s['host_before_qpc']),int(s['report_qpc'])) for s in samples])
+        if args.compare_counters:
+            result=compare_counters([(int(s['tsf_raw']),int(s['soc_raw']),int(s['host_before_qpc']),int(s['report_qpc'])) for s in samples])
+        else:
+            result=assess([(int(s['soc_raw']),int(s['host_before_qpc']),int(s['report_qpc'])) for s in samples])
         result['bundle_id']=data['manifest']['bundle_id']
         result['scope']='one capture; QTIMER_CAPTURE observations only'
         print(json.dumps(result,indent=2));return 0

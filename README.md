@@ -36,6 +36,12 @@ On the inspected Qualcomm system, standard timestamp-capability and cross-timest
 - [FTM and TSF/SoC clock-relationship investigation](docs/qualification/clock-relationship-investigation.md)
 - [Pre-aggregation FTM export investigation](docs/qualification/ftm-raw-access-followup.md)
 - [Windows cross-timestamp error and packet timestamp paths](docs/qualification/windows-timestamp-path-followup.md)
+- [NDIS raw-status observation path](docs/qualification/ndis-status-observation-path.md)
+- [Bounded live NDIS status capture](docs/qualification/ndis-status-capture-2026-10-03.md)
+- [Refined NDIS experiment and capability qualification](docs/qualification/ndis-refined-experiment.md)
+- [NDIS rejection origin and interface-scoped activities](docs/qualification/ndis-rejection-origin-analysis.md)
+- [FTM notification and TSF routing](docs/qualification/ftm-notification-routing.md)
+- [TSF/SoC rate identifiability](docs/qualification/counter-rate-identifiability.md)
 - [Stronger timestamp paths and equipment gates](docs/qualification/backend-and-reference-next-steps.md)
 - [Pinned sources and provenance](docs/sources.md)
 
