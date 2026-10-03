@@ -1,16 +1,47 @@
-flowchart LR
-  A["Privileged sampler<br/>host request-start QPC"] --> B["QcomWifi private request<br/>exact driver hash guard"]
-  B --> C["Firmware command 0x5012<br/>action 3 READ / action 4 CAPTURE"]
-  C --> D["Reported TSF and SoC counters<br/>sampling instant and clock pairing unknown"]
-  D --> E["Firmware report 0x5005"]
-  E --> F["Driver report handler<br/>ETW timestamp is host logging QPC"]
-  F --> G["Real-time ETW delivery and reader<br/>median delay about 1.6 seconds"]
-  G --> H["Validated raw observation<br/>action, identity, epoch, report age"]
-  B -. "IOCTL completion around 54 us median; output is not the counter tuple" .-> A
-  A -. "request-start to report log about 0.27 ms median" .-> F
-  D -.-> U["Action 3: SoC cached or unknown<br/>Action 4: refreshed, atomicity unproven"]
-  H -.-> X["No calibrated TSF-QPC conversion yet"]
-  classDef gap fill:#fff2dd,stroke:#ac6b12,color:#241b0e;
-  classDef seen fill:#e8f5ed,stroke:#34704a,color:#193323;
+flowchart TB
+  %% --- REQUEST / FIRMWARE PATH ---
+  subgraph REQ["1. REQUEST & SAMPLING PATH"]
+    direction TB
+    A["Privileged Sampler<br/>(Host Request-Start QPC)"]
+    B["QcomWifi Private Request<br/>(Exact Driver Hash Guard)"]
+    C["Firmware Command 0x5012<br/>(Action 3: READ / Action 4: CAPTURE)"]
+    D["Reported TSF & SoC Counters<br/>(Sampling Instant / Pairing Unknown)"]
+
+    A -->|"Issue Request"| B
+    B -->|"Command Dispatch"| C
+    C -->|"Hardware Sample"| D
+    B -.->|"IOCTL Return (~54 µs median)<br/>Output != Counter Tuple"| A
+  end
+
+  %% --- REPORTING / LOGGING PATH ---
+  subgraph REP["2. ASYNC REPORT & CONSUMPTION PATH"]
+    direction TB
+    E["Firmware Report 0x5005"]
+    F["Driver Report Handler<br/>(ETW Timestamp = Host Logging QPC)"]
+    G["Real-Time ETW Delivery & Reader<br/>(Median Delay ~1.6 s)"]
+    H["Validated Raw Observation<br/>(Action, Identity, Epoch, Report Age)"]
+
+    E -->|"Process Event"| F
+    F -->|"Async Stream"| G
+    G -->|"Parse & Validate"| H
+  end
+
+  %% --- CROSS-STAGE CONNECTION & TIMING ---
+  D ==>|"Generate Event"| E
+  A -.->|"Request-Start to ETW Log<br/>(~0.27 ms median)"| F
+
+  %% --- ANALYSIS & GAPS ---
+  U["Action Behavior Analysis:<br/>- Action 3: SoC cached / unknown<br/>- Action 4: Refreshed, atomicity unproven"]
+  X["Current Limitation:<br/>No calibrated TSF-QPC conversion yet"]
+
+  D -.-> U
+  H -.-> X
+
+  %% --- STYLING ---
+  classDef gap fill:#fff2dd,stroke:#ac6b12,stroke-width:1.5px,color:#241b0e;
+  classDef seen fill:#e8f5ed,stroke:#34704a,stroke-width:1.5px,color:#193323;
+  classDef init fill:#eef2ff,stroke:#3730a3,stroke-width:1.5px,color:#1e1b4b;
+
   class D,U,X gap;
   class B,C,E,F,G,H seen;
+  class A init;
