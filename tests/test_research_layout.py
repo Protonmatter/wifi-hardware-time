@@ -10,6 +10,26 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class LayoutTests(unittest.TestCase):
+    def test_ignore_rules_include_authored_evidence_but_exclude_captures(self):
+        # Exercise Git's rules in an isolated repository, not a hand-written parser.
+        with tempfile.TemporaryDirectory() as directory:
+            folder = Path(directory)
+            subprocess.run(['git', 'init', '--quiet', str(folder)], check=True,
+                           capture_output=True, timeout=20)
+            (folder / '.gitignore').write_bytes((ROOT / '.gitignore').read_bytes())
+            authored = {'docs/evidence/README.md',
+                        'docs/evidence/diagrams/adoption-timestamp-path.mmd',
+                        'research/evidence/export_clock_evidence.py',
+                        'research/evidence/validate_research_bundle.py'}
+            private = {'evidence/session.json', 'local/evidence/session.json',
+                       'research/acquisition/evidence/session.json',
+                       'artifacts/capture.json', 'vendor/driver.sys'}
+            result = subprocess.run(['git', 'check-ignore', '--no-index', '--stdin', '-z'],
+                                    cwd=folder, input='\0'.join(sorted(authored | private))+'\0',
+                                    text=True, capture_output=True, timeout=20)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertEqual(set(result.stdout.rstrip('\0').split('\0')), private)
+
     def test_observer_changed_only_its_decoder_include(self):
         raw = (ROOT / 'research/acquisition/live_observer.c').read_bytes()
         self.assertEqual(raw.count(b'../tsf/decode_tsf_etl.c'), 1)

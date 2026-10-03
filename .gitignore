@@ -3,6 +3,9 @@ __pycache__/
 .venv/
 artifacts/
 evidence/
+# Authored research/documentation, not captured evidence.
+!docs/evidence/
+!research/evidence/
 downloads/
 vendor/
 local/
