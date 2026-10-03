@@ -13,6 +13,26 @@ narrows reset/crash ring consumers, reproduces a double-copy counterexample and
 locates RX PPDU diagnostic fields. The [lifecycle cases](../acquisition/lifecycle-qualification-preparation.md)
 are preparation only, as requested. None promotes a hardware clock capability.
 
+The next [raw-export gate](../evidence/raw-timestamp-export-gate.md) remains closed.
+[Normal RX tracing](../adapters/qualcomm-rx-export-boundary.md) now reaches the
+OS-facing queue, without identifying a timestamp/packet-identity export in the
+inspected routes. [FTM tracing](../ftm/ftm-buffer-ownership-and-identity.md) establishes
+buffer reuse, wrapping request identity and separate parse completion. No live
+complete-record acquisition has occurred, so later collector and acceptance
+campaign work remains gated under the requested sequence.
+
+[Private output tracing](../adapters/qualcomm-private-output-routes.md) also
+narrows two candidates: `get_rx_stats` formats radio statistics and can refresh
+internal state; the device-service test GET constructs fixed bytes. Neither
+inspected output supplies the required timestamp record. These are offline
+findings, with no new live command or allowlist expansion.
+
+[FTM ingress tracing](../ftm/ftm-ingress-to-owned-response.md) connects the event
+decoder to the registered FTM callback and post-callback cleanup. The temporary
+decoded object and reusable merge buffer still have no established owned
+application export. The inspected event-history writer retains event ID and
+host system time, not the raw measurement payload.
+
 | Gap | Current disposition | Evidence / next prerequisite |
 |---|---|---|
 | Can ordinary host activity produce additional TSF reports without our private request? | Operational pattern reproduced | Three controlled documented scan calls, each with a quiet baseline, one scan command and two TSF/SoC report groups; [results](../acquisition/scan-tsf-results-2026-10-03.md) |

@@ -6,6 +6,7 @@ This area defines how research observations can be passed to application softwar
 
 - [Proposed hardware-time boundary](api-direction.md).
 - [Clock evidence contract v1](evidence-contract.md).
+- [Acceptance gate for a complete raw timestamp export](raw-timestamp-export-gate.md).
 - [Research delivery: evidence contract, lifecycle and predictive checks](research-delivery-2026-10-02.md).
 
 ## Orientation

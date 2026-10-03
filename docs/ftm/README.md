@@ -8,9 +8,11 @@ FTM (Fine Timing Measurement) is a Wi-Fi ranging exchange. RTT is round-trip tim
 
 | File | Question answered |
 |---|---|
+| [ftm-ingress-to-owned-response.md](ftm-ingress-to-owned-response.md) | How does the decoded event reach FTM processing, when is it released, and where is the application handoff missing? |
 | [ftm-result-provenance.md](ftm-result-provenance.md) | Why can a successful callback contain zero measurements, and why is its variance field unqualified? |
 | [ftm-raw-access-followup.md](ftm-raw-access-followup.md) | What exists before aggregation, and which export contract is still missing? |
 | [ftm-notification-routing.md](ftm-notification-routing.md) | Do the inspected notification or completion routes carry that raw buffer? |
+| [ftm-buffer-ownership-and-identity.md](ftm-buffer-ownership-and-identity.md) | Who owns the complete response, when is its request byte reused, and which completion state validates parsing? |
 
 ## Four-event model versus observed output
 

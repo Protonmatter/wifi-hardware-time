@@ -6,6 +6,7 @@ These tools investigate Fine Timing Measurement, the Wi-Fi ranging procedure, an
 
 | File | Role |
 |---|---|
+| [inspect_ftm_ingress.py](inspect_ftm_ingress.py) | Offline exact-build event-schema, dispatch and cleanup evidence; see the [ownership report](../../docs/ftm/ftm-ingress-to-owned-response.md). |
 | [analyze_ftm_deltas.py](analyze_ftm_deltas.py) | Offline analysis/model or file transformation; see the tool header for inputs. |
 | [Capture-FtmOnce.ps1](Capture-FtmOnce.ps1) | Bounded experiment controller/launcher; explicit execution and prerequisites apply. |
 | [decode_ftm_response.py](decode_ftm_response.py) | Offline analysis/model or file transformation; see the tool header for inputs. |

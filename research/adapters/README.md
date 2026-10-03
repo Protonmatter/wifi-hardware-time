@@ -9,6 +9,7 @@ These tools identify the adapter, inspect its advertised services and read cache
 | [cached_beacon.c](cached_beacon.c) | Probe or native helper; consult its header and the matching research report before use. |
 | [device_services.c](device_services.c) | Probe or native helper; consult its header and the matching research report before use. |
 | [Get-QualcommAdapter.ps1](Get-QualcommAdapter.ps1) | Read-only adapter/driver identity discovery. |
+| [inspect_private_exports.py](inspect_private_exports.py) | Inspect an owned exact-build driver file and record selected private return-path offsets and hashes; no device access. |
 
 ## Read before running
 
