@@ -18,6 +18,10 @@ On the inspected Qualcomm system, standard timestamp-capability and cross-timest
 
 ## Contents
 
+Current direction: [private timing acquisition](docs/qualification/private-timing-acquisition-plan.md).
+Private exact-build interfaces are first-class research candidates; public NDIS
+support is not a prerequisite for the Qualcomm research backend.
+
 - [ALFA / MediaTek investigation](docs/axml.md)
 - [Qualcomm private timing path](docs/qualcomm.md)
 - [Validation ledger and limits](docs/validation.md)

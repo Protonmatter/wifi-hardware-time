@@ -34,12 +34,18 @@ class ReportGate:
             if event.get('invalidates'):self._fail('lifecycle_notification')
             return
         if kind=='health':
-            if event.get('events_lost',0):self._fail('live_trace_loss')
+            names=('query_status','events_lost','log_buffers_lost','real_time_buffers_lost')
+            if event.get('health_source')!='controller_query' or any(type(event.get(name)) is not int or not 0<=event[name]<=0xffffffff for name in names):
+                self._fail('unqualified_live_trace_health')
+            if event['query_status']:self._fail('live_trace_health_query_failed')
+            if any(event[name] for name in names[1:]):self._fail('live_trace_loss')
             return
         if kind=='connection':
             if not event.get('connected') or event.get('changed'):self._fail('association_changed_or_query_failed')
             return
-        if kind=='ready':return
+        if kind=='ready':
+            if event.get('health_schema')!='controller-query/v1':self._fail('unqualified_observer_protocol')
+            return
         if kind not in ('command','report','soc_timer','delay'):self._fail('unexpected_observer_record')
         expected=('command','report','soc_timer','delay')
         if self.action is None or len(self.records)>=4 or kind!=expected[len(self.records)]:

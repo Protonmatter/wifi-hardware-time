@@ -13,6 +13,18 @@ def events():
 
 
 class GateTests(unittest.TestCase):
+    def test_legacy_observer_health_is_rejected_before_admission(self):
+        for record in (dict(kind='ready'),dict(kind='health',events_lost=0)):
+            with self.subTest(record=record),self.assertRaises(ValueError):ReportGate().consume(record)
+
+    def test_controller_health_checks_all_loss_counters_and_status(self):
+        healthy=dict(kind='health',health_source='controller_query',query_status=0,
+                     events_lost=0,log_buffers_lost=0,real_time_buffers_lost=0)
+        gate=ReportGate();gate.consume(dict(kind='ready',health_schema='controller-query/v1'));gate.consume(healthy)
+        for field,value in [('query_status',5),('events_lost',1),('log_buffers_lost',1),('real_time_buffers_lost',1),('events_lost',False),('events_lost',-1)]:
+            with self.subTest(field=field,value=value),self.assertRaises(ValueError):
+                ReportGate().consume(dict(healthy,**{field:value}))
+
     def test_one_complete_group_then_next_request(self):
         gate=ReportGate();gate.arm(3,100)
         for event in events():gate.consume(event)

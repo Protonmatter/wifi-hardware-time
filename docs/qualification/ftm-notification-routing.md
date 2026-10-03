@@ -181,8 +181,8 @@ outside this negative conclusion.
 
 The useful next work is therefore specific:
 
-1. Obtain the exact firmware/OEM measurement schema and supported diagnostic
-   export, including the meaning of the opaque frame region, counter units,
+1. Identify the exact firmware/OEM measurement schema and a qualified private or
+   public diagnostic export, including the meaning of the opaque frame region, counter units,
    validity flags and exchange identity. The identified test notification is
    not a substitute raw-FTM operation and should not be invoked for that purpose.
 2. If further static coverage is needed, audit the remaining aliases of the FTM

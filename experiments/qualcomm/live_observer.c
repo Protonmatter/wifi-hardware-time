@@ -6,6 +6,7 @@
 #include <wlanapi.h>
 #include <iphlpapi.h>
 #include <stdlib.h>
+#include <stddef.h>
 
 static CRITICAL_SECTION output_lock;
 static GUID selected_guid;
@@ -22,12 +23,18 @@ static void WINAPI live_event(PEVENT_RECORD event)
     LeaveCriticalSection(&output_lock);
 }
 
-static ULONG WINAPI buffer_callback(PEVENT_TRACE_LOGFILEW logfile)
+/* Query from the controller thread, never from an ETW consumer callback.
+ * EVENT_TRACE_LOGFILEW.EventsLost is documented unused and must not be trusted. */
+static ULONG query_health(LPCWSTR session, EVENT_TRACE_PROPERTIES *result)
 {
-    EnterCriticalSection(&output_lock);
-    printf("{\"kind\":\"health\",\"qpc\":%lld,\"events_lost\":%lu}\n",tick(),logfile->EventsLost);
-    LeaveCriticalSection(&output_lock);
-    return TRUE;
+    struct trace_query { EVENT_TRACE_PROPERTIES p; WCHAR name[1024]; WCHAR file[1024]; } data={0};
+    ULONG status;
+    data.p.Wnode.BufferSize=(ULONG)sizeof(data);
+    data.p.LoggerNameOffset=(ULONG)offsetof(struct trace_query,name);
+    data.p.LogFileNameOffset=(ULONG)offsetof(struct trace_query,file);
+    status=ControlTraceW(0,session,&data.p,EVENT_TRACE_CONTROL_QUERY);
+    *result=data.p;
+    return status;
 }
 
 static void WINAPI notification(PWLAN_NOTIFICATION_DATA data, PVOID context)
@@ -92,17 +99,27 @@ int wmain(int argc,wchar_t **argv)
     if(!stop){WlanCloseHandle(wlan,NULL);return 1;}
     logfile.LoggerName=argv[1];
     logfile.ProcessTraceMode=PROCESS_TRACE_MODE_REAL_TIME|PROCESS_TRACE_MODE_EVENT_RECORD|PROCESS_TRACE_MODE_RAW_TIMESTAMP;
-    logfile.EventRecordCallback=live_event;logfile.BufferCallback=buffer_callback;
+    logfile.EventRecordCallback=live_event;
     live_trace=OpenTraceW(&logfile);
     if(live_trace==INVALID_PROCESSTRACE_HANDLE){CloseHandle(stop);WlanCloseHandle(wlan,NULL);return 1;}
     thread=CreateThread(NULL,0,process_thread,NULL,0,NULL);
     if(!thread){CloseTrace(live_trace);CloseHandle(stop);WlanCloseHandle(wlan,NULL);return 1;}
     QueryPerformanceFrequency(&frequency);
     EnterCriticalSection(&output_lock);
-    printf("{\"kind\":\"ready\",\"qpc\":%lld,\"perf_frequency_hz\":%lld}\n",tick(),frequency.QuadPart);
+    printf("{\"kind\":\"ready\",\"qpc\":%lld,\"perf_frequency_hz\":%lld,\"health_schema\":\"controller-query/v1\"}\n",tick(),frequency.QuadPart);
     LeaveCriticalSection(&output_lock);
     while(WaitForSingleObject(stop,250)==WAIT_TIMEOUT && !InterlockedCompareExchange(&process_done,0,0)) {
+        EVENT_TRACE_PROPERTIES health={0};
+        ULONG health_status=query_health(argv[1],&health);
         int connected,changed=0;
+        /* Normal owner stop can race this periodic query. Confirm consumer exit
+         * before treating a missing session as shutdown instead of a fault. */
+        if(health_status==ERROR_WMI_INSTANCE_NOT_FOUND && WaitForSingleObject(thread,5000)==WAIT_OBJECT_0 && process_result==ERROR_SUCCESS)break;
+        EnterCriticalSection(&output_lock);
+        printf("{\"kind\":\"health\",\"qpc\":%lld,\"health_source\":\"controller_query\",\"query_status\":%lu,\"events_lost\":%lu,\"log_buffers_lost\":%lu,\"real_time_buffers_lost\":%lu}\n",
+            tick(),health_status,health.EventsLost,health.LogBuffersLost,health.RealTimeBuffersLost);
+        LeaveCriticalSection(&output_lock);
+        if(health_status || health.EventsLost || health.LogBuffersLost || health.RealTimeBuffersLost){failed=1;break;}
         rc=WlanQueryInterface(wlan,&selected_guid,wlan_intf_opcode_current_connection,NULL,&size,(PVOID*)&connection,NULL);
         connected=rc==0 && size>=sizeof(*connection) && connection->isState==wlan_interface_state_connected;
         if(connected) {

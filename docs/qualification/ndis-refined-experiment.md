@@ -89,7 +89,7 @@ pointer, clone relationship or first status-producing branch.
 | Application-to-kernel identity | Same-run target stack and temporal/OID association | Request/clone identifiers and complete request lifecycle; current 10111 activities are not request IDs |
 | Original rejection layer | Completion status propagation and timestamp handler distinctions | Actual dispatch and first error-producing return/completion for that request |
 | Hardware-to-QPC cross timestamp | Standard probe implemented and directly executed | Successful tuple; this build returned 23 with null values |
-| Raw absolute FTM export | Prior exact-build producer/export audit retained | Supported raw response route plus widths, units, validity, exchange identity and clock domain |
+| Raw absolute FTM export | Prior exact-build producer/export audit retained | Qualified private or public raw response route plus widths, units, validity, exchange identity and clock domain |
 | Arbitrary packet timestamps | Kept separate from FTM and cross-clock queries | Working packet timestamp delivery, packet/retry identity and physical reference point |
 | Simultaneous TSF/SoC sampling | Explicitly not inferred from host request bounds | Producer-side latch semantics or independently bounded sampling skew |
 | Calibrated accuracy / sub-ms synchronization | Qualification gates remain closed | Controlled second node and independent characterized reference; user reconfirmed neither is available |
