@@ -30,6 +30,23 @@ class ProtocolTests(unittest.TestCase):
             with self.subTest(name=name), self.assertRaises(ValueError):
                 build_request(name, bytes.fromhex('020102030405'))
 
+    def test_qtimer_capture_changes_only_argument(self) -> None:
+        mac = bytes.fromhex('020102030405')
+        read = build_request('tsf_read_value', mac)
+        capture = build_request('tsf_read_value', mac, tsf_action=4)
+        self.assertEqual(read[:32], capture[:32])
+        self.assertEqual(read[36:], capture[36:])
+        self.assertEqual(struct.unpack_from('<I', capture, 32), (0,))
+        self.assertEqual(capture[28], 1)
+
+    def test_invalid_actions_and_getter_capture_rejected(self) -> None:
+        mac = bytes.fromhex('020102030405')
+        for action in (-1, 0, 1, 2, 5, 255, True, 3.0):
+            with self.subTest(action=action), self.assertRaises(ValueError):
+                build_request('tsf_read_value', mac, tsf_action=action)
+        with self.assertRaises(ValueError):
+            build_request('get_hostdbglvl', mac, tsf_action=4)
+
     def test_invalid_selectors_rejected(self) -> None:
         for mac in (b'', bytes(6), bytes(7), bytes.fromhex('ffffffffffff'), bytes.fromhex('010102030405')):
             with self.subTest(mac=mac.hex()), self.assertRaises(ValueError):

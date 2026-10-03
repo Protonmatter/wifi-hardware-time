@@ -1,0 +1,23 @@
+"""Local exact-build experiment: READ_VALUE (3) and QTIMER_CAPTURE (4) only."""
+import struct
+import sys
+from pathlib import Path
+import pefile
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'tools'))
+from qualcomm_protocol import QUALIFIED_SHA256, build_request, validate_driver as base_validate
+
+
+def validate_driver(data: bytes) -> None:
+    base_validate(data)
+    pe = pefile.PE(data=data)
+    if pe.get_data(0x18EA00, 12) != bytes.fromhex('<EXACT_BUILD_SIGNATURE>'):
+        raise ValueError('Unexpected action-selection instructions')
+
+
+def build_latch_request(action: int, mac: bytes) -> bytes:
+    if type(action) is not int or action not in (3, 4):
+        raise ValueError('Only READ_VALUE 3 and QTIMER_CAPTURE 4 are allowed')
+    payload = bytearray(build_request('tsf_read_value', mac))
+    struct.pack_into('<I', payload, 32, 1 if action == 3 else 0)
+    return bytes(payload)

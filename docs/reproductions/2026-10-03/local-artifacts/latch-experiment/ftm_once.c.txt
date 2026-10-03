@@ -1,0 +1,94 @@
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#include <wlanapi.h>
+#include <iphlpapi.h>
+#include <stddef.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+/* Local experiment for the pinned wlanapi/locationframework builds only.
+ * 12-byte target and callback ABI recovered from both caller and callee.
+ * One currently associated, cached FTM-advertising BSS; no active scan.
+ */
+typedef struct { unsigned char bssid[6]; unsigned char flag; unsigned char reserved; ULONG frequency_khz; } FTM_TARGET;
+typedef VOID (WINAPI *FTM_CALLBACK)(PVOID, DWORD, DWORD, const void *);
+typedef DWORD (WINAPI *FTM_REQUEST)(HANDLE, const GUID *, DWORD, const FTM_TARGET *, FTM_CALLBACK, PVOID, HANDLE *);
+typedef DWORD (WINAPI *FTM_CANCEL)(HANDLE);
+typedef char target_size_check[(sizeof(FTM_TARGET)==12 && offsetof(FTM_TARGET,frequency_khz)==8)?1:-1];
+static HANDLE done;
+static DWORD callback_status=0xffffffff, callback_count;
+static unsigned char response[104];
+static BOOL response_copied;
+
+static VOID WINAPI complete(PVOID context,DWORD status,DWORD count,const void *records)
+{
+    (void)context;
+    callback_status=status; callback_count=count;
+    if(status==0 && count==1 && records){memcpy(response,records,sizeof(response));response_copied=TRUE;}
+    SetEvent(done);
+}
+
+static int has_responder(const WLAN_BSS_LIST *list,const WLAN_BSS_ENTRY *entry)
+{
+    size_t base=(const unsigned char *)entry-(const unsigned char *)list;
+    size_t pos=base+entry->ulIeOffset,end=pos+entry->ulIeSize;
+    const unsigned char *data=(const unsigned char *)list;
+    if(pos<base || end<pos || end>list->dwTotalSize)return 0;
+    while(pos+2<=end){unsigned int id=data[pos],len=data[pos+1];pos+=2;
+        if(len>end-pos)return 0;
+        if(id==127 && len>=9)return (data[pos+8]&0x40)!=0;
+        pos+=len;
+    }
+    return 0;
+}
+
+int main(int argc,char **argv)
+{
+    NET_LUID luid={0};GUID guid;HANDLE client=NULL,request_handle=NULL;
+    WLAN_CONNECTION_ATTRIBUTES *connection=NULL;WLAN_BSS_LIST *list=NULL;
+    FTM_TARGET target={0};FTM_REQUEST request=NULL;FTM_CANCEL cancel=NULL;
+    HMODULE module;FARPROC address;DWORD rc,version,size,index,i,matches=0,wait=0xffffffff,cancel_rc=0xffffffff;
+    char *end=NULL;int result=1;FILE *raw=NULL;
+    if(argc!=3)return 2;
+    index=strtoul(argv[1],&end,10);if(!index || !end || *end)return 2;
+    if(ConvertInterfaceIndexToLuid(index,&luid) || ConvertInterfaceLuidToGuid(&luid,&guid))return 1;
+    module=LoadLibraryExW(L"wlanapi.dll",NULL,LOAD_LIBRARY_SEARCH_SYSTEM32);
+    if(!module)return 1;
+    address=GetProcAddress(module,"WlanInternalRequestFTM");memcpy(&request,&address,sizeof(request));
+    address=GetProcAddress(module,"WlanInternalCancelFTMRequest");memcpy(&cancel,&address,sizeof(cancel));
+    if(!request || !cancel)return 1;
+    rc=WlanOpenHandle(2,NULL,&version,&client);if(rc)return 1;
+    rc=WlanQueryInterface(client,&guid,wlan_intf_opcode_current_connection,NULL,&size,(void **)&connection,NULL);
+    if(rc || size<sizeof(*connection) || connection->isState!=wlan_interface_state_connected)goto cleanup;
+    rc=WlanGetNetworkBssList(client,&guid,NULL,dot11_BSS_type_any,FALSE,NULL,&list);
+    if(rc || !list || list->dwTotalSize<offsetof(WLAN_BSS_LIST,wlanBssEntries) || list->dwTotalSize>16*1024*1024 ||
+       list->dwNumberOfItems>(list->dwTotalSize - offsetof(WLAN_BSS_LIST,wlanBssEntries))/sizeof(WLAN_BSS_ENTRY))goto cleanup;
+    for(i=0;i<list->dwNumberOfItems;i++){
+        WLAN_BSS_ENTRY *b=&list->wlanBssEntries[i];
+        if(!memcmp(b->dot11Bssid,connection->wlanAssociationAttributes.dot11Bssid,6) && has_responder(list,b)){
+            memcpy(target.bssid,b->dot11Bssid,6);target.frequency_khz=b->ulChCenterFrequency;matches++;
+        }
+    }
+    if(matches!=1 || target.frequency_khz<2400000 || target.frequency_khz>7125000)goto cleanup;
+    done=CreateEventW(NULL,TRUE,FALSE,NULL);if(!done)goto cleanup;
+    rc=request(client,&guid,1,&target,complete,NULL,&request_handle);
+    if(rc==0){
+        wait=WaitForSingleObject(done,5000);
+        if(wait!=WAIT_OBJECT_0 && request_handle){cancel_rc=cancel(request_handle);wait=WaitForSingleObject(done,2000);}
+    }
+    printf("{\"request_api_rc\":%lu,\"callback_received\":%s,\"callback_status\":%lu,\"result_count\":%lu,\"wait_result\":%lu,\"cancel_rc\":%lu,\"frequency_khz\":%lu,\"one_current_bss_target\":true,\"active_scan_requested\":false",
+        rc,wait==WAIT_OBJECT_0?"true":"false",callback_status,callback_count,wait,cancel_rc,target.frequency_khz);
+    if(response_copied){
+        if(fopen_s(&raw,argv[2],"wb")!=0 || !raw){puts(",\"response_save_failed\":true}");goto cleanup;}
+        if(fwrite(response,1,sizeof(response),raw)!=sizeof(response)){fclose(raw);puts(",\"response_save_failed\":true}");goto cleanup;}
+        fclose(raw);printf(",\"response_bytes_saved\":104");
+    }
+    puts("}");result=0;
+cleanup:
+    if(result)fprintf(stderr,"FTM prerequisite or output failed; no arbitrary target was selected.\n");
+    if(list)WlanFreeMemory(list);if(connection)WlanFreeMemory(connection);
+    WlanCloseHandle(client,NULL);
+    /* Process exit keeps callback globals alive through cleanup; DLL retained. */
+    return result;
+}

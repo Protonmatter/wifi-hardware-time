@@ -1,0 +1,24 @@
+flowchart TB
+  subgraph TX["TRANSMIT - generic layered path, not a claim of Qualcomm timestamp support"]
+    A["Application event / send call<br/>optional host QPC stamp"] --> B["Socket and network stack<br/>queues; timestamped protocol payload only if explicit"]
+    B --> C["Driver / NBL or skb<br/>optional software timestamp metadata"]
+    C --> D["Host transport: PCIe / DMA, or USB for AXML"]
+    D --> E["NIC / firmware queues<br/>channel access, aggregation, retries"]
+    E --> F["MAC / PHY transmit reference point<br/>candidate hardware timestamp H_TX"]
+  end
+  F --> W["ON AIR: 802.11 frame<br/>ordinary data frame has no universal NIC timestamp field"]
+  W --> G["MAC / PHY receive reference point<br/>candidate hardware timestamp H_RX"]
+  subgraph RX["RECEIVE"]
+    G --> H["RX descriptor / firmware record<br/>timestamp metadata if supplied"]
+    H --> I["Host transport and driver<br/>decode / reorder / deaggregate as applicable"]
+    I --> J["OS packet or capture metadata<br/>NDIS timestamp / socket ancillary / radiotap if supported"]
+    J --> K["Application receive<br/>host receive-call time is another timestamp"]
+  end
+  F -. "TX status / completion, matched to packet and retry" .-> L["Out-of-band TX timestamp result<br/>completion time is not automatically RF transmit time"]
+  L -.-> K
+  C -.-> M["Unknown on Qualcomm:<br/>general RX/TX timestamp export<br/>and exact RF reference points"]
+  H -.-> M
+  classDef gap fill:#fff2dd,stroke:#ac6b12,color:#241b0e;
+  classDef air fill:#e6eefc,stroke:#315b96,color:#182844;
+  class M,F,G,L gap;
+  class W air;

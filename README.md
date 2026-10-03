@@ -6,23 +6,56 @@ The initial investigation covers the **ALFA AWUS036AXML / MediaTek MT7921AUN** o
 
 **Status: research and diagnostic prototypes. No end-to-end PTP synchronization or timing-accuracy claim has been validated.**
 
+The latest [private campaign is quarantined](docs/qualification/private-campaign-2026-10-03-quarantine.md)
+after unmatched TSF reports. The cleanup repair has offline regressions and one
+successful [passive live check](docs/qualification/passive-and-retrieval-validation-2026-10-03.md);
+it does not rearm acquisition or qualify the rejected capture.
+
 ## What has been established
 
 | Backend | Evidence | Remaining gap |
 |---|---|---|
 | Linux mt76 / MT7921 USB | TSF read/write callbacks, RX descriptor timing, USB TX-status processing, defined TX timestamp field | A reliable error-reporting snapshot API, TX semantics, reset epochs, PHC/socket timestamp integration |
 | Windows MediaTek 1.0.0.119 x64 | Static private register read/write and firmware response paths | Live hardware qualification; standard NDIS timestamp exposure unproven |
-| Windows Qualcomm 1.0.4374.1300 ARM64 | Live private host getters; a TSF read request accepted; internal command/report path traced | No raw TSF returned to the caller; firmware report delivery and clock correlation unverified |
+| Windows Qualcomm 1.0.4374.1300 ARM64 | Repeated TSF reports, action-dependent SoC refresh, and six successful FTM operations | Exact sampling/simultaneity, independent-reference accuracy, safe registers, and arbitrary packet timestamps remain unqualified |
 
-On the inspected Qualcomm system, standard timestamp-capability and cross-timestamp APIs returned Win32 **23 / ERROR_CRC**. Failed queries are not interpreted as capability absence. Cached beacon timestamps and an FTM responder advertisement were observed; neither establishes local hardware packet timestamp accuracy.
+On the inspected Qualcomm system, standard timestamp-capability and cross-timestamp APIs returned Win32 **23 / ERROR_CRC**, including elevated queries. Failed queries are not interpreted as capability absence. FTM operations succeeded, but their reported RTT values did not agree with a rough distance estimate; no calibrated ranging accuracy is claimed.
 
 ## Contents
+
+- [Findings, validation scripts and historical source catalog](docs/validation-execution-catalog.md)
+- [Unmatched TSF reports and a pre-ETW memory-log lead](docs/qualification/unmatched-tsf-and-memory-log.md)
+- [Passive live validation and scan attribution lead](docs/qualification/passive-and-retrieval-validation-2026-10-03.md)
+
+Current direction: [private timing acquisition](docs/qualification/private-timing-acquisition-plan.md).
+Private exact-build interfaces are first-class research candidates; public NDIS
+support is not a prerequisite for the Qualcomm research backend.
 
 - [ALFA / MediaTek investigation](docs/axml.md)
 - [Qualcomm private timing path](docs/qualcomm.md)
 - [Validation ledger and limits](docs/validation.md)
 - [Proposed API boundary](docs/api-direction.md)
 - [Operations and reproducibility](docs/OPERATIONS.md)
+- [TSF capture and offline series analysis](docs/OPERATIONS.md#capture-and-analyze-a-tsf-series)
+- [Exact-build latch and FTM experiments](docs/experiments.md)
+- [FTM aggregation and TSF report provenance](docs/ftm-result-provenance.md)
+- [Research-to-userspace-clock roadmap](docs/superpowers/plans/2026-10-02-research-to-userspace-clock.md)
+- [Offline evidence contract and downstream handoff](docs/evidence-contract.md)
+- [Held-out observation-quality results](docs/qualification/qualcomm-observation-matrix.md)
+- [Lifecycle invalidation rules](docs/qualification/lifecycle-matrix.md)
+- [Guarded live acquisition campaign and execution status](docs/qualification/live-acquisition-campaign.md)
+- [Completed idle/workload campaign results](docs/qualification/acquisition-campaign-2026-10-02-results.md)
+- [Packet-to-clock workflow diagrams and uncertainty map](docs/packet-to-clock-map.md)
+- [FTM and TSF/SoC clock-relationship investigation](docs/qualification/clock-relationship-investigation.md)
+- [Pre-aggregation FTM export investigation](docs/qualification/ftm-raw-access-followup.md)
+- [Windows cross-timestamp error and packet timestamp paths](docs/qualification/windows-timestamp-path-followup.md)
+- [NDIS raw-status observation path](docs/qualification/ndis-status-observation-path.md)
+- [Bounded live NDIS status capture](docs/qualification/ndis-status-capture-2026-10-03.md)
+- [Refined NDIS experiment and capability qualification](docs/qualification/ndis-refined-experiment.md)
+- [NDIS rejection origin and interface-scoped activities](docs/qualification/ndis-rejection-origin-analysis.md)
+- [FTM notification and TSF routing](docs/qualification/ftm-notification-routing.md)
+- [TSF/SoC rate identifiability](docs/qualification/counter-rate-identifiability.md)
+- [Stronger timestamp paths and equipment gates](docs/qualification/backend-and-reference-next-steps.md)
 - [Pinned sources and provenance](docs/sources.md)
 
 ## Quick start

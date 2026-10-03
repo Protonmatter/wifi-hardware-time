@@ -1,0 +1,52 @@
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#include <wlanapi.h>
+#include <iphlpapi.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <wchar.h>
+#include <errno.h>
+
+/* Local recovery helper. Snapshot contains interface GUID and profile NAME,
+ * never a password/key. WlanConnect reuses the existing saved profile. */
+typedef struct { DWORD magic; GUID guid; WCHAR profile[256]; } PROFILE_SNAPSHOT;
+int main(int argc,char **argv)
+{
+    NET_LUID luid={0}; GUID guid; HANDLE client=NULL; DWORD rc,version,size,index;
+    WLAN_CONNECTION_ATTRIBUTES *connection=NULL; PROFILE_SNAPSHOT snapshot={0};
+    WLAN_CONNECTION_PARAMETERS parameters={0}; FILE *file=NULL; char *end=NULL;
+    int save,result=1;
+    if(argc!=4 || (strcmp(argv[1],"--save") && strcmp(argv[1],"--connect")))return 2;
+    save=strcmp(argv[1],"--save")==0;
+    errno=0;index=strtoul(argv[2],&end,10);
+    if(errno || !index || index>0x7fffffff || !end || *end)return 2;
+    rc=ConvertInterfaceIndexToLuid(index,&luid);if(rc)return 1;
+    rc=ConvertInterfaceLuidToGuid(&luid,&guid);if(rc)return 1;
+    rc=WlanOpenHandle(2,NULL,&version,&client);if(rc)return 1;
+    rc=WlanQueryInterface(client,&guid,wlan_intf_opcode_current_connection,NULL,&size,(void **)&connection,NULL);
+    if(save){
+        if(rc || !connection || size<sizeof(*connection) || connection->isState!=wlan_interface_state_connected || !connection->strProfileName[0])goto cleanup;
+        snapshot.magic=0x31524650;snapshot.guid=guid;
+        if(wcsncpy_s(snapshot.profile,256,connection->strProfileName,_TRUNCATE)!=0)goto cleanup;
+        if(fopen_s(&file,argv[3],"wb")!=0 || !file)goto cleanup;
+        if(fwrite(&snapshot,1,sizeof(snapshot),file)!=sizeof(snapshot))goto cleanup;
+        puts("{\"profile_name_saved\":true,\"credentials_saved\":false,\"connected\":true}");result=0;
+    } else {
+        if(!rc && connection && size>=sizeof(*connection) && connection->isState==wlan_interface_state_connected){puts("{\"already_connected\":true,\"connect_requested\":false}");result=0;goto cleanup;}
+        if(fopen_s(&file,argv[3],"rb")!=0 || !file)goto cleanup;
+        if(fread(&snapshot,1,sizeof(snapshot),file)!=sizeof(snapshot) || fgetc(file)!=EOF || snapshot.magic!=0x31524650 ||
+           memcmp(&snapshot.guid,&guid,sizeof(guid)) || !snapshot.profile[0] || snapshot.profile[255])goto cleanup;
+        parameters.wlanConnectionMode=wlan_connection_mode_profile;
+        parameters.strProfile=snapshot.profile;
+        parameters.dot11BssType=dot11_BSS_type_infrastructure;
+        rc=WlanConnect(client,&guid,&parameters,NULL);
+        printf("{\"connect_requested\":true,\"connect_rc\":%lu}\n",rc);result=rc?1:0;
+    }
+cleanup:
+    if(file)fclose(file);
+    if(connection)WlanFreeMemory(connection);
+    WlanCloseHandle(client,NULL);
+    if(result)fprintf(stderr,"Profile snapshot/reconnection failed; API status %lu.\n",rc);
+    return result;
+}

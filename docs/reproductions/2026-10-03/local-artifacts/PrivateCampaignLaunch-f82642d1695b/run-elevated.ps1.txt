@@ -1,0 +1,17 @@
+$ErrorActionPreference='Stop'
+Set-StrictMode -Version Latest
+$repo=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../..'))
+$manifest=Get-Content -LiteralPath (Join-Path $PSScriptRoot 'readiness.json') -Raw | ConvertFrom-Json
+try {
+    foreach($file in $manifest.Files){if((Get-FileHash -LiteralPath (Join-Path $repo $file.Path)).Hash -ne $file.Sha256){throw 'Qualified source/binary changed before launch.'}}
+    $adapter=@(Get-NetAdapter -IncludeHidden | Where-Object {$_.ifIndex -eq $manifest.InterfaceIndex})
+    if($adapter.Count -ne 1 -or [Guid]$adapter[0].InterfaceGuid -ne [Guid]$manifest.InterfaceGuid -or $adapter[0].Status -ne 'Up' -or $adapter[0].DriverVersion -ne $manifest.DriverVersion){throw 'Exact adapter prelaunch check failed.'}
+    $python=(Get-Command python.exe).Source
+    & $python (Join-Path $repo 'experiments/qualcomm/run_acquisition_campaign.py') --if-index $manifest.InterfaceIndex --execute 1> (Join-Path $PSScriptRoot 'campaign.stdout.txt') 2> (Join-Path $PSScriptRoot 'campaign.stderr.txt')
+    $code=$LASTEXITCODE
+    [pscustomobject]@{ExitCode=$code;CompletedUtc=[DateTime]::UtcNow.ToString('o')} | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $PSScriptRoot 'process-result.json') -Encoding UTF8
+    exit $code
+} catch {
+    [pscustomobject]@{ExitCode=1;WrapperError=$_.Exception.Message;CompletedUtc=[DateTime]::UtcNow.ToString('o')} | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $PSScriptRoot 'process-result.json') -Encoding UTF8
+    exit 1
+}

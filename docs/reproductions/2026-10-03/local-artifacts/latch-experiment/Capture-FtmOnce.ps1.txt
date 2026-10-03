@@ -1,0 +1,58 @@
+#requires -Version 5.1
+#requires -RunAsAdministrator
+<# One FTM request to the current associated cached responder. Exact DLL/driver
+hashes required. No profile, location-permission, or firmware-mode changes.
+Exit 0 means collection completed; inspect API/callback/per-target results.
+Trace cleanup: logman stop <session.json SessionName> -ets if interrupted. #>
+[CmdletBinding()]
+param([Parameter(Mandatory=$true)][ValidateRange(1,2147483647)][int]$InterfaceIndex,
+      [ValidateRange(1,5)][int]$SampleCount=1)
+$ErrorActionPreference='Stop'
+Set-StrictMode -Version Latest
+$session='WifiFtm-' + [Guid]::NewGuid().ToString('N').Substring(0,12)
+$output=Join-Path $PSScriptRoot $session
+$repo=(Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '../..')).Path
+$started=$false;$result=0
+try {
+    New-Item -ItemType Directory -Path $output -ErrorAction Stop | Out-Null
+    $pins=@{
+        'wlanapi.dll'='925f1c50e1c86d625aeb87e39a307e067a3e6f54eedbd8a598d64423203c234b'
+        'locationframework.dll'='1ab04f90fdd1b0b920e4cf0f50bdde41b2824804f4006eed7a532d83bfd108e0'
+    }
+    foreach($name in $pins.Keys){
+        $path=Join-Path $env:WINDIR ('System32/'+$name)
+        if((Get-FileHash -LiteralPath $path -Algorithm SHA256).Hash -ine $pins[$name]){throw ('Unqualified DLL: '+$name)}
+    }
+    & python (Join-Path $repo 'tools/qualcomm_probe.py') --if-index $InterfaceIndex --command tsf_read_value --output (Join-Path $output 'driver-preview.json') | Out-Null
+    if($LASTEXITCODE -ne 0){throw 'Driver qualification failed.'}
+    [pscustomobject]@{SessionName=$session;StartedUtc=[DateTime]::UtcNow.ToString('o');Targets=1;SampleCount=$SampleCount;CurrentAssociatedBssOnly=$true;MaxMB=8;DllHashes=$pins} |
+        ConvertTo-Json -Depth 4 | Set-Content -LiteralPath (Join-Path $output 'session.json') -Encoding UTF8
+    & logman start $session -p '{bb6f5b93-635c-47be-816f-e895e77064a8}' 0x2000000000000010 0xff -o (Join-Path $output 'ftm.etl') -f bincirc -max 8 -ets |
+        Set-Content -LiteralPath (Join-Path $output 'trace-start.txt') -Encoding UTF8
+    if($LASTEXITCODE -ne 0){throw 'Trace start failed; no FTM request sent.'}
+    $started=$true
+    for($i=1;$i -le $SampleCount;$i++){
+        $responseName=if($SampleCount -eq 1){'response-local.bin'}else{'response-{0:D3}.bin' -f $i}
+        $resultName=if($SampleCount -eq 1){'request-result.json'}else{'request-{0:D3}.json' -f $i}
+        & (Join-Path $PSScriptRoot 'ftm_once.exe') $InterfaceIndex (Join-Path $output $responseName) |
+            Set-Content -LiteralPath (Join-Path $output $resultName) -Encoding UTF8
+        if($LASTEXITCODE -ne 0){throw 'FTM prerequisite or collection failed.'}
+        $requestResult=Get-Content -LiteralPath (Join-Path $output $resultName) -Raw | ConvertFrom-Json
+        if($requestResult.request_api_rc -ne 0 -or -not $requestResult.callback_received -or $requestResult.callback_status -ne 0){throw 'FTM request did not complete successfully; no automatic retry.'}
+        if($i -lt $SampleCount){Start-Sleep -Milliseconds 1000}
+    }
+    Start-Sleep -Milliseconds 1000
+} catch {
+    $result=1
+    if(Test-Path -LiteralPath $output){[pscustomobject]@{Error=$_.Exception.Message} | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $output 'capture-error.json') -Encoding UTF8}
+} finally {
+    if($started){& logman stop $session -ets | Set-Content -LiteralPath (Join-Path $output 'trace-stop.txt') -Encoding UTF8;if($LASTEXITCODE -ne 0){$result=1;Write-Warning ('Stop failed: '+$session)}}
+    try {
+        $final=@(Get-NetAdapter -IncludeHidden -ErrorAction Stop | Where-Object {$_.ifIndex -eq $InterfaceIndex})
+        if($final.Count -ne 1){throw 'Target missing'}
+        $final[0] | Select-Object Name,Status,ifIndex,DriverVersion | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $output 'adapter-after.json') -Encoding UTF8
+        if($final[0].Status -ne 'Up' -or $final[0].DriverVersion -ne '1.0.4374.1300'){$result=1}
+    } catch {$result=1}
+}
+Write-Output $output
+exit $result

@@ -18,6 +18,8 @@ def validate_driver(data: bytes) -> None:
     pe = pefile.PE(data=data)
     if pe.FILE_HEADER.Machine != 0xAA64:
         raise ValueError('Expected the qualified ARM64 architecture')
+    if pe.get_data(0x18EA00, 12) != bytes.fromhex('9f020071680080520285881a'):
+        raise ValueError('Unexpected TSF action-selection instructions')
     for name, (index, fields) in COMMANDS.items():
         record = pe.get_data(0x33BDE0 + index * 28, 28)
         if (len(record) != 28 or struct.unpack_from('<IIBB', record) != fields
@@ -29,9 +31,13 @@ def validate_driver(data: bytes) -> None:
             raise ValueError('Unexpected TSF dispatcher jump table')
 
 
-def build_request(command: str, mac: bytes) -> bytes:
+def build_request(command: str, mac: bytes, *, tsf_action: int = 3) -> bytes:
     if command not in COMMANDS:
         raise ValueError('Unqualified command')
+    if type(tsf_action) is not int or tsf_action not in (3, 4):
+        raise ValueError('Only TSF READ_VALUE (3) and QTIMER_CAPTURE (4) are allowed')
+    if command != 'tsf_read_value' and tsf_action != 3:
+        raise ValueError('QTIMER_CAPTURE requires tsf_read_value')
     if len(mac) != 6 or not any(mac) or mac[0] & 1:
         raise ValueError('Require one nonzero unicast MAC selector')
     name = command.encode('ascii')
@@ -42,5 +48,5 @@ def build_request(command: str, mac: bytes) -> bytes:
     payload[20:26] = mac
     if command == 'tsf_read_value':
         payload[28] = 1
-        struct.pack_into('<I', payload, 32, 1)
+        struct.pack_into('<I', payload, 32, 1 if tsf_action == 3 else 0)
     return bytes(payload)

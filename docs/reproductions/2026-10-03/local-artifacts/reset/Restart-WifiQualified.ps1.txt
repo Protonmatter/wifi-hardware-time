@@ -1,0 +1,75 @@
+#requires -Version 5.1
+#requires -RunAsAdministrator
+[CmdletBinding()]
+param([Parameter(Mandatory=$true)][ValidateRange(1,2147483647)][int]$InterfaceIndex,
+      [switch]$AcknowledgeDisruption)
+$ErrorActionPreference='Stop'
+Set-StrictMode -Version Latest
+if(-not $AcknowledgeDisruption){throw 'Explicit acknowledgement of active Wi-Fi interruption is required.'}
+$repo=(Resolve-Path (Join-Path $PSScriptRoot '../..')).Path
+$session='WifiReset-'+[Guid]::NewGuid().ToString('N').Substring(0,12)
+$output=Join-Path $PSScriptRoot $session
+$helper=Join-Path $PSScriptRoot 'profile_reconnect.exe'
+$started=$false;$restarted=$false;$result=0;$baseline=$null;$reconnectAttempted=$false
+try {
+    New-Item -ItemType Directory -Path $output -ErrorAction Stop | Out-Null
+    & python (Join-Path $repo 'tools/qualcomm_probe.py') --if-index $InterfaceIndex --command tsf_read_value --output (Join-Path $output 'preview.json') | Out-Null
+    if($LASTEXITCODE -ne 0){throw 'Driver qualification failed.'}
+    $selected=@(Get-NetAdapter -IncludeHidden -ErrorAction Stop | Where-Object {$_.ifIndex -eq $InterfaceIndex})
+    if($selected.Count -ne 1 -or $selected[0].Status -ne 'Up'){throw 'Exact target unavailable.'}
+    $baseline=$selected[0]
+    $baseline|Select-Object Name,Status,ifIndex,InterfaceGuid,PnPDeviceID,DriverVersion|ConvertTo-Json|Set-Content -LiteralPath (Join-Path $output 'adapter-before-local.json') -Encoding UTF8
+    & $helper --save $InterfaceIndex (Join-Path $output 'profile-name-local.bin') | Set-Content -LiteralPath (Join-Path $output 'profile-before.json') -Encoding UTF8
+    if($LASTEXITCODE -ne 0){throw 'No existing connected profile available for recovery; no restart.'}
+    [pscustomobject]@{SessionName=$session;StartedUtc=[DateTime]::UtcNow.ToString('o');RestartCount=1;RecoveryDeadlineSeconds=60}|ConvertTo-Json|Set-Content -LiteralPath (Join-Path $output 'session.json') -Encoding UTF8
+    & logman start $session -p '{bb6f5b93-635c-47be-816f-e895e77064a8}' 0x2000000000000010 0xff -o (Join-Path $output 'reset.etl') -f bincirc -max 32 -ets|Set-Content -LiteralPath (Join-Path $output 'trace-start.txt') -Encoding UTF8
+    if($LASTEXITCODE -ne 0){throw 'Trace start failed.'};$started=$true
+    & python (Join-Path $repo 'tools/qualcomm_probe.py') --if-index $InterfaceIndex --command tsf_read_value --tsf-action 4 --execute --output (Join-Path $output 'request-before.json') | Out-Null
+    if($LASTEXITCODE -ne 0){throw 'Before-reset capture request failed.'}
+    Start-Sleep -Milliseconds 500
+    [pscustomobject]@{Event='restart_begin';Utc=[DateTime]::UtcNow.ToString('o')}|ConvertTo-Json|Set-Content -LiteralPath (Join-Path $output 'restart-begin.json') -Encoding UTF8
+    $restarted=$true
+    Restart-NetAdapter -InputObject $baseline -Confirm:$false -ErrorAction Stop
+    $deadline=[DateTime]::UtcNow.AddSeconds(60);$reconnectAttempted=$false;$recovered=$false
+    $fallbackAt=[DateTime]::UtcNow.AddSeconds(15)
+    while([DateTime]::UtcNow -lt $deadline){
+        $current=@(Get-NetAdapter -IncludeHidden -ErrorAction Stop|Where-Object {$_.InterfaceGuid -eq $baseline.InterfaceGuid -and $_.PnPDeviceID -eq $baseline.PnPDeviceID})
+        if($current.Count -eq 1 -and $current[0].Status -eq 'Up'){$recovered=$true;break}
+        if($current.Count -eq 1 -and -not $reconnectAttempted -and [DateTime]::UtcNow -ge $fallbackAt){
+            $reconnectAttempted=$true
+            if($current[0].Status -eq 'Disabled'){Enable-NetAdapter -InputObject $current[0] -Confirm:$false -ErrorAction Stop}
+            & $helper --connect $current[0].ifIndex (Join-Path $output 'profile-name-local.bin') | Set-Content -LiteralPath (Join-Path $output 'reconnect-result.json') -Encoding UTF8
+        }
+        Start-Sleep -Seconds 1
+    }
+    if(-not $recovered){throw 'Adapter did not recover within 60 seconds; stop and use local Windows networking controls.'}
+    [pscustomobject]@{Event='up_observed';Utc=[DateTime]::UtcNow.ToString('o');FallbackAttempted=$reconnectAttempted}|ConvertTo-Json|Set-Content -LiteralPath (Join-Path $output 'restart-recovered.json') -Encoding UTF8
+    & $helper --save $current[0].ifIndex (Join-Path $output 'profile-after-local.bin') | Set-Content -LiteralPath (Join-Path $output 'profile-after.json') -Encoding UTF8
+    if($LASTEXITCODE -ne 0){throw 'Up state did not yield a connected profile.'}
+    & python (Join-Path $repo 'tools/qualcomm_probe.py') --if-index $current[0].ifIndex --command tsf_read_value --tsf-action 4 --execute --output (Join-Path $output 'request-after.json') | Out-Null
+    if($LASTEXITCODE -ne 0){throw 'Post-reset capture request failed.'}
+    Start-Sleep -Milliseconds 1500
+} catch {
+    $result=1;Write-Warning $_.Exception.Message
+    if(Test-Path $output){[pscustomobject]@{Error=$_.Exception.Message;RestartIssued=$restarted}|ConvertTo-Json|Set-Content -LiteralPath (Join-Path $output 'test-error.json') -Encoding UTF8}
+    if($restarted -and -not $reconnectAttempted -and $null -ne $baseline){
+        try {
+            $recovery=@(Get-NetAdapter -IncludeHidden -ErrorAction Stop|Where-Object {$_.InterfaceGuid -eq $baseline.InterfaceGuid -and $_.PnPDeviceID -eq $baseline.PnPDeviceID})
+            if($recovery.Count -eq 1 -and $recovery[0].Status -ne 'Up'){
+                $reconnectAttempted=$true
+                if($recovery[0].Status -eq 'Disabled'){Enable-NetAdapter -InputObject $recovery[0] -Confirm:$false -ErrorAction Stop}
+                & $helper --connect $recovery[0].ifIndex (Join-Path $output 'profile-name-local.bin') | Set-Content -LiteralPath (Join-Path $output 'error-recovery.json') -Encoding UTF8
+                Start-Sleep -Seconds 5
+            }
+        } catch {Write-Warning ('Automatic recovery failed: '+$_.Exception.Message)}
+    }
+} finally {
+    if($started){& logman stop $session -ets|Set-Content -LiteralPath (Join-Path $output 'trace-stop.txt') -Encoding UTF8;if($LASTEXITCODE -ne 0){$result=1}}
+    if($null -ne $baseline){
+        $final=@(Get-NetAdapter -IncludeHidden -ErrorAction Stop|Where-Object {$_.InterfaceGuid -eq $baseline.InterfaceGuid})
+        $final|Select-Object Name,Status,ifIndex,DriverVersion|ConvertTo-Json|Set-Content -LiteralPath (Join-Path $output 'adapter-after.json') -Encoding UTF8
+        if($final.Count -ne 1 -or $final[0].Status -ne 'Up' -or $final[0].DriverVersion -ne '1.0.4374.1300'){$result=1}
+    }
+}
+Write-Output $output
+exit $result

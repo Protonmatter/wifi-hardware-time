@@ -1,0 +1,128 @@
+"""Local post-capture interface mapping. Reads IP Helper tables; no hardware OID.
+
+Private output includes interface identifiers. Never publish the receipt.
+"""
+import ctypes as c
+import datetime
+import hashlib
+import json
+from pathlib import Path
+import uuid
+
+ROOT = Path(__file__).resolve().parent
+U32, U64, GUID = c.c_uint32, c.c_uint64, c.c_ubyte * 16
+
+
+class Row(c.Structure):
+    _fields_ = [('luid', U64), ('index', U32), ('guid', GUID),
+                ('alias', c.c_wchar * 257), ('description', c.c_wchar * 257),
+                ('addrlen', U32), ('addr', c.c_ubyte * 32), ('perm', c.c_ubyte * 32)]
+    _fields_ += [(n, U32) for n in ['mtu', 'type', 'tunnel', 'media', 'physical', 'access', 'direction']]
+    _fields_ += [('flags', c.c_ubyte)] + [(n, U32) for n in ['oper', 'admin', 'connect']]
+    _fields_ += [('netguid', GUID), ('connection', U32)]
+    _fields_ += [(n, U64) for n in ['txspeed', 'rxspeed', 'InOctets', 'InUcastPkts',
+        'InNUcastPkts', 'InDiscards', 'InErrors', 'InUnknownProtos', 'InUcastOctets',
+        'InMulticastOctets', 'InBroadcastOctets', 'OutOctets', 'OutUcastPkts',
+        'OutNUcastPkts', 'OutDiscards', 'OutErrors', 'OutUcastOctets',
+        'OutMulticastOctets', 'OutBroadcastOctets', 'OutQLen']]
+
+
+class Table(c.Structure):
+    _fields_ = [('count', U32), ('rows', Row * 1)]
+
+
+class StackRow(c.Structure):
+    _fields_ = [('upper', U32), ('lower', U32)]
+
+
+class StackTable(c.Structure):
+    _fields_ = [('count', U32), ('rows', StackRow * 1)]
+
+
+def main() -> None:
+    if (c.sizeof(c.c_void_p), c.sizeof(c.c_wchar), c.sizeof(Row), Table.rows.offset,
+            c.sizeof(StackRow), StackTable.rows.offset) != (8, 2, 1352, 8, 8, 4):
+        raise ValueError('Unexpected SDK layout')
+    names = ['session.json', 'ndis-events-local.json', Path(__file__).name]
+    digests = {n: hashlib.sha256((ROOT / n).read_bytes()).hexdigest() for n in names}
+    session = json.loads((ROOT / names[0]).read_text(encoding='utf-8-sig'))
+    events = json.loads((ROOT / names[1]).read_text(encoding='utf-8-sig'))
+    ip = c.WinDLL('iphlpapi')
+    ip.GetIfTable2Ex.argtypes = [c.c_int, c.POINTER(c.c_void_p)]
+    ip.GetIfTable2Ex.restype = U32
+    ip.GetIfStackTable.argtypes = [c.POINTER(c.c_void_p)]
+    ip.GetIfStackTable.restype = U32
+    ip.FreeMibTable.argtypes = [c.c_void_p]
+    ip.FreeMibTable.restype = None
+    start = datetime.datetime.now(datetime.timezone.utc).isoformat()
+    pointer = c.c_void_p()
+    rc = ip.GetIfTable2Ex(1, c.byref(pointer))
+    if rc:
+        raise OSError(rc, 'GetIfTable2Ex failed')
+    rows = []
+    try:
+        count = c.cast(pointer, c.POINTER(Table)).contents.count
+        if not 1 <= count <= 4096:
+            raise ValueError('Invalid interface count')
+        for row in c.cast(pointer.value + Table.rows.offset, c.POINTER(Row * count)).contents:
+            rows.append(dict(index=row.index, luid=str(row.luid),
+                guid=str(uuid.UUID(bytes_le=bytes(row.guid))), flags=row.flags,
+                type=row.type, physical=row.physical))
+    finally:
+        ip.FreeMibTable(pointer)
+    pointer = c.c_void_p()
+    rc = ip.GetIfStackTable(c.byref(pointer))
+    if rc:
+        raise OSError(rc, 'GetIfStackTable failed')
+    try:
+        count = c.cast(pointer, c.POINTER(StackTable)).contents.count
+        if not 0 <= count <= 16384:
+            raise ValueError('Invalid stack count')
+        edges = [(x.upper, x.lower) for x in c.cast(pointer.value + StackTable.rows.offset,
+                 c.POINTER(StackRow * count)).contents]
+    finally:
+        ip.FreeMibTable(pointer)
+    target = [x for x in rows if x['index'] == session['InterfaceIndex']]
+    if len(target) != 1 or target[0]['guid'] != str(session['InterfaceGuid']).strip('{}').lower():
+        raise ValueError('Target no longer matches')
+
+    def lower_path(begin: int, end: int) -> list[int] | None:
+        queue, seen = [(begin, [begin])], set()
+        while queue:
+            current, path = queue.pop(0)
+            if current == end:
+                return path
+            if current in seen:
+                continue
+            seen.add(current)
+            queue.extend((b, path + [b]) for a, b in edges if a == current)
+        return None
+
+    mappings = []
+    for f in {e['Fields']['IfGuid']: e['Fields'] for e in events}.values():
+        matches = [x for x in rows if x['guid'] == f['IfGuid'].strip('{}').lower()]
+        if len(matches) != 1:
+            raise ValueError('Event identity no longer unique')
+        row = matches[0]
+        if row['index'] != int(f['IfIndex'], 0) or int(row['luid']) != int(f['NetLuid'], 0):
+            raise ValueError('Event identity tuple mismatch')
+        path = lower_path(row['index'], target[0]['index'])
+        mappings.append(dict(event_interface=row, path_indexes=path,
+            path_rows=[next(x for x in rows if x['index'] == i) for i in path] if path else None))
+    result = dict(observed_start_utc=start,
+        observed_finish_utc=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+        scope='post-capture topology, not same-run topology proof', input_sha256=digests,
+        layouts=dict(row=1352, table_offset=8, stack_row=8, stack_table_offset=4),
+        table_api='GetIfTable2Ex(MibIfTableRaw=1)', stack_api='GetIfStackTable',
+        table_rc=0, stack_rc=0, interface_count=len(rows), stack_edge_count=len(edges),
+        target=target[0], mappings=mappings)
+    with (ROOT / 'topology-postcapture-local.json').open('x', encoding='utf-8') as stream:
+        json.dump(result, stream, indent=2)
+        stream.write('\n')
+    print(json.dumps(dict(receipt_written=True, mappings=len(mappings),
+        all_filter=all(m['event_interface']['flags'] & 2 != 0 for m in mappings),
+        downward_hops=[len(m['path_indexes']) - 1 if m['path_indexes'] else None for m in mappings])))
+
+
+if __name__ == '__main__':
+    main()

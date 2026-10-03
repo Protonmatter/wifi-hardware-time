@@ -1,0 +1,110 @@
+#requires -Version 5.1
+#requires -RunAsAdministrator
+<#
+.SYNOPSIS
+Capture a bounded Qualcomm trace around previously qualified TSF read requests.
+.DESCRIPTION
+Run from an elevated PowerShell. Creates a unique ETW session for WlanLogger,
+sends 1-12 TSF READ_VALUE (action 3) requests to the exact pinned driver/current Wi-Fi
+interface through private_getter.py, then stops the session in finally.
+Does not enable continuous TSF reports, reset clocks, or write registers.
+Requires the existing Python/pefile environment. Trace is capped at 4 MB for one
+sample or 32 MB for multiple samples. Requests are spaced by at least 250 ms.
+IncludeCapabilityChecks also runs documented timestamp and cached BSS/service queries.
+Example: ./Capture-TsfReport.ps1 -SampleCount 12 -IncludeCapabilityChecks
+Exit 0 means collection completed, not that a firmware response was observed.
+Exit 1 means a prerequisite, request, or cleanup failed. Evidence remains local.
+Rollback: the ETW session is stopped in finally. If interrupted externally,
+run logman stop <SessionName from session.json> -ets in an elevated shell.
+#>
+[CmdletBinding()]
+param(
+    [ValidateRange(1,12)][int]$SampleCount = 1,
+    [switch]$IncludeCapabilityChecks
+)
+
+$ErrorActionPreference = 'Stop'
+Set-StrictMode -Version Latest
+$researchRoot = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '../../..')).Path
+$sessionName = 'Codex-Qcom-Tsf-' + [Guid]::NewGuid().ToString('N').Substring(0, 12)
+$outputDir = Join-Path $PSScriptRoot $sessionName
+$started = $false
+$exitResult = 0
+$maxMB = if ($SampleCount -eq 1) { 4 } else { 32 }
+try {
+    $python = (Get-Command python -ErrorAction Stop).Source
+    New-Item -ItemType Directory -Path $outputDir -ErrorAction Stop | Out-Null
+    [pscustomobject]@{SessionName=$sessionName;StartedUtc=[DateTime]::UtcNow.ToString('o');Provider='{bb6f5b93-635c-47be-816f-e895e77064a8}';MaxMB=$maxMB;SampleCount=$SampleCount;Elevated=$true} |
+        ConvertTo-Json | Set-Content -LiteralPath (Join-Path $outputDir 'session.json') -Encoding UTF8
+    Push-Location -LiteralPath $researchRoot
+    try {
+        & $python evidence/current-wlan/build_static_evidence.py
+        if ($LASTEXITCODE -ne 0) { throw 'Pinned-driver validation failed.' }
+        $adapter = Get-NetAdapter -Name 'Wi-Fi' -ErrorAction Stop
+        $adapter | Select-Object Name,Status,ifIndex,DriverVersion | ConvertTo-Json |
+            Set-Content -LiteralPath (Join-Path $outputDir 'adapter-before.json') -Encoding UTF8
+        if ($adapter.Status -ne 'Up' -or $adapter.DriverVersion -ne '1.0.4374.1300') { throw 'Unexpected adapter state.' }
+        if ($IncludeCapabilityChecks) {
+            & $python evidence/current-wlan/probe_timestamp_caps.py --if-index $adapter.ifIndex |
+                Set-Content -LiteralPath (Join-Path $outputDir 'timestamp-capabilities.json') -Encoding UTF8
+            if ($LASTEXITCODE -ne 0) { throw 'Timestamp capability probe failed.' }
+            & ./evidence/current-wlan/native_caps.exe $adapter.ifIndex |
+                Set-Content -LiteralPath (Join-Path $outputDir 'native-capabilities.txt') -Encoding UTF8
+            if ($LASTEXITCODE -ne 0) { throw 'Native capability probe failed.' }
+            & $python evidence/current-wlan/validation/live_basics.py --if-index $adapter.ifIndex --output (Join-Path $outputDir 'cross-timestamp.json') | Out-Null
+            if ($LASTEXITCODE -ne 0) { throw 'Cross-timestamp probe failed.' }
+            & ./evidence/current-wlan/validation/cached_beacon.exe $adapter.InterfaceGuid |
+                Set-Content -LiteralPath (Join-Path $outputDir 'cached-beacon.json') -Encoding UTF8
+            if ($LASTEXITCODE -ne 0) { throw 'Cached beacon probe failed.' }
+            & netsh wlan show wirelesscapabilities |
+                Set-Content -LiteralPath (Join-Path $outputDir 'wireless-capabilities.txt') -Encoding UTF8
+            if ($LASTEXITCODE -ne 0) { throw 'Wireless capability query failed.' }
+        }
+        & logman start $sessionName -p '{bb6f5b93-635c-47be-816f-e895e77064a8}' 0x2000000000000010 0xff -o (Join-Path $outputDir 'tsf.etl') -f bincirc -max $maxMB -ets |
+            Set-Content -LiteralPath (Join-Path $outputDir 'trace-start.txt') -Encoding UTF8
+        if ($LASTEXITCODE -ne 0) { throw 'ETW session could not be started; no TSF request sent.' }
+        $started = $true
+        for ($sample = 1; $sample -le $SampleCount; $sample++) {
+            $requestName = if ($SampleCount -eq 1) { 'request.json' } else { 'request-{0:D3}.json' -f $sample }
+            & $python evidence/current-wlan/validation/private_getter.py --command tsf_read_value --output (Join-Path $outputDir $requestName)
+            if ($LASTEXITCODE -ne 0) { throw 'TSF probe execution failed.' }
+            $requestResult = Get-Content -LiteralPath (Join-Path $outputDir $requestName) -Raw | ConvertFrom-Json
+            if (-not $requestResult.success -or -not $requestResult.handle_closed) { throw 'TSF request or handle cleanup failed.' }
+            if ($sample -lt $SampleCount) { Start-Sleep -Milliseconds 250 }
+        }
+        Start-Sleep -Milliseconds 1500
+    } finally {
+        Pop-Location
+    }
+} catch {
+    $exitResult = 1
+    if (Test-Path -LiteralPath $outputDir) {
+        [pscustomobject]@{ObservedUtc=[DateTime]::UtcNow.ToString('o');Error=$_.Exception.Message} |
+            ConvertTo-Json | Set-Content -LiteralPath (Join-Path $outputDir 'capture-error.json') -Encoding UTF8
+    }
+    Write-Error -Message $_.Exception.Message -ErrorAction Continue
+} finally {
+    if ($started) {
+        & logman stop $sessionName -ets | Set-Content -LiteralPath (Join-Path $outputDir 'trace-stop.txt') -Encoding UTF8
+        if ($LASTEXITCODE -ne 0) {
+            $exitResult = 1
+            Write-Warning "Failed to stop $sessionName; run 'logman stop $sessionName -ets' as administrator."
+        }
+    }
+    if (Test-Path -LiteralPath $outputDir) {
+        try {
+            $finalAdapter = Get-NetAdapter -Name 'Wi-Fi' -ErrorAction Stop
+            $finalAdapter | Select-Object Name, Status, ifIndex, DriverVersion |
+                ConvertTo-Json | Set-Content -LiteralPath (Join-Path $outputDir 'adapter-after.json') -Encoding UTF8
+            if ($finalAdapter.Status -ne 'Up' -or $finalAdapter.DriverVersion -ne '1.0.4374.1300') {
+                $exitResult = 1
+                Write-Warning 'Final Wi-Fi state or driver version does not match the required baseline.'
+            }
+        } catch {
+            $exitResult = 1
+            Write-Warning ('Unable to record final adapter state: ' + $_.Exception.Message)
+        }
+    }
+}
+Write-Output $outputDir
+exit $exitResult

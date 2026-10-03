@@ -1,0 +1,21 @@
+#requires -Version 5.1
+#requires -RunAsAdministrator
+[CmdletBinding()]
+param([ValidateRange(1,2147483647)][int]$InterfaceIndex=<LOCAL_INTERFACE_INDEX>)
+$ErrorActionPreference='Stop'
+$repo=(Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '..')).Path
+$record=Join-Path $PSScriptRoot ('qualification-'+[DateTime]::UtcNow.ToString('yyyyMMdd-HHmmss')+'.json')
+$results=@()
+foreach($item in @(
+    @{Script='experiments/qualcomm/Capture-FtmOnce.ps1';Extra=@('-SampleCount','5','-Execute')},
+    @{Script='experiments/qualcomm/Capture-LatchExperiment.ps1';Extra=@()}
+)){
+    $path=Join-Path $repo $item.Script
+    $arguments=@('-NoProfile','-File',('"'+$path+'"'),'-InterfaceIndex',[string]$InterfaceIndex)+$item.Extra
+    $proc=Start-Process powershell.exe -ArgumentList $arguments -WindowStyle Hidden -PassThru
+    $proc.WaitForExit()
+    $results+= [pscustomobject]@{Script=$item.Script;ExitCode=$proc.ExitCode;CompletedUtc=[DateTime]::UtcNow.ToString('o')}
+    $results | ConvertTo-Json | Set-Content -LiteralPath $record -Encoding UTF8
+    if($proc.ExitCode -ne 0){exit 1}
+}
+exit 0

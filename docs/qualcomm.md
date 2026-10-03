@@ -47,14 +47,18 @@ The original local harness successfully opened and closed the control device. A 
 
 The wrapper selects firmware action 3 for the fixed positive argument. A public Qualcomm firmware definition labels action 3 `TSF_TSTAMP_READ_VALUE`. The public header is a semantic reference from a different source revision, not proof of firmware parity.
 
-The firmware report handler processes TSF, global-TSF, and SoC timer fields. No synchronous raw timestamp return or QPC relationship was established. Diagnostic messages use TraceClassic events; the inspected debug-output mode permits ETW output when enabled. An elevated capture was not completed.
+The firmware report handler processes TSF, global-TSF, and SoC timer fields. A subsequent elevated capture with the original local harness observed one READ_VALUE command and one matching-vdev report. The IOCTL returned 100 zero bytes; the TSF and SoC counter values appeared separately in ETW. The raw trace clock was QPC at 10 MHz, and the report log followed observed IOCTL completion by 552.9 microseconds. The observed host request bracket was 57.9 microseconds.
+
+These are host-observed intervals, not firmware sampling instants or timing accuracy. A later live run of the public wrapper observed 12 matching reports over 14.39 seconds. TSF advanced, while the SoC field stayed constant. Eleven report logs followed userspace's completion observation and one preceded it; there is no exposed firmware transaction identifier.
+
+An additional 11-request experiment interleaved three QTIMER_CAPTURE actions (4) with READ_VALUE (3). Each action 4 refreshed the SoC field; subsequent action-3 reads reused it while TSF continued advancing. Action-selection instructions at RVA `0x18ea00` are checked by the shared protocol guard. This establishes refresh/cache behavior in the tested run, not simultaneous hardware latching. See the [experiment guide](experiments.md) and [validation ledger](validation.md).
 
 Standard Windows timestamp queries returned error 23 / ERROR_CRC in both Python and native ARM64 callers. Output fields from failed queries were not interpreted. The error does not identify a hardware fault or conclusively establish unsupported timestamping.
 
 ## Other paths and limits
 
 - Network monitor mode was reported unsupported by this installed driver.
-- Local FTM initiator support and the connected AP's responder advertisement were observed; no FTM exchange was performed.
+- Six FTM operations to one associated AP succeeded through the Windows internal request path, firmware responses, and callback results. Their ranging accuracy remains unqualified. This path also pins the exact Windows DLLs; it is not a stable public API.
 - `read_reg` routes to an athdiag QMI read, but its safe memory-type/address map remains unqualified. The public tool rejects it.
 - Spectral-related names are present; a working spectral data API was not established.
 - `get_timer` calls `ExQueryTimerResolution`; it is not a TSF getter.

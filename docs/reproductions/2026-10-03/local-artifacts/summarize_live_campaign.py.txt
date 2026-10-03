@@ -1,0 +1,51 @@
+import json, math, statistics, sys
+from pathlib import Path
+root=Path(sys.argv[1])
+def read(p):return json.loads(p.read_text(encoding='utf-8-sig'))
+def dist(values):
+    ordered=sorted(values)
+    return dict(n=len(values),min=min(values),median=statistics.median(values),
+                p95=ordered[math.ceil(.95*len(values))-1],p99=ordered[math.ceil(.99*len(values))-1],max=max(values))
+rows=[]
+for phase in ('idle','workload'):
+    for sequence in ('read','mixed'):
+        for repeat in range(1,4):
+            folder=root/f'{phase}-{sequence}-{repeat}'
+            if not (folder/'run-result.json').exists():continue
+            result=read(folder/'run-result.json')
+            if not result['success']:continue
+            bundle=read(folder/'evidence.json');samples=bundle['observations'];freq=int(bundle['manifest']['qpc_frequency_hz'])
+            header=read_lines=[json.loads(l) for l in (folder/'raw-timing.jsonl').read_text().splitlines()]
+            assert header[0]['events_lost']==header[0]['buffers_lost']==0
+            assert result['live_offline_records_equal'] and result['observer_clean_stop']
+            requests=[read(p) for p in sorted(folder.glob('request-*.json'))]
+            controls=[read(p) for p in sorted(folder.glob('submission-*.json'))]
+            assert len(controls)==len(requests)==len(samples)
+            assert all(c['state']=='drained' and not c['abort_requested'] for c in controls)
+            assert all(r['success'] and r['handle_closed'] and not r.get('cancel_requested') for r in requests)
+            admissions=[read(p) for p in sorted(folder.glob('admission-*.json'))]
+            live=[json.loads(l) for l in (folder/'live-observer.jsonl').read_text().splitlines()]
+            lifecycle=[e for e in live if e['kind']=='lifecycle']
+            assert not any(e['invalidates'] for e in lifecycle)
+            row=dict(run=folder.name,phase=phase,sequence=sequence,samples=len(samples),
+                wall_s=result['wall_seconds'],controller_cpu_s=result['controller_cpu_seconds'],
+                observer_cpu_s=result['observer_cpu_seconds'],probe_cpu_s=result['probe_cpu_seconds'],
+                request_bracket_us=dist([(int(s['host_completed_qpc'])-int(s['host_before_qpc']))*1e6/freq for s in samples]),
+                request_to_report_log_us=dist([(int(s['report_qpc'])-int(s['host_before_qpc']))*1e6/freq for s in samples]),
+                report_after_completion_us=dist([(int(s['report_qpc'])-int(s['host_completed_qpc']))*1e6/freq for s in samples]),
+                log_to_observer_reader_us=dist([(e['received_qpc']-e['raw_timestamp'])*1e6/freq for e in live if e['kind']=='report']),
+                interrequest_s=dist([(int(b['host_before_qpc'])-int(a['host_before_qpc']))/freq for a,b in zip(samples,samples[1:])]),
+                soc_distinct=len({s['soc_raw'] for s in samples}),
+                capture_refreshes=sum(s['action']==4 and s['soc_raw']!=samples[i-1]['soc_raw'] for i,s in enumerate(samples) if i),
+                capture_actions=sum(s['action']==4 for s in samples),
+                read_reuse_checks=sum(s['action']==3 for i,s in enumerate(samples) if i),
+                read_reuses=sum(s['action']==3 and s['soc_raw']==samples[i-1]['soc_raw'] for i,s in enumerate(samples) if i),
+                relative_tsf_ticks_per_host_second=(int(samples[-1]['tsf_raw'])-int(samples[0]['tsf_raw']))*freq/(int(samples[-1]['report_qpc'])-int(samples[0]['report_qpc'])),
+                reports_before_completion=sum(int(s['report_qpc'])<int(s['host_completed_qpc']) for s in samples),
+                invalidating_lifecycle_notifications=0,trace_loss=0,all_children_drained=True)
+            if (folder/'workload.json').exists():row['workload']=read(folder/'workload.json')
+            rows.append(row)
+result=dict(completed_runs=len(rows),accepted_samples=sum(r['samples'] for r in rows),runs=rows,
+            absolute_accuracy_validated=False,firmware_sampling_validated=False,external_uncertainty_ns=None)
+(root/'sanitized-metrics-local.json').write_text(json.dumps(result,indent=2)+'\n')
+print(json.dumps({k:v for k,v in result.items() if k!='runs'},indent=2))

@@ -1,0 +1,58 @@
+"""Local passive-only qualification; invokes no campaign action and no private probe."""
+from pathlib import Path
+import ctypes as ct
+import hashlib
+import json
+import os
+import sys
+
+ROOT=Path(__file__).resolve().parents[2]
+sys.path[:0]=[str(ROOT/'experiments/qualcomm'),str(ROOT/'tools')]
+from run_acquisition_campaign import Clock,identity,same_identity,capture,save,utc,KINDS
+
+folder=Path(__file__).resolve().parent
+manifest_path=folder/'build-selection.json'
+result=dict(success=False,phase='preflight',private_requests=0,runs=[],error=None)
+marker=ROOT/'artifacts/qualcomm-campaign-active-or-quarantined.json'
+owned=False
+try:
+    if len(sys.argv)!=2 or hashlib.sha256(manifest_path.read_bytes()).hexdigest()!=sys.argv[1].lower():
+        raise RuntimeError('Manifest hash mismatch')
+    manifest=json.loads(manifest_path.read_text(encoding='utf-8-sig'))
+    if not ct.windll.shell32.IsUserAnAdmin():raise RuntimeError('Administrator token required')
+    for path,field in [('artifacts/live_observer.exe','CandidateSha256'),('artifacts/decode_tsf_etl.exe','DecoderBinarySha256'),('experiments/qualcomm/live_observer.c','ObserverSourceSha256'),('tools/decode_tsf_etl.c','DecoderSourceSha256'),('experiments/qualcomm/campaign_gate.py','GateSha256'),('experiments/qualcomm/run_acquisition_campaign.py','ControllerSha256')]:
+        if hashlib.sha256((ROOT/path).read_bytes()).hexdigest()!=manifest[field].lower():raise RuntimeError('Input provenance changed: '+path)
+    marker_data=dict(state='passive-qualification',path=str(folder),started_utc=utc())
+    with marker.open('x',encoding='utf-8') as stream:json.dump(marker_data,stream)
+    owned=True
+    clock=Clock();baseline=identity(manifest['InterfaceIndex'])
+    if str(baseline['InterfaceGuid']).strip('{}').lower()!=str(manifest['InterfaceGuid']).strip('{}').lower():raise RuntimeError('Selected GUID changed')
+    save(folder/'baseline-private.json',baseline)
+    association=None
+    for repetition in (1,2):
+        name=f'passive-{repetition}'
+        receipt=capture(folder,manifest['InterfaceIndex'],baseline,clock,name,[],False,association,smoke=True)
+        association=receipt['association']
+        records=[json.loads(line) for line in (folder/name/'live-observer.jsonl').read_text().splitlines()]
+        ready=[r for r in records if r['kind']=='ready'];health=[r for r in records if r['kind']=='health']
+        connections=[r for r in records if r['kind']=='connection'];stopped=[r for r in records if r['kind']=='observer_stopped']
+        if len(ready)!=1 or ready[0]['health_schema']!='controller-query/v1' or ready[0]['perf_frequency_hz']!=clock.frequency:raise RuntimeError('Readiness not qualified')
+        if len(health)<3 or any(h['health_source']!='controller_query' or any(type(h[k]) is not int or h[k]!=0 for k in ('query_status','events_lost','log_buffers_lost','real_time_buffers_lost')) for h in health):raise RuntimeError('Controller health did not qualify')
+        if len(connections)<2 or any(not r['connected'] or r['changed'] or r['query_status']!=0 for r in connections):raise RuntimeError('Connection observation did not qualify')
+        if len(stopped)!=1 or stopped[0]['failed'] or stopped[0]['process_status']!=0 or stopped[0]['close_status'] not in (0,7007):raise RuntimeError('Normal observer stop did not qualify')
+        if any(r['kind'] in KINDS for r in records):raise RuntimeError('Unexpected timing report in passive test')
+        if receipt['request_count']!=0 or receipt['planned_count']!=0:raise RuntimeError('Unexpected request admission')
+        item=dict(name=name,success=True,health_records=len(health),connection_records=len(connections),lifecycle_records=sum(r['kind']=='lifecycle' for r in records),process_status=stopped[0]['process_status'],close_status=stopped[0]['close_status'],observer_cpu_seconds=receipt['observer_cpu_seconds'],wall_seconds=receipt['wall_seconds'],live_offline_records_equal=receipt['live_offline_records_equal'])
+        result['runs'].append(item);save(folder/'qualification.json',result)
+        print(json.dumps(item),flush=True)
+    same_identity(identity(manifest['InterfaceIndex']),baseline)
+    if hashlib.sha256((ROOT/'artifacts/live_observer.exe').read_bytes()).hexdigest()!=manifest['CandidateSha256'].lower():raise RuntimeError('Selected binary changed')
+    if json.loads(marker.read_text())!=marker_data:raise RuntimeError('Qualification marker ownership changed')
+    marker.unlink();owned=False
+    result.update(success=True,phase='passive-qualified',selected_observer_sha256=manifest['CandidateSha256'].lower(),driver_version=baseline['DriverVersion'],adapter_up=True,completed_utc=utc(),active_quarantine_marker=False)
+except BaseException as error:
+    result.update(success=False,phase='failed',error=str(error),active_quarantine_marker=owned)
+finally:
+    save(folder/'qualification.json',result)
+print(json.dumps({k:v for k,v in result.items() if k!='runs'}),flush=True)
+raise SystemExit(0 if result['success'] else 1)

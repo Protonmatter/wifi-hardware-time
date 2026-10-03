@@ -1,0 +1,71 @@
+[
+  {
+    "name": "unsupported_schema",
+    "path": [
+      "manifest",
+      "schema"
+    ],
+    "value": "wifi-clock-evidence/v2"
+  },
+  {
+    "name": "trace_loss",
+    "path": [
+      "manifest",
+      "trace_loss"
+    ],
+    "value": true
+  },
+  {
+    "name": "unqualified_build",
+    "path": [
+      "manifest",
+      "driver_sha256"
+    ],
+    "value": "0000000000000000000000000000000000000000000000000000000000000000"
+  },
+  {
+    "name": "false_accuracy",
+    "path": [
+      "observations",
+      0,
+      "external_uncertainty_ns"
+    ],
+    "value": 0
+  },
+  {
+    "name": "duplicate_sequence",
+    "path": [
+      "observations",
+      1,
+      "sequence"
+    ],
+    "value": 1
+  },
+  {
+    "name": "counter_regression",
+    "path": [
+      "observations",
+      1,
+      "tsf_raw"
+    ],
+    "value": "0"
+  },
+  {
+    "name": "lossy_counter",
+    "path": [
+      "observations",
+      0,
+      "tsf_raw"
+    ],
+    "value": 9007199254740993
+  },
+  {
+    "name": "claimed_atomic_capture",
+    "path": [
+      "observations",
+      0,
+      "soc_semantics"
+    ],
+    "value": "simultaneous"
+  }
+]

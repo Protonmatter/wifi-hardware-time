@@ -1,0 +1,23 @@
+#requires -Version 5.1
+#requires -RunAsAdministrator
+[CmdletBinding()]
+param([Parameter(Mandatory=$true)][ValidateRange(1,2147483647)][int]$InterfaceIndex)
+$ErrorActionPreference='Stop'
+$repo=(Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '..')).Path
+$launch=Join-Path $PSScriptRoot ('campaign-launch-'+[DateTime]::UtcNow.ToString('yyyyMMdd-HHmmss'))
+New-Item -ItemType Directory -Path $launch -ErrorAction Stop | Out-Null
+[pscustomobject]@{State='Running';StartedUtc=[DateTime]::UtcNow.ToString('o');Pid=$PID} |
+    ConvertTo-Json | Set-Content -LiteralPath (Join-Path $launch 'state.json') -Encoding UTF8
+$exitResult=1
+try {
+    Set-Location -LiteralPath $repo
+    & python (Join-Path $repo 'experiments/qualcomm/run_acquisition_campaign.py') --if-index $InterfaceIndex --execute `
+        1> (Join-Path $launch 'stdout.jsonl') 2> (Join-Path $launch 'stderr.txt')
+    $exitResult=$LASTEXITCODE
+} catch {
+    $_.Exception.Message | Set-Content -LiteralPath (Join-Path $launch 'launch-error.txt') -Encoding UTF8
+} finally {
+    [pscustomobject]@{State='Finished';ExitCode=$exitResult;CompletedUtc=[DateTime]::UtcNow.ToString('o');Pid=$PID} |
+        ConvertTo-Json | Set-Content -LiteralPath (Join-Path $launch 'state.json') -Encoding UTF8
+}
+exit $exitResult

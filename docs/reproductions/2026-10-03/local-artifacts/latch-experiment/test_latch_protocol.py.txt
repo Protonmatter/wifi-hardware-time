@@ -1,0 +1,28 @@
+import struct
+import unittest
+from latch_protocol import build_latch_request
+
+
+class LatchTests(unittest.TestCase):
+    def test_only_argument_differs(self):
+        mac=bytes.fromhex('020102030405')
+        read=build_latch_request(3,mac)
+        capture=build_latch_request(4,mac)
+        self.assertEqual(len(read),128)
+        self.assertEqual(read[:32],capture[:32])
+        self.assertEqual(read[36:],capture[36:])
+        self.assertEqual(struct.unpack_from('<I',read,32),(1,))
+        self.assertEqual(struct.unpack_from('<I',capture,32),(0,))
+        self.assertEqual(capture[28],1)
+
+    def test_other_actions_rejected(self):
+        for action in (-1,0,1,2,5,255,True,3.0):
+            with self.subTest(action=action), self.assertRaises(ValueError):
+                build_latch_request(action,bytes.fromhex('020102030405'))
+
+    def test_invalid_selector_rejected(self):
+        for mac in (b'',bytes(6),bytes.fromhex('ffffffffffff')):
+            with self.assertRaises(ValueError):build_latch_request(4,mac)
+
+
+if __name__ == '__main__':unittest.main()
