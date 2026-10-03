@@ -27,7 +27,9 @@ and the [findings and execution catalog](validation-execution-catalog.md).
 | Unmatched-report postmortem | Saved ETL replay | Nine command groups plus two unassigned report/timer/delay groups; WMI dispatch precedes each extra group; origin unknown |
 | Unmatched-report counter changes | Saved ETL replay | Both extra groups change the SoC value cached across the preceding nine reads; changed values do not establish freshness or simultaneous sampling |
 | Pre-ETW memory log | Exact-build static | 2 MiB text ring and copy/file consumers identified; userspace retrieval, concurrency and latency remain unqualified |
-| Post-quarantine evidence draining | Offline regression | Tail persistence and separate cleanup receipts validated synthetically, including failed stop signaling; modified controller not live-qualified |
+| Passive follow-up after cleanup repair | Live, zero private requests | One 30-second observation passed; 111 health/connection records each, zero timing events/loss, normal observer stop and unchanged quarantine |
+| Scan attribution lead | Saved ETL context | START_SCAN logged about 28.6 ms before first unmatched TSF report; temporal overlap, not causal attribution |
+| Post-quarantine evidence draining | Offline regression plus passive live check | Tail persistence and failure cases validated synthetically; normal shutdown passed one passive live run; no private campaign requalification |
 | FTM result aggregation | Static binary and saved-trace replay | Post-filter selection model matches count, RTT and auxiliary field in 10/10 callbacks; empty-array selection explains two zero-count results |
 | Adapter restart/reassociation | Live, one targeted restart | Same profile recovered automatically; Up observed after 7.18 s; pre/post captures and one nonempty FTM result succeeded; no continuity claim during the gap |
 | Raw-register safety | Unvalidated | No qualified Windows memory-type/address target |

@@ -39,6 +39,9 @@ jobs:
       - name: Reject malformed FTM delta logs (offline)
         shell: powershell
         run: ./tests/Test-FtmDeltaLogParser.ps1
+      - name: Check passive launcher exit codes (no acquisition)
+        shell: powershell
+        run: ./tests/Test-PassiveLauncher.ps1
       - name: Check bounded NDIS child helper (no tracing)
         shell: powershell
         run: |

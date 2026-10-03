@@ -29,6 +29,7 @@ permissions, exact-build prerequisites and explicit execution switches.
 | Clock-model investigation | `experiments/qualcomm/analyze_observation_quality.py`, `experiments/qualcomm/analyze_clock_pairing_hypothesis.py` | Conditional/held-out models; residual and feasibility are not calibrated uncertainty |
 | Quarantine postmortem | `experiments/qualcomm/analyze_quarantined_tsf.py`, `experiments/qualcomm/Export-TsfContext.ps1` | New maintained offline tools, actually replayed on the failed capture in this follow-up |
 | TSF routes and memory-log lead | `experiments/qualcomm/inspect_tsf_routes.py` | Exact-driver direct-branch/import inventory; no complete call-graph or live retrieval claim |
+| Passive quarantine follow-up | `experiments/qualcomm/run_passive_observation.py`, `experiments/qualcomm/Invoke-PassiveObservation.ps1` | One elevated 30-second window passed with zero requests/timing events and clean shutdown; no firmware-drain or ring-retrieval claim |
 | Cancellation/restart tests | Historical cancellation/reset sources in archive below | Prior bounded experiments only; not current live entry points or general reset/drain qualification |
 
 The [operations guide](OPERATIONS.md), [experiment guide](experiments.md), and
@@ -43,6 +44,11 @@ The [source archive](reproductions/2026-10-03/README.md) contains all 36 authore
 evidence directories. Its [manifest](reproductions/2026-10-03/manifest.json) lists
 every file, original SHA-256, archived SHA-256, redaction and normalization.
 The one third-party reference source is explicitly excluded.
+
+The later passive observation also retains its [exact acquisition wrapper](reproductions/2026-10-03-passive-launch/manifest.json)
+separately, because the maintained wrapper received an offline stderr/exit-code
+correction after that successful run. This is an additional snapshot beyond the
+original 36-file archive.
 
 This covers historical private getters, early latch/FTM variants, cancellation
 and reconnect helpers, topology inspection, campaign summaries and launchers,
@@ -132,6 +138,7 @@ has changed and the unmatched-report producer remains unresolved.
 
 ## Findings index
 
+- [Live passive check, memory-log consumers and scan attribution lead](qualification/passive-and-retrieval-validation-2026-10-03.md)
 - [Unmatched TSF counter behavior and the host-memory log path](qualification/unmatched-tsf-and-memory-log.md)
 - [Proposed hardware-time boundary](api-direction.md)
 - [ALFA AWUS036AXML / MT7921AUN](axml.md)

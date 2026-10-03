@@ -7,7 +7,7 @@ param(
     [Parameter(Mandatory=$true)][string]$EtlPath,
     [Parameter(Mandatory=$true)][ValidateNotNullOrEmpty()][int[]]$ReportOrdinals,
     [Parameter(Mandatory=$true)][string]$OutputPath,
-    [ValidateRange(0,20)][int]$ContextMilliseconds=2
+    [ValidateRange(0,1000)][int]$ContextMilliseconds=2
 )
 $ErrorActionPreference='Stop'
 Set-StrictMode -Version Latest

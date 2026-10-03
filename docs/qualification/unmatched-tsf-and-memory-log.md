@@ -12,6 +12,9 @@ driver 1.0.4374.1300, SHA-256
 The SYS hash was recomputed before inspection. RVAs below apply only to that
 image and are not callable userspace interfaces.
 
+Subsequent results: [live passive validation, lifecycle dump consumers and scan
+attribution lead](passive-and-retrieval-validation-2026-10-03.md).
+
 ## 1. The extra reports changed the previously cached SoC value
 
 All nine requested action-3 report groups used the same SoC value. Both subsequent

@@ -19,6 +19,9 @@ The latest offline follow-up identifies [changed SoC values in the unmatched
 reports and a pre-ETW host-memory ring](unmatched-tsf-and-memory-log.md).
 The ring has internal copy/file consumers; a safe userspace retrieval contract
 and concurrent-copy consistency are not yet established.
+The [subsequent passive live check](passive-and-retrieval-validation-2026-10-03.md)
+passed without private requests. Its saved-trace follow-up also identified a scan
+command shortly before the first unmatched report; causality remains unproved.
 
 ## Four quantities that must remain separate
 

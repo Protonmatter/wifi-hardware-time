@@ -7,7 +7,8 @@ The initial investigation covers the **ALFA AWUS036AXML / MediaTek MT7921AUN** o
 **Status: research and diagnostic prototypes. No end-to-end PTP synchronization or timing-accuracy claim has been validated.**
 
 The latest [private campaign is quarantined](docs/qualification/private-campaign-2026-10-03-quarantine.md)
-after unmatched TSF reports. The follow-up cleanup fix has offline validation;
+after unmatched TSF reports. The cleanup repair has offline regressions and one
+successful [passive live check](docs/qualification/passive-and-retrieval-validation-2026-10-03.md);
 it does not rearm acquisition or qualify the rejected capture.
 
 ## What has been established
@@ -24,6 +25,7 @@ On the inspected Qualcomm system, standard timestamp-capability and cross-timest
 
 - [Findings, validation scripts and historical source catalog](docs/validation-execution-catalog.md)
 - [Unmatched TSF reports and a pre-ETW memory-log lead](docs/qualification/unmatched-tsf-and-memory-log.md)
+- [Passive live validation and scan attribution lead](docs/qualification/passive-and-retrieval-validation-2026-10-03.md)
 
 Current direction: [private timing acquisition](docs/qualification/private-timing-acquisition-plan.md).
 Private exact-build interfaces are first-class research candidates; public NDIS

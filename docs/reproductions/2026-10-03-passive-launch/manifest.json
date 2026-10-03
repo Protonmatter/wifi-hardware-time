@@ -1,0 +1,9 @@
+{
+  "schema": "passive-launch-source/v1",
+  "source": "experiments/qualcomm/Invoke-PassiveObservation.ps1",
+  "sha256": "5875b8782861b166373d5f317e86e4c962d206c04be5fc1ff9e8144be1251c48",
+  "archive": "Invoke-PassiveObservation.ps1.txt",
+  "recovery": "Reconstructed from the saved edit and verified byte-for-byte against the acquisition manifest SHA-256",
+  "execution": "Elevated passive run PassiveValidation-ee4404db9314; exit 0",
+  "limitation": "Pre-fix Windows PowerShell native stderr handling; historical source only"
+}
