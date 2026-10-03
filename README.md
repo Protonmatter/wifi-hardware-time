@@ -32,6 +32,10 @@ On the inspected Qualcomm system, standard timestamp-capability and cross-timest
 - [Lifecycle invalidation rules](docs/qualification/lifecycle-matrix.md)
 - [Guarded live acquisition campaign and execution status](docs/qualification/live-acquisition-campaign.md)
 - [Completed idle/workload campaign results](docs/qualification/acquisition-campaign-2026-10-02-results.md)
+- [Packet-to-clock workflow diagrams and uncertainty map](docs/packet-to-clock-map.md)
+- [FTM and TSF/SoC clock-relationship investigation](docs/qualification/clock-relationship-investigation.md)
+- [Pre-aggregation FTM export investigation](docs/qualification/ftm-raw-access-followup.md)
+- [Windows cross-timestamp error and packet timestamp paths](docs/qualification/windows-timestamp-path-followup.md)
 - [Stronger timestamp paths and equipment gates](docs/qualification/backend-and-reference-next-steps.md)
 - [Pinned sources and provenance](docs/sources.md)
 
