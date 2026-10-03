@@ -12,7 +12,8 @@ from pathlib import Path
 def decode(data: bytes) -> dict[str, int | bool]:
     if len(data)!=104:raise ValueError('Expected one 104-byte FTM result')
     status=struct.unpack_from('<I',data,8)[0]
-    result={'reported_target_status':status,'distance_accuracy_validated':False}
+    result={'reported_target_status':status,'distance_accuracy_validated':False,
+            'rtt_variance_semantics_validated':False}
     if status:return result
     measurements=struct.unpack_from('<H',data,14)[0]
     if measurements==0:raise ValueError('Successful target has zero measurements')

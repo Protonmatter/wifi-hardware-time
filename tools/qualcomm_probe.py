@@ -13,8 +13,10 @@ from pathlib import Path
 import struct
 import subprocess
 import os
+import contextlib
 
 from qualcomm_protocol import QUALIFIED_SHA256, build_request, validate_driver
+from campaign_admission import Admission,transition
 
 
 class Overlapped(ct.Structure):
@@ -31,7 +33,11 @@ def main() -> None:
     ap.add_argument('--tsf-action', type=int, choices=(3, 4), default=3,
                     help='TSF only: 3 READ_VALUE (default), 4 QTIMER_CAPTURE; changes capture state')
     ap.add_argument('--output', type=Path, help='Optional local JSON output; parent must exist')
+    ap.add_argument('--campaign-control',type=Path,help='Controller-owned submission record; requires --campaign-mutex')
+    ap.add_argument('--campaign-mutex',help='Controller-owned local Windows mutex')
     args = ap.parse_args()
+    if bool(args.campaign_control)!=bool(args.campaign_mutex) or (args.campaign_control and (not args.execute or args.command!='tsf_read_value')):
+        ap.error('Campaign admission requires both control and mutex, --execute, and TSF command')
     if os.name != 'nt' or not 0 < args.if_index <= 0x7FFFFFFF:
         ap.error('Requires Windows and a positive interface index below 2^31')
     if args.command != 'tsf_read_value' and args.tsf_action != 3:
@@ -81,8 +87,18 @@ def main() -> None:
     frequency = ct.c_int64()
     if not k.QueryPerformanceFrequency(ct.byref(frequency)) or frequency.value <= 0:
         raise RuntimeError('QPC frequency unavailable')
+    admission=None
+    if args.campaign_control:
+        admission=Admission(args.campaign_control,args.campaign_mutex)
+        try:
+            with admission.locked():
+                transition(admission.path,'ready')
+            admission.wait_permission()
+        except BaseException:
+            admission.close();raise
     handle = k.CreateFileW(r'\\.\QcomWifi', 0x80000000, 3, None, 3, 0x40000000, None)
     if handle == ct.c_void_p(-1).value:
+        if admission:admission.close()
         raise ct.WinError(ct.get_last_error())
     event = None
     report = {'observed_utc': datetime.datetime.now(datetime.timezone.utc).isoformat(),
@@ -97,11 +113,13 @@ def main() -> None:
         ov = Overlapped(hEvent=event)
         returned = ct.c_uint32()
         counter = ct.c_int64()
-        if not k.QueryPerformanceCounter(ct.byref(counter)):
-            raise RuntimeError('QPC read failed')
-        report['qpc_request_before'] = counter.value
-        ok = k.DeviceIoControl(handle, 0x00220182, incoming, 128, outgoing, 100, ct.byref(returned), ct.byref(ov))
-        error = 0 if ok else ct.get_last_error()
+        with admission.locked() if admission else contextlib.nullcontext():
+            if admission:transition(admission.path,'submit')
+            if not k.QueryPerformanceCounter(ct.byref(counter)):
+                raise RuntimeError('QPC read failed')
+            report['qpc_request_before'] = counter.value
+            ok = k.DeviceIoControl(handle, 0x00220182, incoming, 128, outgoing, 100, ct.byref(returned), ct.byref(ov))
+            error = 0 if ok else ct.get_last_error()
         report['initial_error'] = error
         if not ok and error == 997:
             wait = k.WaitForSingleObject(event, 2000)
@@ -127,6 +145,12 @@ def main() -> None:
         if event:
             k.CloseHandle(event)
         report['handle_closed'] = bool(k.CloseHandle(handle))
+        if admission:
+            try:
+                with admission.locked():
+                    if json.loads(admission.path.read_text())['state']=='submitted' and report['handle_closed']:
+                        transition(admission.path,'drained')
+            finally:admission.close()
         if args.output:
             args.output.write_text(json.dumps(report, indent=2) + '\n', encoding='utf-8')
     print(json.dumps(report, indent=2))

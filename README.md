@@ -25,6 +25,14 @@ On the inspected Qualcomm system, standard timestamp-capability and cross-timest
 - [Operations and reproducibility](docs/OPERATIONS.md)
 - [TSF capture and offline series analysis](docs/OPERATIONS.md#capture-and-analyze-a-tsf-series)
 - [Exact-build latch and FTM experiments](docs/experiments.md)
+- [FTM aggregation and TSF report provenance](docs/ftm-result-provenance.md)
+- [Research-to-userspace-clock roadmap](docs/superpowers/plans/2026-10-02-research-to-userspace-clock.md)
+- [Offline evidence contract and downstream handoff](docs/evidence-contract.md)
+- [Held-out observation-quality results](docs/qualification/qualcomm-observation-matrix.md)
+- [Lifecycle invalidation rules](docs/qualification/lifecycle-matrix.md)
+- [Guarded live acquisition campaign and execution status](docs/qualification/live-acquisition-campaign.md)
+- [Completed idle/workload campaign results](docs/qualification/acquisition-campaign-2026-10-02-results.md)
+- [Stronger timestamp paths and equipment gates](docs/qualification/backend-and-reference-next-steps.md)
 - [Pinned sources and provenance](docs/sources.md)
 
 ## Quick start

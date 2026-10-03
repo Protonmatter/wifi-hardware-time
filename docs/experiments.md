@@ -87,6 +87,8 @@ python experiments/qualcomm/decode_ftm_response.py artifacts/WifiFtm-<run-id>/re
 
 For a series, use `response-001.bin` through the actual last response. Each decode writes a distinct adjacent JSON file; `--output` overrides its path. The decoder omits BSSID/location data, retains signed RTT, and does not interpret measurement fields on failed target status. It rejects a successful status with zero measurements. RTT values and variance fields do not establish accuracy.
 
+`reported_rtt_variance_raw` is retained for compatibility, but its statistical meaning is unqualified: the decoder emits `rtt_variance_semantics_validated: false`. Saved-trace replay links this value to a calculation involving channel means, not squared deviations. See [FTM result provenance](ftm-result-provenance.md) before consuming it as a quality metric.
+
 ## Exit codes, cleanup, and limits
 
 Both capture wrappers return 0 for completed preview/collection and 1 for failure. Invalid arguments/elevation requirements fail before live work. Python analyzers return 0 for internally consistent evidence and nonzero on failure; check exit codes before consuming any old output file. Native helper usage returns 2; failed prerequisites/results return 1.

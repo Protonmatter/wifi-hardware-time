@@ -17,6 +17,7 @@ class ResponseTests(unittest.TestCase):
         self.assertEqual(result['reported_rssi_dbm'],-40)
         self.assertNotIn('bssid',result)
         self.assertFalse(result['distance_accuracy_validated'])
+        self.assertFalse(result['rtt_variance_semantics_validated'])
 
     def test_bad_size(self):
         for size in (0,103,105):

@@ -15,6 +15,8 @@ This is a sanitized summary of observations from the initial 2026-10-01/02 inves
 | Firmware report delivery/order | Live, bounded series | Twelve matching reports; eleven logs after userspace completion observation and one before; firmware sampling/completion instant unknown |
 | Repeated TSF capture | Live, public wrapper at c960dcc | Twelve reads over 14.39 s, zero trace loss, successful cleanup; driver version/hash and final Up state preserved |
 | SoC latch refresh | Live, exact-build experiment | Three capture actions refreshed the SoC field; subsequent reads reused it; simultaneous counter latching unproven |
+| Guarded idle/workload acquisition | Live, new controller | 12/12 captures, 138/138 requests, zero reported trace loss; 18 capture refreshes and 108 eligible cached-read reuses; all 14 observer sessions cleaned up |
+| FTM result aggregation | Static binary and saved-trace replay | Post-filter selection model matches count, RTT and auxiliary field in 10/10 callbacks; empty-array selection explains two zero-count results |
 | Adapter restart/reassociation | Live, one targeted restart | Same profile recovered automatically; Up observed after 7.18 s; pre/post captures and one nonempty FTM result succeeded; no continuity claim during the gap |
 | Raw-register safety | Unvalidated | No qualified Windows memory-type/address target |
 | Arbitrary hardware RX/TX stamps | Unvalidated | No complete interface demonstrated |
@@ -22,9 +24,18 @@ This is a sanitized summary of observations from the initial 2026-10-01/02 inves
 
 The public packaging adds explicit interface selection and preview-by-default behavior. Offline checks and local discovery/preview can validate packaging; they do not replace the original hardware evidence. Hosted CI never accesses a wireless adapter and does not contain proprietary driver fixtures.
 
+The [guarded campaign](qualification/acquisition-campaign-2026-10-02-results.md)
+completed after a successful elevation retry. Its real-time log-to-reader delivery
+was typically about 1.6 seconds and exceeded two seconds for four observations.
+This qualifies bounded experimental acquisition in the tested conditions, not a
+low-latency hardware clock API, atomic sampling, calibrated accuracy or forced
+failure/drain behavior. The final adapter remained Up on the same driver hash.
+
 The decoder and analyzers were checked offline against saved live traces without publishing those traces. The public 12-read wrapper and optional capability collection completed an elevated run at `c960dcc`. A later live rerun of the published `e7da355` latch/FTM wrappers reproduced the latch behavior but exposed a remaining FTM validation gap: one result had successful API/target status and a matching BSSID, but zero measurements and RTT -1. The offline decoder rejected it while the native helper accepted it.
 
 The native helper now requires a nonzero measurement count. A new bounded live run observed three nonempty results, then rejected another zero-measurement result and stopped before a fifth request, with trace cleanup and Wi-Fi Up. An offline C regression covers the zero-measurement counterexample and preserves signed RTT handling when measurements exist. This validates result completeness, not accuracy.
+
+A subsequent offline investigation traced the empty-array selection and the origin of the callback's raw variance field. The latter matches a calculation involving the array means, so it is not qualified as statistical variance or timing uncertainty. It also traced the zero-filled TSF command tail and the report handler's 32-bit difference callback. See [result provenance](ftm-result-provenance.md) for RVAs, replay evidence, and limits; this follow-up did not repeat a hardware experiment.
 
 Two local cancellation probes received `ERROR_CANCELLED` callbacks and normal follow-up API requests completed. Firmware/WDI work was also observed after cancellation; the internal Windows path calls nonabortive `RpcAsyncCancelCall`. Client completion cancellation is not evidence of immediate RF cessation. One follow-up response was empty despite success status, so cancellation recovery is not universally qualified.
 
