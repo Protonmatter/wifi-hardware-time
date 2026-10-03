@@ -1,18 +1,31 @@
+```mermaid
 flowchart TB
   REF["Reference peer<br/>relative domain, or independently qualified UTC"] --> P["Matched packet timestamps or raw FTM exchange<br/>required for qualified time transfer"]
-  NIC["Local TSF / FTM timer domains<br/>domain relationship must be established"] --> P
+  NIC["Local TSF and FTM timers"] --> REL["Domain relationship<br/>must be established"]
+  REL --> P
   NIC --> C["NIC-to-host cross-timestamp mapping<br/>currently unqualified on Qualcomm"]
   P --> EST["Rate / offset estimator<br/>event placement and asymmetry error budget"]
   C --> EST
-  Q["Host QPC in-process read"] --> FAST["Application now()"]
   EST --> SNAP["Immutable model snapshot<br/>reference ID, epochs, model version, age, error bound"]
+  Q["Host QPC in-process read"] --> FAST["Application now()"]
   SNAP --> FAST
-  CHECK["Loss, restart, roam, stale age,<br/>reference change or unknown error"] --> INVALID["Invalidate / reacquire<br/>explicit host-only fallback"]
-  INVALID --> SNAP
+  SNAP --> CHECK["Loss, restart, roam, stale age,<br/>reference change, or unknown error"]
+  NIC --> CHECK
+  CHECK --> INVALID["Invalidate this snapshot"]
+  INVALID --> HOST["Explicit host-only time<br/>not a qualified reference"]
+  INVALID --> P
+  INVALID --> C
   FAST --> OUT["Qualified logical reference time<br/>only if every required bound is known and below target"]
-  OUT -. "separate future capability" .-> OS["Optional OS clock discipline<br/>explicit reference and ownership policy"]
+  OUT -.->|"separate future capability"| OS["Optional OS clock discipline<br/>explicit reference and ownership policy"]
   FTM["Current aggregate FTM RTT"] --> DIAG["Ranging diagnostics only<br/>excluded from clock-offset estimator"]
-  classDef missing fill:#fff2dd,stroke:#ac6b12,color:#241b0e;
-  classDef proposed fill:#e6eefc,stroke:#315b96,color:#182844;
-  class P,C missing;
-  class REF,EST,SNAP,FAST,OUT,OS proposed;
+
+  classDef missing fill:#fff2dd,stroke:#ac6b12,color:#241b0e
+  classDef proposed fill:#e6eefc,stroke:#315b96,color:#182844
+  classDef existing fill:#f3f3f1,stroke:#6d6d67,color:#24221c
+  classDef future fill:#f6eef8,stroke:#6d4a86,color:#2a1b33
+
+  class P,C,REL missing
+  class EST,SNAP,FAST,CHECK,INVALID,OUT,HOST proposed
+  class REF,NIC,Q,FTM,DIAG existing
+  class OS future
+```
