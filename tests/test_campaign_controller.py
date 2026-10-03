@@ -1,12 +1,15 @@
-import json
-from pathlib import Path
+
 import sys
+from pathlib import Path
+# Resolve repository packages when this file is used as a direct CLI.
+if __package__ in (None, ""):
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+import json
 import tempfile
 import unittest
 from unittest.mock import patch,Mock
-sys.path[:0]=[str(Path(__file__).resolve().parents[1]/'tools'),str(Path(__file__).resolve().parents[1]/'experiments/qualcomm')]
-from campaign_admission import transition
-from run_acquisition_campaign import TraceOwner,finalize_run
+from research.acquisition.campaign_admission import transition
+from research.acquisition.run_acquisition_campaign import TraceOwner,finalize_run
 
 
 class ControllerTests(unittest.TestCase):
@@ -35,7 +38,7 @@ class ControllerTests(unittest.TestCase):
                     calls.append(command)
                     if failure=='timeout' and command[1]=='start':raise TimeoutError('start uncertain')
                     return Mock(stdout='ok',returncode=0)
-                with patch('run_acquisition_campaign.run',side_effect=fake):
+                with patch('research.acquisition.run_acquisition_campaign.run',side_effect=fake):
                     try:
                         with patch('pathlib.Path.write_text',side_effect=OSError('disk')) if failure=='write' else __import__('contextlib').nullcontext():
                             owner.start([])

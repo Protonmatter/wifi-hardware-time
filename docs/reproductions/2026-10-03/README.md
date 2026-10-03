@@ -1,5 +1,9 @@
 # Retained validation-source archive
 
+This archive preserves older authored scripts as historical evidence, not as tools to run today. Some predate current safety and result checks. Each text snapshot has recorded hashes and transformations; use the maintained research folders for current commands and the linked reports to understand what the historical experiments actually demonstrated.
+
+**Key terms:** A source snapshot is a saved code version. Hashes identify exact bytes. Redaction removes private details; a redacted snapshot may explain an experiment without being an executable reproduction. See the [glossary](../../glossary.md).
+
 This archive contains **36 authored source snapshots** retained from local testing,
 validation and analysis. It is historical evidence, not an additional set of
 supported executable entry points. Every source is stored with a final `.txt`
@@ -9,7 +13,7 @@ execute/import/compile it.
 Do not rename these files and run them as current tools. Some send private requests
 implicitly, have unbounded cancellation drains, restart an adapter, or predate
 the current result-validation rules. Current commands are in the
-[execution catalog](../../validation-execution-catalog.md).
+[execution catalog](../../overview/validation-execution-catalog.md).
 
 ## Provenance and transformations
 

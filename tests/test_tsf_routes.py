@@ -1,12 +1,15 @@
 """Synthetic ARM64 words only; optional exact-file scan never opens a device."""
-from pathlib import Path
-import struct
+
 import sys
+from pathlib import Path
+# Resolve repository packages when this file is used as a direct CLI.
+if __package__ in (None, ""):
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+import struct
 import os
 import unittest
 
-sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'experiments/qualcomm'))
-from inspect_tsf_routes import scan_words, inspect_image
+from research.tsf.inspect_tsf_routes import scan_words, inspect_image
 
 
 class RouteTests(unittest.TestCase):

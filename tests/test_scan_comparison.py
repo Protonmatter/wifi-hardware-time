@@ -1,18 +1,21 @@
 """Offline bounds and attribution regressions for a documented scan experiment."""
-import ctypes
-from pathlib import Path
+
 import sys
+from pathlib import Path
+# Resolve repository packages when this file is used as a direct CLI.
+if __package__ in (None, ""):
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+import ctypes
 import unittest
 import json
 import tempfile
 from types import SimpleNamespace
 from unittest.mock import Mock,patch
 
-sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'experiments/qualcomm'))
-from run_scan_comparison import ScanGate,ScanClient,GUID,Notification,scan_completion,assess_trial
-from run_passive_observation import QUALIFIED_NATIVE,sha
+from research.acquisition.run_scan_comparison import ScanGate,ScanClient,GUID,Notification,scan_completion,assess_trial
+from research.acquisition.run_passive_observation import QUALIFIED_NATIVE,sha
 from test_passive_observation import controls,decoded
-import run_scan_comparison as comparison
+from research.acquisition import run_scan_comparison as comparison
 
 
 def report():return dict(kind='report',raw_timestamp=100,vdev=0,tsf_raw=1000)

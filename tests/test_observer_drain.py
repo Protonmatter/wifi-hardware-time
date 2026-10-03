@@ -1,18 +1,21 @@
 """Offline observer cleanup regressions; no Windows/device calls."""
+
+import sys
+from pathlib import Path
+# Resolve repository packages when this file is used as a direct CLI.
+if __package__ in (None, ""):
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import io
 import json
-from pathlib import Path
 import queue
-import sys
 import subprocess
 import tempfile
 from types import SimpleNamespace
 import unittest
 from unittest.mock import Mock
 
-sys.path[:0]=[str(Path(__file__).resolve().parents[1]/'experiments/qualcomm'),str(Path(__file__).resolve().parents[1]/'tools')]
-from campaign_gate import ReportGate
-from run_acquisition_campaign import Observer
+from research.acquisition.campaign_gate import ReportGate
+from research.acquisition.run_acquisition_campaign import Observer
 
 
 def observer(folder):

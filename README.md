@@ -1,106 +1,66 @@
 # Wi-Fi Hardware Time
 
-Research into exposing Wi-Fi hardware clocks, packet timestamps, and clock correlation through a reusable API.
-
-The initial investigation covers the **ALFA AWUS036AXML / MediaTek MT7921AUN** on Linux and Windows, and a **Qualcomm FastConnect 7800** Windows ARM64 driver. It includes source-backed findings, narrow diagnostic tools, and explicit qualification limits.
-
-**Status: research and diagnostic prototypes. No end-to-end PTP synchronization or timing-accuracy claim has been validated.**
-
-The latest [private campaign is quarantined](docs/qualification/private-campaign-2026-10-03-quarantine.md)
-after unmatched TSF reports. The cleanup repair has offline regressions and one
-successful [passive live check](docs/qualification/passive-and-retrieval-validation-2026-10-03.md);
-it does not rearm acquisition or qualify the rejected capture.
-
-Follow-up status on 2026-10-03: three controlled scans reproduced additional TSF
-reports, but all failed the four-second completion profile. Exact-build inspection
-then narrowed the ring consumers to diagnostic/recovery paths and located RX
-PPDU timestamp fields. A finite model disproves treating equal copies and an
-unchanged reservation position as proof of complete records. Safe live retrieval,
-request identity, sampling semantics and hardware/QPC conversion remain open.
-Reset, suspend and roaming are preparation only in the latest phase. See the
-[qualification ledger](docs/qualification/gap-closure-ledger.md) for current gates.
-
-## What has been established
-
-| Backend | Evidence | Remaining gap |
-|---|---|---|
-| Linux mt76 / MT7921 USB | TSF read/write callbacks, RX descriptor timing, USB TX-status processing, defined TX timestamp field | A reliable error-reporting snapshot API, TX semantics, reset epochs, PHC/socket timestamp integration |
-| Windows MediaTek 1.0.0.119 x64 | Static private register read/write and firmware response paths | Live hardware qualification; standard NDIS timestamp exposure unproven |
-| Windows Qualcomm 1.0.4374.1300 ARM64 | Repeated TSF reports, action-dependent SoC refresh, and six successful FTM operations | Exact sampling/simultaneity, independent-reference accuracy, safe registers, and arbitrary packet timestamps remain unqualified |
-
-On the inspected Qualcomm system, standard timestamp-capability and cross-timestamp APIs returned Win32 **23 / ERROR_CRC**, including elevated queries. Failed queries are not interpreted as capability absence. FTM operations succeeded, but their reported RTT values did not agree with a rough distance estimate; no calibrated ranging accuracy is claimed.
+This project asks whether Wi-Fi hardware can provide trustworthy timestamps for applications and synchronized clocks. We have recovered useful diagnostic data, but have not demonstrated calibrated synchronization. The research is organized by the question each experiment answers, with its scripts, evidence limits and diagrams linked together.
 
 ## Contents
 
-- [Findings, validation scripts and historical source catalog](docs/validation-execution-catalog.md)
-- [Unmatched TSF reports and a pre-ETW memory-log lead](docs/qualification/unmatched-tsf-and-memory-log.md)
-- [Passive live validation and scan attribution lead](docs/qualification/passive-and-retrieval-validation-2026-10-03.md)
-- [Controlled scan/TSF results](docs/qualification/scan-tsf-results-2026-10-03.md)
-- [Qualification gap closure ledger](docs/qualification/gap-closure-ledger.md)
-- [Timing return paths, ring consistency and RX descriptor findings](docs/qualification/timing-boundary-investigation-2026-10-03.md)
-- [Prepared lifecycle and timing qualification cases](docs/qualification/lifecycle-qualification-preparation.md)
+- [Start here](#start-here)
+- [Research areas](#research-areas)
+- [What works and what remains open](#what-works-and-what-remains-open)
+- [Run offline checks](#run-offline-checks)
+- [Repository and publication boundaries](#repository-and-publication-boundaries)
 
-Current direction: [private timing acquisition](docs/qualification/private-timing-acquisition-plan.md).
-Private exact-build interfaces are first-class research candidates; public NDIS
-support is not a prerequisite for the Qualcomm research backend.
+## Start here
 
-- [ALFA / MediaTek investigation](docs/axml.md)
-- [Qualcomm private timing path](docs/qualcomm.md)
-- [Validation ledger and limits](docs/validation.md)
-- [Proposed API boundary](docs/api-direction.md)
-- [Operations and reproducibility](docs/OPERATIONS.md)
-- [TSF capture and offline series analysis](docs/OPERATIONS.md#capture-and-analyze-a-tsf-series)
-- [Exact-build latch and FTM experiments](docs/experiments.md)
-- [FTM aggregation and TSF report provenance](docs/ftm-result-provenance.md)
-- [Research-to-userspace-clock roadmap](docs/superpowers/plans/2026-10-02-research-to-userspace-clock.md)
-- [Offline evidence contract and downstream handoff](docs/evidence-contract.md)
-- [Held-out observation-quality results](docs/qualification/qualcomm-observation-matrix.md)
-- [Lifecycle invalidation rules](docs/qualification/lifecycle-matrix.md)
-- [Guarded live acquisition campaign and execution status](docs/qualification/live-acquisition-campaign.md)
-- [Completed idle/workload campaign results](docs/qualification/acquisition-campaign-2026-10-02-results.md)
-- [Packet-to-clock workflow diagrams and uncertainty map](docs/packet-to-clock-map.md)
-- [FTM and TSF/SoC clock-relationship investigation](docs/qualification/clock-relationship-investigation.md)
-- [Pre-aggregation FTM export investigation](docs/qualification/ftm-raw-access-followup.md)
-- [Windows cross-timestamp error and packet timestamp paths](docs/qualification/windows-timestamp-path-followup.md)
-- [NDIS raw-status observation path](docs/qualification/ndis-status-observation-path.md)
-- [Bounded live NDIS status capture](docs/qualification/ndis-status-capture-2026-10-03.md)
-- [Refined NDIS experiment and capability qualification](docs/qualification/ndis-refined-experiment.md)
-- [NDIS rejection origin and interface-scoped activities](docs/qualification/ndis-rejection-origin-analysis.md)
-- [FTM notification and TSF routing](docs/qualification/ftm-notification-routing.md)
-- [TSF/SoC rate identifiability](docs/qualification/counter-rate-identifiability.md)
-- [Stronger timestamp paths and equipment gates](docs/qualification/backend-and-reference-next-steps.md)
-- [Pinned sources and provenance](docs/sources.md)
+- New to the subject: [reading guide](docs/README.md) and [glossary](docs/glossary.md).
+- Want the outcome: [qualification ledger](docs/overview/gap-closure-ledger.md). *Qualification* means evidence supports a particular claim under stated conditions.
+- Want the workflow: [packet-to-clock diagrams](docs/clock-models/packet-to-clock-map.md).
+- Want to reproduce work: [operations](docs/overview/OPERATIONS.md) and [script/execution catalog](docs/overview/validation-execution-catalog.md).
+- Using older commands: [file-location guide](docs/overview/repository-layout.md). Paths changed; old live-launch manifests must not be reused.
 
-## Quick start
+## Research areas
 
-Python 3.11 or later is the intended baseline. The original local inspection used Python 3.14 on Windows ARM64. The public test workflow uses Python 3.11.
+| Question | Read the findings | Find the scripts |
+|---|---|---|
+| Which adapters and driver builds can we inspect? | [Adapters](docs/adapters/README.md) | [Discovery](research/adapters/README.md) |
+| Can we read the Wi-Fi timing counter reliably? | [TSF counter access](docs/tsf/README.md) | [TSF tools](research/tsf/README.md) |
+| What do Wi-Fi ranging results actually contain? | [FTM ranging](docs/ftm/README.md) | [FTM tools](research/ftm/README.md) |
+| What do the standard Windows timestamp APIs expose? | [Windows timestamp APIs](docs/windows-timestamps/README.md) | [Windows tools](research/windows_timestamps/README.md) |
+| Can we recognize missing, late or misleading reports? | [Acquisition and lifecycle](docs/acquisition/README.md) | [Collectors and checks](research/acquisition/README.md) |
+| Can we safely retrieve the driver's in-memory log? | [Memory-ring access](docs/memory-ring/README.md) | [Static inspection and models](research/memory_ring/README.md) |
+| Can hardware counter values be related to host time? | [Clock models](docs/clock-models/README.md) | [Analysis tools](research/clock_models/README.md) |
+| What evidence may an application safely consume? | [Evidence handoff](docs/evidence/README.md) | [Export and validation](research/evidence/README.md) |
+
+TSF is the Wi-Fi timing counter. FTM is a ranging procedure that measures round-trip timing. An API is an interface software uses to request data or an operation. These are separate parts of the clock problem, not interchangeable timestamp sources.
+
+## What works and what remains open
+
+- **Observed:** exact-build Qualcomm driver reports expose TSF and another counter. Selected requests refresh or reuse that second counter.
+- **Observed with limits:** FTM ranging operations return aggregate results. These do not expose all absolute event times needed to estimate clock offset.
+- **Acquisition stopped:** a private campaign encountered unmatched reports and remains quarantined, meaning further admission is blocked. Three later scans reproduced extra report traffic but failed the original four-second completion profile.
+- **Static findings only:** RX descriptor timestamp fields and in-memory diagnostic-log consumers are located. Static inspection reads source/binary files; it does not demonstrate a working live export.
+- **Not qualified:** fresh simultaneous sampling, hardware-to-host conversion, arbitrary RX/TX timestamps, calibrated accuracy and sub-millisecond synchronization.
+- **Preparation only:** new reset, suspend and roaming cases. No new disruptive run is authorized by these documents.
+
+The inspected hardware includes Qualcomm FastConnect 7800 and ALFA AWUS036AXML / MediaTek MT7921AUN. Findings apply to their stated builds; a product name alone is not sufficient provenance.
+
+## Run offline checks
+
+Python 3.11+ is the baseline. These checks do not open a wireless device:
 
 ```powershell
 python -m pip install -r requirements.txt
+python -m compileall -q research tests
 python -m unittest discover -s tests -v
 ```
 
-The protocol tests are offline and do not open a device. The optional driver-fixture test is skipped unless `WIFI_TIME_DRIVER_FIXTURE` points to a locally owned copy of the exact qualified SYS file.
+The optional `WIFI_TIME_DRIVER_FIXTURE` variable points to a locally owned, exact-build SYS driver file. Those tests inspect the file as data; they do not load it. Without the file, its tests skip. Live commands have additional requirements in the operations guide.
 
-For documented Windows timestamp-capability queries, first identify the interface:
+## Repository and publication boundaries
 
-```powershell
-Get-NetAdapter | Select-Object Name, ifIndex, InterfaceDescription, Status
-python tools/probe_timestamp_caps.py --if-index 7
-```
-
-Replace `7` with the intended interface index. The tool reads supported/active capabilities and requests one cross timestamp only if the active configuration advertises it. It does not enable timestamping or change adapter settings.
-
-The Qualcomm private probe **previews by default**:
-
-```powershell
-python tools/qualcomm_probe.py --if-index 7 --command get_hostdbglvl
-```
-
-It discovers the actual active driver, enforces an exact binary hash and command layout, and builds the request without opening the private device. `--execute` explicitly enables one private request. Read the [operations guide](docs/OPERATIONS.md) before using that option. A TSF read can submit a firmware action even though it does not enable automatic reporting or reset a counter.
-
-## Publication boundary
-
-This repository contains authored research notes and tools. Proprietary driver installers, SYS/DLL files, firmware, raw disassembly, ETL/packet captures, and endpoint-specific identifiers are excluded. Driver hashes identify the inspected artifacts; they do not grant redistribution rights. Obtain vendor software from its legitimate source.
-
-The initial import does not select a distribution license. Third-party sources remain governed by their respective licenses; they are linked rather than vendored.
+- This repository owns research, experiment tools and qualification evidence.
+- [userspace-clock](https://github.com/Protonmatter/userspace-clock) owns the application API. Its experimental host-only clock is separate from the unqualified Wi-Fi provider.
+- `docs/<topic>/diagrams/` contains editable Mermaid diagram sources. Topic pages explain arrows and evidence status; color is not the only status cue.
+- `docs/reproductions/` contains historical source snapshots stored as text. They are not current executable tools.
+- Driver binaries, firmware, raw traces, disassembly, endpoint identifiers and local captures remain outside public Git.
+- No distribution license has been selected. Third-party sources retain their own terms.

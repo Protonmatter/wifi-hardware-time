@@ -1,0 +1,18 @@
+flowchart TB
+  subgraph SEND["Sending: generic network path"]
+    A["1. Application asks to send"] -->|network data| B["2. Operating system and driver queue it"]
+    B -->|transfer to adapter| C["3. Adapter waits, groups frames and may retry"]
+    C -->|radio transmission| D["4. Candidate hardware TX timestamp"]
+  end
+  D -->|802.11 frame crosses the air| E["5. Candidate hardware RX timestamp"]
+  subgraph RECEIVE["Receiving: generic network path"]
+    E -->|device metadata beside the frame| F["6. Driver processes the received data"]
+    F -->|packet plus metadata, if exported| G["7. Operating system delivers it"]
+    G -->|receive call completes| H["8. Application observes arrival"]
+  end
+  D -. "separate timestamp result, if supported" .-> X(["Match the timestamp to the packet and retry"])
+  E -. "clock and event point must be known" .-> X
+  X -. "not yet qualified on this adapter" .-> U(["Hardware timestamp export remains open"])
+  A -. "host send-call time is a different event" .-> H
+  classDef gap fill:#fff2dd,stroke:#ac6b12,color:#241b0e;
+  class D,E,X,U gap;

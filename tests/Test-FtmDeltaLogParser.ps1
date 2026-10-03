@@ -1,6 +1,6 @@
 #requires -Version 5.1
 $ErrorActionPreference='Stop'
-. (Join-Path $PSScriptRoot '../experiments/qualcomm/FtmDeltaLog.ps1')
+. (Join-Path $PSScriptRoot '../research/ftm/FtmDeltaLog.ps1')
 $valid=ConvertFrom-FtmDeltaLogLine -Text 'prefix handle_merged_event: t3_del 10'
 if($valid.field -ne 't3_del' -or $valid.value -ne '10'){throw 'Valid field decode failed.'}
 if($null -ne (ConvertFrom-FtmDeltaLogLine -Text 'unrelated provider event')){throw 'Unrelated event accepted.'}

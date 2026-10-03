@@ -1,11 +1,14 @@
 """Synthetic instruction tests and optional owned-file inspection; no live access."""
-import os
-from pathlib import Path
+
 import sys
+from pathlib import Path
+# Resolve repository packages when this file is used as a direct CLI.
+if __package__ in (None, ""):
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+import os
 import unittest
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'experiments/qualcomm'))
-from inspect_timing_boundaries import decode_word_load, decode_pair_load, inspect_boundaries
+from research.memory_ring.inspect_timing_boundaries import decode_word_load, decode_pair_load, inspect_boundaries
 
 
 class BoundaryTests(unittest.TestCase):

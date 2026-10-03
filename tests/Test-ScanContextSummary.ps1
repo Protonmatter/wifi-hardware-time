@@ -1,7 +1,7 @@
 #requires -Version 5.1
 $ErrorActionPreference='Stop'
 $tokens=$null;$errors=$null
-$path=Join-Path $PSScriptRoot '../experiments/qualcomm/Export-TsfContext.ps1'
+$path=Join-Path $PSScriptRoot '../research/acquisition/Export-TsfContext.ps1'
 $ast=[System.Management.Automation.Language.Parser]::ParseFile((Resolve-Path $path).Path,[ref]$tokens,[ref]$errors)
 $function=$ast.Find({param($node) $node -is [System.Management.Automation.Language.FunctionDefinitionAst] -and $node.Name -eq 'Get-ScanContextSummary'},$true)
 if($null -eq $function){throw 'Missing scan-summary function'}

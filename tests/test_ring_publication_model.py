@@ -1,10 +1,13 @@
 """Adversarial model tests; these never inspect driver memory."""
-from pathlib import Path
+
 import sys
+from pathlib import Path
+# Resolve repository packages when this file is used as a direct CLI.
+if __package__ in (None, ""):
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import unittest
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'experiments/qualcomm'))
-from model_ring_publication import schedules, simulate, assess_model
+from research.memory_ring.model_ring_publication import schedules, simulate, assess_model
 
 
 class PublicationTests(unittest.TestCase):

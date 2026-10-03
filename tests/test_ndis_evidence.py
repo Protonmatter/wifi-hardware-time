@@ -8,9 +8,8 @@ import subprocess
 import tempfile
 import unittest
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'experiments/qualcomm'))
 try:
-    ndis = importlib.import_module('ndis_evidence')
+    ndis = importlib.import_module('research.windows_timestamps.ndis_evidence')
 except ModuleNotFoundError:
     ndis = None
 

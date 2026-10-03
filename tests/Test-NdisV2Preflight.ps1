@@ -1,6 +1,6 @@
 #requires -Version 5.1
 $ErrorActionPreference='Stop'
-$path=Join-Path $PSScriptRoot '../experiments/qualcomm/Capture-NdisTimestampStatusV2.ps1'
+$path=Join-Path $PSScriptRoot '../research/windows_timestamps/Capture-NdisTimestampStatusV2.ps1'
 $source=Get-Content -LiteralPath $path -Raw
 $begin=$source.IndexOf('$attempted=$true')
 $end=$source.IndexOf('finally {',$begin)

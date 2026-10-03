@@ -1,6 +1,6 @@
 #requires -Version 5.1
 $ErrorActionPreference='Stop'
-. (Join-Path $PSScriptRoot '../experiments/qualcomm/NdisV2Health.ps1')
+. (Join-Path $PSScriptRoot '../research/windows_timestamps/NdisV2Health.ps1')
 $header=[pscustomobject]@{kind='header';start_time='100';end_time='200';perf_frequency_hz='10000000';clock_type=1;pointer_size=8;buffers_written=2;events_lost=0;buffers_lost=0}
 $summary=[pscustomobject]@{kind='summary';process_status=0;close_status=0}
 $stop=[pscustomobject]@{status=0;events_lost=0;log_buffers_lost=0;real_time_buffers_lost=0;buffers_written=2}

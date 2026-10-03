@@ -1,11 +1,14 @@
 """Portable contract fixture tests; no downstream checkout required."""
+
+import sys
+from pathlib import Path
+# Resolve repository packages when this file is used as a direct CLI.
+if __package__ in (None, ""):
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import copy
 import json
-from pathlib import Path
-import sys
 import unittest
-sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'tools'))
-from validate_research_bundle import validate_bundle
+from research.evidence.validate_research_bundle import validate_bundle
 
 FIXTURES=Path(__file__).resolve().parents[1]/'fixtures/synthetic'
 

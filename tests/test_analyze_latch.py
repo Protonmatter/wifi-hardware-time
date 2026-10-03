@@ -1,12 +1,15 @@
 """Synthetic latch evidence only; never sends requests to a device."""
-import json
-from pathlib import Path
+
 import sys
+from pathlib import Path
+# Resolve repository packages when this file is used as a direct CLI.
+if __package__ in (None, ""):
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+import json
 import tempfile
 import unittest
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'experiments' / 'qualcomm'))
-from analyze_latch import EXPECTED_ACTIONS, analyze
+from research.tsf.analyze_latch import EXPECTED_ACTIONS, analyze
 
 
 class LatchAnalysisTests(unittest.TestCase):
