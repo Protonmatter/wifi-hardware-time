@@ -1,5 +1,5 @@
 #requires -Version 5.1
-param([string]$CaptureScript=(Join-Path $PSScriptRoot '../experiments/qualcomm/Capture-NdisTimestampStatus.ps1'))
+param([string]$CaptureScript=(Join-Path $PSScriptRoot '../research/windows_timestamps/Capture-NdisTimestampStatus.ps1'))
 $ErrorActionPreference='Stop'
 $capture=$CaptureScript
 $tokens=$null;$errors=$null

@@ -1,0 +1,30 @@
+flowchart TB
+  subgraph REQ["1. REQUEST AND REPORTED COUNTERS: inspected control path"]
+    direction TB
+    A["Sampler records request-start QPC<br/>QPC is the host interval counter"]
+    B["Observed: guarded QcomWifi request<br/>Exact driver hash required"]
+    C["Observed: command 0x5012<br/>Action 3 READ or action 4 CAPTURE"]
+    D(["Reported TSF and SoC values<br/>Sampling instant and pairing UNQUALIFIED"])
+    A -->|issue request| B
+    B -->|command dispatch| C
+    C -->|request processed: sampling instant unknown| D
+    B -. "IOCTL return: around 54 us median<br/>No counter tuple returned" .-> A
+  end
+  subgraph REP["2. ASYNCHRONOUS REPORT AND LOG DELIVERY"]
+    direction TB
+    E["Observed: firmware report 0x5005"]
+    F["Driver logs the report<br/>ETW timestamp is host logging time"]
+    G["ETW delivers the log to the reader<br/>About 1.6 seconds median delay"]
+    H["Diagnostic record<br/>Keep action, identity, epoch and report age"]
+    E -->|process event| F
+    F -->|asynchronous stream| G
+    G -->|parse and validate evidence| H
+  end
+  D ==>|report delivery| E
+  A -. "request-start to report log:<br/>about 0.27 ms median" .-> F
+  D -. "action behavior" .-> U(["Action 3: SoC cached or unknown<br/>Action 4: refreshed, simultaneous latch unproven"])
+  H -. "qualification limit" .-> X(["No calibrated TSF-to-QPC conversion"])
+  classDef gap fill:#fff2dd,stroke:#ac6b12,stroke-width:1.5px,color:#241b0e;
+  classDef seen fill:#e8f5ed,stroke:#34704a,color:#193323;
+  class D,U,X gap;
+  class B,C,E,F,G,H seen;

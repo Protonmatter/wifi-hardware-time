@@ -1,0 +1,15 @@
+flowchart TB
+  E["Radio event placement: UNKNOWN"] -->|error contribution| SUM["Combine every justified error bound"]
+  A["Different delay in each direction: UNKNOWN"] -->|possible offset bias| SUM
+  M["Hardware-to-host clock conversion: UNKNOWN"] -->|conversion error| SUM
+  D["Age since a valid sample"] --> H["Error may grow while waiting for fresh data"]
+  R["Remaining rate error: UNKNOWN"] --> H
+  H -->|age-dependent error| SUM
+  P["Arithmetic and API read error"] -->|software-verifiable contribution| SUM
+  SUM --> G{"Are all required errors bounded
+and within the stated target?"}
+  G -->|No or unknown: current state| NO(["Keep conversion unavailable or experimental"])
+  G -. "Yes, after independent validation" .-> OK(["Candidate for a scoped accuracy claim"])
+  X["Wrong clock epoch, stale source or missing packet identity"] -->|reject| NO
+  classDef unknown fill:#fff2dd,stroke:#ac6b12,color:#241b0e;
+  class E,A,M,R,NO unknown;

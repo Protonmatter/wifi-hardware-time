@@ -1,11 +1,14 @@
 """Passive-only qualification; synthetic records, no trace or adapter operations."""
-from pathlib import Path
+
 import sys
+from pathlib import Path
+# Resolve repository packages when this file is used as a direct CLI.
+if __package__ in (None, ""):
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import unittest
 import tempfile
 
-sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'experiments/qualcomm'))
-from run_passive_observation import assess, reserve_capture
+from research.acquisition.run_passive_observation import assess, reserve_capture
 
 
 def controls():

@@ -1,0 +1,34 @@
+flowchart TB
+  subgraph TX["TRANSMIT: generic layered path, not qualified Qualcomm export"]
+    direction TB
+    A["1. Application asks to send<br/>Optional host counter timestamp"]
+    B["2. Operating-system network queues"]
+    C["3. Driver packet buffer<br/>Optional software timestamp metadata"]
+    D["4. Host-to-adapter transfer<br/>PCIe, DMA or USB"]
+    E["5. Adapter and firmware queues<br/>Channel wait, aggregation and retries"]
+    F["6. Radio transmit reference point<br/>Candidate hardware TX timestamp"]
+    A --> B --> C --> D --> E --> F
+  end
+  F ==>|802.11 frame: no universal hardware timestamp field| W["OVER THE AIR"]
+  W ==> G
+  subgraph RX["RECEIVE: generic layered path"]
+    direction TB
+    G["7. Radio receive reference point<br/>Candidate hardware RX timestamp"]
+    H["8. Receive descriptor or firmware record<br/>Metadata beside the frame"]
+    I["9. Host transfer and driver processing<br/>Decode, reorder and split aggregates"]
+    J["10. Operating-system packet metadata<br/>Timestamp delivered only if supported"]
+    K["11. Application receives data<br/>Host receive time is a different event"]
+    G --> H --> I --> J --> K
+  end
+  L["Separate transmit status<br/>Completion time is not radio launch time"]
+  M(["UNQUALIFIED on this Qualcomm path:<br/>General RX/TX export and exact radio reference points"])
+  F -. "TX status or timestamp, if supported" .-> L
+  L -. "match to packet and retry before use" .-> K
+  C -. "missing qualification" .-> M
+  H -. "missing qualification" .-> M
+  classDef gap fill:#fff2dd,stroke:#ac6b12,stroke-width:1.5px,color:#241b0e;
+  classDef air fill:#e6eefc,stroke:#315b96,stroke-width:2px,color:#182844;
+  classDef hw fill:#fbebeb,stroke:#b83232,stroke-width:1.5px,color:#300;
+  class M,L gap;
+  class W air;
+  class F,G hw;

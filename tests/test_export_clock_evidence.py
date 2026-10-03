@@ -1,14 +1,17 @@
+
+import sys
+from pathlib import Path
+# Resolve repository packages when this file is used as a direct CLI.
+if __package__ in (None, ""):
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import copy
 import json
-from pathlib import Path
-import sys
 import tempfile
 import unittest
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'tools'))
 from test_analyze_tsf_series import fixture
-from qualcomm_protocol import QUALIFIED_SHA256
-from export_clock_evidence import normalize_run, export_sanitized
+from research.tsf.qualcomm_protocol import QUALIFIED_SHA256
+from research.evidence.export_clock_evidence import normalize_run, export_sanitized
 
 
 class ExportTests(unittest.TestCase):

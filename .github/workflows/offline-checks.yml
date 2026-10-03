@@ -11,17 +11,17 @@ jobs:
         with:
           python-version: '3.11'
       - run: python -m pip install -r requirements.txt
-      - run: python -m compileall -q tools experiments tests
+      - run: python -m compileall -q research tests
       - run: python -m unittest discover -s tests -v
       - name: Native FTM result regression (offline)
         run: |
           mkdir -p artifacts
           cc -std=c11 -Wall -Wextra -Werror tests/native_ftm_result.c -o artifacts/native_ftm_result
           ./artifacts/native_ftm_result
-      - run: python tools/qualcomm_probe.py --help
-      - run: python tools/analyze_tsf_series.py --help
-      - run: python experiments/qualcomm/analyze_latch.py --help
-      - run: python experiments/qualcomm/decode_ftm_response.py --help
+      - run: python research/tsf/qualcomm_probe.py --help
+      - run: python research/tsf/analyze_tsf_series.py --help
+      - run: python research/tsf/analyze_latch.py --help
+      - run: python research/ftm/decode_ftm_response.py --help
   windows-syntax:
     runs-on: windows-2022
     steps:
@@ -30,7 +30,7 @@ jobs:
         shell: powershell
         run: |
           $ErrorActionPreference = 'Stop'
-          Get-ChildItem tools,experiments,tests -Recurse -Filter '*.ps1' | ForEach-Object {
+          Get-ChildItem research,tests -Recurse -Filter '*.ps1' | ForEach-Object {
               $tokens = $null
               $parseErrors = $null
               [System.Management.Automation.Language.Parser]::ParseFile($_.FullName, [ref]$tokens, [ref]$parseErrors) | Out-Null
@@ -42,17 +42,20 @@ jobs:
       - name: Check passive launcher exit codes (no acquisition)
         shell: powershell
         run: ./tests/Test-PassiveLauncher.ps1
+      - name: Check scan context classification (no acquisition)
+        shell: powershell
+        run: ./tests/Test-ScanContextSummary.ps1
       - name: Check bounded NDIS child helper (no tracing)
         shell: powershell
         run: |
           ./tests/Test-NdisCaptureHelpers.ps1
-          ./tests/Test-NdisCaptureHelpers.ps1 -CaptureScript ./experiments/qualcomm/Capture-NdisTimestampStatusV2.ps1
+          ./tests/Test-NdisCaptureHelpers.ps1 -CaptureScript ./research/windows_timestamps/Capture-NdisTimestampStatusV2.ps1
           ./tests/Test-NdisV2Preflight.ps1
           ./tests/Test-NdisV2Health.ps1
       - name: Build documented-query and health helpers (no acquisition)
         shell: powershell
         run: |
-          ./experiments/qualcomm/Build-NdisExperiment.ps1 -Architecture x64
+          ./research/windows_timestamps/Build-NdisExperiment.ps1 -Architecture x64
           if ($LASTEXITCODE -ne 0) { throw 'Native build failed' }
           ./artifacts/ndis-experiment-x64/ndis_query_probe.exe --help
           if ($LASTEXITCODE -ne 0) { throw 'Probe help failed' }

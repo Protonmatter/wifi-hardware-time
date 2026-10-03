@@ -1,5 +1,9 @@
-from pathlib import Path
+
 import sys
+from pathlib import Path
+# Resolve repository packages when this file is used as a direct CLI.
+if __package__ in (None, ""):
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import unittest
 import copy
 import contextlib
@@ -8,8 +12,7 @@ import json
 import hashlib
 import tempfile
 from unittest.mock import patch
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'experiments' / 'qualcomm'))
-from analyze_observation_quality import evaluate, evaluate_rate_transfer, main
+from research.clock_models.analyze_observation_quality import evaluate, evaluate_rate_transfer, main
 
 
 def quality_fixture():
@@ -86,7 +89,7 @@ class QualityTests(unittest.TestCase):
             self.assertEqual(json.loads(output.getvalue())['heldout_count'],3)
 
     def test_loader_rejects_unknown_fields_before_any_model(self):
-        from analyze_observation_quality import _load
+        from research.clock_models.analyze_observation_quality import _load
         fixture=Path(__file__).resolve().parents[1]/'fixtures/synthetic/clock-evidence-v1.json'
         data=json.loads(fixture.read_text());data['observations'][0]['hostname']='private'
         with tempfile.TemporaryDirectory() as folder:

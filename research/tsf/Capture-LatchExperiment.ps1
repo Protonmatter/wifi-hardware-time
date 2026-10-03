@@ -1,0 +1,62 @@
+#requires -Version 5.1
+#requires -RunAsAdministrator
+<# Local bounded action-3/action-4 comparison. No reset or automatic reporting.
+Exit 0: collection completed, not a claim of valid latching. Exit 1: failure.
+Cleanup stops the named trace; external interruption: logman stop <SessionName> -ets.
+The inherited request cancellation drain can wait indefinitely on driver failure. #>
+[CmdletBinding()]
+param([Parameter(Mandatory=$true)][ValidateRange(1,2147483647)][int]$InterfaceIndex)
+$ErrorActionPreference='Stop'
+Set-StrictMode -Version Latest
+$sessionName='WifiLatch-' + [Guid]::NewGuid().ToString('N').Substring(0,12)
+$repoRoot=(Resolve-Path -LiteralPath (Join-Path $PSScriptRoot '../..')).Path
+$output=Join-Path $repoRoot ('artifacts/'+$sessionName)
+$probe=Join-Path $repoRoot 'research/tsf/qualcomm_probe.py'
+$started=$false
+$result=0
+$baseline=$null
+$actions=@(3,3,4,3,3,4,3,3,4,3,3)
+try {
+    New-Item -ItemType Directory -Path $output -ErrorAction Stop | Out-Null
+    [pscustomobject]@{SessionName=$sessionName;StartedUtc=[DateTime]::UtcNow.ToString('o');SampleCount=$actions.Count;Actions=$actions;MaxMB=32} |
+        ConvertTo-Json | Set-Content -LiteralPath (Join-Path $output 'session.json') -Encoding UTF8
+    & python $probe --if-index $InterfaceIndex --command tsf_read_value --tsf-action 4 --output (Join-Path $output 'preview.json')
+    if($LASTEXITCODE -ne 0){throw 'Exact driver/action qualification failed.'}
+    $selected=@(Get-NetAdapter -IncludeHidden -ErrorAction Stop | Where-Object {$_.ifIndex -eq $InterfaceIndex})
+    if($selected.Count -ne 1 -or $selected[0].Status -ne 'Up'){throw 'Target is missing or not Up.'}
+    $baseline=$selected[0]
+    $baseline | Select-Object Name,Status,ifIndex,DriverVersion | ConvertTo-Json |
+        Set-Content -LiteralPath (Join-Path $output 'adapter-before.json') -Encoding UTF8
+    & logman start $sessionName -p '{bb6f5b93-635c-47be-816f-e895e77064a8}' 0x2000000000000010 0xff -o (Join-Path $output 'tsf.etl') -f bincirc -max 32 -ets |
+        Set-Content -LiteralPath (Join-Path $output 'trace-start.txt') -Encoding UTF8
+    if($LASTEXITCODE -ne 0){throw 'Trace start failed; no request sent.'}
+    $started=$true
+    for($i=0;$i -lt $actions.Count;$i++){
+        & python $probe --if-index $InterfaceIndex --command tsf_read_value --tsf-action $actions[$i] --execute --output (Join-Path $output ('request-{0:D3}.json' -f ($i+1)))
+        if($LASTEXITCODE -ne 0){throw ('Request failed at sample '+($i+1))}
+        Start-Sleep -Milliseconds 500
+    }
+    Start-Sleep -Milliseconds 1000
+} catch {
+    $result=1
+    Write-Warning $_.Exception.Message
+    if(Test-Path -LiteralPath $output){[pscustomobject]@{Error=$_.Exception.Message} | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $output 'capture-error.json') -Encoding UTF8}
+} finally {
+    if($started){
+        & logman stop $sessionName -ets | Set-Content -LiteralPath (Join-Path $output 'trace-stop.txt') -Encoding UTF8
+        if($LASTEXITCODE -ne 0){$result=1;Write-Warning ('Stop failed: logman stop '+$sessionName+' -ets')}
+    }
+    try {
+        $final=@(Get-NetAdapter -IncludeHidden -ErrorAction Stop | Where-Object {$_.ifIndex -eq $InterfaceIndex})
+        if($final.Count -ne 1){throw 'Final target missing.'}
+        $final[0] | Select-Object Name,Status,ifIndex,DriverVersion | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $output 'adapter-after.json') -Encoding UTF8
+        if($final[0].Status -ne 'Up' -or $final[0].DriverVersion -ne '1.0.4374.1300'){
+            $result=1;Write-Warning 'Final adapter is not Up on the qualified version.'
+        }
+        if($null -ne $baseline -and $final[0].InterfaceGuid -ne $baseline.InterfaceGuid){
+            $result=1;Write-Warning 'Final adapter identity changed.'
+        }
+    } catch {$result=1;Write-Warning ('Final adapter check failed: '+$_.Exception.Message)}
+}
+Write-Output $output
+exit $result

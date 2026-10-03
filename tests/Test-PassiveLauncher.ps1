@@ -2,7 +2,7 @@
 [CmdletBinding()]
 param()
 $ErrorActionPreference='Stop'
-$source=Join-Path $PSScriptRoot '../experiments/qualcomm/Invoke-PassiveObservation.ps1'
+$source=Join-Path $PSScriptRoot '../research/acquisition/Invoke-PassiveObservation.ps1'
 $tokens=$null;$errors=$null
 $ast=[System.Management.Automation.Language.Parser]::ParseFile((Resolve-Path $source).Path,[ref]$tokens,[ref]$errors)
 if($errors.Count){throw ($errors|Out-String)}

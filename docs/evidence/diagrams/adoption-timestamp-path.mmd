@@ -1,0 +1,25 @@
+flowchart TB
+  Q["Implemented: host interval counter QPC"] -->|fast local read| FAST["Application asks for a timestamp"]
+  FAST -->|available now| LOCAL["Host-only event record<br/>No synchronized-time claim"]
+  REF(["Needed: controlled reference peer"]) -.-> RAW(["Needed: matched raw radio timestamps"])
+  NIC(["Local TSF and FTM timer observations"]) -.-> REL(["Establish counter domains and sampling semantics"])
+  REL -.-> RAW
+  REL -.-> MAP(["Needed: fresh hardware-to-host mapping<br/>with qualified error bounds"])
+  RAW -.-> EST(["Estimate relative clock offset and rate"])
+  MAP -.-> EST
+  EST -.-> SNAP(["Publish a model with identity, epoch and expiry"])
+  SNAP -. "only after qualification" .-> FAST
+  FAST -. "future qualified model" .-> OUT(["Logical reference-time record"])
+  SNAP -. "monitor validity" .-> CHECK["Loss, reset, roam, stale data or unknown error"]
+  NIC -. "source changes" .-> CHECK
+  CHECK -->|required behavior| INVALID["Invalidate the affected model"]
+  INVALID --> FALLBACK["Explicit host-only fallback<br/>or unavailable reference-time result"]
+  FALLBACK --> FAST
+  INVALID -. "reacquire raw evidence" .-> RAW
+  INVALID -. "reestablish mapping" .-> MAP
+  OUT -. "separate permission and reference gate" .-> OS(["Future: adjust the operating-system clock"])
+  FTM["Current aggregate Wi-Fi ranging result"] --> DIAG["Diagnostics only: cannot supply clock offset"]
+  classDef existing fill:#e8f5ed,stroke:#34704a,color:#193323;
+  classDef future fill:#fff2dd,stroke:#ac6b12,color:#241b0e;
+  class Q,FAST,LOCAL existing;
+  class REF,RAW,NIC,REL,MAP,EST,SNAP,OUT,OS future;

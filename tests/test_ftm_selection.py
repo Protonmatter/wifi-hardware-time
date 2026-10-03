@@ -1,10 +1,13 @@
 """Synthetic edge cases and sanitized numeric replay from a saved local trace."""
-import sys
-import unittest
-from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'experiments' / 'qualcomm'))
-from model_ftm_selection import EMPTY, select_postfilter
+import sys
+from pathlib import Path
+# Resolve repository packages when this file is used as a direct CLI.
+if __package__ in (None, ""):
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+import unittest
+
+from research.ftm.model_ftm_selection import EMPTY, select_postfilter
 
 
 def slots(*values: int) -> list[int]:

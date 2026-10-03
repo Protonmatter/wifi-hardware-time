@@ -1,12 +1,15 @@
+
+import sys
+from pathlib import Path
+# Resolve repository packages when this file is used as a direct CLI.
+if __package__ in (None, ""):
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import copy
 import json
-from pathlib import Path
-import sys
 import tempfile
 import unittest
 from unittest.mock import patch
-sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'experiments/qualcomm'))
-from analyze_ndis_run import analyze_run, join_events, validate_markers, load_native_records, validate_cross_values
+from research.windows_timestamps.analyze_ndis_run import analyze_run, join_events, validate_markers, load_native_records, validate_cross_values
 from test_ndis_evidence import fixture as evidence_fixture
 
 PROVIDER='cdead503-17f5-4a3e-b7ae-df8cc2902eb9'
@@ -59,7 +62,7 @@ class RunTests(unittest.TestCase):
                 records.append(row);named.append({**{k:v for k,v in row.items() if k not in ('kind','qpc')},'data':{}})
         records.append(dict(kind='summary',process_status=0,close_status=0,events='7',ndis_events='0',marker_events='6',other_events='1'))
         files['named-events.json']=named
-        with tempfile.TemporaryDirectory() as folder,patch('analyze_ndis_run.load_json',side_effect=lambda p:files[p.name]):
+        with tempfile.TemporaryDirectory() as folder,patch('research.windows_timestamps.analyze_ndis_run.load_json',side_effect=lambda p:files[p.name]):
             root=Path(folder);(root/'ndis.etl').write_bytes(b'synthetic')
             native='\n'.join(json.dumps(row) for row in records)
             path=root/'trace-health.stdout.txt';path.write_text(native)
