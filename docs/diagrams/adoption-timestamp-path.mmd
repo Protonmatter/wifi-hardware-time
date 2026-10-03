@@ -1,4 +1,3 @@
-```mermaid
 flowchart TB
   REF["Reference peer<br/>relative domain, or independently qualified UTC"] --> P["Matched packet timestamps or raw FTM exchange<br/>required for qualified time transfer"]
   NIC["Local TSF and FTM timers"] --> REL["Domain relationship<br/>must be established"]
@@ -28,4 +27,4 @@ flowchart TB
   class EST,SNAP,FAST,CHECK,INVALID,OUT,HOST proposed
   class REF,NIC,Q,FTM,DIAG existing
   class OS future
-```
+
