@@ -1,5 +1,7 @@
 # Passive observation and memory-log retrieval validation
 
+Later evidence: [controlled scans](scan-tsf-results-2026-10-03.md) reproduced the report pattern; [ring/RX boundary inspection](timing-boundary-investigation-2026-10-03.md) narrowed diagnostic consumers. This dated report retains the scope of its original passive run.
+
 The requested follow-up separates four questions: live collection, ring access,
 report attribution, and clock accuracy. One elevated passive observation completed.
 No private device was opened, no private request or scan request was submitted,

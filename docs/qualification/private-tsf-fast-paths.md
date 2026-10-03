@@ -1,5 +1,7 @@
 # Private TSF returns, automatic reporting and TX-completion timing
 
+Later exact-build evidence: [ring and RX boundaries](timing-boundary-investigation-2026-10-03.md) identify diagnostic/recovery consumers and nonadjacent PPDU timestamp words. These findings do not qualify a fast getter, simultaneous sample or packet export.
+
 Status: exact-build, offline reconstruction on 2026-10-03. Private commands,
 IOCTLs and firmware operations are primary research candidates here; public API
 status is not an acceptance gate. Exact-build qualification and long-term ABI

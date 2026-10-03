@@ -6,8 +6,10 @@ or every successful process as a qualified hardware capability.
 
 Current operational state: the [private campaign quarantined](qualification/private-campaign-2026-10-03-quarantine.md)
 after 33 action-3 requests. Two complete bundles contain 24 observations. Nine
-additional admitted observations belong to the rejected capture. No retry,
-automatic rearm, private request or new live trace occurred during this follow-up.
+additional admitted observations belong to the rejected capture. Later passive
+and scan observations did not rearm private acquisition. The latest timing-boundary
+follow-up used on-disk inspection and synthetic models only; lifecycle work is
+preparation only. See the [current ledger](qualification/gap-closure-ledger.md).
 
 ## Maintained entry points and recorded scope
 
@@ -139,6 +141,14 @@ has changed and the unmatched-report producer remains unresolved.
 
 ## Findings index
 
+The newest maintained offline entry points are
+`experiments/qualcomm/inspect_timing_boundaries.py` (exact-build field/call inventory)
+and `experiments/qualcomm/model_ring_publication.py` (fixed synthetic publication
+counterexample). Both were executed; neither reads live device memory. Their
+tests are `tests/test_timing_boundaries.py` and `tests/test_ring_publication_model.py`.
+
+- [Timing return paths, ring publication and RX descriptor fields](qualification/timing-boundary-investigation-2026-10-03.md)
+- [Prepared lifecycle and timing qualification cases](qualification/lifecycle-qualification-preparation.md)
 - [Controlled scan comparison plan](qualification/scan-comparison-plan.md)
 - [Controlled scan/TSF results](qualification/scan-tsf-results-2026-10-03.md)
 - [Qualification gap closure ledger](qualification/gap-closure-ledger.md)

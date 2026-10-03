@@ -6,7 +6,7 @@
 
 **Architecture:** `wifi-hardware-time` owns exploratory probes, exact-build qualification, evidence and falsifiable hypotheses. `userspace-clock` owns maintained APIs, providers, correlation models, client examples and operational behavior. Versioned, sanitized evidence packages connect the repositories; the runtime does not depend on the research checkout.
 
-**Tech Stack:** Existing research Python 3.11+, Windows PowerShell 5.1-compatible wrappers, native Windows ARM64 C and offline ETW analysis. Downstream runtime language, IPC, estimator and system integration remain design decisions; local host timestamps are the first provider, with experimental hardware observations added separately.
+**Tech Stack:** Existing research Python 3.11+, Windows PowerShell 5.1-compatible wrappers, native Windows ARM64 C and offline ETW analysis. The downstream reference SDK now uses Python 3.11+ and direct Windows QPC, with a pure conditional estimator. IPC, native ABI, hardware integration and system discipline remain future work.
 
 **Spec:** [Research API direction](../../api-direction.md), [validation ledger](../../validation.md), [new result provenance](../../ftm-result-provenance.md), and downstream [requirements](https://github.com/Protonmatter/userspace-clock/blob/1abc438be29b25eda9e831b50591023b995e598d/docs/REQUIREMENTS.md).
 
@@ -14,7 +14,7 @@
 
 Research HEAD inspected: `8bd9051510cacc1b0bac805bf57d55e6605a12ff`.
 Downstream HEAD inspected: `1abc438be29b25eda9e831b50591023b995e598d`.
-At planning time, the FTM aggregation model, provenance report and variance-semantics flag were uncommitted working-tree findings. They are not contents of `8bd9051`; downstream must pin their actual publication revision. The subsequent offline implementation and live campaign are tracked in the execution status below. The application clock runtime remains unimplemented.
+At planning time, the FTM aggregation model, provenance report and variance-semantics flag were uncommitted working-tree findings. They are not contents of `8bd9051`; downstream must pin their actual publication revision. The subsequent offline implementation and live campaign are tracked in the execution status below. The host-only reference SDK and pure conditional estimator are now implemented. Current qualification is tracked in the execution status below and the [gap ledger](../../qualification/gap-closure-ledger.md); original checklist items remain the historical work-package specification.
 
 ## Global constraints
 
@@ -82,7 +82,7 @@ Do not spend the critical path searching arbitrary private commands. A register 
 - [ ] Approve representation, rounding, overflow handling, clock/boot identity, schema evolution and concurrency semantics. Test 64-bit counter transport, huge values, repeated ticks, restart and indeterminate comparisons.
 - [ ] Implement the host-only vertical slice after design review, with at least two independent processes consuming consistent metadata and a reproducible latency benchmark reporting p50/p95/p99/max, sample count and load conditions.
 
-**Gate/output:** a usable local event-timing API requiring no Wi-Fi, elevation or clock changes. No UTC accuracy or multi-node ordering guarantee. Specify exact build/test commands in the implementation plan after the runtime/toolchain decision; no runtime currently exists to validate.
+**Gate/output:** a usable local event-timing API requiring no Wi-Fi, elevation or clock changes. No UTC accuracy or multi-node ordering guarantee. Specify exact build/test commands in the implementation plan after the runtime/toolchain decision; the reference SDK now exists; broader ABI and consumer acceptance qualification remain open.
 
 ## R2 — TSF acquisition semantics and host-correlation experiments
 
@@ -190,12 +190,12 @@ Work packages may overlap in engineering time, but do not require subagents or s
 
 **Completion of this roadmap's first useful milestone:** two generic applications can timestamp local events, preserve domain/epoch/quality information, reject invalid conversion attempts and reproduce behavior from fixtures. Wi-Fi findings enrich that capability only to the extent their evidence supports.
 
-## Execution status — first offline work package
+## Execution status through the 2026-10-03 follow-ups
 
 - R1: exporter, strict v1 validator, source/input hashes and synthetic positive/negative fixtures implemented and locally tested. Downstream publication must pin the actual research commit and artifact digests.
-- R2: offline holdout work completed, then the guarded live campaign passed all 12 idle/workload captures and 138 requests. Firmware transaction association, exact sampling and calibrated accuracy remain open. See the [campaign results](../../qualification/acquisition-campaign-2026-10-02-results.md).
-- R3: live WLAN observation, two passive observer checks and 12 successful capture lifecycles exercised; all 14 sessions cleaned up. An actually aged sample failed the test freshness policy. Forced timeout/ambiguity, proven pending-I/O drain, reset, suspend and roaming remain open.
-- D1: measurement API, record semantics and consumer-target documents drafted; runtime/toolchain review, numerical consumer targets and implementation remain open.
+- R2: the earlier campaign completed 12 captures and 138 requests. The later corrected-observer repeat quarantined on unmatched reports after 33 requests. Three controlled scans then reproduced another report-producing context; all failed their four-second profile. Firmware identity, exact sampling and calibrated accuracy remain open. See the [current ledger](../../qualification/gap-closure-ledger.md).
+- R3: normal cleanup and fail-closed rejection have offline/live evidence at their recorded scopes. One historical adapter restart recovered, but broader lifecycle and firmware-drain guarantees remain open. The latest restart/suspend/roam authorization is preparation only; the continuous diagnostic collector needed for those tests is not yet implemented.
+- D1: experimental Python/Windows QPC SDK and pure conditional estimator implemented downstream. Six one/four-reader runs covered 150,000 timed reads; provisional p99 targets are 5 us / 250 us, pending a separate acceptance campaign. Shared cross-process identity, native ABI and consumer freshness policy remain open.
 - D2a: standalone downstream v1 validator, fixture copies and contract tests implemented. D2b/D2c hardware collector/conversion are not implemented.
 - R4: documented Windows API/NDIS path and pinned mt76 source rechecked; concrete next experiments and equipment gates recorded. No new register, packet or cross-timestamp support claimed.
 - R5/D3 and R6/D4: await their controlled-node/reference and operational prerequisites. No network synchronization or clock writes performed.

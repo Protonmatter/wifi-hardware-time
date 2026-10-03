@@ -4,6 +4,11 @@ Status: research map and design input, not a declaration of new hardware support
 The active Qualcomm driver is qualified only by its exact recorded hash. The
 Linux AXML branches below are pinned-source findings, not live hardware results.
 
+Exact-build follow-up: [RX descriptor and ring findings](qualification/timing-boundary-investigation-2026-10-03.md)
+locate the PPDU diagnostic high/low words at descriptor +0x60/+0x68. Their units,
+validity, clock domain, live packet identity and userspace delivery remain open;
+no arrow in the generic diagrams below should be read as a newly working export.
+
 **Legend:** green in the Qualcomm view marks the observed report path; amber
 marks unresolved semantics/capabilities; blue marks generic or proposed paths.
 The generic packet diagram describes where timestamps can exist, not which

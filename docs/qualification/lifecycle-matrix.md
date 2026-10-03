@@ -1,5 +1,10 @@
 # Conservative observation lifecycle
 
+The [prepared lifecycle cases](lifecycle-qualification-preparation.md) specify
+the next distinct collector, restart, suspend, reassociation and roam experiments.
+The latest authorization is preparation only. This model does not implement the
+continuous diagnostic collector those cases require.
+
 `tools/observation_lifecycle.py` implements a deterministic offline state model.
 It has no timers, device handle, firmware transaction IDs or operating-system
 event subscriptions. Its accepted state is `observed`, not a qualified clock

@@ -1,5 +1,7 @@
 # Unmatched TSF reports and the host-memory log path
 
+Follow-up: [controlled scan results](scan-tsf-results-2026-10-03.md) and [timing-boundary validation](timing-boundary-investigation-2026-10-03.md) supersede the next-step status in this historical report. Its original measurements and limits remain unchanged.
+
 Status: offline follow-up on 2026-10-03, based on research revision
 `8ba35c3c92d0ec2ee343dbc9044ad33e5fbb642c` plus the accompanying analysis changes.
 The private campaign remains quarantined. No new trace, private request, firmware

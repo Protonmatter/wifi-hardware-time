@@ -8,6 +8,13 @@ capture on unmatched reports. The earlier complete campaign below is a separate
 experiment. See the [latest campaign report](qualification/private-campaign-2026-10-03-quarantine.md)
 and the [findings and execution catalog](validation-execution-catalog.md).
 
+Subsequent [scan experiments](qualification/scan-tsf-results-2026-10-03.md)
+reproduced another report-producing context, with late completion observed in
+the third run. The [timing-boundary follow-up](qualification/timing-boundary-investigation-2026-10-03.md)
+adds static RX descriptor locations and ring-publication counterexamples.
+Neither requalifies private acquisition. [Lifecycle cases](qualification/lifecycle-qualification-preparation.md)
+are prepared only; no new disruptive experiment was authorized.
+
 | Item | Evidence level | Result |
 |---|---|---|
 | mt76 TSF/RX/TX paths | Static source | Identified at pinned revision |
@@ -30,6 +37,9 @@ and the [findings and execution catalog](validation-execution-catalog.md).
 | Passive follow-up after cleanup repair | Live, zero private requests | One 30-second observation passed; 111 health/connection records each, zero timing events/loss, normal observer stop and unchanged quarantine |
 | Scan attribution lead | Saved ETL context | START_SCAN logged about 28.6 ms before first unmatched TSF report; temporal overlap, not causal attribution |
 | Controlled scan comparison | Live, three calls and failed four-second profile | Quiet baseline then two TSF reports per call; final diagnostic tail observed scan completion at about six seconds; no private requests, no clock qualification |
+| Ring consumer reachability | Exact-build static | Recent span consumed in reset diagnostics; five direct general-dump callers are crash/recovery paths; no userspace getter qualified |
+| Ring double-copy consistency | Finite synthetic model | Two of ten schedules defeat equal-copy/stable-reservation checks; not observed live corruption or proof against external locking |
+| RX descriptor timestamp location | Exact-build static | High/low PPDU diagnostic words at descriptor +0x60/+0x68; no live packet export, units or clock-domain qualification |
 | Post-quarantine evidence draining | Offline regression plus passive live check | Tail persistence and failure cases validated synthetically; normal shutdown passed one passive live run; no private campaign requalification |
 | FTM result aggregation | Static binary and saved-trace replay | Post-filter selection model matches count, RTT and auxiliary field in 10/10 callbacks; empty-array selection explains two zero-count results |
 | Adapter restart/reassociation | Live, one targeted restart | Same profile recovered automatically; Up observed after 7.18 s; pre/post captures and one nonempty FTM result succeeded; no continuity claim during the gap |

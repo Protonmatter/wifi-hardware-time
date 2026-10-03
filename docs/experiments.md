@@ -2,6 +2,13 @@
 
 These tools reproduce bounded research workflows. They are not stable public Windows APIs or production timing services. Source is under `experiments/qualcomm`; output belongs under ignored `artifacts/`.
 
+Current execution status is in the [qualification ledger](qualification/gap-closure-ledger.md).
+Private acquisition remains quarantined; examples here do not authorize rearm.
+The later scan campaign failed its four-second profile, and the newest ring/RX
+work is static/model validation. [Lifecycle cases](qualification/lifecycle-qualification-preparation.md)
+are preparation only. Keep these scopes separate from the historical latch/FTM
+results below.
+
 ## Preconditions and scope
 
 Use a test system, Windows PowerShell 5.1 or later, Python 3.11+, the existing requirements, and an explicitly selected interface. The shared probe requires the selected adapter Up and its driver service Running, and pins ARM64 driver `qcwlanhmt8380.sys` version 1.0.4374.1300 to SHA-256:

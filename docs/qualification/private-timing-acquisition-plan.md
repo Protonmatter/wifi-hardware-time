@@ -1,5 +1,7 @@
 # Private timing acquisition: practical research direction
 
+Execution update: the [scan campaign](scan-tsf-results-2026-10-03.md) and [timing-boundary investigation](timing-boundary-investigation-2026-10-03.md) now narrow the producer and return-path questions. Private acquisition remains quarantined; [lifecycle work](lifecycle-qualification-preparation.md) is preparation only.
+
 The research is not limited to public NDIS or Windows APIs. Exact-build private
 exports, IOCTLs, firmware commands and instrumented report paths are legitimate
 candidates. The user's 2026-10-03 direction explicitly prioritizes the private

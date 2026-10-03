@@ -1,5 +1,25 @@
 # Operations
 
+## Current admission state
+
+Private acquisition remains quarantined. Historical execution examples below
+are reproduction instructions, not a rearm decision. The last scan comparison
+also retained its failed-observation lock. Inspect exact owned-resource cleanup
+before any separately reviewed new observation; do not clear the private marker.
+Restart, suspend and roaming are [preparation only](qualification/lifecycle-qualification-preparation.md).
+
+The latest [timing-boundary tools](qualification/timing-boundary-investigation-2026-10-03.md)
+read the owned SYS file or run a finite synthetic model. They require no elevation:
+
+```powershell
+python experiments/qualcomm/inspect_timing_boundaries.py --driver '<owned exact-build SYS>' --output artifacts/timing-boundaries-new.json
+python experiments/qualcomm/model_ring_publication.py
+```
+
+The inspector creates output exclusively and returns 1 for rejected input/I/O,
+2 for CLI usage, or 0 for completed static inspection. None of these results
+authorizes live memory retrieval or a hardware clock capability.
+
 ## Preconditions
 
 Use a test system and exact interface targeting. Python tools target Python 3.11+. Only the static PE/protocol tools require `pefile`; it is the sole declared dependency. Native probes require Windows SDK headers/libraries and a compiler for the target architecture.

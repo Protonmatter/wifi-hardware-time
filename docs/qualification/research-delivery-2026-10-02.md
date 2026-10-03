@@ -1,5 +1,7 @@
 # Research delivery: evidence contract, lifecycle and predictive checks
 
+Historical delivery record: later host-clock implementation, live experiments and published validation are tracked in the [current gap ledger](gap-closure-ledger.md) and [research roadmap](../superpowers/plans/2026-10-02-research-to-userspace-clock.md). Initial-stage CI and implementation statements below describe that stage only.
+
 This delivery record describes the initial offline portion of the approved roadmap.
 It does not complete the application clock runtime or promote the hardware path
 to calibrated timing. Existing FTM changes were preserved. No service installation

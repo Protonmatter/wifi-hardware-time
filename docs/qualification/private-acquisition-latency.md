@@ -119,9 +119,9 @@ outliers also show that occasional scheduling/transport stalls remain possible.
    to admission, and retain final stopped-session/header checks. Test nonzero and
    unavailable health responses rejecting the next submission. [Microsoft EVENT_TRACE_LOGFILEW](https://learn.microsoft.com/en-us/windows/win32/api/evntrace/ns-evntrace-event_trace_logfilew)
 
-## Source correction status: local checks only
+## Source correction status at initial review
 
-The subsequent uncommitted source correction removes that buffer-health callback.
+At this report's initial review, the source correction was uncommitted. It removes that buffer-health callback. Later [passive qualification](observer-passive-qualification-2026-10-03.md) and the [quarantined private repeat](private-campaign-2026-10-03-quarantine.md) record subsequent execution; see the [current ledger](gap-closure-ledger.md).
 The observer's main/control thread now calls `ControlTraceW` with
 `EVENT_TRACE_CONTROL_QUERY` during its nominal 250 ms monitoring cycle, outside
 the ETW event callback. The cycle is not a hard maximum query period: synchronous

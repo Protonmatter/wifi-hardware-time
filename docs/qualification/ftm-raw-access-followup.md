@@ -1,5 +1,7 @@
 # Access to pre-aggregation FTM records: offline follow-up
 
+Current follow-up: [timing boundaries](timing-boundary-investigation-2026-10-03.md) rechecked the bounded internal FTM identity comparison. It did not establish raw absolute export; this report's findings remain applicable.
+
 Status: **no supported export of absolute FTM event timestamps has been established
 on the inspected Windows build**. The existing path exposes logged delta operands
 and an aggregate ranging result. Windows provides extensible vendor communication

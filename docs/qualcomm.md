@@ -1,5 +1,14 @@
 # Qualcomm FastConnect 7800 Windows research
 
+Current status: private acquisition remains quarantined. The later
+[scan comparison](qualification/scan-tsf-results-2026-10-03.md) reproduced
+scan-associated TSF reports without private requests, while failing its original
+completion deadline. The [timing-boundary investigation](qualification/timing-boundary-investigation-2026-10-03.md)
+locates RX PPDU diagnostic fields and diagnostic/recovery ring consumers; it does
+not establish a safe live getter or clock conversion. Use the
+[qualification ledger](qualification/gap-closure-ledger.md) alongside the original
+protocol reconstruction below.
+
 ## Exact inspected profile
 
 - PCI vendor/device: `17cb:1107`.

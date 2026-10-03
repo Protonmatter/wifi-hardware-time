@@ -11,6 +11,15 @@ after unmatched TSF reports. The cleanup repair has offline regressions and one
 successful [passive live check](docs/qualification/passive-and-retrieval-validation-2026-10-03.md);
 it does not rearm acquisition or qualify the rejected capture.
 
+Follow-up status on 2026-10-03: three controlled scans reproduced additional TSF
+reports, but all failed the four-second completion profile. Exact-build inspection
+then narrowed the ring consumers to diagnostic/recovery paths and located RX
+PPDU timestamp fields. A finite model disproves treating equal copies and an
+unchanged reservation position as proof of complete records. Safe live retrieval,
+request identity, sampling semantics and hardware/QPC conversion remain open.
+Reset, suspend and roaming are preparation only in the latest phase. See the
+[qualification ledger](docs/qualification/gap-closure-ledger.md) for current gates.
+
 ## What has been established
 
 | Backend | Evidence | Remaining gap |
@@ -28,6 +37,8 @@ On the inspected Qualcomm system, standard timestamp-capability and cross-timest
 - [Passive live validation and scan attribution lead](docs/qualification/passive-and-retrieval-validation-2026-10-03.md)
 - [Controlled scan/TSF results](docs/qualification/scan-tsf-results-2026-10-03.md)
 - [Qualification gap closure ledger](docs/qualification/gap-closure-ledger.md)
+- [Timing return paths, ring consistency and RX descriptor findings](docs/qualification/timing-boundary-investigation-2026-10-03.md)
+- [Prepared lifecycle and timing qualification cases](docs/qualification/lifecycle-qualification-preparation.md)
 
 Current direction: [private timing acquisition](docs/qualification/private-timing-acquisition-plan.md).
 Private exact-build interfaces are first-class research candidates; public NDIS
