@@ -16,19 +16,33 @@ TSF (Timing Synchronization Function) is the Wi-Fi timer. SoC means system on ch
 The diagram describes the recorded experiment, not a currently qualified acquisition recipe. Source: [qualcomm-timestamp-path.mmd](diagrams/qualcomm-timestamp-path.mmd).
 
 ```mermaid
-flowchart LR
-  A["Sampler: host request-start QPC"] -->|private request| B["Observed: guarded QcomWifi request"]
-  B -->|command 0x5012| C["Observed: action 3 READ / action 4 CAPTURE"]
-  C -->|counter report| D(["Unqualified: TSF / SoC sampling instant"])
-  D -->|event 0x5005| E["Observed: firmware report"]
-  E -->|driver logging| F["Observed: ETW log time uses host QPC"]
-  F -->|ETW delivery| G["Observed: reader delivery delay<br/>about 1.6 seconds median"]
-  G -->|decode and validate| H["Recorded: action, identity, epoch, report age"]
-  B -. "IOCTL completion: around 54 us median; no counter tuple" .-> A
-  A -. "request-start to report log: about 0.27 ms median" .-> F
-  D -. "qualification limit" .-> U(["Unqualified pairing: action 3 SoC cached or unknown;<br/>action 4 refreshed, atomicity unproven"])
-  H -. "qualification limit" .-> X(["Unqualified: calibrated TSF-QPC conversion"])
-  classDef gap fill:#fff2dd,stroke:#ac6b12,color:#241b0e;
+flowchart TB
+  subgraph REQ["1. REQUEST AND REPORTED COUNTERS: inspected control path"]
+    direction TB
+    A["Sampler records request-start QPC<br/>QPC is the host interval counter"]
+    B["Observed: guarded QcomWifi request<br/>Exact driver hash required"]
+    C["Observed: command 0x5012<br/>Action 3 READ or action 4 CAPTURE"]
+    D(["Reported TSF and SoC values<br/>Sampling instant and pairing UNQUALIFIED"])
+    A -->|issue request| B
+    B -->|command dispatch| C
+    C -->|request processed: sampling instant unknown| D
+    B -. "IOCTL return: around 54 us median<br/>No counter tuple returned" .-> A
+  end
+  subgraph REP["2. ASYNCHRONOUS REPORT AND LOG DELIVERY"]
+    direction TB
+    E["Observed: firmware report 0x5005"]
+    F["Driver logs the report<br/>ETW timestamp is host logging time"]
+    G["ETW delivers the log to the reader<br/>About 1.6 seconds median delay"]
+    H["Diagnostic record<br/>Keep action, identity, epoch and report age"]
+    E -->|process event| F
+    F -->|asynchronous stream| G
+    G -->|parse and validate evidence| H
+  end
+  D ==>|report delivery| E
+  A -. "request-start to report log:<br/>about 0.27 ms median" .-> F
+  D -. "action behavior" .-> U(["Action 3: SoC cached or unknown<br/>Action 4: refreshed, simultaneous latch unproven"])
+  H -. "qualification limit" .-> X(["No calibrated TSF-to-QPC conversion"])
+  classDef gap fill:#fff2dd,stroke:#ac6b12,stroke-width:1.5px,color:#241b0e;
   classDef seen fill:#e8f5ed,stroke:#34704a,color:#193323;
   class D,U,X gap;
   class B,C,E,F,G,H seen;

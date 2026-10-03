@@ -23,12 +23,12 @@ sequenceDiagram
   participant U as Userspace reader
   Note over A,B: Model: one matched FTM exchange.<br/>Negotiation omitted
   Note over A: t1: hardware departure time
-  A->>B: FTM frame n
+  A->>B: FTM action frame n
   Note over B: t2: hardware arrival time
   Note over B: t3: hardware ACK departure time
   B->>A: ACK: no t3 timestamp field
   Note over A: t4: hardware ACK arrival time
-  A->>B: Later FTM frame: prior t1 / t4 and matching token
+  A->>B: Later FTM frame: matched prior t1 / t4 and follow-up token
   Note over B: Full exchange needs local t2 / t3 and peer t1 / t4
   B-->>U: Observed API output: aggregate RTT, count, status, raw auxiliary fields
   Note over U: Not exposed: four individual timestamps or clock mapping

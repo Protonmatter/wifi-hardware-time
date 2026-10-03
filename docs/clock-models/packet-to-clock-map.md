@@ -31,26 +31,42 @@ features this Qualcomm driver exposes.
 
 ```mermaid
 flowchart TB
-  subgraph SEND["Sending: generic network path"]
-    A["1. Application asks to send"] -->|network data| B["2. Operating system and driver queue it"]
-    B -->|transfer to adapter| C["3. Adapter waits, groups frames and may retry"]
-    C -->|radio transmission| D["4. Candidate hardware TX timestamp"]
+  subgraph TX["TRANSMIT: generic layered path, not qualified Qualcomm export"]
+    direction TB
+    A["1. Application asks to send<br/>Optional host counter timestamp"]
+    B["2. Operating-system network queues"]
+    C["3. Driver packet buffer<br/>Optional software timestamp metadata"]
+    D["4. Host-to-adapter transfer<br/>PCIe, DMA or USB"]
+    E["5. Adapter and firmware queues<br/>Channel wait, aggregation and retries"]
+    F["6. Radio transmit reference point<br/>Candidate hardware TX timestamp"]
+    A --> B --> C --> D --> E --> F
   end
-  D -->|802.11 frame crosses the air| E["5. Candidate hardware RX timestamp"]
-  subgraph RECEIVE["Receiving: generic network path"]
-    E -->|device metadata beside the frame| F["6. Driver processes the received data"]
-    F -->|packet plus metadata, if exported| G["7. Operating system delivers it"]
-    G -->|receive call completes| H["8. Application observes arrival"]
+  F ==>|802.11 frame: no universal hardware timestamp field| W["OVER THE AIR"]
+  W ==> G
+  subgraph RX["RECEIVE: generic layered path"]
+    direction TB
+    G["7. Radio receive reference point<br/>Candidate hardware RX timestamp"]
+    H["8. Receive descriptor or firmware record<br/>Metadata beside the frame"]
+    I["9. Host transfer and driver processing<br/>Decode, reorder and split aggregates"]
+    J["10. Operating-system packet metadata<br/>Timestamp delivered only if supported"]
+    K["11. Application receives data<br/>Host receive time is a different event"]
+    G --> H --> I --> J --> K
   end
-  D -. "separate timestamp result, if supported" .-> X(["Match the timestamp to the packet and retry"])
-  E -. "clock and event point must be known" .-> X
-  X -. "not yet qualified on this adapter" .-> U(["Hardware timestamp export remains open"])
-  A -. "host send-call time is a different event" .-> H
-  classDef gap fill:#fff2dd,stroke:#ac6b12,color:#241b0e;
-  class D,E,X,U gap;
+  L["Separate transmit status<br/>Completion time is not radio launch time"]
+  M(["UNQUALIFIED on this Qualcomm path:<br/>General RX/TX export and exact radio reference points"])
+  F -. "TX status or timestamp, if supported" .-> L
+  L -. "match to packet and retry before use" .-> K
+  C -. "missing qualification" .-> M
+  H -. "missing qualification" .-> M
+  classDef gap fill:#fff2dd,stroke:#ac6b12,stroke-width:1.5px,color:#241b0e;
+  classDef air fill:#e6eefc,stroke:#315b96,stroke-width:2px,color:#182844;
+  classDef hw fill:#fbebeb,stroke:#b83232,stroke-width:1.5px,color:#300;
+  class M,L gap;
+  class W air;
+  class F,G hw;
 ```
 
-**Read the arrows:** solid arrows follow a generic send/receive path; dashed arrows show separate timing observations or a missing export. Numbered boxes follow the packet. TX means transmit and RX receive. Amber boxes are candidate hardware timestamps, not qualified features of this adapter.
+**Read the arrows:** solid arrows follow a generic send/receive path, and thick arrows cross the radio link; dashed arrows show separate timing observations or a missing export. Numbered boxes follow the packet. TX means transmit and RX receive. Red boxes mark candidate radio timestamps; amber marks limitations. Neither is a qualified feature of this adapter.
 
 A simplified ordinary Wi-Fi data transmission is:
 
@@ -122,19 +138,33 @@ be presented as independently timed RF events.
 ## 3. The Qualcomm control path we actually measured
 
 ```mermaid
-flowchart LR
-  A["Sampler: host request-start QPC"] -->|private request| B["Observed: guarded QcomWifi request"]
-  B -->|command 0x5012| C["Observed: action 3 READ / action 4 CAPTURE"]
-  C -->|counter report| D(["Unqualified: TSF / SoC sampling instant"])
-  D -->|event 0x5005| E["Observed: firmware report"]
-  E -->|driver logging| F["Observed: ETW log time uses host QPC"]
-  F -->|ETW delivery| G["Observed: reader delivery delay<br/>about 1.6 seconds median"]
-  G -->|decode and validate| H["Recorded: action, identity, epoch, report age"]
-  B -. "IOCTL completion: around 54 us median; no counter tuple" .-> A
-  A -. "request-start to report log: about 0.27 ms median" .-> F
-  D -. "qualification limit" .-> U(["Unqualified pairing: action 3 SoC cached or unknown;<br/>action 4 refreshed, atomicity unproven"])
-  H -. "qualification limit" .-> X(["Unqualified: calibrated TSF-QPC conversion"])
-  classDef gap fill:#fff2dd,stroke:#ac6b12,color:#241b0e;
+flowchart TB
+  subgraph REQ["1. REQUEST AND REPORTED COUNTERS: inspected control path"]
+    direction TB
+    A["Sampler records request-start QPC<br/>QPC is the host interval counter"]
+    B["Observed: guarded QcomWifi request<br/>Exact driver hash required"]
+    C["Observed: command 0x5012<br/>Action 3 READ or action 4 CAPTURE"]
+    D(["Reported TSF and SoC values<br/>Sampling instant and pairing UNQUALIFIED"])
+    A -->|issue request| B
+    B -->|command dispatch| C
+    C -->|request processed: sampling instant unknown| D
+    B -. "IOCTL return: around 54 us median<br/>No counter tuple returned" .-> A
+  end
+  subgraph REP["2. ASYNCHRONOUS REPORT AND LOG DELIVERY"]
+    direction TB
+    E["Observed: firmware report 0x5005"]
+    F["Driver logs the report<br/>ETW timestamp is host logging time"]
+    G["ETW delivers the log to the reader<br/>About 1.6 seconds median delay"]
+    H["Diagnostic record<br/>Keep action, identity, epoch and report age"]
+    E -->|process event| F
+    F -->|asynchronous stream| G
+    G -->|parse and validate evidence| H
+  end
+  D ==>|report delivery| E
+  A -. "request-start to report log:<br/>about 0.27 ms median" .-> F
+  D -. "action behavior" .-> U(["Action 3: SoC cached or unknown<br/>Action 4: refreshed, simultaneous latch unproven"])
+  H -. "qualification limit" .-> X(["No calibrated TSF-to-QPC conversion"])
+  classDef gap fill:#fff2dd,stroke:#ac6b12,stroke-width:1.5px,color:#241b0e;
   classDef seen fill:#e8f5ed,stroke:#34704a,color:#193323;
   class D,U,X gap;
   class B,C,E,F,G,H seen;
@@ -166,12 +196,12 @@ sequenceDiagram
   participant U as Userspace reader
   Note over A,B: Model: one matched FTM exchange.<br/>Negotiation omitted
   Note over A: t1: hardware departure time
-  A->>B: FTM frame n
+  A->>B: FTM action frame n
   Note over B: t2: hardware arrival time
   Note over B: t3: hardware ACK departure time
   B->>A: ACK: no t3 timestamp field
   Note over A: t4: hardware ACK arrival time
-  A->>B: Later FTM frame: prior t1 / t4 and matching token
+  A->>B: Later FTM frame: matched prior t1 / t4 and follow-up token
   Note over B: Full exchange needs local t2 / t3 and peer t1 / t4
   B-->>U: Observed API output: aggregate RTT, count, status, raw auxiliary fields
   Note over U: Not exposed: four individual timestamps or clock mapping
@@ -260,22 +290,29 @@ inferred from the measured TSF rates or fitted residuals.
 ```mermaid
 flowchart TB
   Q["Implemented: host interval counter QPC"] -->|fast local read| FAST["Application asks for a timestamp"]
-  FAST -->|available now| LOCAL["Host-only event record: no synchronized-time claim"]
-  REF(["Future: controlled reference peer"]) -.-> RAW(["Needed: matched raw radio timestamps"])
-  NIC(["Needed: fresh hardware-to-host clock samples"]) -.-> MAP(["Validate clock conversion and error bounds"])
+  FAST -->|available now| LOCAL["Host-only event record<br/>No synchronized-time claim"]
+  REF(["Needed: controlled reference peer"]) -.-> RAW(["Needed: matched raw radio timestamps"])
+  NIC(["Local TSF and FTM timer observations"]) -.-> REL(["Establish counter domains and sampling semantics"])
+  REL -.-> RAW
+  REL -.-> MAP(["Needed: fresh hardware-to-host mapping<br/>with qualified error bounds"])
   RAW -.-> EST(["Estimate relative clock offset and rate"])
   MAP -.-> EST
-  EST -.-> SNAP(["Publish a valid model with clock identity and expiry"])
+  EST -.-> SNAP(["Publish a model with identity, epoch and expiry"])
   SNAP -. "only after qualification" .-> FAST
   FAST -. "future qualified model" .-> OUT(["Logical reference-time record"])
-  CHECK["Loss, reset, roam, stale data or unknown error"] -->|invalidate model| FALLBACK["Explicit host-only fallback or unavailable result"]
+  SNAP -. "monitor validity" .-> CHECK["Loss, reset, roam, stale data or unknown error"]
+  NIC -. "source changes" .-> CHECK
+  CHECK -->|required behavior| INVALID["Invalidate the affected model"]
+  INVALID --> FALLBACK["Explicit host-only fallback<br/>or unavailable reference-time result"]
   FALLBACK --> FAST
+  INVALID -. "reacquire raw evidence" .-> RAW
+  INVALID -. "reestablish mapping" .-> MAP
   OUT -. "separate permission and reference gate" .-> OS(["Future: adjust the operating-system clock"])
   FTM["Current aggregate Wi-Fi ranging result"] --> DIAG["Diagnostics only: cannot supply clock offset"]
   classDef existing fill:#e8f5ed,stroke:#34704a,color:#193323;
   classDef future fill:#fff2dd,stroke:#ac6b12,color:#241b0e;
   class Q,FAST,LOCAL existing;
-  class REF,RAW,NIC,MAP,EST,SNAP,OUT,OS future;
+  class REF,RAW,NIC,REL,MAP,EST,SNAP,OUT,OS future;
 ```
 
 **Read the arrows:** solid arrows show the host-only implementation or required invalidation behavior; dashed arrows show proposed hardware integration. Rectangles identify current functions or rules; rounded boxes identify future or missing capabilities. A timestamp from the host-only path must retain its own clock identity rather than masquerade as synchronized time.
