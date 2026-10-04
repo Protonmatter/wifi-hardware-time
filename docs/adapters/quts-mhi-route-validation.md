@@ -194,6 +194,14 @@ Local validation on the completed tree:
 - PSScriptAnalyzer was unavailable. The corrected profile's elevated live path
   remains untested following the cancelled request.
 
+The first hosted run on `b2e8b12` reproduced a script-catalog hash mismatch on
+both platforms: the new observer was registered from LF bytes, while the existing
+repository attributes require `.ps1` checkouts to use CRLF. The catalog was
+corrected to the required CRLF file hash, without weakening the integrity test.
+A fresh checkout with automatic line-ending conversion disabled
+verified all registered hashes because the explicit repository attributes still
+apply. Prior execution receipts retain the actual bytes used in those captures.
+
 ## Remaining gates
 
 1. Complete a positive-control-qualified system registry capture before claiming

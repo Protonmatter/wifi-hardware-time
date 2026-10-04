@@ -22,7 +22,7 @@
     {
       "name": "Observe-QutsRegistry",
       "path": "research/acquisition/Observe-QutsRegistry.ps1",
-      "sha256": "15AADD591B731E1F92B34445F684FE9D152A1930D59B1FE0DB47223D718E3017",
+      "sha256": "A03958A14850B6495801EB7127A05AA061FD7E5F0CAD496A9D418331BB06C448",
       "owner": "Protonmatter",
       "risk": "Medium",
       "validation": "PowerShell parser; preview; exact process/driver preflight. Final system-provider live coverage remains pending.",

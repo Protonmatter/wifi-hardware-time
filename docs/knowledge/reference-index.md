@@ -10,7 +10,7 @@ Find the calls, file names, terms and short strings recorded in this research. T
 
 ## Search
 
-Indexed **233 source files** and **6085 distinct terms**.
+Indexed **233 source files** and **6086 distinct terms**.
 
 The [JSON index](research-index.json) includes Python definitions/calls, C/Java/PowerShell call-shaped tokens, authored short strings and Markdown code terms. Vendor binaries, local artifacts, historical reproduction sources and generated indexes are excluded. Unresolved call-shaped tokens are explicitly labeled.
 
@@ -65,7 +65,7 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [docs/adapters/qualcomm-software-center-timing-leads.md](../../docs/adapters/qualcomm-software-center-timing-leads.md) | `e29b1e10617c` |
 | [docs/adapters/qualcomm.md](../../docs/adapters/qualcomm.md) | `0549a1d14d80` |
 | [docs/adapters/quts-discovery-gate.md](../../docs/adapters/quts-discovery-gate.md) | `0a2b2f422640` |
-| [docs/adapters/quts-mhi-route-validation.md](../../docs/adapters/quts-mhi-route-validation.md) | `f40ad83739bf` |
+| [docs/adapters/quts-mhi-route-validation.md](../../docs/adapters/quts-mhi-route-validation.md) | `9c9df74b318e` |
 | [docs/adapters/static-inspection-runbook.md](../../docs/adapters/static-inspection-runbook.md) | `b19845fec9a0` |
 | [docs/adapters/windows-bss-host-time.md](../../docs/adapters/windows-bss-host-time.md) | `c1d8d6725b1d` |
 | [docs/clock-models/README.md](../../docs/clock-models/README.md) | `bee9e1e5a820` |
