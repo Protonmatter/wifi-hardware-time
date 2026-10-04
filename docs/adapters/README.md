@@ -8,6 +8,7 @@ TSF (Timing Synchronization Function) is the Wi-Fi timer; a cross timestamp rela
 
 | File | Question answered |
 |---|---|
+| [ghidra-workspace.md](ghidra-workspace.md) | How do we inspect the exact ARM64 driver in Ghidra without confusing decompiled code with live execution? |
 | [qualcomm-management-timing-producer.md](qualcomm-management-timing-producer.md) | Which additional timing fields are declared, when must event data be copied, and does host event history include management RX? |
 | [windows-bss-host-time.md](windows-bss-host-time.md) | Where does the Windows BSS host timestamp originate, and can it change without replacing the frame? |
 | [qualcomm-bss-serialization.md](qualcomm-bss-serialization.md) | Where are frame bytes, age metadata and vendor context constructed for the Windows BSS list? |

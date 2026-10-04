@@ -6,6 +6,9 @@ A ring is a circular buffer that overwrites old entries. A getter is an interfac
 
 | Read | Main result | Limit |
 |---|---|---|
+| [MLO cache and native symbol search](mlo-cache-and-symbol-search.md) | Reference schema matches selected cache stores; callback precedes update; identical public SYS located | No independent reader or matching PDB recovered; live timing and owned export remain unqualified |
+| [Packet-log producer trace](packetlog-producer-trace.md) | HTT message, subscription and callback traced into the binary log; separate MLO offset-cache lead | No complete management-event schema, runtime binding or safe publication contract |
+| [Packet-log return path](packetlog-return-path.md) | Binary packet-log copy connected to the IHV response bridge | Different buffer from the TSF diagnostic log; full-event contents, snapshot safety and live invocation remain unqualified |
 | [Timing boundaries and copy model](timing-boundary-investigation-2026-10-03.md) | Consumers narrowed to diagnostic/recovery paths; receive timestamp fields located | No safe getter, live corruption measurement, complete-copy guarantee or packet timestamp export |
 | [Unmatched reports and the original ring lead](unmatched-tsf-and-memory-log.md) | Extra reports changed cached values; a pre-tracing memory copy exists | Historical source-attribution lead, superseded by later scan and boundary work |
 | [Passive validation and retrieval follow-up](../acquisition/passive-and-retrieval-validation-2026-10-03.md) | One passive live run passed; log-saving callers narrowed | No ring read or performance measurement |

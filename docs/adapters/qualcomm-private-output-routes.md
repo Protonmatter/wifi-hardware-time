@@ -156,6 +156,12 @@ The bridge is therefore kept outside the live allowlist. The next investigation
 should bind one specific read operation to a timing producer and verify its
 buffer-length, ownership, state-change and error contracts end to end.
 
+The [packet-log follow-up](../memory-ring/packetlog-return-path.md) now connects
+one binary source to this bridge: a combined header/body copy through a resolved
+operations table. It also identifies outer-selector precedence, position advance
+before payload copy and a stop path that can free storage. No complete WMI event,
+safe live snapshot or application invocation is established by that connection.
+
 ## Reproduce the offline evidence
 
 Use the existing Python dependencies and a locally owned copy of this exact SYS

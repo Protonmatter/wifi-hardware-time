@@ -6,6 +6,8 @@ These tools identify the adapter, inspect its advertised services and read cache
 
 | File | Role |
 |---|---|
+| [ghidra/TraceQualcommPacketlog.java](ghidra/TraceQualcommPacketlog.java) | Bounded exact-image cross-reference and private assembly/decompilation exports; see [producer findings](../../docs/memory-ring/packetlog-producer-trace.md). |
+| [ghidra/AnnotateQualcommTiming.java](ghidra/AnnotateQualcommTiming.java) | Exact-hash Ghidra annotations and private decompilation reports. See the [offline workspace guide](../../docs/adapters/ghidra-workspace.md). |
 | [inspect_windows_bss_time.py](inspect_windows_bss_time.py) | Hash-gated offline Windows BSS host-time range inventory; no device or runtime memory access. |
 | [inspect_management_rx.py](inspect_management_rx.py) | Offline exact-build management-event schema, handoffs, cleanup and history exclusion; no live capture. See the [producer findings](../../docs/adapters/qualcomm-management-timing-producer.md). |
 | [cached_beacon.c](cached_beacon.c) | Probe or native helper; consult its header and the matching research report before use. |
