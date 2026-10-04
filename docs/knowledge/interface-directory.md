@@ -37,7 +37,20 @@ This directory ranks useful starting points by what the evidence supports. Names
 | `getDeviceList`, `getProtocolList` | QUTS enumeration declarations; empty lists can also mean failure. No device enumeration invoked by the archive inspection |
 | `ValidateDevice`, `QCDeviceControlFile`, `QCDeviceProtocol` | Native network discovery and protocol metadata. The current PCI Wi-Fi key lacks the control-file advertisement; see the [Ghidra gate trace](../adapters/quts-discovery-gate.md) |
 | `Discovered MHI Diag protocol`, `0x1a2d58`, `0x17fa18` | QCDM-description and MHI-parent predicates leading to DIAG-object construction; see [matched fields and limits](../adapters/quts-mhi-route-validation.md) |
-| `0x1ef198`, `0x313b38`, `0x27f970` | DIAG connection factory, derived constructor and base constructor; lower `CommonIo` endpoint association remains unqualified |
+| `0x1ef198`, `0x313b38`, `0x27f970` | DIAG connection factory, derived constructor and base constructor; FastConnect endpoint association remains unqualified |
+| `0x0b2cd0`, `0x0b5168`, `0x0b5ddc` | Expected QUTS return RVAs observed together in 12 matched stacks from the qualified registry capture |
+| `0x27ad70`, `0x277e40`, protocol `+0x118` | CommonIo getter, base constructor and retained transport reference |
+| `0x17efc0`, `0x17ef18`, `0x17ee80`, `0x17ede8` | Usb, QmiIo, Ethernet and CommandIo factories; distinct transport implementations |
+| `0x2aa050`, `0x0b6920`, entry `+0x894` | Selected Usb open, QcDevice endpoint open and stored endpoint path; static, not a demonstrated Wi-Fi open |
+| `0x2ab358`, `0x0b7500` | Selected Usb send and QcDevice WriteFile path; not a receive getter |
+| `0x0b3b58`, stores `0x0b5640`–`0x0b5748` | ScanDevices constructs endpoint at entry `+0x894` from validated discovery data |
+| `0x0b0830`, descriptor `+0x30` | Device-list reconciliation publishes a pointer to entry-owned endpoint text; copying the wrapper does not copy its strings |
+| `0x0b71c0`, `0x2a9b78` | ReadFromDevice and communication RxWorker; up to 128 KiB per read, with actual byte count |
+| `0x2a7cd0`, `0x137760` | Copy portions of at most 16 KiB into owned Device::Buffer objects before callbacks |
+| `0x2aae30`, `0x2ac3d8` | Transport callback-pair registration and propagation to the worker under its lock |
+| `0x2a89a8`, `0x2a8d60`, `0x0b7038` | Selected close sequence, CancelIoEx request and CloseDevice; not a bounded live cancellation result |
+| `0x100e90`, `0x106e30`, `0x8000000000000000` | Default wait sentinel constructor, waitForStop and selected unlimited wait; not a host timestamp sample |
+| `0x22d038`, `0x1e9848` | DIAG readPackets and NonHdlc FrameStream status check; concrete framing targets, not a qualified Wi-Fi schema |
 | `createDataQueue`, `getDataQueueItems`, `removeDataQueue` | QUTS diagnostic queue lifecycle with count/timeout retrieval |
 | `sendRequestAsync`, `getResponseAsync`, `getAllResponsesAsync` | Service transaction association; request calls can affect hardware and were not executed |
 | `DiagPacket.Read`, `TBinaryProtocol.ReadBinary`, `TCompactProtocol.ReadBinary` | Located managed-byte allocation and deserialization path |

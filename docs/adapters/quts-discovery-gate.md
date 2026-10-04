@@ -6,6 +6,11 @@ Qualcomm composite-USB fallback. The active PCI Wi-Fi adapter has neither. This
 explains a specific route by which it can be omitted from QUTS enumeration; it
 does not establish that the Wi-Fi driver lacks private diagnostic capabilities.
 
+**Later live validation:** [attempt 06](quts-live-gate-and-commonio.md) captured
+12 failed queries on this adapter's driver key with the expected QUTS stack
+addresses and all 20 positive controls. The static results below remain the
+control-flow explanation; the following conditional instruction was not traced.
+
 ## Contents
 
 - [Scope and identities](#scope-and-identities)

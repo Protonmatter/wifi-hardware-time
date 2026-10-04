@@ -10,7 +10,9 @@ These tools collect and assess timing observations, enforce request limits and s
 
 | File | Role |
 |---|---|
-| [Observe-QutsRegistry.ps1](Observe-QutsRegistry.ps1), [quts-registry.wprp](quts-registry.wprp) | Preview-first, exact-identity passive OS registry observer. The final system-provider profile is prepared but not live-qualified; see the [coverage record](../../docs/adapters/quts-mhi-route-validation.md). |
+| [Observe-QutsRegistry.ps1](Observe-QutsRegistry.ps1), [quts-registry.wprp](quts-registry.wprp) | Preview-first OS registry observer with 32 MiB buffers and bracketed start/end controls. See the [qualified query capture](../../docs/adapters/quts-live-gate-and-commonio.md). |
+| [export_registry_trace.c](export_registry_trace.c) | Bounded offline native ETL reader; selected process events plus global key lifecycle. Raw output remains private. |
+| [analyze_quts_registry.py](analyze_quts_registry.py) | Offline exact-build query/stack attribution, control coverage and rejection rules. Successful analysis alone does not mean qualification. |
 | [analyze_quarantined_tsf.py](analyze_quarantined_tsf.py) | Offline analysis/model or file transformation; see the tool header for inputs. |
 | [analyze_scan_comparison.py](analyze_scan_comparison.py) | Offline analysis/model or file transformation; see the tool header for inputs. |
 | [campaign_admission.py](campaign_admission.py) | Shared validation, admission or result rules; not a standalone hardware command. |

@@ -3,10 +3,10 @@
   <Profiles>
     <SystemCollector Id="QutsRegistryCollector" Name="QutsRegistryCollector">
       <BufferSize Value="64" />
-      <Buffers Value="128" />
+      <Buffers Value="512" />
     </SystemCollector>
     <SystemProvider Id="QutsRegistryProvider">
-      <Keywords><Keyword Value="Registry" /></Keywords>
+      <Keywords><Keyword Value="Registry" /><Keyword Value="ProcessThread" /><Keyword Value="Loader" /></Keywords>
       <Stacks><Stack Value="RegistryQueryValue" /><Stack Value="RegistryOpenKey" /></Stacks>
     </SystemProvider>
     <Profile Id="QutsRegistry.Verbose.Memory" Name="QutsRegistry" Description="Bounded QUTS registry query observation"

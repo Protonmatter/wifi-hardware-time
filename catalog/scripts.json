@@ -22,10 +22,10 @@
     {
       "name": "Observe-QutsRegistry",
       "path": "research/acquisition/Observe-QutsRegistry.ps1",
-      "sha256": "A03958A14850B6495801EB7127A05AA061FD7E5F0CAD496A9D418331BB06C448",
+      "sha256": "525DAD8F8FE3853BE69351FD440CD9471941D6B1F60AA2878BEE48E7AD67C956",
       "owner": "Protonmatter",
       "risk": "Medium",
-      "validation": "PowerShell parser; preview; exact process/driver preflight. Final system-provider live coverage remains pending.",
+      "validation": "PowerShell parser and preview; offline rejection tests; 2026-10-04 attempt 06 qualified 20/20 controls and 12 attributed queries. No firmware timing qualification.",
       "rollback": "Stop or cancel only the unique WPR instance recorded in the private result.json. No device or service restart."
     }
   ]

@@ -1,6 +1,6 @@
 # Current research findings
 
-We can read diagnostic counters and locate application-owned byte returns. Ghidra now identifies a QUTS network-discovery requirement that the active Wi-Fi adapter does not advertise, explaining a selected omission path. This does not rule out its separate private diagnostics. Offline tests and selected signatures pass; a complete attributable Wi-Fi timing event and its relationship to the host clock remain unqualified.
+We can read diagnostic counters and locate owned byte-return patterns. A qualified live trace observes QUTS's missing control-endpoint query on the active Wi-Fi adapter. Static tracing now follows endpoint construction and received bytes into separate owned chunks. These findings narrow the transport gap; a complete attributable Wi-Fi timing record, bounded cancellation and hardware-to-host clock relationship remain unqualified.
 
 ## Contents
 
@@ -27,6 +27,11 @@ reports preserve what was observed in their original runs.
 | Installed QUTS | Client deserialization allocates a byte array for diagnostic payloads | Real static ownership evidence for a possible application return path |
 | Live QUTS enumeration | Two returned device locations match a processor and USB device, not the active PCI Wi-Fi adapter; no record acquired | Narrows the missing adapter-to-protocol connection; does not prove absent hardware support |
 | Native QUTS discovery | Ghidra locates a network-device control-endpoint advertisement check; the active adapter lacks that advertisement and its USB fallback | Explains one omission path; target the actual vendor transport rather than force a protocol on an unrelated device |
+| Live discovery-query attribution | 12 missing-value results on the active adapter key, with matching QUTS stacks and 20/20 control reads | Establishes the selected query's live execution and status; does not directly trace the following CPU branch |
+| CommonIo transport | Shared interface with distinct implementations; selected Usb open resolves a discovered endpoint into `CreateFileW` | Attribute the actual endpoint and owning device; a DIAG/MHI label does not establish a Wi-Fi connection |
+| Endpoint writer | `ScanDevices` constructs entry `+0x894` from discovery/validation data after the active-device gate | Connects the missing network advertisement to endpoint construction; does not create a FastConnect endpoint |
+| Native receive ownership | A 128 KiB reusable read buffer feeds separate owned callback chunks of at most 16 KiB | Real copy/ownership implementation located; chunk boundaries are not complete-record boundaries |
+| Receive cancellation | Located stop, cancel, close and worker-wait paths; selected wait uses an unlimited sentinel | Requires a separately qualified bounded shutdown contract before operational use |
 | Qualification audit | Exact driver catalog membership accepted; selected package signatures verified; 247 tests passed with zero skips | Closes the prior compiler/fixture gap; unsigned QUTS files and timing qualification remain separate |
 
 ## What changed
@@ -50,19 +55,29 @@ scope behind each correction. The largest recent changes are:
 - Ghidra and the downloaded QUD discovery source identify the
   [network discovery gate](../adapters/quts-discovery-gate.md):
   `QCDeviceControlFile` or a specific Qualcomm composite-USB fallback. The current
-  PCI adapter satisfies neither. This is a static explanation, not a captured
-  live rejection branch or proof that other Wi-Fi diagnostic paths are absent.
+  PCI adapter satisfies neither. The [qualified live follow-up](../adapters/quts-live-gate-and-commonio.md)
+  now corroborates the failed query and exact callsite. It does not prove that
+  other Wi-Fi diagnostic paths are absent or directly trace the following branch.
 - Extended Ghidra analysis also locates a separate MHI DIAG branch that constructs
   a `Device::Protocol::Diag` object. The [follow-up](../adapters/quts-mhi-route-validation.md)
   resolves QCDM-description and `mhi.*?` parent predicates and the DIAG connection
   wrapper. FastConnect attribution and its Wi-Fi producer connection remain open.
 - The discovery worker's 12,235 recognized instructions are now exported without
-  truncation. Two passive OS traces did not pass event-coverage validation; the
-  corrected system-registry capture was not executed after UAC cancellation.
+  truncation. Earlier passive traces failed coverage or were cancelled. Attempt 06
+  uses 32 MiB collector buffers and retains every start/end control; zero loss
+  counters alone were insufficient to qualify earlier attempts.
+- The lower `CommonIo` trace distinguishes Usb, QmiIo, Ethernet and CommandIo.
+  The inspected Usb open may configure communication state/timeouts, so a future
+  passive-read claim must account for connection initialization too.
+- The [endpoint and receive trace](../adapters/quts-endpoint-writer-and-receive.md)
+  locates the endpoint writer, `ReadFromDevice`, a copied `Device::Buffer` callback,
+  and separate DIAG framing code. Callback-to-DIAG registration and the exact Wi-Fi
+  producer connection remain open. A successful zero-byte read, cancellation
+  request or allocated transport chunk is not a complete firmware record.
 - The previously skipped native C and Windows BSS image tests passed after
   configuring the installed toolchain and exact fixtures. Published revision
-  `5d6695c` has successful hosted CI; later revisions require their own hosted
-  results. The MHI follow-up also passed all 247 local tests with zero skips.
+  `01d2c51` has successful hosted CI; later revisions require their own hosted
+  results. The earlier MHI follow-up passed all 247 local tests with zero skips.
 
 ## The remaining connection
 

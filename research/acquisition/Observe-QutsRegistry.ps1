@@ -5,7 +5,7 @@ Preview or capture bounded Windows registry-query events from existing QUTS proc
 .DESCRIPTION
 Preview is read-only. -Execute requires an elevated local console and a NEW private
 output directory. Observes only OS ETW; sends no QUTS RPC or firmware command.
-Uses a unique WPR instance, an 8 MiB memory collector and a bounded observation.
+Uses a unique WPR instance, a 32 MiB memory collector and a bounded observation.
 Kernel registry events are collected without a provider-process scope filter;
 analysis must retain only the exact QUTS PIDs and the declared control PID.
 Raw ETL, process identities and registry paths are private. Exit 0 capture/preview
@@ -29,7 +29,7 @@ $wpr=Join-Path $env:windir 'System32\wpr.exe'
 if(-not $Execute){
     & $wpr -profiles $profile
     if($LASTEXITCODE -ne 0){exit 1}
-    [pscustomobject]@{mode='preview';seconds=$Seconds;process_filter='post-capture exact PIDs';memory_buffers_mib=8;vendor_requests=0}
+    [pscustomobject]@{mode='preview';seconds=$Seconds;process_filter='post-capture exact PIDs';memory_buffers_mib=32;vendor_requests=0}
     exit 0
 }
 $elevated=([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
@@ -38,10 +38,28 @@ if([string]::IsNullOrWhiteSpace($OutputDirectory) -or (Test-Path -LiteralPath $O
 $null=New-Item -ItemType Directory -Path $OutputDirectory
 $outputRoot=(Resolve-Path -LiteralPath $OutputDirectory).ProviderPath
 $instance='wht-quts-registry-'+[Guid]::NewGuid().ToString('N')
-$result=[ordered]@{schema='wht/quts-registry-observation-v1';instance=$instance;started_utc=[DateTimeOffset]::UtcNow.ToString('o');seconds=$Seconds;disposition='blocked';trace_started=$false;trace_stopped=$false;cleanup='not-needed';error=$null}
+$result=[ordered]@{schema='wht/quts-registry-observation-v1';instance=$instance;started_utc=[DateTimeOffset]::UtcNow.ToString('o');seconds=$Seconds;memory_buffers_mib=32;disposition='blocked';trace_started=$false;trace_stopped=$false;cleanup='not-needed';error=$null}
 $attempted=$false
 $exitCode=1
 $commandCount=0
+$controls=New-Object 'System.Collections.Generic.List[object]'
+
+function Invoke-ReadControls([string]$Phase,[string]$DriverKey){
+    $controlKey=[Microsoft.Win32.Registry]::LocalMachine.OpenSubKey(('SYSTEM\CurrentControlSet\Control\Class\'+$DriverKey),$false)
+    if($null -eq $controlKey){throw 'Positive-control driver key unavailable'}
+    try {
+        for($i=0;$i -lt 5;$i++){
+            foreach($name in @('NetCfgInstanceId','QCDeviceControlFile')){
+                $thread=[WhtRegistryControlThread]::GetCurrentThreadId()
+                $beforeQpc=[Diagnostics.Stopwatch]::GetTimestamp()
+                $value=$controlKey.GetValue($name,$null)
+                $afterQpc=[Diagnostics.Stopwatch]::GetTimestamp()
+                $controls.Add([pscustomobject]@{phase=$Phase;pid=$PID;tid=$thread;name=$name;before_qpc=[string]$beforeQpc;after_qpc=[string]$afterQpc;value_present=($null -ne $value)})
+            }
+        }
+    } finally {$controlKey.Dispose()}
+    $controls | ConvertTo-Json -Depth 4 | Set-Content -LiteralPath (Join-Path $outputRoot 'positive-controls.json') -Encoding UTF8
+}
 
 function Invoke-BoundedWpr([string[]]$Arguments){
     $script:commandCount++
@@ -82,6 +100,12 @@ try {
     Copy-Item -LiteralPath $profile -Destination $savedProfile
     $result.script_sha256=(Get-FileHash -LiteralPath (Join-Path $outputRoot 'executed-script.ps1')).Hash
     $result.profile_sha256=(Get-FileHash -LiteralPath $savedProfile).Hash
+    Add-Type -TypeDefinition @'
+using System.Runtime.InteropServices;
+public static class WhtRegistryControlThread {
+    [DllImport("kernel32.dll")] public static extern uint GetCurrentThreadId();
+}
+'@
     $before=Get-IdentitySnapshot
     $before | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath (Join-Path $outputRoot 'identity-before.json') -Encoding UTF8
     $result | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath (Join-Path $outputRoot 'result.json') -Encoding UTF8
@@ -91,15 +115,12 @@ try {
     $result.trace_started=$true
     # Read-only positive control. Distinguish this PID from every vendor PID.
     $result.control_process_id=$PID
-    $controlKey=[Microsoft.Win32.Registry]::LocalMachine.OpenSubKey(('SYSTEM\CurrentControlSet\Control\Class\'+$before.driver_key),$false)
-    if($null -eq $controlKey){throw 'Positive-control driver key unavailable'}
-    try {
-        for($i=0;$i -lt 5;$i++){
-            $null=$controlKey.GetValue('NetCfgInstanceId',$null)
-            $null=$controlKey.GetValue('QCDeviceControlFile',$null)
-        }
-    } finally {$controlKey.Dispose()}
+    $result.control_qpc_frequency=[string][Diagnostics.Stopwatch]::Frequency
+    Start-Sleep -Milliseconds 250
+    Invoke-ReadControls 'start' $before.driver_key
     Start-Sleep -Seconds $Seconds
+    Invoke-ReadControls 'end' $before.driver_key
+    Start-Sleep -Milliseconds 100
     $null=Invoke-BoundedWpr @('-status','collectors','-details','-instancename',$instance)
     $null=Invoke-BoundedWpr @('-stop',(Join-Path $outputRoot 'registry.etl'),'-skipPdbGen','-instancename',$instance)
     $result.trace_stopped=$true

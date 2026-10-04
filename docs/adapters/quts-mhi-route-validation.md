@@ -3,9 +3,13 @@
 The MHI discovery patterns and their input fields are now traced, and the large
 worker has a complete export of its Ghidra-recognized instructions. The branch
 constructs DIAG protocol and connection objects, but no FastConnect endpoint or
-firmware record has been demonstrated. Two OS traces failed their coverage checks;
-a corrected capture awaits elevation. Hosted checks must be tied to a published
+firmware record has been demonstrated. The later corrected capture now binds
+12 failed control-endpoint queries to the traced code, with all 20 controls present.
+Hosted checks must be tied to a published
 revision and do not establish hardware qualification.
+
+The [live query and CommonIo follow-up](quts-live-gate-and-commonio.md) is the
+current result. Earlier attempts below retain their original dispositions.
 
 ## Contents
 
@@ -27,7 +31,7 @@ Offsets below are RVAs; add `0x140000000` for the offline Ghidra address.
 
 | Requested claim | Current result |
 |---|---|
-| Live execution of the selected registry rejection branch | Not demonstrated. Two captures have no qualifying registry events; the positive control was missing too. |
+| Live execution of the selected registry query | Now demonstrated in follow-up attempt 06: 12 failed queries, exact adapter-key binding and matching stacks. The following conditional instruction was not directly traced. |
 | Live MHI transport | Not demonstrated. No service connection or firmware command was attempted. |
 | FastConnect-to-MHI association | Not demonstrated. Discovery predicates are now explicit, but no matching attributable endpoint is established. |
 | Firmware-event identity and complete-record delivery | Still open. Discovery-event string ownership and DIAG object construction are different from firmware-packet ownership. |
@@ -102,7 +106,7 @@ existing-record retrieval contract.
 
 The authorized observations used normal Windows tracing, with no private Wi-Fi
 IOCTL, QUTS RPC, device-mode change, firmware logging-mask change or reset.
-Each executed capture used a unique WPR instance, an 8 MiB memory buffer budget,
+The original attempts 01–02 used a unique WPR instance, an 8 MiB memory buffer budget,
 exact adapter/driver checks, and source/profile snapshots taken before tracing.
 
 | Attempt | Observation | Disposition |
@@ -122,9 +126,10 @@ read each running QUTS executable path, current disk hash and module base. That
 improves process/file association compared with the earlier access-denied run;
 it does not attest all in-memory code or retroactively qualify that earlier run.
 
-The final profile uses the documented system `Registry` keyword with
+The corrected profile uses the documented system `Registry` keyword with
 `RegistryQueryValue` and `RegistryOpenKey` stack collection, as confirmed against
-the installed WPR profile. It was not live-tested after the cancelled prompt.
+the installed WPR profile. The later [qualified capture](quts-live-gate-and-commonio.md)
+increases the buffer budget to 32 MiB and verifies both start and end controls.
 Microsoft distinguishes the [system registry tracing path](https://learn.microsoft.com/en-us/windows/win32/etw/registry)
 from ordinary event-provider configuration; see also the
 [WPR command reference](https://learn.microsoft.com/en-us/windows-hardware/test/wpt/wpr-command-line-options).
@@ -191,8 +196,8 @@ Local validation on the completed tree:
   65,537 rejected before output creation; omission retained the 4,096 default.
 - The matcher, connection and event-boundary passes completed their selected
   decompilations. No whole-program reanalysis was needed for these follow-ups.
-- PSScriptAnalyzer was unavailable. The corrected profile's elevated live path
-  remains untested following the cancelled request.
+- PSScriptAnalyzer was unavailable. These local results describe the earlier
+  tree; the follow-up report covers the subsequent elevated live path.
 
 The first hosted run on `b2e8b12` reproduced a script-catalog hash mismatch on
 both platforms: the new observer was registered from LF bytes, while the existing
@@ -204,10 +209,9 @@ apply. Prior execution receipts retain the actual bytes used in those captures.
 
 ## Remaining gates
 
-1. Complete a positive-control-qualified system registry capture before claiming
-   the selected live rejection path. Query status and matching call-stack addresses
-   would support the syscall path; a precise conditional-branch instruction still
-   needs execution evidence or carefully stated inference.
+1. Preserve the distinction now established by the qualified capture: query status
+   and matching stack addresses validate the selected syscall path; the following
+   conditional instruction remains a static inference, not a direct execution trace.
 2. Match an actual endpoint's discovery metadata and lower transport to FastConnect.
    Then establish a nonmutating existing-record access path before reading one.
 3. Preserve timestamp domain, units, width, event identity, validity, loss and epoch
