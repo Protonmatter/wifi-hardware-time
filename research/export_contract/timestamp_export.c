@@ -147,3 +147,164 @@ enum te_status te_snapshot(const te_state *s, void *output, size_t capacity)
     memcpy(output, &health, sizeof(health));
     return TE_OK;
 }
+
+/* Diagnostic event records: software qualification is separate from hardware. */
+static uint32_t event_le32(const uint8_t *p)
+{
+    return (uint32_t)p[0] | ((uint32_t)p[1] << 8) |
+        ((uint32_t)p[2] << 16) | ((uint32_t)p[3] << 24);
+}
+
+static int event_meta_valid(const te_event_meta *m)
+{
+    return m && m->schema == TE_EVENT_SCHEMA && m->provenance == TE_SYNTHETIC &&
+        m->identity_present == TE_IDENTITY_PRESENT && m->host_observation == TE_CALLBACK_ENTRY_QPC &&
+        m->source_scope && m->session && m->epoch && m->generation && m->sequence &&
+        m->qpc_frequency && m->normalized_device_present == 1;
+}
+
+static enum te_status event_error(te_event_state *s, enum te_status result)
+{
+    if (s && result != TE_OK && result != TE_CLOSED) add(&s->rejects, 1);
+    return result;
+}
+
+static enum te_status event_check(te_event_state *s, const te_event_meta *m)
+{
+    const te_event_meta *a;
+    if (!s) return TE_INVALID;
+    if (s->closed) return TE_CLOSED;
+    if (s->quarantined) return TE_QUARANTINED;
+    if (!event_meta_valid(m)) return TE_INVALID;
+    a = &s->identity;
+    if (a->source_scope != m->source_scope || a->clock_id != m->clock_id ||
+        a->peer_id != m->peer_id || a->link_id != m->link_id || a->session != m->session ||
+        a->epoch != m->epoch || a->generation != m->generation ||
+        a->normalized_device_id != m->normalized_device_id || a->qpc_frequency != m->qpc_frequency)
+        return TE_MISMATCH;
+    return m->sequence <= s->last_sequence ? TE_STALE : TE_OK;
+}
+
+static enum te_status event_commit(te_event_state *s, const te_event_record *r)
+{
+    uint32_t slot;
+    s->last_sequence = r->meta.sequence;
+    if (s->count == TE_CAPACITY) { add(&s->losses, 1); return TE_FULL; }
+    slot = (s->head + s->count) % TE_CAPACITY;
+    s->queue[slot] = *r;
+    s->queue[slot].software_losses_before = s->losses;
+    s->queue[slot].software_rejects_before = s->rejects;
+    ++s->count; /* Only after the complete copy, under caller serialization. */
+    return TE_OK;
+}
+
+uint32_t te_event_capabilities(void)
+{
+    return TE_CAP_SYNTHETIC_MLO | TE_CAP_SYNTHETIC_MANAGEMENT;
+}
+
+enum te_status te_event_init(te_event_state *s, const te_event_meta *m)
+{
+    if (!s || !event_meta_valid(m)) return TE_INVALID;
+    memset(s, 0, sizeof(*s)); s->identity = *m;
+    return TE_OK;
+}
+
+enum te_status te_event_publish_mlo(te_event_state *s, const te_event_meta *m,
+    const void *message, size_t size)
+{
+    te_event_record r = {0};
+    uint32_t w[8], i;
+    enum te_status status = event_check(s, m);
+    if (status != TE_OK) return event_error(s, status);
+    if (!message || size != sizeof(r.mlo_raw)) return event_error(s, TE_INVALID);
+    memcpy(r.mlo_raw, message, sizeof(r.mlo_raw));
+    for (i = 0; i < 8; ++i) w[i] = event_le32(r.mlo_raw + i*4);
+    /* Pinned reference layout only; reject reserved bits rather than guess. */
+    if ((w[0] & 0xff) != 0x28 || (w[0] & 0xf000) || (w[0] >> 16) == 0 ||
+        (w[6] & 0xfc000000) || (w[7] & 0xffc00000)) return event_error(s, TE_INVALID);
+    r.schema = TE_EVENT_SCHEMA; r.size = sizeof(r); r.kind = TE_EVENT_MLO; r.meta = *m;
+    r.mlo.firmware_device_id = (w[0] >> 8) & 3; r.mlo.chip_id = (w[0] >> 10) & 3;
+    r.mlo.mac_frequency_mhz = w[0] >> 16;
+    r.mlo.sync_time_us_reference = ((uint64_t)w[2] << 32) | w[1];
+    r.mlo.offset_us_reference = ((uint64_t)w[4] << 32) | w[3];
+    r.mlo.offset_ticks = w[5]; r.mlo.compensation_us = w[6] & 0xffff;
+    r.mlo.compensation_ticks = (w[6] >> 16) & 0x3ff; r.mlo.period_us = w[7] & 0x3fffff;
+    return event_commit(s, &r);
+}
+
+enum te_status te_event_publish_management(te_event_state *s, const te_event_meta *m,
+    const void *header, size_t header_size, const void *frame, size_t frame_size,
+    const void *reo, size_t reo_size)
+{
+    te_event_record r = {0};
+    size_t pos;
+    enum te_status status = event_check(s, m);
+    if (status != TE_OK) return event_error(s, status);
+    if (!m->peer_id || !header || header_size != sizeof(r.management_header) || !frame ||
+        frame_size < 36 || frame_size > TE_FRAME_MAX ||
+        (reo == NULL) != (reo_size == 0) || (reo_size && reo_size != sizeof(r.management_reo)))
+        return event_error(s, TE_INVALID);
+    memcpy(r.management_header, header, header_size);
+    if (event_le32(r.management_header) != ((44u << 16) | 68u) ||
+        event_le32(r.management_header + 20) != frame_size) return event_error(s, TE_INVALID);
+    if (reo_size) {
+        memcpy(r.management_reo, reo, reo_size);
+        if (event_le32(r.management_reo) != ((978u << 16) | 16u)) return event_error(s, TE_INVALID);
+        r.reo_present = 1;
+    }
+    memcpy(r.frame, frame, frame_size);
+    /* Reference fixture supports complete unprotected Beacon/Probe Response only. */
+    if ((r.frame[0] != 0x80 && r.frame[0] != 0x50) || (r.frame[1] & 0xc7) ||
+        (r.frame[22] & 0x0f)) return event_error(s, TE_INVALID);
+    for (pos = 36; pos < frame_size;) {
+        if (frame_size-pos < 2 || r.frame[pos+1] > frame_size-pos-2) return event_error(s, TE_INVALID);
+        pos += 2 + r.frame[pos+1];
+    }
+    r.schema = TE_EVENT_SCHEMA; r.size = sizeof(r); r.kind = TE_EVENT_MANAGEMENT;
+    r.frame_size = (uint32_t)frame_size; r.meta = *m;
+    return event_commit(s, &r);
+}
+
+enum te_status te_event_read(te_event_state *s, te_event_record *out, size_t capacity, size_t *written)
+{
+    if (!written) return TE_INVALID;
+    *written = 0;
+    if (!s || !out) return TE_INVALID;
+    if (s->closed) return TE_CLOSED;
+    if (s->quarantined) return TE_QUARANTINED;
+    if (capacity < sizeof(*out)) return TE_SMALL_BUFFER;
+    if (!s->count) return TE_EMPTY;
+    memcpy(out, &s->queue[s->head], sizeof(*out));
+    memset(&s->queue[s->head], 0, sizeof(*out));
+    s->head = (s->head + 1) % TE_CAPACITY; --s->count;
+    *written = sizeof(*out); return TE_OK;
+}
+
+static void event_flush(te_event_state *s)
+{
+    add(&s->losses, s->count); memset(s->queue, 0, sizeof(s->queue));
+    s->head = 0; s->count = 0;
+}
+
+void te_event_quarantine(te_event_state *s)
+{
+    if (!s || s->closed) return;
+    event_flush(s); s->quarantined = 1;
+}
+
+void te_event_close(te_event_state *s)
+{
+    if (!s) return;
+    event_flush(s); s->closed = 1;
+}
+
+enum te_status te_event_new_generation(te_event_state *s, uint64_t epoch, uint64_t generation)
+{
+    if (!s) return TE_INVALID;
+    if (s->closed) return TE_CLOSED;
+    if (epoch <= s->identity.epoch || generation <= s->identity.generation) return TE_STALE;
+    event_flush(s); s->identity.epoch = epoch; s->identity.generation = generation;
+    s->last_sequence = 0; s->quarantined = 0;
+    return TE_OK; /* Synthetic declaration, not proof that firmware reports drained. */
+}

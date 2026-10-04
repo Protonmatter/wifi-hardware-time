@@ -35,6 +35,11 @@ The separate [owned-export C prototype](owned-timestamp-export-prototype.md)
 now exercises software record ownership and rejection rules with synthetic data.
 It does not connect to the running driver or satisfy the required real acquisition.
 
+The [owned-event extension](owned-event-extension.md) now implements separate
+synthetic MLO and management records with tested ownership, reference decoding,
+loss tracking and rejection rules. These are positive software qualification
+results; a real producer connection remains the separate hardware dependency.
+
 ## Required evidence
 
 | Requirement | What would satisfy it | Current gap |
@@ -89,6 +94,7 @@ access and recovery-triggered dumps are not substitutes for that contract.
 
 Supporting findings:
 
+- [Packet-log return path](../memory-ring/packetlog-return-path.md): binary source connected to IHV completion, with unresolved event contents, snapshot safety and selector/framing requirements.
 - [Management timing producer and lifetime](../adapters/qualcomm-management-timing-producer.md): additional reference-schema timing fields, temporary callback ownership and a management-event history exclusion; no live export or hardware/QPC qualification.
 - [Normal receive path](../adapters/qualcomm-rx-export-boundary.md).
 - [FTM buffer ownership and identity](../ftm/ftm-buffer-ownership-and-identity.md).

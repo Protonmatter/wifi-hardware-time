@@ -7,6 +7,7 @@ synthetic and has `live_clock_eligible == 0`.
 
 ## Contents
 
+- [Owned MLO and management-event extension](../../docs/evidence/owned-event-extension.md): tested software ownership, decoding, rejection and generation behavior; separate from live hardware qualification.
 - [Contract, limits and validation](../../docs/evidence/owned-timestamp-export-prototype.md)
 - [C API and fixed layout](timestamp_export.h)
 - [Exporter implementation](timestamp_export.c)
