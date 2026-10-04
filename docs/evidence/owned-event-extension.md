@@ -131,6 +131,14 @@ inputs, incomplete information elements, identity mismatch, duplicate and old
 generation rejection, queue overflow, loss metadata, quarantine and close.
 Both the original exporter and new event API are exercised in one native run.
 
+Publication checkpoint: implementation commit `7641aea87665cb8bd007ae327846081affab36cf`
+is in [PR #3](https://github.com/Protonmatter/wifi-hardware-time/pull/3).
+[Hosted run 37212980927](https://github.com/Protonmatter/wifi-hardware-time/actions/runs/37212980927)
+passed both jobs: Linux discovered 218 tests (199 passed, 19 fixture/platform
+skips), and Windows passed its native C harness and syntax/helper checks.
+The local run passed all 218 with the private fixtures and ARM64 native toolchain.
+Hosted success qualifies these software checks, not an unconnected hardware path.
+
 An independent read-only review identified the initially permissive DS/Order
 flag check. A native reproducer failed before the correction; the corrected
 profile rejects each unsupported flag on both frame types without consuming

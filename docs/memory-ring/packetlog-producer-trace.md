@@ -239,7 +239,9 @@ The new exporter also rejected a wrong image hash, an out-of-image seed and an
 existing output directory; the existing receipt remained unchanged. Syntax
 checks and the full local suite passed: **211 tests, no skips**, with the owned
 driver/Windows fixtures and ARM64 native harness enabled. No hosted run for
-these uncommitted changes is claimed.
+that local checkpoint is claimed. The later
+[publication checkpoint](../evidence/owned-event-extension.md#validation-and-operation)
+records hosted results for the published changes.
 
 ## Next decision
 

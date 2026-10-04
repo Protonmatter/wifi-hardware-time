@@ -209,7 +209,9 @@ python -m unittest discover -s tests -p test_mlo_cache.py -v
   and the exact-image findings. They do not read live memory.
 - Python syntax checks and the full local suite passed: **218 tests, no skips**,
   with the owned driver/Windows fixtures and ARM64 native harness enabled.
-  Hosted CI has not run for these local, uncommitted changes.
+  These were pre-publication local results. The later
+  [publication checkpoint](../evidence/owned-event-extension.md#validation-and-operation)
+  records hosted coverage separately.
 
 ## Next useful implementation boundary
 
