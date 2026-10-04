@@ -54,7 +54,7 @@ def source_paths(root: Path) -> list[Path]:
                 paths.append(p)
     if any(linked(path) for path in paths):
         raise ValueError('Linked source files are not accepted')
-    return sorted(set(paths))
+    return sorted(set(paths), key=lambda path: path.relative_to(root).as_posix())
 
 
 def tokens(text: str, suffix: str) -> list[tuple[str, str, int]]:

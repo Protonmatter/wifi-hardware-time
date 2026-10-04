@@ -9,6 +9,14 @@ from research.evidence.build_knowledge_index import build, rendered_files
 
 
 class KnowledgeIndexTests(unittest.TestCase):
+    def test_file_order_uses_portable_ordinal_paths(self):
+        with tempfile.TemporaryDirectory() as name:
+            root=Path(name);(root/'research').mkdir()
+            for file in ('a.py','B.py'):
+                (root/'research'/file).write_text('pass\n')
+            self.assertEqual([x['path'] for x in build(root)['files']],
+                             ['research/B.py','research/a.py'])
+
     def test_authored_calls_are_indexed_but_private_artifacts_are_excluded(self):
         with tempfile.TemporaryDirectory() as name:
             root = Path(name)

@@ -37,6 +37,9 @@ The implemented corrections and focused regressions cover:
 | Optional MSI handling swallowed row-limit failures | `_Tables` establishes actual absence; enumeration and bound failures remain fatal |
 | Windows test assumed `pwsh` existed | Optional integration test detects PowerShell availability and skips correctly |
 | Mixed-case fixture reused lowercase Windows directories | Distinct parents exercise actual mixed-case directory names |
+| Hosted Windows short path names bypassed lexical nesting checks | Both existing path sides are expanded before ancestry comparison; authored 8.3-alias regression rejects before output creation |
+| Extended Windows namespace spelled the same tree differently | Unsupported namespace forms reject before mutation; existing path identity uses filesystem metadata handles rather than spelling alone |
+| Hosted Linux produced a differently ordered index | Source paths use explicit ordinal POSIX-style ordering and normalized-text hashes across platforms |
 
 The promoted Ghidra entry point also defaults to preview and requires `--apply`
 for a new private output directory. Internal package workers are used behind the

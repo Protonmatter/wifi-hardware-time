@@ -20,6 +20,9 @@ Use this workflow to inspect vendor files without launching their installers or 
   unnecessary. The wrapper makes no network calls or device requests.
 - A pre-existing output parent, normally ignored `artifacts/`. Input and output
   cannot contain one another. Reparse-point paths are rejected by the wrapper.
+- Use standard local drive paths. UNC and extended/device namespace forms are
+  rejected; existing filesystem paths are resolved consistently before comparing
+  input/output ancestry, including short-name aliases.
 - A reviewed SHA-256 for binary-format operations. A hash identifies bytes;
   publisher authenticity and entitlement are separate questions.
 - 7-Zip is used separately for ZIP/7z/MSI cabinet extraction. Never substitute

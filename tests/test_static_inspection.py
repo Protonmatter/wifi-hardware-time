@@ -2,6 +2,7 @@
 import os
 import json
 import hashlib
+import ctypes
 from pathlib import Path
 import shutil
 import subprocess
@@ -90,6 +91,30 @@ class StaticInspectionTests(unittest.TestCase):
         self.output = self.source / 'output'
         result = self.run_tool('-Apply')
         self.assertEqual(result.returncode, 1)
+        self.assertFalse(self.output.exists())
+
+    def test_short_path_alias_cannot_hide_nested_output(self):
+        folder=self.base/'long input directory'
+        folder.mkdir();(folder/'fixture.txt').write_text('fixture')
+        buffer=ctypes.create_unicode_buffer(32768)
+        length=ctypes.windll.kernel32.GetShortPathNameW(str(folder),buffer,len(buffer))
+        if not length or buffer.value.casefold()==str(folder).casefold():
+            self.skipTest('8.3 names unavailable on this volume')
+        short=Path(buffer.value)
+        self.output=short/'nested'
+        result=self.run_tool('-Apply',source=short)
+        self.assertEqual(result.returncode,1,result.stderr)
+        self.assertFalse(self.output.exists())
+
+    def test_extended_namespace_alias_is_rejected_before_mutation(self):
+        normal=self.source/'nested'
+        self.output=Path('\\\\?\\'+str(normal))
+        result=self.run_tool('-Apply')
+        self.assertEqual(result.returncode,1)
+        self.assertFalse(normal.exists())
+        self.output=self.base/'outside'
+        result=self.run_tool('-Apply',source=Path('\\\\?\\'+str(self.source)))
+        self.assertEqual(result.returncode,1)
         self.assertFalse(self.output.exists())
 
     def test_junction_ancestor_cannot_hide_nested_output(self):

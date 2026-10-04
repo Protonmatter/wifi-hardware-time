@@ -4,7 +4,7 @@
     {
       "name": "Invoke-QualcommStaticInspection",
       "path": "research/adapters/Invoke-QualcommStaticInspection.ps1",
-      "sha256": "55AA6E7490205B65C2BAD3E8ADAA5DCF50F420F68443B85F353C26B4872D5F54",
+      "sha256": "1366F4ADA851CC5891365EBEC23EB8A45902AB0223642C1052FC5E396B215E18",
       "owner": "Protonmatter",
       "risk": "Low",
       "validation": "python -m unittest discover -s tests -p test_static_inspection.py -v",

@@ -52,16 +52,53 @@ function Get-InputManifest([string]$Path) {
 }
 
 try {
+    foreach($raw in @($InputPath,$OutputDirectory)){
+        $standard=$raw.Replace('/','\')
+        if($standard.StartsWith('\\') -or $standard.StartsWith('\??\')){throw 'UNC, extended and device namespace paths are not supported'}
+    }
+    if(-not ('WhtInspectionPathNames' -as [type])){
+        Add-Type -TypeDefinition @'
+using System;
+using System.Text;
+using System.ComponentModel;
+using System.Runtime.InteropServices;
+using Microsoft.Win32.SafeHandles;
+public static class WhtInspectionPathNames {
+ [DllImport("kernel32.dll", CharSet=CharSet.Unicode, SetLastError=true)]
+ private static extern SafeFileHandle CreateFile(string path, uint access, uint share, IntPtr security, uint disposition, uint flags, IntPtr template);
+ [DllImport("kernel32.dll", CharSet=CharSet.Unicode, SetLastError=true)]
+ private static extern uint GetFinalPathNameByHandle(SafeFileHandle file, StringBuilder buffer, uint length, uint flags);
+ public static string Expand(string path) {
+  using(var file=CreateFile(path,0,7,IntPtr.Zero,3,0x02000000,IntPtr.Zero)) {
+   if(file.IsInvalid)throw new Win32Exception(Marshal.GetLastWin32Error());
+   var buffer=new StringBuilder(32768);
+   uint length=GetFinalPathNameByHandle(file,buffer,(uint)buffer.Capacity,0);
+   if(length==0)throw new Win32Exception(Marshal.GetLastWin32Error());
+   if(length>=buffer.Capacity)throw new ArgumentException("Path exceeds supported bound");
+   string result=buffer.ToString();
+   if(result.StartsWith(@"\\?\") && result.Length>6 && result[5]==':')return result.Substring(4);
+   throw new ArgumentException("Expected a local drive filesystem path");
+  }
+ }
+}
+'@
+    }
     $inputFull=(Resolve-Path -LiteralPath $InputPath).ProviderPath
     $inputItem=Get-Item -LiteralPath $inputFull
     $inputAncestor=if($inputItem.PSIsContainer){$inputItem}else{$inputItem.Directory}
     for($ancestor=$inputAncestor;$null -ne $ancestor;$ancestor=$ancestor.Parent){if($ancestor.Attributes -band [IO.FileAttributes]::ReparsePoint){throw 'Input may not traverse reparse points'}}
     $outputFull=[IO.Path]::GetFullPath($OutputDirectory)
-    $comparison=[StringComparison]::OrdinalIgnoreCase
-    if($inputFull.Equals($outputFull,$comparison) -or $outputFull.StartsWith($inputFull.TrimEnd('\','/')+[IO.Path]::DirectorySeparatorChar,$comparison) -or $inputFull.StartsWith($outputFull.TrimEnd('\','/')+[IO.Path]::DirectorySeparatorChar,$comparison)){throw 'Input and output must be separate, non-nested paths'}
     $parent=Split-Path -Parent $outputFull
     if(-not (Test-Path -LiteralPath $parent -PathType Container)){throw 'Output parent must already exist'}
     for($ancestor=Get-Item -LiteralPath $parent;$null -ne $ancestor;$ancestor=$ancestor.Parent){if($ancestor.Attributes -band [IO.FileAttributes]::ReparsePoint){throw 'Output parent may not traverse reparse points'}}
+    $outputExists=Test-Path -LiteralPath $outputFull
+    if($outputExists -and ((Get-Item -LiteralPath $outputFull).Attributes -band [IO.FileAttributes]::ReparsePoint)){throw 'Linked output rejected'}
+    # Resolve filesystem identities (including 8.3/drive aliases) consistently.
+    # Handles request metadata access only, not vendor device/IOCTL access.
+    $inputFull=[WhtInspectionPathNames]::Expand($inputFull)
+    $outputFull=if($outputExists){[WhtInspectionPathNames]::Expand($outputFull)}else{Join-Path ([WhtInspectionPathNames]::Expand($parent)) ([IO.Path]::GetFileName($outputFull))}
+    $comparison=[StringComparison]::OrdinalIgnoreCase
+    if($inputFull.Equals($outputFull,$comparison) -or $outputFull.StartsWith($inputFull.TrimEnd('\','/')+[IO.Path]::DirectorySeparatorChar,$comparison) -or $inputFull.StartsWith($outputFull.TrimEnd('\','/')+[IO.Path]::DirectorySeparatorChar,$comparison)){throw 'Input and output must be separate, non-nested paths'}
     if($Operation -in @('QccExtract','QpstExtract','MsiTables','TypeLibrary') -and -not $ExpectedSha256){throw 'ExpectedSha256 is required for binary format inspection'}
     if($Operation -in @('QccExtract','QpstExtract','MsiTables','TypeLibrary') -and -not (Test-Path -LiteralPath $inputFull -PathType Leaf)){throw 'This operation requires one file'}
     if($Operation -eq 'QikInventory' -and -not (Test-Path -LiteralPath $inputFull -PathType Container)){throw 'QikInventory requires a directory'}
