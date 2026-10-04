@@ -10,7 +10,7 @@ Find the calls, file names, terms and short strings recorded in this research. T
 
 ## Search
 
-Indexed **226 source files** and **5878 distinct terms**.
+Indexed **233 source files** and **6085 distinct terms**.
 
 The [JSON index](research-index.json) includes Python definitions/calls, C/Java/PowerShell call-shaped tokens, authored short strings and Markdown code terms. Vendor binaries, local artifacts, historical reproduction sources and generated indexes are excluded. Unresolved call-shaped tokens are explicitly labeled.
 
@@ -50,12 +50,12 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [docs/acquisition/scan-comparison-plan.md](../../docs/acquisition/scan-comparison-plan.md) | `5c2a312cd514` |
 | [docs/acquisition/scan-tsf-results-2026-10-03.md](../../docs/acquisition/scan-tsf-results-2026-10-03.md) | `26ea16e56034` |
 | [docs/acquisition/timing-qualification-validation-2026-10-04.md](../../docs/acquisition/timing-qualification-validation-2026-10-04.md) | `eb03fb30c7e4` |
-| [docs/adapters/README.md](../../docs/adapters/README.md) | `a33a53dc3159` |
+| [docs/adapters/README.md](../../docs/adapters/README.md) | `92a056f2af3a` |
 | [docs/adapters/axml.md](../../docs/adapters/axml.md) | `db1bd219145b` |
 | [docs/adapters/backend-and-reference-next-steps.md](../../docs/adapters/backend-and-reference-next-steps.md) | `9da7599bbb12` |
 | [docs/adapters/diagrams/vendor-return-paths.mmd](../../docs/adapters/diagrams/vendor-return-paths.mmd) | `060abaf8a568` |
 | [docs/adapters/ghidra-workspace.md](../../docs/adapters/ghidra-workspace.md) | `c7338e8eb501` |
-| [docs/adapters/qualcomm-archive-transport-findings.md](../../docs/adapters/qualcomm-archive-transport-findings.md) | `b4eae40206ac` |
+| [docs/adapters/qualcomm-archive-transport-findings.md](../../docs/adapters/qualcomm-archive-transport-findings.md) | `2ee375b9f1d2` |
 | [docs/adapters/qualcomm-bss-serialization.md](../../docs/adapters/qualcomm-bss-serialization.md) | `7e35c2ffac65` |
 | [docs/adapters/qualcomm-management-rx-handoff.md](../../docs/adapters/qualcomm-management-rx-handoff.md) | `4db69f6d1969` |
 | [docs/adapters/qualcomm-management-timing-producer.md](../../docs/adapters/qualcomm-management-timing-producer.md) | `f858a84bd15a` |
@@ -64,6 +64,8 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [docs/adapters/qualcomm-rx-export-boundary.md](../../docs/adapters/qualcomm-rx-export-boundary.md) | `e350bdd2ad10` |
 | [docs/adapters/qualcomm-software-center-timing-leads.md](../../docs/adapters/qualcomm-software-center-timing-leads.md) | `e29b1e10617c` |
 | [docs/adapters/qualcomm.md](../../docs/adapters/qualcomm.md) | `0549a1d14d80` |
+| [docs/adapters/quts-discovery-gate.md](../../docs/adapters/quts-discovery-gate.md) | `0a2b2f422640` |
+| [docs/adapters/quts-mhi-route-validation.md](../../docs/adapters/quts-mhi-route-validation.md) | `f40ad83739bf` |
 | [docs/adapters/static-inspection-runbook.md](../../docs/adapters/static-inspection-runbook.md) | `b19845fec9a0` |
 | [docs/adapters/windows-bss-host-time.md](../../docs/adapters/windows-bss-host-time.md) | `c1d8d6725b1d` |
 | [docs/clock-models/README.md](../../docs/clock-models/README.md) | `bee9e1e5a820` |
@@ -74,12 +76,14 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [docs/clock-models/diagrams/uncertainty-timestamp-path.mmd](../../docs/clock-models/diagrams/uncertainty-timestamp-path.mmd) | `e6e28e10885e` |
 | [docs/clock-models/packet-to-clock-map.md](../../docs/clock-models/packet-to-clock-map.md) | `4e3e4314bb78` |
 | [docs/clock-models/qualcomm-observation-matrix.md](../../docs/clock-models/qualcomm-observation-matrix.md) | `4ec14c29650d` |
-| [docs/evidence/README.md](../../docs/evidence/README.md) | `df091e70cd66` |
+| [docs/evidence/README.md](../../docs/evidence/README.md) | `9ed5d645b6c2` |
 | [docs/evidence/api-direction.md](../../docs/evidence/api-direction.md) | `cf1792471da3` |
 | [docs/evidence/diagrams/adoption-timestamp-path.mmd](../../docs/evidence/diagrams/adoption-timestamp-path.mmd) | `4ead3659baca` |
 | [docs/evidence/evidence-contract.md](../../docs/evidence/evidence-contract.md) | `66dd3741d0db` |
 | [docs/evidence/owned-event-extension.md](../../docs/evidence/owned-event-extension.md) | `802d62b7fbc6` |
 | [docs/evidence/owned-timestamp-export-prototype.md](../../docs/evidence/owned-timestamp-export-prototype.md) | `29c305f3a563` |
+| [docs/evidence/qualification-audit-2026-10-04.md](../../docs/evidence/qualification-audit-2026-10-04.md) | `0f0846ed392e` |
+| [docs/evidence/quts-enumeration-2026-10-04.md](../../docs/evidence/quts-enumeration-2026-10-04.md) | `7c45efe12b06` |
 | [docs/evidence/raw-timestamp-export-gate.md](../../docs/evidence/raw-timestamp-export-gate.md) | `6e8785dff522` |
 | [docs/evidence/research-delivery-2026-10-02.md](../../docs/evidence/research-delivery-2026-10-02.md) | `a6863efa34d5` |
 | [docs/ftm/README.md](../../docs/ftm/README.md) | `ac7d5eb3d3b6` |
@@ -91,9 +95,9 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [docs/ftm/ftm-raw-access-followup.md](../../docs/ftm/ftm-raw-access-followup.md) | `0f3d5b59bebb` |
 | [docs/ftm/ftm-result-provenance.md](../../docs/ftm/ftm-result-provenance.md) | `b92a2ddb2d94` |
 | [docs/glossary.md](../../docs/glossary.md) | `838e3c21d99f` |
-| [docs/knowledge/assumptions-and-corrections.md](../../docs/knowledge/assumptions-and-corrections.md) | `ddd334640ee3` |
-| [docs/knowledge/current-findings.md](../../docs/knowledge/current-findings.md) | `18ab1cf0e5b6` |
-| [docs/knowledge/interface-directory.md](../../docs/knowledge/interface-directory.md) | `e815e062b45f` |
+| [docs/knowledge/assumptions-and-corrections.md](../../docs/knowledge/assumptions-and-corrections.md) | `d4d700403e2f` |
+| [docs/knowledge/current-findings.md](../../docs/knowledge/current-findings.md) | `d5a38be9b539` |
+| [docs/knowledge/interface-directory.md](../../docs/knowledge/interface-directory.md) | `aab399228aa7` |
 | [docs/knowledge/refresh-validation.md](../../docs/knowledge/refresh-validation.md) | `13243a024baa` |
 | [docs/knowledge/workflow-diagrams.md](../../docs/knowledge/workflow-diagrams.md) | `cb387f0069df` |
 | [docs/memory-ring/README.md](../../docs/memory-ring/README.md) | `c74a8452329e` |
@@ -128,24 +132,27 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [research/acquisition/Export-TsfContext.ps1](../../research/acquisition/Export-TsfContext.ps1) | `9376b83b83ed` |
 | [research/acquisition/Get-CampaignIdentity.ps1](../../research/acquisition/Get-CampaignIdentity.ps1) | `2955126771e2` |
 | [research/acquisition/Invoke-PassiveObservation.ps1](../../research/acquisition/Invoke-PassiveObservation.ps1) | `7ef262fcd61a` |
-| [research/acquisition/README.md](../../research/acquisition/README.md) | `94b943f090dc` |
+| [research/acquisition/Observe-QutsRegistry.ps1](../../research/acquisition/Observe-QutsRegistry.ps1) | `15aadd591b73` |
+| [research/acquisition/README.md](../../research/acquisition/README.md) | `bac47563e972` |
 | [research/acquisition/analyze_quarantined_tsf.py](../../research/acquisition/analyze_quarantined_tsf.py) | `ec7beb1f4e8f` |
 | [research/acquisition/analyze_scan_comparison.py](../../research/acquisition/analyze_scan_comparison.py) | `53ca52b97c8d` |
 | [research/acquisition/campaign_admission.py](../../research/acquisition/campaign_admission.py) | `3fbcc1b190c5` |
 | [research/acquisition/campaign_gate.py](../../research/acquisition/campaign_gate.py) | `1d347eea2011` |
 | [research/acquisition/live_observer.c](../../research/acquisition/live_observer.c) | `d9fbeebe8e90` |
 | [research/acquisition/observation_lifecycle.py](../../research/acquisition/observation_lifecycle.py) | `38c030610f30` |
+| [research/acquisition/quts-registry.wprp](../../research/acquisition/quts-registry.wprp) | `e853fa6fca9a` |
 | [research/acquisition/run_acquisition_campaign.py](../../research/acquisition/run_acquisition_campaign.py) | `2441e402d286` |
 | [research/acquisition/run_passive_observation.py](../../research/acquisition/run_passive_observation.py) | `73f59f63c534` |
 | [research/acquisition/run_scan_comparison.py](../../research/acquisition/run_scan_comparison.py) | `d9d4a3596ed5` |
 | [research/adapters/Get-QualcommAdapter.ps1](../../research/adapters/Get-QualcommAdapter.ps1) | `065ffad62964` |
 | [research/adapters/Invoke-QualcommStaticInspection.ps1](../../research/adapters/Invoke-QualcommStaticInspection.ps1) | `1366f4ada851` |
-| [research/adapters/README.md](../../research/adapters/README.md) | `f5ff4095775d` |
+| [research/adapters/README.md](../../research/adapters/README.md) | `8bfbd62a4a6b` |
 | [research/adapters/cached_beacon.c](../../research/adapters/cached_beacon.c) | `c6ac75115a82` |
 | [research/adapters/device_services.c](../../research/adapters/device_services.c) | `dae2dac610a2` |
 | [research/adapters/ghidra/AnnotateQualcommTiming.java](../../research/adapters/ghidra/AnnotateQualcommTiming.java) | `89e3b0b23f2d` |
 | [research/adapters/ghidra/TraceAtlasQuts.java](../../research/adapters/ghidra/TraceAtlasQuts.java) | `baae8731ab45` |
 | [research/adapters/ghidra/TraceQualcommPacketlog.java](../../research/adapters/ghidra/TraceQualcommPacketlog.java) | `0429c7eba643` |
+| [research/adapters/ghidra/TraceQutsDiscovery.java](../../research/adapters/ghidra/TraceQutsDiscovery.java) | `c7c59809f494` |
 | [research/adapters/inspect_management_rx.py](../../research/adapters/inspect_management_rx.py) | `54abff40c5da` |
 | [research/adapters/inspect_private_exports.py](../../research/adapters/inspect_private_exports.py) | `ed20202a71a8` |
 | [research/adapters/inspect_qik_inventory.py](../../research/adapters/inspect_qik_inventory.py) | `ade4e664ddc4` |
@@ -160,7 +167,7 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [research/clock_models/analyze_observation_quality.py](../../research/clock_models/analyze_observation_quality.py) | `eb5263987e77` |
 | [research/evidence/README.md](../../research/evidence/README.md) | `b8b828633765` |
 | [research/evidence/Update-ResearchKnowledge.ps1](../../research/evidence/Update-ResearchKnowledge.ps1) | `4547d8e08593` |
-| [research/evidence/build_knowledge_index.py](../../research/evidence/build_knowledge_index.py) | `08af094a31c0` |
+| [research/evidence/build_knowledge_index.py](../../research/evidence/build_knowledge_index.py) | `2f278bec5ed2` |
 | [research/evidence/export_clock_evidence.py](../../research/evidence/export_clock_evidence.py) | `a9c4e6892f90` |
 | [research/evidence/hardware_observation.py](../../research/evidence/hardware_observation.py) | `ee18d8e79d2c` |
 | [research/evidence/sync_workflow_diagrams.py](../../research/evidence/sync_workflow_diagrams.py) | `137739ca6ca3` |
@@ -231,7 +238,7 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [tests/test_ftm_response.py](../../tests/test_ftm_response.py) | `d84a9c2897a8` |
 | [tests/test_ftm_selection.py](../../tests/test_ftm_selection.py) | `0a0f6a22f67c` |
 | [tests/test_hardware_observation.py](../../tests/test_hardware_observation.py) | `373ac4bb5f56` |
-| [tests/test_knowledge_index.py](../../tests/test_knowledge_index.py) | `02de981ba892` |
+| [tests/test_knowledge_index.py](../../tests/test_knowledge_index.py) | `a570433b307b` |
 | [tests/test_lifecycle_evidence.py](../../tests/test_lifecycle_evidence.py) | `a5a8e1a98125` |
 | [tests/test_management_rx_path.py](../../tests/test_management_rx_path.py) | `7d6b16367baf` |
 | [tests/test_management_tsf.py](../../tests/test_management_tsf.py) | `4d910521c97c` |

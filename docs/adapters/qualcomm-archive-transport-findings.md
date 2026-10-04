@@ -29,7 +29,9 @@ inspection used an extracted `.tlb` with `REGKIND_NONE`, which disables
 | [QUD_Source_1.00.94.2.zip](https://mirrors.lolinet.com/software/windows/Qualcomm/QPST/QUD_Source_1.00.94.2.zip) | `14d6f0d9ac978187fe10f9305ac67664a85d86207a78e77e97137ac7c2588da3` |
 
 Hashes establish which bytes were inspected. Publisher signatures were not
-validated. Raw packages, schemas, database contents, proprietary decompilation
+validated in this original static pass. The subsequent
+[qualification audit](../evidence/qualification-audit-2026-10-04.md#publisher-signature-verification)
+records selected signed and unsigned components separately. Raw packages, schemas, database contents, proprietary decompilation
 and source copies stay under ignored `artifacts/lolinet-static-2026-10-04/`.
 No patched package was used.
 
@@ -352,6 +354,11 @@ tool promotion and hardening (not the current PR-head result):
 For the promoted tools and current publication checks, use the
 [refresh validation record](../knowledge/refresh-validation.md) and
 [script catalog](../../catalog/scripts.json).
+The subsequent [qualification audit](../evidence/qualification-audit-2026-10-04.md)
+closed both skipped tests: all 247 tests passed with the ARM64 compiler and exact
+fixtures configured. It also verified successful hosted runs for published
+revision `5d6695c`. The [live QUTS enumeration](../evidence/quts-enumeration-2026-10-04.md)
+returned no protocol attributable to the active Wi-Fi adapter.
 
 Extraction additionally used 7-Zip 26.00, PE resource reads, and the side project's
 `Inspect-DotNetAssembly.ps1` / `Inspect-ManagedIL.ps1` tools. The InstallShield

@@ -18,7 +18,7 @@ import stat
 ROOT = Path(__file__).resolve().parents[2]
 GENERATED = {'docs/knowledge/research-index.json', 'docs/knowledge/reference-index.md',
              'docs/knowledge/document-review.md'}
-EXTENSIONS = {'.md', '.mmd', '.py', '.ps1', '.c', '.h', '.java', '.yml'}
+EXTENSIONS = {'.md', '.mmd', '.py', '.ps1', '.c', '.h', '.java', '.yml', '.wprp'}
 EXCLUDED_PARTS = {'artifacts', 'vendor', 'downloads', 'local', 'evidence',
                   'reproductions', '__pycache__', '.git'}
 

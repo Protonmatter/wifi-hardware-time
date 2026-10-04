@@ -18,6 +18,15 @@
       "risk": "Low",
       "validation": "python -m unittest discover -s tests -p test_knowledge_index.py -v; python research/evidence/build_knowledge_index.py --check",
       "rollback": "Restore only docs/knowledge/reference-index.md and docs/knowledge/research-index.json."
+    },
+    {
+      "name": "Observe-QutsRegistry",
+      "path": "research/acquisition/Observe-QutsRegistry.ps1",
+      "sha256": "15AADD591B731E1F92B34445F684FE9D152A1930D59B1FE0DB47223D718E3017",
+      "owner": "Protonmatter",
+      "risk": "Medium",
+      "validation": "PowerShell parser; preview; exact process/driver preflight. Final system-provider live coverage remains pending.",
+      "rollback": "Stop or cancel only the unique WPR instance recorded in the private result.json. No device or service restart."
     }
   ]
 }

@@ -8,6 +8,8 @@ This area defines how research observations can be passed to application softwar
 
 ## Documents
 
+- [Qualification audit, 2026-10-04](qualification-audit-2026-10-04.md): exact driver catalog verification, selected publisher signatures, 247 offline tests with zero skips, and published-head CI.
+- [Bounded live QUTS enumeration](quts-enumeration-2026-10-04.md): two devices enumerated, neither attributable to the active Wi-Fi adapter; record retrieval was not attempted.
 - [Proposed hardware-time boundary](api-direction.md).
 - [Clock evidence contract v1](evidence-contract.md).
 - [Acceptance gate for a complete raw timestamp export](raw-timestamp-export-gate.md).

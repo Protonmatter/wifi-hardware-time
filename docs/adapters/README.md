@@ -15,6 +15,8 @@ TSF (Timing Synchronization Function) is the Wi-Fi timer; a cross timestamp rela
 | [static-inspection-runbook.md](static-inspection-runbook.md) | How do we repeat package and installed-file inspection with preview, hash gates, no-overwrite receipts and explicit failure handling? |
 | [qualcomm-archive-transport-findings.md](qualcomm-archive-transport-findings.md) | What do the QPST/QXDM payloads, QUD source and current QUTS client establish about binary return paths and timestamp semantics? |
 | [ghidra-workspace.md](ghidra-workspace.md) | How do we inspect the exact ARM64 driver in Ghidra without confusing decompiled code with live execution? |
+| [quts-discovery-gate.md](quts-discovery-gate.md) | Why can the native QUTS network discovery path omit this PCI Wi-Fi adapter, and which transport advertisement is missing? |
+| [quts-mhi-route-validation.md](quts-mhi-route-validation.md) | What do the MHI patterns actually match, and which live/CI qualification gates remain open? |
 | [qualcomm-management-timing-producer.md](qualcomm-management-timing-producer.md) | Which additional timing fields are declared, when must event data be copied, and does host event history include management RX? |
 | [windows-bss-host-time.md](windows-bss-host-time.md) | Where does the Windows BSS host timestamp originate, and can it change without replacing the frame? |
 | [qualcomm-bss-serialization.md](qualcomm-bss-serialization.md) | Where are frame bytes, age metadata and vendor context constructed for the Windows BSS list? |

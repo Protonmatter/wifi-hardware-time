@@ -35,6 +35,9 @@ This directory ranks useful starting points by what the evidence supports. Names
 | `GetItemBuffer`, `GetItemSize`, `GetItemDLFBuffer` | QXDM owned-array candidate and related accessors; empty-result ambiguity and format transformation matter |
 | `GetItemTimestamp`, `GetItemSpecificTimestamp` | QXDM store time versus target time with fallback |
 | `getDeviceList`, `getProtocolList` | QUTS enumeration declarations; empty lists can also mean failure. No device enumeration invoked by the archive inspection |
+| `ValidateDevice`, `QCDeviceControlFile`, `QCDeviceProtocol` | Native network discovery and protocol metadata. The current PCI Wi-Fi key lacks the control-file advertisement; see the [Ghidra gate trace](../adapters/quts-discovery-gate.md) |
+| `Discovered MHI Diag protocol`, `0x1a2d58`, `0x17fa18` | QCDM-description and MHI-parent predicates leading to DIAG-object construction; see [matched fields and limits](../adapters/quts-mhi-route-validation.md) |
+| `0x1ef198`, `0x313b38`, `0x27f970` | DIAG connection factory, derived constructor and base constructor; lower `CommonIo` endpoint association remains unqualified |
 | `createDataQueue`, `getDataQueueItems`, `removeDataQueue` | QUTS diagnostic queue lifecycle with count/timeout retrieval |
 | `sendRequestAsync`, `getResponseAsync`, `getAllResponsesAsync` | Service transaction association; request calls can affect hardware and were not executed |
 | `DiagPacket.Read`, `TBinaryProtocol.ReadBinary`, `TCompactProtocol.ReadBinary` | Located managed-byte allocation and deserialization path |

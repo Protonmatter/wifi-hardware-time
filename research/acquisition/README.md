@@ -10,6 +10,7 @@ These tools collect and assess timing observations, enforce request limits and s
 
 | File | Role |
 |---|---|
+| [Observe-QutsRegistry.ps1](Observe-QutsRegistry.ps1), [quts-registry.wprp](quts-registry.wprp) | Preview-first, exact-identity passive OS registry observer. The final system-provider profile is prepared but not live-qualified; see the [coverage record](../../docs/adapters/quts-mhi-route-validation.md). |
 | [analyze_quarantined_tsf.py](analyze_quarantined_tsf.py) | Offline analysis/model or file transformation; see the tool header for inputs. |
 | [analyze_scan_comparison.py](analyze_scan_comparison.py) | Offline analysis/model or file transformation; see the tool header for inputs. |
 | [campaign_admission.py](campaign_admission.py) | Shared validation, admission or result rules; not a standalone hardware command. |

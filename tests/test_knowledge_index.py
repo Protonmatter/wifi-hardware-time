@@ -21,6 +21,8 @@ class KnowledgeIndexTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as name:
             root = Path(name)
             for path, text in {'research/example.py': 'def read():\n    return api.get_value("TSF")\n',
+                               'research/profile.wprp': '<WindowsPerformanceRecorder Version="1.0" />\n',
+                               'research/artifacts/private.wprp': '<PrivateCapture />\n',
                                'research/artifacts/private.py': 'secret_call()\n',
                                'research/topic/evidence/private.py': 'private_evidence()\n',
                                'research/upper/Artifacts/private_upper.py': 'private_upper_artifact()\n',
@@ -30,6 +32,9 @@ class KnowledgeIndexTests(unittest.TestCase):
                                'docs/guide.md': '# Guide\n\nUse `clock_id`.\n'}.items():
                 p = root/path; p.parent.mkdir(parents=True, exist_ok=True); p.write_text(text)
             result = build(root)
+            indexed_paths = {x['path'] for x in result['files']}
+            self.assertIn('research/profile.wprp', indexed_paths)
+            self.assertNotIn('research/artifacts/private.wprp', indexed_paths)
             terms = {x['term'] for x in result['terms']}
             self.assertTrue({'read', 'api.get_value', 'TSF', 'clock_id'} <= terms)
             self.assertFalse({'secret_call', 'obsolete_token'} & terms)
