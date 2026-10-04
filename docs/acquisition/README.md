@@ -6,6 +6,7 @@ Start with the current results, then use the plans and historical reports for co
 
 | Question | Read | Evidence and limit |
 |---|---|---|
+| Did the latest queries close timing or publication gaps? | [Timing qualification follow-up](timing-qualification-validation-2026-10-04.md) | Fresh documented queries returned 23; software tests passed; live timing and new-change hosted CI remain unqualified |
 | Why is private collection blocked? | [Quarantined campaign](private-campaign-2026-10-03-quarantine.md) | Live unmatched reports; rejected capture and retained quarantine |
 | Can ordinary scans produce similar reports? | [Scan results](scan-tsf-results-2026-10-03.md) | Three observed patterns; all three failed the four-second profile |
 | Does passive collection shut down cleanly? | [Passive validation](passive-and-retrieval-validation-2026-10-03.md) | One repaired live run; no private requests or safe ring getter |

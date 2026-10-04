@@ -1,4 +1,4 @@
-"""Inspect two private return-path candidates in an owned, exact-build SYS file.
+"""Inspect selected private return paths in an owned, exact-build SYS file.
 
 No device handles, firmware commands, traces or kernel-memory reads. The receipt
 contains offsets, hashes and selected static observations, not proprietary code
@@ -36,6 +36,12 @@ RANGES = (
     ('text_result_append', 0x124110, 0x124220),
     ('test_service_handler', 0x12A2A0, 0x12A4B8),
     ('device_service_completion', 0x13A890, 0x13AB28),
+    ('interface_service_handler', 0x12ACF0, 0x12AEF0),
+    ('interface_service_dispatch', 0x51960, 0x51A50),
+    ('interface_mac_getter', 0x505B0, 0x50758),
+    ('interface_association_getter', 0x502C0, 0x505B0),
+    ('ihv_request_handler', 0x12E4F0, 0x12E8E8),
+    ('nic_specific_dispatch', 0x11CDE8, 0x11D4C0),
 )
 
 
@@ -50,7 +56,9 @@ def inspect_image(data: bytes) -> dict[str, Any]:
             raise ValueError('Unexpected RX statistics command record')
         ranges = []
         calls = []
-        targets = {0x127E88, 0x308F0, 0x30220, 0x303F8, 0x124110, 0x1618C0, 0x13A890}
+        targets = {0x127E88, 0x308F0, 0x30220, 0x303F8, 0x124110, 0x1618C0, 0x13A890,
+                   0x51960, 0x502C0, 0x505B0, 0x50758, 0x512B0, 0x164BD8, 0x7740,
+                   0x11CDE8, 0x1619B0, 0x11CA70, 0x39E38, 0x3A5B8, 0x39528}
         for name, start, end in RANGES:
             raw = pe.get_data(start, end - start)
             if len(raw) != end - start:
@@ -58,6 +66,15 @@ def inspect_image(data: bytes) -> dict[str, Any]:
             ranges.append(dict(name=name, start_rva=hex(start), end_rva_exclusive=hex(end),
                                sha256=hashlib.sha256(raw).hexdigest()))
             calls.extend(scan_words(raw, start, targets)['direct_branches'])
+        return_branches, sections = [], []
+        for section in pe.sections:
+            if not section.Characteristics & 0x20000000:
+                continue
+            raw = section.get_data()[:section.Misc_VirtualSize]
+            length = len(raw) - len(raw) % 4
+            return_branches.extend(scan_words(raw[:length], section.VirtualAddress,
+                                              {0x13A890, 0x1618C0})['direct_branches'])
+            sections.append(dict(rva=hex(section.VirtualAddress), aligned_bytes_scanned=length))
         imports = {}
         for entry in pe.DIRECTORY_ENTRY_IMPORT:
             for item in entry.imports:
@@ -74,6 +91,8 @@ def inspect_image(data: bytes) -> dict[str, Any]:
             test_service=dict(handler_rva='0x12a2a0', payload_literal_rva='0x12a4b0',
                               fixed_eight_byte_payload_matches=pe.get_data(0x12A4B0, 8) == bytes(range(1, 9))),
             selected_direct_calls=calls, selected_imports=imports,
+            return_inventory=dict(executable_sections=sections, direct_branches=return_branches,
+                                  coverage='aligned B/BL candidates only; code context and indirect routes require review'),
             complete_call_coverage=False, live_request_sent=False,
             complete_timestamp_export_qualified=False,
         )

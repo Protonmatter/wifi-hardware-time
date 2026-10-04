@@ -6,6 +6,10 @@ TSF (Timing Synchronization Function) is the Wi-Fi timer. SoC means system on ch
 
 ## Report and related evidence
 
+- [Autonomous management-frame TSF](autonomous-management-tsf.md): offline beacon/probe decoding with separate peer-clock and event identity.
+- [Association, fresh sampling and quarantine disposition](tsf-association-and-quarantine-disposition.md): omitted report metadata, a reference-layout lead and the reviewed retain-quarantine decision.
+- [Saved TSF reader API](tsf-evidence-reader.md): implemented diagnostic replay, owned copies and explicit clock-input rejection.
+- [Required TSF readout in the implementation plan](../overview/2026-10-03-first-hardware-clock-plan.md#required-tsf-readout): value/source, freshness, ownership, continuity and the separate TSF-to-QPC gate.
 - [private-tsf-fast-paths.md](private-tsf-fast-paths.md): can automatic reports or private statistics expose full counters, and what shared state would they change?
 - [Qualcomm adapter evidence](../adapters/qualcomm.md): what did the original exact-build requests and reports show?
 - [Later scan comparison](../acquisition/scan-tsf-results-2026-10-03.md): why does private acquisition remain quarantined?

@@ -4,6 +4,7 @@ These pages explain what the project has demonstrated, what remains uncertain an
 
 ## Documents
 
+- [First hardware-backed clock: mini implementation plan](2026-10-03-first-hardware-clock-plan.md).
 - [Research-to-Userspace-Clock Implementation Plan](2026-10-02-research-to-userspace-clock.md).
 - [Qualification gap closure ledger](gap-closure-ledger.md).
 - [Operations](OPERATIONS.md).

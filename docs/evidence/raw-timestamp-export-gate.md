@@ -31,6 +31,10 @@ This gate is an acceptance specification, not an implemented decoder, provider o
 hardware qualification certificate. The existing experimental evidence schema
 and downstream capability flags remain unchanged.
 
+The separate [owned-export C prototype](owned-timestamp-export-prototype.md)
+now exercises software record ownership and rejection rules with synthetic data.
+It does not connect to the running driver or satisfy the required real acquisition.
+
 ## Required evidence
 
 | Requirement | What would satisfy it | Current gap |
@@ -38,7 +42,7 @@ and downstream capability flags remain unchanged.
 | Acquisition interface | Exact-build public/private ABI with bounded lengths, status and owned result lifetime | Internal paths identified; safe return mechanism missing |
 | Raw value and units | Actual producer value, declared clock domain, unit and meaningful bit width | RX split storage words identified; timing semantics unqualified |
 | Event reference point | Defined transmit/receive event or capture point for the recorded value | Diagnostic PPDU-start label is not independent event-point qualification |
-| Identity | Packet/exchange, link/peer and relevant retry/aggregation identity bound to the same record | RX 16-bit PPDU ID is a lead; FTM request byte wraps and groups targets |
+| Identity | Source clock/domain and generation, separately from frame/report/exchange identity; request binding only when claiming a solicited response | RX PPDU ID and TSF clock ID are distinct leads; internal FTM request byte is not an on-air dialog token |
 | Completeness | Owned record before overwrite/reuse, explicit finalization and structural validity | FTM merge storage is reused; outer success does not imply parser success |
 | Validity and loss | Timestamp-specific validity, complete fragments, duplicate/drop accounting | Descriptor completion and local fragment predicates are insufficient alone |
 | Epoch/reset | Evidence separating old and new producer generations | No proven late-report isolation or firmware drain |
@@ -48,6 +52,11 @@ and downstream capability flags remain unchanged.
 Unknown fields may still be retained as diagnostics. They cannot be relabeled as
 known to make this complete-record gate pass. Caller-supplied assertions also do
 not authenticate producer semantics.
+
+Autonomous observations such as captured beacons do not need a host request ID.
+They need identified event/source-clock provenance and qualified capture timing.
+A beacon's embedded peer TSF and its local hardware RX timestamp are separate
+clock-domain observations. See [clock versus event identity](../tsf/tsf-association-and-quarantine-disposition.md#clock-identity-is-separate-from-event-identity).
 
 ## Negative qualification cases
 
@@ -80,6 +89,7 @@ access and recovery-triggered dumps are not substitutes for that contract.
 
 Supporting findings:
 
+- [Management timing producer and lifetime](../adapters/qualcomm-management-timing-producer.md): additional reference-schema timing fields, temporary callback ownership and a management-event history exclusion; no live export or hardware/QPC qualification.
 - [Normal receive path](../adapters/qualcomm-rx-export-boundary.md).
 - [FTM buffer ownership and identity](../ftm/ftm-buffer-ownership-and-identity.md).
 - [FTM ingress and application handoff](../ftm/ftm-ingress-to-owned-response.md): temporary decoded storage, cleanup and the still-missing owned export.

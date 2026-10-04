@@ -33,6 +33,61 @@ decoded object and reusable merge buffer still have no established owned
 application export. The inspected event-history writer retains event ID and
 host system time, not the raw measurement payload.
 
+[Vendor-tool inspection](../adapters/qualcomm-software-center-timing-leads.md)
+found inherited WCN7850 RTT methods in the installed WLAN assembly. Its QMSL
+runtime and QSPR kernel dependencies remain missing from the bounded search;
+the inspected four-byte buffer and 16-bit RTT result do not establish a complete
+absolute timestamp export. No vendor method or live operation was executed.
+
+The [TSF evidence reader](../tsf/tsf-evidence-reader.md) now returns owned
+diagnostic observations from saved bundles. Offline integration replayed 138
+historical observations from 12 captures, with zero clock-qualified results.
+The [minimum transport decision](../adapters/qualcomm-minimal-transport-contract.md)
+keeps new live acquisition and model admission blocked on unresolved attribution,
+fresh sampling and quarantine disposition. Replay does not requalify that campaign.
+
+The [association/quarantine review](../tsf/tsf-association-and-quarantine-disposition.md)
+confirms two unattributed report groups and retains quarantine. The exact driver
+expects a 60-byte TSF structure while its handler omits seven payload words.
+A newer vendor header supplies candidate clock-identity/report-type labels;
+firmware parity, live contents and their export remain unqualified.
+
+[Autonomous frame decoding](../tsf/autonomous-management-tsf.md) now separates
+peer-advertised TSF from local RX time and request identity. Authored beacon/probe
+tests pass without requiring a host request token. Real capture provenance,
+hardware clock mapping and synchronization qualification remain open.
+
+The [management RX trace](../adapters/qualcomm-management-rx-handoff.md) identifies
+event `0x7001`, its frame copy and queued radio metadata. The selected handler
+does not read positions labelled local RX TSF in a matching-sized vendor reference
+layout. An owned frame/local-timestamp export and firmware semantics remain missing.
+The follow-up traces all twelve schema slots and selected downstream consumers:
+the handler uses only the header/frame slots, and the inspected port callback
+receives the reduced metadata. Conditional frame logging takes no original
+firmware header. None of these paths establishes a paired timestamp export.
+
+The [BSS serializer trace](../adapters/qualcomm-bss-serialization.md) now locates
+the exact station indication, entry builder and eight-field serialization schema.
+The selected builder leaves host-age information absent and conditionally copies
+28 bytes of MBSSID profile state. The follow-up traces peer TSF and host tick-based
+cache aging separately. The [Windows host-time trace](../adapters/windows-bss-host-time.md)
+identifies the system-time source, conditional driver-age override and API copy.
+An additional link-quality writer can refresh the stored host time without
+replacing the frame; these cached fields are not a qualified simultaneous pair.
+
+The [private return-path inventory](../adapters/qualcomm-private-output-routes.md#backward-trace-from-the-return-helpers)
+finds 70 direct completion-call candidates and four calls to one serializer.
+The newly traced allocated result carries interface information; it is not
+connected to a complete timestamp producer. Its shared service also has a setter
+branch, so no live opcode is admitted by this finding.
+
+The [IHV binary bridge](../adapters/qualcomm-private-output-routes.md#ihv-binary-request-bridge)
+connects another mutable binary request/result buffer to serialization and common
+completion. A timing-producing selector and safe external binding are still missing.
+In parallel, an [owned-export C prototype](../evidence/owned-timestamp-export-prototype.md)
+implements a synthetic record boundary. Its software tests do not qualify the
+hardware producer, physical event semantics, real cancellation or firmware drain.
+
 | Gap | Current disposition | Evidence / next prerequisite |
 |---|---|---|
 | Can ordinary host activity produce additional TSF reports without our private request? | Operational pattern reproduced | Three controlled documented scan calls, each with a quiet baseline, one scan command and two TSF/SoC report groups; [results](../acquisition/scan-tsf-results-2026-10-03.md) |

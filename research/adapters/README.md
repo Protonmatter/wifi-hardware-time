@@ -6,6 +6,8 @@ These tools identify the adapter, inspect its advertised services and read cache
 
 | File | Role |
 |---|---|
+| [inspect_windows_bss_time.py](inspect_windows_bss_time.py) | Hash-gated offline Windows BSS host-time range inventory; no device or runtime memory access. |
+| [inspect_management_rx.py](inspect_management_rx.py) | Offline exact-build management-event schema, handoffs, cleanup and history exclusion; no live capture. See the [producer findings](../../docs/adapters/qualcomm-management-timing-producer.md). |
 | [cached_beacon.c](cached_beacon.c) | Probe or native helper; consult its header and the matching research report before use. |
 | [device_services.c](device_services.c) | Probe or native helper; consult its header and the matching research report before use. |
 | [Get-QualcommAdapter.ps1](Get-QualcommAdapter.ps1) | Read-only adapter/driver identity discovery. |

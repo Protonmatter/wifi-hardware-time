@@ -4,6 +4,9 @@ These tools inspect, request and decode the Wi-Fi timing counter, called TSF. Th
 
 ## Files
 
+- [decode_management_tsf.py](decode_management_tsf.py): decode peer-advertised TSF from saved ordinary beacon/probe frames; [scope and runbook](../../docs/tsf/autonomous-management-tsf.md).
+- [inspect_tsf_report_contract.py](inspect_tsf_report_contract.py): offline exact-build schema and handler field-coverage inventory; no live report decoding or device requests.
+- [read_tsf_evidence.py](read_tsf_evidence.py): read saved TSF bundles; see the [API and runbook](../../docs/tsf/tsf-evidence-reader.md). No live device access.
 | File | Role |
 |---|---|
 | [analyze_latch.py](analyze_latch.py) | Offline analysis/model or file transformation; see the tool header for inputs. |

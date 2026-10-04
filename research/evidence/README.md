@@ -4,6 +4,7 @@ These tools package saved observations and check that their fields, identities a
 
 ## Files
 
+- [hardware_observation.py](hardware_observation.py): validate a TSF evidence selection and return an owned diagnostic record; no qualified clock profile yet.
 | File | Role |
 |---|---|
 | [export_clock_evidence.py](export_clock_evidence.py) | Offline analysis/model or file transformation; see the tool header for inputs. |
