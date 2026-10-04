@@ -2,6 +2,10 @@
 
 A timestamp can describe a radio event, a driver action or the moment an application receives data. These diagrams show those different locations and the missing links between them. Wi-Fi counters, ranging results and packet timestamps contribute different information; none alone establishes accurate synchronized time on the current adapter.
 
+<!-- current-context:2026-10-04 -->
+**Current context (2026-10-04):** QUTS and QXDM expose distinct hardware-origin, interpolated and host-delivery times. Owned bytes do not establish fresh hardware-to-QPC sampling or an accuracy bound. See [current findings](../knowledge/current-findings.md).
+<!-- /current-context -->
+
 **Key terms:** TX and RX mean transmit and receive. A clock domain identifies the counter and units. A reference point is the exact event a timestamp describes; delivery time is a different event. See the [glossary](../glossary.md).
 
 ## Contents
@@ -58,10 +62,13 @@ flowchart TB
   L -. "match to packet and retry before use" .-> K
   C -. "missing qualification" .-> M
   H -. "missing qualification" .-> M
+  I -. "UNPROVEN: adapter event to diagnostic protocol" .-> Q["Candidate QUTS diagnostic packet"]
+  Q -->|Static client code: deserialize and allocate| O["Owned application byte array<br/>Clock and event meaning still required"]
+  KEY["KEY: solid = modeled packet path or labeled static code<br/>Dotted = missing or conditional connection<br/>Host delivery time is not radio sampling time"]
   classDef gap fill:#fff2dd,stroke:#ac6b12,stroke-width:1.5px,color:#241b0e;
   classDef air fill:#e6eefc,stroke:#315b96,stroke-width:2px,color:#182844;
   classDef hw fill:#fbebeb,stroke:#b83232,stroke-width:1.5px,color:#300;
-  class M,L gap;
+  class M,L,Q,KEY gap;
   class W air;
   class F,G hw;
 ```
@@ -164,9 +171,12 @@ flowchart TB
   A -. "request-start to report log:<br/>about 0.27 ms median" .-> F
   D -. "action behavior" .-> U(["Action 3: SoC cached or unknown<br/>Action 4: refreshed, simultaneous latch unproven"])
   H -. "qualification limit" .-> X(["No calibrated TSF-to-QPC conversion"])
+  E -. "UNPROVEN producer association" .-> V["Separate candidate: QUTS binary payload<br/>Managed byte allocation located statically"]
+  V --> Z["Keep DIAG / interpolated / QDSS / host time separate"]
+  KEY["KEY: observed path describes historical captures<br/>Private campaign is currently QUARANTINED<br/>Dotted arrows mark unqualified relationships"]
   classDef gap fill:#fff2dd,stroke:#ac6b12,stroke-width:1.5px,color:#241b0e;
   classDef seen fill:#e8f5ed,stroke:#34704a,color:#193323;
-  class D,U,X gap;
+  class D,U,X,V,Z,KEY gap;
   class B,C,E,F,G,H seen;
 ```
 
@@ -204,8 +214,10 @@ sequenceDiagram
   A->>B: Later FTM frame: matched prior t1 / t4 and follow-up token
   Note over B: Full exchange needs local t2 / t3 and peer t1 / t4
   B-->>U: Observed API output: aggregate RTT, count, status, raw auxiliary fields
-  Note over U: Not exposed: four individual timestamps or clock mapping
+  Note over U: Current ranging callback: no four-time export or clock mapping
+  Note over B,U: Separate lead: QXDM WLAN definitions and QUTS owned bytes.<br/>Connection to this exchange is UNPROVEN
   Note over A,U: Model needs four valid times and rate correction.<br/>Delay asymmetry still limits offset estimation
+  Note over A,U: KEY: solid arrows model radio frames.<br/>Dashed arrow is observed aggregate delivery.<br/>Time flows downward within each separate clock
 ```
 
 **Read the arrows:** solid arrows model radio frames between two devices; the dashed arrow is the observed aggregate result delivered to software. Notes distinguish Model, Observed and Not exposed. ACK means acknowledgment. The four event labels belong to the two clocks shown, not one already synchronized clock.
@@ -255,8 +267,11 @@ and within the stated target?"}
   G -->|No or unknown: current state| NO(["Keep conversion unavailable or experimental"])
   G -. "Yes, after independent validation" .-> OK(["Candidate for a scoped accuracy claim"])
   X["Wrong clock epoch, stale source or missing packet identity"] -->|reject| NO
+  T["QXDM fallback, QUTS interpolation<br/>or missing QDSS timestamp sentinel"] -->|reject as a hardware sample| NO
+  B["Owned bytes and 100 ns field units<br/>do not bound clock accuracy"] -. "separate evidence requirement" .-> M
+  KEY["KEY: UNKNOWN means no justified bound yet<br/>Solid arrows show required reasoning or rejection<br/>Dotted arrows require additional qualification"]
   classDef unknown fill:#fff2dd,stroke:#ac6b12,color:#241b0e;
-  class E,A,M,R,NO unknown;
+  class E,A,M,R,NO,T,B,KEY unknown;
 ```
 
 **Read the arrows:** boxes contribute to an error budget; the diamond asks whether every required bound is established. The solid No/unknown path describes current qualification. The dashed Yes path requires independent validation. UNKNOWN is a missing bound, not zero error; adding more samples alone does not supply it.
@@ -309,9 +324,13 @@ flowchart TB
   INVALID -. "reestablish mapping" .-> MAP
   OUT -. "separate permission and reference gate" .-> OS(["Future: adjust the operating-system clock"])
   FTM["Current aggregate Wi-Fi ranging result"] --> DIAG["Diagnostics only: cannot supply clock offset"]
+  V["Located: QUTS client allocates owned bytes"] --> CONTRACT{"Complete event identity, validity,<br/>clock domain, freshness and epoch?"}
+  CONTRACT -->|No: current hardware state| DIAG
+  CONTRACT -. "Yes: still needs live producer qualification" .-> RAW
+  KEY["KEY: solid = implemented software or required decision<br/>Dotted = future qualified connection<br/>Local measurement, node sync and OS discipline have separate gates"]
   classDef existing fill:#e8f5ed,stroke:#34704a,color:#193323;
   classDef future fill:#fff2dd,stroke:#ac6b12,color:#241b0e;
-  class Q,FAST,LOCAL existing;
+  class Q,FAST,LOCAL,V existing;
   class REF,RAW,NIC,REL,MAP,EST,SNAP,OUT,OS future;
 ```
 

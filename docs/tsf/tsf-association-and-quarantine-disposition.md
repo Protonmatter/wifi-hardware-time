@@ -2,6 +2,10 @@
 
 The driver expects a larger TSF report than its diagnostic handler exposes. A newer vendor header names omitted clock-identity and report-type fields, giving us a concrete acquisition lead. Those fields have not been retrieved or qualified on this firmware. Saved evidence still contains unmatched reports, so quarantine remains in force and fresh clock sampling remains unproven.
 
+<!-- current-context:2026-10-04 -->
+**Current context (2026-10-04):** The TSF sampling and response-association contract remains open. New diagnostic return interfaces do not automatically qualify a fresh TSF getter. See [current findings](../knowledge/current-findings.md).
+<!-- /current-context -->
+
 ## Contents
 
 - [New field-coverage finding](#new-field-coverage-finding)

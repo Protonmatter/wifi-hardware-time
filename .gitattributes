@@ -4,6 +4,10 @@
 *.json text eol=lf
 *.yml text eol=lf
 *.ps1 text eol=crlf
+*.mmd text eol=lf
+# Catalog hashes for these new public entry points are portable across checkouts.
+research/adapters/Invoke-QualcommStaticInspection.ps1 text eol=lf
+research/evidence/Update-ResearchKnowledge.ps1 text eol=lf
 docs/reproductions/** text eol=lf
 research/acquisition/live_observer.c text eol=lf
 research/tsf/decode_tsf_etl.c text eol=lf

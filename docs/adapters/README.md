@@ -2,12 +2,18 @@
 
 Which adapter can supply usable timing data? The Qualcomm reports describe tested Windows diagnostic paths; the ALFA report identifies Linux source paths and a Windows static candidate. Neither establishes a calibrated clock service. Use these pages to separate observed behavior from the hardware and reference equipment still needed.
 
+<!-- current-context:2026-10-04 -->
+**Current context (2026-10-04):** Later archive and installed-file inspection located QUTS client-owned byte returns and corrected vendor package/version assumptions; exact adapter-to-producer association remains open. See [current findings](../knowledge/current-findings.md).
+<!-- /current-context -->
+
 TSF (Timing Synchronization Function) is the Wi-Fi timer; a cross timestamp relates a hardware counter to a host counter. Other terms are defined in the [glossary](../glossary.md).
 
 ## Reports
 
 | File | Question answered |
 |---|---|
+| [static-inspection-runbook.md](static-inspection-runbook.md) | How do we repeat package and installed-file inspection with preview, hash gates, no-overwrite receipts and explicit failure handling? |
+| [qualcomm-archive-transport-findings.md](qualcomm-archive-transport-findings.md) | What do the QPST/QXDM payloads, QUD source and current QUTS client establish about binary return paths and timestamp semantics? |
 | [ghidra-workspace.md](ghidra-workspace.md) | How do we inspect the exact ARM64 driver in Ghidra without confusing decompiled code with live execution? |
 | [qualcomm-management-timing-producer.md](qualcomm-management-timing-producer.md) | Which additional timing fields are declared, when must event data be copied, and does host event history include management RX? |
 | [windows-bss-host-time.md](windows-bss-host-time.md) | Where does the Windows BSS host timestamp originate, and can it change without replacing the frame? |

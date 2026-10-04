@@ -1,0 +1,18 @@
+flowchart TB
+  FW["1. Exact Wi-Fi timing producer<br/>Frame plus TSF / FTM / RX metadata"]
+  LINK{"2. Proven connection to a<br/>diagnostic device and protocol?"}
+  FW -. "Not yet demonstrated" .-> LINK
+  LINK -. "Candidate only" .-> Q["3. QUTS DiagPacket<br/>Binary bytes plus optional identity and times"]
+  Q -->|Static client implementation| OWN["4. Thrift reader allocates byte array<br/>Application owns these bytes"]
+  OWN --> CHECK{"5. Complete, fresh, valid<br/>and attributable timing event?"}
+  CHECK -->|No or ambiguous| REJECT["Retain diagnostic evidence<br/>Reject as a clock input"]
+  CHECK -. "After live qualification" .-> RECORD["Scoped hardware observation"]
+  RECORD -. "Separate fresh sampling contract" .-> QPC["Hardware-to-QPC relationship"]
+  P["QPST QUTS references<br/>Connection bookkeeping located"] --> PONLY["Useful interface evidence<br/>No timestamp return demonstrated here"]
+  X["QXDM WLAN definition data<br/>and byte-array accessor"] -. "Firmware/schema match required" .-> CHECK
+  U["QUD USB request-owned buffers"] -. "Different transport from this PCI adapter" .-> LINK
+  KEY["KEY: solid = located code or required validation<br/>Dotted = missing evidence connection<br/>Byte ownership does not establish clock accuracy"]
+  classDef known fill:#e8f5ed,stroke:#34704a,color:#193323;
+  classDef gap fill:#fff2dd,stroke:#ac6b12,color:#241b0e;
+  class OWN,P,PONLY known;
+  class LINK,CHECK,REJECT,QPC,KEY gap;

@@ -2,6 +2,10 @@
 
 Ghidra makes the recovered driver paths easier to inspect as linked assembly, bytes and approximate C. This workspace labels the management-event and packet-log paths in one exact ARM64 driver build. It is an offline research aid: the labels and decompiler output do not prove that a path ran, that a buffer is safe to read, or that a timestamp has a qualified clock relationship.
 
+<!-- current-context:2026-10-04 -->
+**Current context (2026-10-04):** Later archive and installed-file inspection located QUTS client-owned byte returns and corrected vendor package/version assumptions; exact adapter-to-producer association remains open. See [current findings](../knowledge/current-findings.md).
+<!-- /current-context -->
+
 ## Contents
 
 - [Scope and prerequisites](#scope-and-prerequisites)

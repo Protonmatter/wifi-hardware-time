@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "scripts": [
+    {
+      "name": "Invoke-QualcommStaticInspection",
+      "path": "research/adapters/Invoke-QualcommStaticInspection.ps1",
+      "sha256": "55AA6E7490205B65C2BAD3E8ADAA5DCF50F420F68443B85F353C26B4872D5F54",
+      "owner": "Protonmatter",
+      "risk": "Low",
+      "validation": "python -m unittest discover -s tests -p test_static_inspection.py -v",
+      "rollback": "Inspect and remove only the chosen private output directory; no system state is changed."
+    },
+    {
+      "name": "Update-ResearchKnowledge",
+      "path": "research/evidence/Update-ResearchKnowledge.ps1",
+      "sha256": "4547D8E08593CB24DEF7FC2CD3218BD17F2FEDA8365EE0FE36E7C7071B87C62E",
+      "owner": "Protonmatter",
+      "risk": "Low",
+      "validation": "python -m unittest discover -s tests -p test_knowledge_index.py -v; python research/evidence/build_knowledge_index.py --check",
+      "rollback": "Restore only docs/knowledge/reference-index.md and docs/knowledge/research-index.json."
+    }
+  ]
+}

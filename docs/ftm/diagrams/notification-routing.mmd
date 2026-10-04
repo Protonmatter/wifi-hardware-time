@@ -1,0 +1,11 @@
+flowchart LR
+  B["Merged FTM buffer"] --> P["Parser 0x146ef0"]
+  P --> R["Selected fields and RTT banks"]
+  P -. "wake waiting task" .-> E(["Host signal: KeSetEvent<br/>request context +0x89f8"])
+  R --> A["Aggregate builder 0x1462a0"]
+  A --> S["Serializer 0x161c80"]
+  S --> F["Common WDI sender: selector 0x89"]
+  T["Synthetic test / SAR payload"] --> D["Device-service helper 0x137ca8"]
+  D --> N["Common WDI sender: selector 0x85"]
+  NEW["New static lead: QUTS owned diagnostic bytes<br/>Exact firmware-producer connection still UNPROVEN"]
+  KEY["KEY: solid arrows describe the selected inspected path<br/>Dotted arrows mark missing or conditional relationships<br/>No new live acquisition is claimed"]

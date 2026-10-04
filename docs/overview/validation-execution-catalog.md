@@ -2,6 +2,10 @@
 
 Use this catalog to connect a research finding with the tool that produced or analyzed it. It distinguishes maintained commands from historical source snapshots and records what actually ran. A retained script, successful process or passing software test is not automatically evidence of a qualified hardware timing capability.
 
+<!-- current-context:2026-10-04 -->
+**Current context (2026-10-04):** Current findings now include complete vendor package inventories, QUTS client ownership and a correction ledger. Historical acquisitions retain their original scope and limits. See [current findings](../knowledge/current-findings.md).
+<!-- /current-context -->
+
 **Key terms:** An entry point is a command intended to be run. A snapshot preserves an older source version. Provenance records the source, inputs and conditions behind a result. See the [glossary](../glossary.md).
 
 ## Contents
@@ -31,6 +35,8 @@ permissions, exact-build prerequisites and explicit execution switches.
 
 | Work | Maintained scripts / source | Recorded result and limitation |
 |---|---|---|
+| Vendor package and installed-file snapshots | `research/adapters/Invoke-QualcommStaticInspection.ps1`, `package_tools/`, `inspect_qik_inventory.py` | Preview/apply/unchanged receipts, supported static decoding, read-only MSI/type-library metadata; no vendor execution or device access. See [runbook](../adapters/static-inspection-runbook.md) |
+| Knowledge and workflow maintenance | `research/evidence/Update-ResearchKnowledge.ps1`, `build_knowledge_index.py`, `sync_workflow_diagrams.py` | Authored-source indexing and canonical diagram synchronization; source matches are not a call graph. See [reference index](../knowledge/reference-index.md) |
 | Adapter/build discovery and protocol guards | `research/adapters/Get-QualcommAdapter.ps1`, `research/tsf/qualcomm_protocol.py`, `research/tsf/qualcomm_probe.py` | Exact build and command validation; preview differs from explicit private execution |
 | TSF series capture and decode | `research/tsf/Capture-TsfReport.ps1`, `research/tsf/decode_tsf_etl.c`, `research/tsf/analyze_tsf_series.py` | Repeated private reads; command completion is not sampling time |
 | Owned diagnostic TSF replay | `research/tsf/read_tsf_evidence.py`, `research/evidence/hardware_observation.py` | Replayed 138 retained observations; detached records and clock-input rejection, no new acquisition. See [runbook](../tsf/tsf-evidence-reader.md) |

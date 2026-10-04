@@ -2,6 +2,10 @@
 
 The declared receive event contains a stronger timing lead than the BSS cache: a block matching public Qualcomm reordering metadata, with a link identifier, packet counter and additional timing fields. This pass also traces its temporary lifetime and finds that the driver's event history skips management RX. These are static findings; a live, application-owned timestamp record and a hardware-to-QPC relationship are still missing.
 
+<!-- current-context:2026-10-04 -->
+**Current context (2026-10-04):** Later archive and installed-file inspection located QUTS client-owned byte returns and corrected vendor package/version assumptions; exact adapter-to-producer association remains open. See [current findings](../knowledge/current-findings.md).
+<!-- /current-context -->
+
 ## Contents
 
 - [Outcome and scope](#outcome-and-scope)

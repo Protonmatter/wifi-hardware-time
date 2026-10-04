@@ -2,6 +2,10 @@
 
 The repository now groups maintained scripts, reports and diagram sources by the research question they address. This guide maps old paths to their new locations and explains the compatibility boundary. Command options and evidence rules remain intact, but relocated launch inputs need new manifests and do not inherit fresh hardware qualification.
 
+<!-- current-context:2026-10-04 -->
+**Current context (2026-10-04):** Current findings now include complete vendor package inventories, QUTS client ownership and a correction ledger. Historical acquisitions retain their original scope and limits. See [current findings](../knowledge/current-findings.md).
+<!-- /current-context -->
+
 ## Contents
 
 - [Folder roles](#folder-roles)

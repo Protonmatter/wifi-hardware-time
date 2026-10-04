@@ -19,7 +19,11 @@ flowchart TB
   INVALID -. "reestablish mapping" .-> MAP
   OUT -. "separate permission and reference gate" .-> OS(["Future: adjust the operating-system clock"])
   FTM["Current aggregate Wi-Fi ranging result"] --> DIAG["Diagnostics only: cannot supply clock offset"]
+  V["Located: QUTS client allocates owned bytes"] --> CONTRACT{"Complete event identity, validity,<br/>clock domain, freshness and epoch?"}
+  CONTRACT -->|No: current hardware state| DIAG
+  CONTRACT -. "Yes: still needs live producer qualification" .-> RAW
+  KEY["KEY: solid = implemented software or required decision<br/>Dotted = future qualified connection<br/>Local measurement, node sync and OS discipline have separate gates"]
   classDef existing fill:#e8f5ed,stroke:#34704a,color:#193323;
   classDef future fill:#fff2dd,stroke:#ac6b12,color:#241b0e;
-  class Q,FAST,LOCAL existing;
+  class Q,FAST,LOCAL,V existing;
   class REF,RAW,NIC,REL,MAP,EST,SNAP,OUT,OS future;

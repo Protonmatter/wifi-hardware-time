@@ -2,6 +2,10 @@
 
 This project asks whether Wi-Fi hardware can provide trustworthy timestamps for applications and synchronized clocks. We have recovered useful diagnostic data, but have not demonstrated calibrated synchronization. The research is organized by the question each experiment answers, with its scripts, evidence limits and diagrams linked together.
 
+<!-- current-context:2026-10-04 -->
+**Current context (2026-10-04):** Current findings now include complete vendor package inventories, QUTS client ownership and a correction ledger. Historical acquisitions retain their original scope and limits. See [current findings](docs/knowledge/current-findings.md).
+<!-- /current-context -->
+
 ## Contents
 
 - [Start here](#start-here)
@@ -12,6 +16,10 @@ This project asks whether Wi-Fi hardware can provide trustworthy timestamps for 
 
 ## Start here
 
+- Current interpretation: [latest findings](docs/knowledge/current-findings.md) and [assumptions corrected by evidence](docs/knowledge/assumptions-and-corrections.md).
+- Find a call or string: [reference index](docs/knowledge/reference-index.md) and [interface directory](docs/knowledge/interface-directory.md).
+- Repeat static research: [inspection runbook](docs/adapters/static-inspection-runbook.md), [script catalog](catalog/scripts.json) and [research skill](skills/qualcomm-timing-research/SKILL.md).
+- View every current workflow: [diagram gallery](docs/knowledge/workflow-diagrams.md).
 - New to the subject: [reading guide](docs/README.md) and [glossary](docs/glossary.md).
 - Want the outcome: [qualification ledger](docs/overview/gap-closure-ledger.md). *Qualification* means evidence supports a particular claim under stated conditions.
 - Want the workflow: [packet-to-clock diagrams](docs/clock-models/packet-to-clock-map.md).
@@ -39,6 +47,7 @@ TSF is the Wi-Fi timing counter. FTM is a ranging procedure that measures round-
 - **Observed with limits:** FTM ranging operations return aggregate results. These do not expose all absolute event times needed to estimate clock offset.
 - **Acquisition stopped:** a private campaign encountered unmatched reports and remains quarantined, meaning further admission is blocked. Three later scans reproduced extra report traffic but failed the original four-second completion profile.
 - **Static findings only:** RX descriptor timestamp fields and in-memory diagnostic-log consumers are located. Static inspection reads source/binary files; it does not demonstrate a working live export.
+- **New static ownership evidence:** the installed QUTS client allocates diagnostic payload bytes into application storage. QXDM supplies WLAN schema leads and a byte-array API. Their connection to the exact Wi-Fi timing producer remains open.
 - **Not qualified:** fresh simultaneous sampling, hardware-to-host conversion, arbitrary RX/TX timestamps, calibrated accuracy and sub-millisecond synchronization.
 - **Preparation only:** new reset, suspend and roaming cases. No new disruptive run is authorized by these documents.
 

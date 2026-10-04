@@ -2,6 +2,10 @@
 
 Can the Wi-Fi timer become a usable clock source? The inspected private path delivers counter reports through Windows diagnostics and feeds transmit-delay statistics. It has not established simultaneous sampling, a calibrated host-clock conversion, or a safe fast getter. Later acquisition findings keep private collection quarantined pending further qualification.
 
+<!-- current-context:2026-10-04 -->
+**Current context (2026-10-04):** The TSF sampling and response-association contract remains open. New diagnostic return interfaces do not automatically qualify a fresh TSF getter. See [current findings](../knowledge/current-findings.md).
+<!-- /current-context -->
+
 TSF (Timing Synchronization Function) is the Wi-Fi timer. SoC means system on chip; QPC is the Windows host counter. ETW is Windows event tracing, whose log time differs from the hardware sampling time. See the [glossary](../glossary.md).
 
 ## Report and related evidence
@@ -46,9 +50,12 @@ flowchart TB
   A -. "request-start to report log:<br/>about 0.27 ms median" .-> F
   D -. "action behavior" .-> U(["Action 3: SoC cached or unknown<br/>Action 4: refreshed, simultaneous latch unproven"])
   H -. "qualification limit" .-> X(["No calibrated TSF-to-QPC conversion"])
+  E -. "UNPROVEN producer association" .-> V["Separate candidate: QUTS binary payload<br/>Managed byte allocation located statically"]
+  V --> Z["Keep DIAG / interpolated / QDSS / host time separate"]
+  KEY["KEY: observed path describes historical captures<br/>Private campaign is currently QUARANTINED<br/>Dotted arrows mark unqualified relationships"]
   classDef gap fill:#fff2dd,stroke:#ac6b12,stroke-width:1.5px,color:#241b0e;
   classDef seen fill:#e8f5ed,stroke:#34704a,color:#193323;
-  class D,U,X gap;
+  class D,U,X,V,Z,KEY gap;
   class B,C,E,F,G,H seen;
 ```
 

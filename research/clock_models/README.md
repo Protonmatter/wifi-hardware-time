@@ -2,6 +2,10 @@
 
 These tools compare saved counter observations with host timing and test competing conversion models. They can reveal inconsistent assumptions and prediction limits, but cannot establish the physical sampling instant from a good fit. Treat their output as conditional research evidence, not calibrated uncertainty or an enabled clock conversion.
 
+<!-- current-context:2026-10-04 -->
+**Current context (2026-10-04):** QUTS and QXDM expose distinct hardware-origin, interpolated and host-delivery times. Owned bytes do not establish fresh hardware-to-QPC sampling or an accuracy bound. See [current findings](../../docs/knowledge/current-findings.md).
+<!-- /current-context -->
+
 ## Files
 
 | File | Role |

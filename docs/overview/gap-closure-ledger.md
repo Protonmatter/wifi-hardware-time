@@ -2,11 +2,23 @@
 
 This page tracks which research questions have useful answers and which clock capabilities still lack evidence. Scans can introduce extra counter reports, and software tests can reject unsafe assumptions. Safe hardware sampling, complete record retrieval and calibrated synchronization remain open, so downstream applications must keep those capabilities disabled or experimental.
 
+<!-- current-context:2026-10-04 -->
+**Current context (2026-10-04):** Current findings now include complete vendor package inventories, QUTS client ownership and a correction ledger. Historical acquisitions retain their original scope and limits. See [current findings](../knowledge/current-findings.md).
+<!-- /current-context -->
+
 **Key terms:** A gate is an explicit requirement before a capability may be enabled. Calibration compares results against an independently characterized reference. A model is a mathematical or software explanation, not a measurement by itself. See the [glossary](../glossary.md).
 
-Updated 2026-10-03, America/New_York. This ledger distinguishes an answered
+Updated 2026-10-04, America/New_York. This ledger distinguishes an answered
 research question from a passing acquisition profile or enabled clock capability.
 The private campaign remains quarantined.
+
+The [current finding and correction ledger](../knowledge/current-findings.md)
+adds the complete QPST/QXDM payload inventory, QUD request-boundary review and
+the installed QUTS client-owned byte-array path. This closes a static client
+ownership question, not the adapter-to-diagnostic producer association, server
+publication, sampling or clock-conversion gates. Review the
+[assumptions challenged by evidence](../knowledge/assumptions-and-corrections.md)
+before reusing older absence or timestamp-origin interpretations.
 
 Follow-up: [timing boundaries](../memory-ring/timing-boundary-investigation-2026-10-03.md)
 narrows reset/crash ring consumers, reproduces a double-copy counterexample and

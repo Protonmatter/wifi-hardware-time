@@ -2,10 +2,17 @@
 
 These tools identify the adapter, inspect its advertised services and read cached management-frame information. They establish which device and driver are being studied, not whether its timestamps are accurate. Use their findings to select the correct backend before attempting a separately qualified acquisition experiment.
 
+<!-- current-context:2026-10-04 -->
+**Current context (2026-10-04):** Later archive and installed-file inspection located QUTS client-owned byte returns and corrected vendor package/version assumptions; exact adapter-to-producer association remains open. See [current findings](../../docs/knowledge/current-findings.md).
+<!-- /current-context -->
+
 ## Files
 
 | File | Role |
 |---|---|
+| [Invoke-QualcommStaticInspection.ps1](Invoke-QualcommStaticInspection.ps1) | Scriptify entry point for preview/apply static inspection; see [runbook](../../docs/adapters/static-inspection-runbook.md). Internal `package_tools` workers are invoked through this gate. |
+| [ghidra/TraceAtlasQuts.java](ghidra/TraceAtlasQuts.java) | Exact-hash QPSTServer 496 trace. Default preview; add `--apply` for a new private output directory. |
+| [inspect_qik_inventory.py](inspect_qik_inventory.py) | Validate decoded vendor package file associations, sizes and PE metadata without loading code. See [archive findings](../../docs/adapters/qualcomm-archive-transport-findings.md) for reproduction and limits. |
 | [ghidra/TraceQualcommPacketlog.java](ghidra/TraceQualcommPacketlog.java) | Bounded exact-image cross-reference and private assembly/decompilation exports; see [producer findings](../../docs/memory-ring/packetlog-producer-trace.md). |
 | [ghidra/AnnotateQualcommTiming.java](ghidra/AnnotateQualcommTiming.java) | Exact-hash Ghidra annotations and private decompilation reports. See the [offline workspace guide](../../docs/adapters/ghidra-workspace.md). |
 | [inspect_windows_bss_time.py](inspect_windows_bss_time.py) | Hash-gated offline Windows BSS host-time range inventory; no device or runtime memory access. |

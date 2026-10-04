@@ -5,6 +5,10 @@ handoff boundary. It does not open a device, implement a kernel handler, expose 
 IOCTL, or qualify real timestamp meaning. Every accepted record is explicitly
 synthetic and has `live_clock_eligible == 0`.
 
+<!-- current-context:2026-10-04 -->
+**Current context (2026-10-04):** A QUTS client-owned byte return is now located statically. Keep client ownership, server publication, firmware identity and timing accuracy as separate qualification states. See [current findings](../../docs/knowledge/current-findings.md).
+<!-- /current-context -->
+
 ## Contents
 
 - [Owned MLO and management-event extension](../../docs/evidence/owned-event-extension.md): tested software ownership, decoding, rejection and generation behavior; separate from live hardware qualification.

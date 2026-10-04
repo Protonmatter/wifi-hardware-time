@@ -2,6 +2,10 @@
 
 The inspected Qualcomm return paths carry radio statistics, fixed test bytes or interface information. A real allocated-buffer response path exists, but no complete hardware timestamp producer has been connected to it. A new caller inventory makes the remaining search reproducible without treating a successful return mechanism as a working clock source.
 
+<!-- current-context:2026-10-04 -->
+**Current context (2026-10-04):** Later archive and installed-file inspection located QUTS client-owned byte returns and corrected vendor package/version assumptions; exact adapter-to-producer association remains open. See [current findings](../knowledge/current-findings.md).
+<!-- /current-context -->
+
 ## Contents
 
 - [Scope and terms](#scope-and-terms)

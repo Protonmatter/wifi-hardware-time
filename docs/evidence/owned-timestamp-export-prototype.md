@@ -5,6 +5,10 @@ bounded synthetic timestamp records before publication. This provides an owned
 application boundary for testing meaning declarations, identity, validity and
 lifetime. It does **not** satisfy the [real raw timestamp acceptance gate](raw-timestamp-export-gate.md).
 
+<!-- current-context:2026-10-04 -->
+**Current context (2026-10-04):** A QUTS client-owned byte return is now located statically. Keep client ownership, server publication, firmware identity and timing accuracy as separate qualification states. See [current findings](../knowledge/current-findings.md).
+<!-- /current-context -->
+
 Every accepted record has synthetic provenance and `live_clock_eligible == 0`.
 There is no hardware backend, device access, private IOCTL, kernel handler, driver
 patch, firmware drain, QPC bracket or calibrated timing claim. The layout uses

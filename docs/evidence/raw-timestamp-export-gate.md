@@ -2,6 +2,10 @@
 
 The next milestone requires one real hardware acquisition that returns a complete, attributable timestamp record. Internal buffer locations, successful requests and structurally valid synthetic data do not meet it. This gate lists the required fields and rejection cases, and records which prerequisites remain missing before downstream collection or latency work proceeds.
 
+<!-- current-context:2026-10-04 -->
+**Current context (2026-10-04):** A QUTS client-owned byte return is now located statically. Keep client ownership, server publication, firmware identity and timing accuracy as separate qualification states. See [current findings](../knowledge/current-findings.md).
+<!-- /current-context -->
+
 **Terms:** ABI means the calling and buffer-layout contract. Attribution connects
 a record to its actual event or request. An epoch marks a period of continuity.
 Meaningful width is the number of counter bits defined by the producer, which

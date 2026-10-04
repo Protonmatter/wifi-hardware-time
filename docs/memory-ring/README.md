@@ -2,6 +2,10 @@
 
 The driver keeps a circular diagnostic log before sending messages to Windows tracing. Inspection found internal copy and dump paths, but no safe live reading interface. An offline model also showed that matching copies need not contain finished records. These findings guide further research; they do not demonstrate live corruption or clock accuracy.
 
+<!-- current-context:2026-10-04 -->
+**Current context (2026-10-04):** The QUTS client is a separate owned-byte return candidate. It does not repair the existing ring publication or temporary-buffer lifetime gaps. See [current findings](../knowledge/current-findings.md).
+<!-- /current-context -->
+
 A ring is a circular buffer that overwrites old entries. A getter is an interface that returns data to a caller. Static findings come from inspecting driver files; model results come from simulated operation order. See the [glossary](../glossary.md) for related terms.
 
 | Read | Main result | Limit |

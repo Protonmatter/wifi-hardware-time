@@ -2,6 +2,10 @@
 
 The complete FTM response lives in a reusable driver-owned buffer, and its request identifier wraps after 256 increments. Receiving a final fragment is also different from successfully parsing its contents. These findings define requirements for a trustworthy raw export, but the inspected paths still do not return complete timestamp records to userspace.
 
+<!-- current-context:2026-10-04 -->
+**Current context (2026-10-04):** QXDM WLAN RTT definitions are a new schema lead. They have not been matched to a complete live four-event export from this adapter. See [current findings](../knowledge/current-findings.md).
+<!-- /current-context -->
+
 **Terms:** FTM is Wi-Fi ranging. A fragment is part of a response; aggregation
 combines measurements. Ownership determines who may retain or release a buffer.
 An epoch distinguishes periods of continuity. RVAs identify on-disk code, not

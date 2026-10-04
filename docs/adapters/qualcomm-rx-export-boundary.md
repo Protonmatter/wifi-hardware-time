@@ -2,6 +2,10 @@
 
 The normal receive path retains the descriptor containing candidate radio timestamps, then moves the packet view past that prefix before handing data toward Windows. This investigation traces that handoff and its metadata. It establishes a capture location to investigate, but no existing userspace export with complete timing and packet identity.
 
+<!-- current-context:2026-10-04 -->
+**Current context (2026-10-04):** Later archive and installed-file inspection located QUTS client-owned byte returns and corrected vendor package/version assumptions; exact adapter-to-producer association remains open. See [current findings](../knowledge/current-findings.md).
+<!-- /current-context -->
+
 **Terms:** RX means receive. A descriptor is device/driver metadata beside packet
 data. PPDU identifies a physical radio transmission; an MSDU is a smaller data
 unit that may share that transmission. HAL is the driver's hardware-abstraction
