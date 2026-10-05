@@ -151,6 +151,13 @@ must remain separate decisions.
 
 ## Validation and next bounded task
 
+The [2026-10-05 action-4 follow-up](action4-completion-and-report-contract.md)
+now traces queued-success transport behavior and supplies an owned diagnostic
+decoder. It preserves the separate association, sampling and live-publication gates.
+The subsequent [ingress trace](tsf-event-ingress-and-owned-copy.md) resolves original
+length handling, padding and TSF-specific cleanup. Its original-event software
+record still needs an attributable live producer and export implementation.
+
 The next useful target is **complete TSF report coverage**: establish exact
 firmware meanings and an owned export of the currently omitted metadata at the
 event-decoding/handler boundary. Preserve raw bytes and validity rather than

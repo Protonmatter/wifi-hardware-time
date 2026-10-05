@@ -12,17 +12,23 @@ We can read diagnostic counters and trace real byte-return mechanisms. WLANLIB i
 
 ## Established findings
 
-Snapshot: 2026-10-04. This page is the current interpretation; dated experiment
-reports preserve what was observed in their original runs.
+Baseline snapshot: 2026-10-04, with an action-4 offline follow-up on 2026-10-05.
+This page is the current interpretation; dated experiment reports preserve what
+was observed in their original runs.
 
 | Area | Established result | Practical use |
 |---|---|---|
 | Private TSF/SoC reports | Exact-build counter observations and action-dependent cache/refresh behavior | Diagnostic records and rejection fixtures |
+| Action-4 submission | The inspected HTC queue can return success with accepted work still queued; optional barriers serve deletion queues | Reject request-return QPC as a sampling fence; preserve complete reports with the new diagnostic decoder |
+| TSF event ingress | Logical payload length reaches decoder and callback; fixed-TLV padding retains the original header; exact one-slot cleanup is mapped | Prefer an owned header/payload copy before normalization; actual live wire length and export remain open |
+| HTC transport and return candidates | Logical callback length can derive from an aggregate buffer length; WMI send completion releases outgoing data; separate control/history paths do not establish TSF response return | Preserve declared transport extent and accessible spans; strict offline envelope decoding rejects length/endpoint mismatches |
+| HIF receive producer | Posted pooled metadata reset, CE saved-context return, cache-helper call and one-buffer completion queue connect to HTC | Two copy opportunities before header removal; live capacity, synchronization and application return remain unqualified |
 | FTM ranging | Aggregate results and selected signed-difference processing | Ranging diagnostics; no four-time clock-offset input |
 | Management RX | Candidate firmware fields, frame lifetime and selected metadata reduction | Identify where a complete-event copy would need to occur |
 | Packet log | Located producer, reservation and return candidates; cursor can precede copy | Prevent unsafe ring polling from being promoted |
 | MLO offset cache | Located locked writes and lifecycle-related state | Investigate radio-link relationships separately from QPC |
 | Authored exporter | Owned synthetic management/MLO records with rejection and lifecycle tests | Substantive software qualification and an eventual integration boundary |
+| Concurrent raw responses | Native user-mode broker owns complete bytes and handles read tickets, overflow, cancellation, timeout and close; a Python DLL consumer decodes synthetic replay | Tested application-side integration; kernel copy/return adapter and live source qualification remain open |
 | QPST/QXDM | Connection interfaces, buffer-return contract and WLAN definition leads | Target the useful interfaces and avoid misleading timestamp accessors |
 | Installed QUTS | Client deserialization allocates a byte array for diagnostic payloads | Real static ownership evidence for a possible application return path |
 | Live QUTS enumeration | Two returned device locations match a processor and USB device, not the active PCI Wi-Fi adapter; no record acquired | Narrows the missing adapter-to-protocol connection; does not prove absent hardware support |
@@ -44,6 +50,36 @@ reports preserve what was observed in their original runs.
 The [assumption ledger](assumptions-and-corrections.md) records the evidence and
 scope behind each correction. The largest recent changes are:
 
+- A [concurrent raw-event broker](../evidence/raw-event-response-broker.md) now
+  implements the application-response lifecycle with internal locking and a
+  pointer-free little-endian format. Real native threads and a Python DLL consumer
+  test software ownership. This does not connect the internal Qualcomm callbacks
+  to userspace or make application read tickets into firmware response tokens.
+- The [HIF producer trace](../tsf/hif-receive-buffer-producer.md) connects active
+  callback installation, pooled receive buffers, CE completion identity and the
+  dispatcher call into HTC. It supports a narrower single-buffer candidate for
+  this selected path, not a general contiguity assumption. The CE history retains
+  a descriptor and buffer context without copying the WMI payload.
+- The [upstream transport trace](../tsf/tsf-event-ingress-and-owned-copy.md#upstream-transport-length-and-contiguity)
+  distinguishes HTC's advertised payload length from the aggregate length used
+  to form the WMI handoff. The latter is not proof of contiguous source bytes or
+  exact wire extent. The decoder now has a strict `htc-wire` diagnostic profile.
+  [Return candidates](../tsf/tsf-event-ingress-and-owned-copy.md#existing-return-candidates)
+  include send completion, three distinct histories and endpoint-zero control
+  storage; none establishes a live complete TSF response to an application.
+- The [TSF ingress trace](../tsf/tsf-event-ingress-and-owned-copy.md) connects event
+  registration, original-length handoff, short-TLV padding and callback cleanup.
+  A padded 48-byte input still declares its original 44-byte value length; it
+  must not be treated as 60 firmware-supplied bytes. The diagnostic decoder now
+  preserves a supplied WMI header and TLV together, but has no live acquisition
+  backend or clock-admission qualification.
+- The [action-4 completion trace](../tsf/action4-completion-and-report-contract.md)
+  follows the sender into the HTC endpoint queue. Success does not require a
+  firmware sampling completion. Its optional barrier routes peer/vdev deletion
+  requests, so it is not an established shortcut to synchronous TSF sampling.
+  New offline tools fingerprint that exact code and decode owned report bytes
+  under explicit reference layouts. Live publication and clock admission remain
+  unqualified; this follow-up has not rerun the private campaign.
 - QUTS service/client files are now found locally. Earlier absence reports remain
   true only of their stated snapshots/searches.
 - QPST's complete installer contains server 2.7.0.496; its separate merge module

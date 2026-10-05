@@ -11,6 +11,7 @@ synthetic and has `live_clock_eligible == 0`.
 
 ## Contents
 
+- [Concurrent raw-event response broker](../../docs/evidence/raw-event-response-broker.md): native user-mode queue, complete publication, application read tickets, cancellation, loss counters and two-stage shutdown. Fixture/replay only; the Qualcomm kernel adapter remains unconnected.
 - [Owned MLO and management-event extension](../../docs/evidence/owned-event-extension.md): tested software ownership, decoding, rejection and generation behavior; separate from live hardware qualification.
 - [Contract, limits and validation](../../docs/evidence/owned-timestamp-export-prototype.md)
 - [C API and fixed layout](timestamp_export.h)

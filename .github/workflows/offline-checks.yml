@@ -59,6 +59,9 @@ jobs:
       - name: Owned timestamp export contract (offline)
         shell: powershell
         run: ./research/export_contract/Test-TimestampExport.ps1 -Architecture x64
+      - name: Concurrent raw-event response broker (no hardware)
+        shell: powershell
+        run: ./research/export_contract/Build-RawEventBroker.ps1 -Architecture x64
       - name: Check passive launcher exit codes (no acquisition)
         shell: powershell
         run: ./tests/Test-PassiveLauncher.ps1

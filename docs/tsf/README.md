@@ -10,6 +10,9 @@ TSF (Timing Synchronization Function) is the Wi-Fi timer. SoC means system on ch
 
 ## Report and related evidence
 
+- [Receive-buffer producer before HTC](hif-receive-buffer-producer.md): posted pooled buffers, CE completion identity, HIF queue handoff and two proposed owned-copy points.
+- [Original TSF event, normalization and owned copy](tsf-event-ingress-and-owned-copy.md): where the received length survives, how the decoder borrows or pads data, and the exact callback cleanup boundary.
+- [Action-4 completion and complete-report contract](action4-completion-and-report-contract.md): transport success can leave work queued; exact-build inspection and owned diagnostic decoding preserve that distinction.
 - [Autonomous management-frame TSF](autonomous-management-tsf.md): offline beacon/probe decoding with separate peer-clock and event identity.
 - [Association, fresh sampling and quarantine disposition](tsf-association-and-quarantine-disposition.md): omitted report metadata, a reference-layout lead and the reviewed retain-quarantine decision.
 - [Saved TSF reader API](tsf-evidence-reader.md): implemented diagnostic replay, owned copies and explicit clock-input rejection.
