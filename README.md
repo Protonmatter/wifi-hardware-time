@@ -44,6 +44,7 @@ TSF is the Wi-Fi timing counter. FTM is a ranging procedure that measures round-
 ## What works and what remains open
 
 - **Observed:** exact-build Qualcomm driver reports expose TSF and another counter. Selected requests refresh or reuse that second counter.
+- **Live transport control:** one [device-service GET](docs/evidence/device-service-positive-control.md) returned eight fixed test bytes through the installed driver. The firmware-timing producer remains unconnected.
 - **Observed with limits:** FTM ranging operations return aggregate results. These do not expose all absolute event times needed to estimate clock offset.
 - **Acquisition stopped:** a private campaign encountered unmatched reports and remains quarantined, meaning further admission is blocked. Three later scans reproduced extra report traffic but failed the original four-second completion profile.
 - **Static findings only:** RX descriptor timestamp fields and in-memory diagnostic-log consumers are located. Static inspection reads source/binary files; it does not demonstrate a working live export.

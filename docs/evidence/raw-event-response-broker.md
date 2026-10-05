@@ -26,6 +26,11 @@ interrupt context. A vendor-supported or instrumented driver exporter must first
 establish its own source ownership, execution level, synchronization and return
 transport. That driver adapter is not implemented here.
 
+The [driver integration contract](driver-event-return-integration.md) now maps the
+existing WDF notification queue and its forced-completion callers. It specifies
+the separate producer copy, source envelope, request pairing and callback-rundown
+requirements needed before a live adapter can feed this broker.
+
 ```text
 Future Qualcomm copy point A or B
       |

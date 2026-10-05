@@ -49,6 +49,13 @@ class PrivateExportTests(unittest.TestCase):
         self.assertEqual(len(result['ranges']), 14)
         self.assertFalse(result['live_request_sent'])
         self.assertFalse(result['complete_timestamp_export_qualified'])
+        classified = result['completion_argument_inventory']
+        self.assertEqual(len(classified['sites']), 70)
+        self.assertEqual(sum(row['payload_possible'] for row in classified['sites']), 11)
+        self.assertEqual(classified['null_payload_calls'], 59)
+        fixed = next(row for row in classified['sites'] if row['call_rva'] == '0x12a430')
+        self.assertEqual(fixed['manual_role'], 'fixed test-pipeline bytes')
+        self.assertFalse(classified['hardware_timing_producer_connected'])
 
     @unittest.skipUnless(os.environ.get('WIFI_TIME_DRIVER_FIXTURE'), 'Owned exact-build fixture not configured')
     def test_ihv_binary_response_bridge_is_traced_but_not_qualified(self):

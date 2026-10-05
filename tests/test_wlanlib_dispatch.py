@@ -55,11 +55,41 @@ class WlanlibDispatchTests(unittest.TestCase):
         self.assertEqual(len(result["ioctl_selectors"]), 11)
         self.assertEqual({item["namespace"] for item in result["other_constants"]},
                          {"wmi_command_id", "wmi_event_id", "ntstatus"})
+        lifecycle = result["pending_request_lifecycle"]
+        self.assertEqual(lifecycle["dispatch"], "manual")
+        self.assertFalse(lifecycle["power_managed"])
+        self.assertEqual(lifecycle["queue_handle_offset"], "0x3c0")
+        self.assertEqual(lifecycle["separately_purged_queue_offset"], "0x3b0")
+        self.assertEqual(lifecycle["selected_callers"], ["0x329e8", "0x36c90"])
+        self.assertEqual({item["value"] for item in lifecycle["drain_status_literals"]}, {"0xc00002b6"})
+        self.assertEqual(len(lifecycle["instruction_checks"]), 13)
+        self.assertTrue(all(item["matched"] for item in lifecycle["instruction_checks"]))
+        for field in ("complete_call_coverage", "live_cancellation_qualified",
+                      "producer_rundown_qualified", "firmware_drain_qualified", "timing_producer_connected"):
+            self.assertFalse(lifecycle[field])
         for field in ("live_request_sent", "runtime_mode_observed", "concurrent_copy_qualified",
                       "timing_schema_qualified", "hardware_qpc_qualified"):
             self.assertFalse(result[field])
         with self.assertRaisesRegex(ValueError, "qualified build"):
             inspect_image(data[:-1] + bytes([data[-1] ^ 1]))
+
+    @unittest.skipUnless(os.environ.get("WIFI_TIME_DRIVER_FIXTURE"), "Owned exact-build fixture not configured")
+    def test_pending_queue_instruction_and_status_fences(self):
+        # Bypass only the outer hash check in this test to exercise the inner
+        # evidence checks. Production always verifies the full file first.
+        import pefile
+        original = Path(os.environ["WIFI_TIME_DRIVER_FIXTURE"]).read_bytes()
+        pe = pefile.PE(data=original)
+        try:
+            for rva in (0x436D38, 0x11C588, 0x32A94, 0x32CAC, 0x36E68):
+                altered = bytearray(original)
+                altered[pe.get_offset_from_rva(rva)] ^= 1
+                with self.subTest(rva=hex(rva)), patch(
+                    "research.adapters.inspect_wlanlib_dispatch.validate_driver"
+                ), self.assertRaisesRegex(ValueError, "Unexpected scalar"):
+                    inspect_image(bytes(altered))
+        finally:
+            pe.close()
 
 
 if __name__ == "__main__":

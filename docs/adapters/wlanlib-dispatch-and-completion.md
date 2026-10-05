@@ -96,6 +96,11 @@ departure/arrival timestamps. A specific payload would still need its own schema
 
 ## Request ownership and completion
 
+The [driver-event integration follow-up](../evidence/driver-event-return-integration.md)
+adds exact queue creation, forced error completion, conditional suspend/deinitialization
+callers and context release. It distinguishes the notification queue from the
+different queue purged by its callers, then defines the remaining producer/export contract.
+
 The selected framework calls were matched to Microsoft's
 [WDF function-index definitions](https://github.com/microsoft/Windows-Driver-Frameworks/blob/main/src/publicinc/wdf/kmdf/1.27/wdffuncenum.h).
 The ARM64 table uses eight-byte entries:
@@ -306,8 +311,9 @@ python -m unittest discover -s tests -p test_wlanlib_dispatch.py -v
   owned file and an existing private output parent directory. No elevation.
 - Input limit: 16 MiB. Existing outputs are refused rather than overwritten.
 - Exit codes: `0` receipt written, `1` rejected input/I/O, `2` CLI usage error.
-- Receipt limits: scalar identity and 64-byte code-window hashes; the manual
-  control-flow trace remains separate. Qualification flags remain false.
+- Receipt limits: scalar identity, 64-byte code-window hashes and selected pending-queue
+  instruction checks; the manual control-flow trace remains separate. Qualification
+  flags remain false.
 - Rollback: only the chosen output file needs removal. There are no device or
   configuration changes to reverse.
 

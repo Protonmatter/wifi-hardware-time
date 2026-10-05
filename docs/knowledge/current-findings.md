@@ -29,6 +29,8 @@ was observed in their original runs.
 | MLO offset cache | Located locked writes and lifecycle-related state | Investigate radio-link relationships separately from QPC |
 | Authored exporter | Owned synthetic management/MLO records with rejection and lifecycle tests | Substantive software qualification and an eventual integration boundary |
 | Concurrent raw responses | Native user-mode broker owns complete bytes and handles read tickets, overflow, cancellation, timeout and close; a Python DLL consumer decodes synthetic replay | Tested application-side integration; kernel copy/return adapter and live source qualification remain open |
+| Live device-service control | One elevated fixed-pattern GET returned exactly eight expected bytes through the installed driver; identity/state matched afterward | Live transport positive control; 166.5 microseconds is one API duration, not a hardware sampling bracket |
+| Driver request lifecycle | Manual notification queue, forced completion and selected deinitialization/suspend callers traced; their WDF purge targets a different queue | Concrete request-ownership reference for the exporter; producer rundown and live connection still unqualified |
 | QPST/QXDM | Connection interfaces, buffer-return contract and WLAN definition leads | Target the useful interfaces and avoid misleading timestamp accessors |
 | Installed QUTS | Client deserialization allocates a byte array for diagnostic payloads | Real static ownership evidence for a possible application return path |
 | Live QUTS enumeration | Two returned device locations match a processor and USB device, not the active PCI Wi-Fi adapter; no record acquired | Narrows the missing adapter-to-protocol connection; does not prove absent hardware support |
@@ -50,6 +52,16 @@ was observed in their original runs.
 The [assumption ledger](assumptions-and-corrections.md) records the evidence and
 scope behind each correction. The largest recent changes are:
 
+- A [live device-service control](../evidence/device-service-positive-control.md)
+  now supplements software-only broker evidence. The first non-elevated query was
+  denied and sent no service command; the separately elevated control returned
+  the expected eight bytes. The expanded completion inventory narrows 70 direct
+  calls to 11 possible payload sources, without establishing a timing producer.
+- The [driver integration contract](../evidence/driver-event-return-integration.md)
+  now separates the event-data queue from waiting application requests. The exact
+  driver drains Qmux notification requests with a supplied error status, but this
+  does not establish producer shutdown or firmware drain. Live source metadata
+  also needs a defined envelope beyond the broker's fixture/replay response.
 - A [concurrent raw-event broker](../evidence/raw-event-response-broker.md) now
   implements the application-response lifecycle with internal locking and a
   pointer-free little-endian format. Real native threads and a Python DLL consumer

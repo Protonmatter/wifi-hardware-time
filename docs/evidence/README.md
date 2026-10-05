@@ -8,6 +8,9 @@ This area defines how research observations can be passed to application softwar
 
 ## Documents
 
+- [Live device-service positive control](device-service-positive-control.md): one exact-driver GET returned eight fixed test bytes; a live transport result, separate from firmware timing.
+- [Driver event-return integration](driver-event-return-integration.md): traced request-queue lifecycle and the required kernel copy, response, cancellation and teardown contract.
+- [Concurrent raw-event broker](raw-event-response-broker.md): tested native-library/application boundary for fixtures and unqualified replay.
 - [Qualification audit, 2026-10-04](qualification-audit-2026-10-04.md): exact driver catalog verification, selected publisher signatures, 247 offline tests with zero skips, and published-head CI.
 - [Bounded live QUTS enumeration](quts-enumeration-2026-10-04.md): two devices enumerated, neither attributable to the active Wi-Fi adapter; record retrieval was not attempted.
 - [Proposed hardware-time boundary](api-direction.md).

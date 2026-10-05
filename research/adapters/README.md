@@ -10,6 +10,7 @@ These tools identify the adapter, inspect its advertised services and read cache
 
 | File | Role |
 |---|---|
+| [Invoke-DeviceServiceControl.ps1](Invoke-DeviceServiceControl.ps1) / [device_service_control.c](device_service_control.c) | Default identity preview, offline build/self-test, or bounded enumeration and one fixed-pattern GET. See [live control and runbook](../../docs/evidence/device-service-positive-control.md). |
 | [Invoke-QualcommStaticInspection.ps1](Invoke-QualcommStaticInspection.ps1) | Scriptify entry point for preview/apply static inspection; see [runbook](../../docs/adapters/static-inspection-runbook.md). Internal `package_tools` workers are invoked through this gate. |
 | [ghidra/TraceAtlasQuts.java](ghidra/TraceAtlasQuts.java) | Exact-hash QPSTServer 496 trace. Default preview; add `--apply` for a new private output directory. |
 | [ghidra/TraceQutsDiscovery.java](ghidra/TraceQutsDiscovery.java) | Pinned native QUTS discovery/protocol traces; private assembly and decompilation exports. Default includes one caller level; optional `scope:seeds-only` limits export to selected functions. See [callback/framing seeds](../../docs/adapters/quts-callback-framing-and-wlanlib.md#reproduction-and-validation). |

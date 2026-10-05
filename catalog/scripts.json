@@ -36,6 +36,15 @@
       "risk": "Medium",
       "validation": "PowerShell parser/profile preview; tests/Test-WifiPathHelpers.ps1; bounded packet-only live run. Paired kernel tracing remains unvalidated.",
       "rollback": "Stop/cancel only the unique WPR instance in result.json; wait for or terminate only the owned capture child. No adapter reset or profile change."
+    },
+    {
+      "name": "Invoke-DeviceServiceControl",
+      "path": "research/adapters/Invoke-DeviceServiceControl.ps1",
+      "sha256": "67238C1C7BEF44DE24EC2DC3F167B892E01F1303EECB113047A8B9DAF39236E8",
+      "owner": "Protonmatter",
+      "risk": "Medium",
+      "validation": "Offline ARM64 build/self-test, tests/Test-DeviceServiceControl.ps1 and tests/test_device_service_control.py; one elevated fixed-pattern GET passed. No firmware timing qualification.",
+      "rollback": "No configuration changes. Preserve private receipts before removing only the chosen generated artifacts directory; timeout is not proof of firmware drain."
     }
   ]
 }

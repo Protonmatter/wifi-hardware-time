@@ -44,6 +44,22 @@ RANGES = (
     ('nic_specific_dispatch', 0x11CDE8, 0x11D4C0),
 )
 
+# Manually reviewed immediate completion-call sites with a variable payload.
+# A possible payload is not necessarily present on every runtime branch.
+PAYLOAD_SITES = {
+    0x02ECEC: '802.11 statistics',
+    0x12A430: 'fixed test-pipeline bytes',
+    0x12A998: 'SAR configuration/state',
+    0x12ACD4: 'antenna configuration/state',
+    0x12AE78: 'interface configuration',
+    0x12E860: 'IHV nested dispatch output',
+    0x12F5C8: 'power-management protocol offload',
+    0x1308DC: 'receive-segment-coalescing statistics',
+    0x130CE4: 'automatic power-save state',
+    0x1310B0: 'next action dialog token',
+    0x133178: 'supported device-service list',
+}
+
 
 def inspect_image(data: bytes) -> dict[str, Any]:
     """Bind manually traced candidates to the qualified file before extraction."""
@@ -81,6 +97,25 @@ def inspect_image(data: bytes) -> dict[str, Any]:
                 rva = item.address - pe.OPTIONAL_HEADER.ImageBase
                 if rva in (0x2ED0F8, 0x2ED120, 0x2ED190):
                     imports[hex(rva)] = item.name.decode('ascii') if item.name else f'ordinal:{item.ordinal}'
+        completion_sites = []
+        for branch in return_branches:
+            if branch['target_rva'] != '0x13a890':
+                continue
+            site = int(branch['rva'], 16)
+            window = pe.get_data(site - 32, 36)
+            if len(window) != 36:
+                raise ValueError('Truncated completion argument window')
+            # Fingerprint a manually reviewed argument pattern. This does not
+            # replace control-flow analysis or trace indirect entry paths.
+            words = struct.unpack('<9I', window)
+            payload_possible = site in PAYLOAD_SITES
+            if not payload_possible and not (0x52800003 in words[:-1] and 0xD2800002 in words[:-1]):
+                raise ValueError('Unreviewed completion argument pattern')
+            completion_sites.append(dict(call_rva=hex(site), payload_possible=payload_possible,
+                manual_role=PAYLOAD_SITES.get(site, 'null payload and zero length at this call'),
+                argument_window_sha256=hashlib.sha256(window).hexdigest()))
+        if len(completion_sites) != 70 or {int(row['call_rva'], 16) for row in completion_sites if row['payload_possible']} != set(PAYLOAD_SITES):
+            raise ValueError('Completion caller inventory changed')
         return dict(
             schema='qualcomm-private-export-static/v1',
             driver_sha256=hashlib.sha256(data).hexdigest(),
@@ -93,6 +128,10 @@ def inspect_image(data: bytes) -> dict[str, Any]:
             selected_direct_calls=calls, selected_imports=imports,
             return_inventory=dict(executable_sections=sections, direct_branches=return_branches,
                                   coverage='aligned B/BL candidates only; code context and indirect routes require review'),
+            completion_argument_inventory=dict(sites=completion_sites,
+                scope='manual review plus exact argument-window fingerprints; no exhaustive producer or indirect-call proof',
+                null_payload_calls=59, possible_payload_calls=11,
+                hardware_timing_producer_connected=False),
             complete_call_coverage=False, live_request_sent=False,
             complete_timestamp_export_qualified=False,
         )
