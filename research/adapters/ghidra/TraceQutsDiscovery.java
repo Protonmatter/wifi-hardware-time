@@ -34,8 +34,8 @@ public class TraceQutsDiscovery extends GhidraScript {
             throw new IllegalArgumentException("Pinned QUTS ARM64 Windows image/hash/base required");
         }
         String[] args = getScriptArgs();
-        if (args.length < 2 || args.length > 34) {
-            throw new IllegalArgumentException("Usage: NEW_PRIVATE_OUTPUT_DIR [max-instructions:4096..65536] followed by 1-32 hex RVAs (entry:HEX explicitly defines a reviewed function start)");
+        if (args.length < 2 || args.length > 35) {
+            throw new IllegalArgumentException("Usage: NEW_PRIVATE_OUTPUT_DIR [max-instructions:4096..65536] [scope:seeds-only] followed by 1-32 hex RVAs (entry:HEX explicitly defines a reviewed function start)");
         }
         int instructionLimit = 4096;
         int seedStart = 1;
@@ -49,6 +49,14 @@ public class TraceQutsDiscovery extends GhidraScript {
                 throw new IllegalArgumentException("Instruction limit must be 4096..65536");
             }
             seedStart = 2;
+        }
+        boolean includeCallers = true;
+        if (seedStart < args.length && args[seedStart].startsWith("scope:")) {
+            if (!"scope:seeds-only".equals(args[seedStart])) {
+                throw new IllegalArgumentException("Only scope:seeds-only is supported; omit scope for the default caller trace");
+            }
+            includeCallers = false;
+            seedStart++;
         }
         if (args.length - seedStart < 1 || args.length - seedStart > 32) {
             throw new IllegalArgumentException("Supply 1-32 seeds");
@@ -90,6 +98,7 @@ public class TraceQutsDiscovery extends GhidraScript {
             refs.add(seed + "\tseed\t" + (definitions.contains(seed) ? "explicit_entry" : "existing") +
                 "\t" + (own == null ? "data_or_unresolved" : own.getEntryPoint()));
             if (own != null) { functions.add(own); }
+            if (!includeCallers) { continue; }
             int count = 0;
             for (Reference ref : getReferencesTo(seed)) {
                 if (++count > 256) { throw new IllegalStateException("Reference bound exceeded"); }
@@ -106,7 +115,9 @@ public class TraceQutsDiscovery extends GhidraScript {
         List<String> receipt = new ArrayList<>();
         receipt.add("sha256\t" + currentProgram.getExecutableSHA256());
         receipt.add("instruction_limit\t" + instructionLimit);
-        receipt.add("scope\tone reference level from explicit seeds; no exhaustive indirect-call proof");
+        receipt.add(includeCallers
+            ? "scope\tone reference level from explicit seeds; no exhaustive indirect-call proof"
+            : "scope\tseed functions only; caller/reference traversal omitted");
         receipt.add("entry\tname\tdecompilation\tinstruction_export");
         int failures = 0;
         DecompInterface decompiler = new DecompInterface();

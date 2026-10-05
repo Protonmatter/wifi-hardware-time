@@ -23,6 +23,7 @@ This directory ranks useful starting points by what the evidence supports. Names
 | `WDI_TLV_BSS_ENTRY_AGE_INFO`, `HostTimeStamp`, `ullHostTimestamp` | BSS host/system-time path, not radio receive-clock export | [Host-time origin](../adapters/windows-bss-host-time.md) |
 | `ullTimestamp`, `tsf_info`, `raw_frame` | Peer timestamp / cache-frame leads; keep peer and local clocks distinct | [BSS serializer](../adapters/qualcomm-bss-serialization.md) |
 | `CaptureInterfaceHardwareCrossTimestamp`, `OID_TIMESTAMP_GET_CROSSTIMESTAMP` | Documented sampling contract; no working Qualcomm hardware/QPC result established | [Windows path](../windows-timestamps/windows-timestamp-path-followup.md) |
+| `Observe-WifiDataPath.ps1`, `dumpcap`, `EN10MB`, `host_hiprec_unsynced` | Bounded capture and explicit elevation receipts; the observed timestamp options are host clocks | [Live packet baseline](../acquisition/packet-capture-and-elevation.md) |
 
 ## Vendor interfaces
 
@@ -51,6 +52,18 @@ This directory ranks useful starting points by what the evidence supports. Names
 | `0x2a89a8`, `0x2a8d60`, `0x0b7038` | Selected close sequence, CancelIoEx request and CloseDevice; not a bounded live cancellation result |
 | `0x100e90`, `0x106e30`, `0x8000000000000000` | Default wait sentinel constructor, waitForStop and selected unlimited wait; not a host timestamp sample |
 | `0x22d038`, `0x1e9848` | DIAG readPackets and NonHdlc FrameStream status check; concrete framing targets, not a qualified Wi-Fi schema |
+| QUTS `0x20ee28`, `0x231938`, `0x227280` | Register receiveData callback, admit retained buffers and insert the DIAG receive queue |
+| QUTS `0x1357e0`, `0x136a48`, `0x146ce8` | HDLC/non-HDLC frame readers and retained escape state |
+| QUTS `0x135090`, `0x134ac0` | CRC residue comparison and separate empty-payload predicate |
+| QUTS `0x22cf48`, `0x1ef3c8`, `0x441830` | Stream cursor, copied decoded payload and retained incoming-packet queue item |
+| Driver `WLANLIB`, `{9b4a1918-78c7-4148-8eb5-2e580f5ba530}` | Enabled interface attributed by exact-device enumeration and matching registration in the pinned Wi-Fi driver |
+| Driver `0x436000`, `0x11c948`, `0x0293c0`, `0x0298c0` | WLANLIB registration, interface-state helper and IOCTL dispatch; no live operation sent |
+| Driver `0x11bfb8`, `0x81802c04`, `0x11bd90` | Qmux query/pending notification and one-byte completion; not timing data |
+| Driver `0x11d4c0`, `0xc3502406`, `0x437340` | ART2 command envelope and subcommand dispatcher, with a runtime state gate |
+| Driver `0x11e840`, `0x220182`, `0x11fad0`, `0x33bde0` | iwpriv path into the existing named command table used by the bounded TSF probe |
+| Driver `0x1a4ad8`, `0x1a4e10`, `0x1a4f80` | UTF attachment, segmented-event producer and consuming payload fetch |
+| UTF context `+0x38240`, `+0x38248`, `+0x38250`, `+0x38259` | Payload pointer, published length, accumulated length and next-segment state; no qualified snapshot/epoch |
+| ART2 subcommand `0x13`, adapter `+0x8948` | Four-byte overall error getter; bypasses the selected test-state gate but supplies no clock |
 | `createDataQueue`, `getDataQueueItems`, `removeDataQueue` | QUTS diagnostic queue lifecycle with count/timeout retrieval |
 | `sendRequestAsync`, `getResponseAsync`, `getAllResponsesAsync` | Service transaction association; request calls can affect hardware and were not executed |
 | `DiagPacket.Read`, `TBinaryProtocol.ReadBinary`, `TCompactProtocol.ReadBinary` | Located managed-byte allocation and deserialization path |

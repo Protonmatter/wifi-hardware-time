@@ -27,6 +27,15 @@
       "risk": "Medium",
       "validation": "PowerShell parser and preview; offline rejection tests; 2026-10-04 attempt 06 qualified 20/20 controls and 12 attributed queries. No firmware timing qualification.",
       "rollback": "Stop or cancel only the unique WPR instance recorded in the private result.json. No device or service restart."
+    },
+    {
+      "name": "Observe-WifiDataPath",
+      "path": "research/acquisition/Observe-WifiDataPath.ps1",
+      "sha256": "216708A40FE911C1AD98BCBA22118CDF49FD642AA4A24695C9A1065AB575004D",
+      "owner": "Protonmatter",
+      "risk": "Medium",
+      "validation": "PowerShell parser/profile preview; tests/Test-WifiPathHelpers.ps1; bounded packet-only live run. Paired kernel tracing remains unvalidated.",
+      "rollback": "Stop/cancel only the unique WPR instance in result.json; wait for or terminate only the owned capture child. No adapter reset or profile change."
     }
   ]
 }

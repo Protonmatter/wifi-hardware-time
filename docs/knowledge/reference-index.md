@@ -10,7 +10,7 @@ Find the calls, file names, terms and short strings recorded in this research. T
 
 ## Search
 
-Indexed **238 source files** and **6372 distinct terms**.
+Indexed **246 source files** and **6617 distinct terms**.
 
 The [JSON index](research-index.json) includes Python definitions/calls, C/Java/PowerShell call-shaped tokens, authored short strings and Markdown code terms. Vendor binaries, local artifacts, historical reproduction sources and generated indexes are excluded. Unresolved call-shaped tokens are explicitly labeled.
 
@@ -33,16 +33,17 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 
 | File | Normalized text SHA-256 prefix |
 |---|---|
-| [.github/workflows/offline-checks.yml](../../.github/workflows/offline-checks.yml) | `8812f1d4847f` |
+| [.github/workflows/offline-checks.yml](../../.github/workflows/offline-checks.yml) | `120504aa5164` |
 | [README.md](../../README.md) | `70c9b289deb7` |
 | [docs/README.md](../../docs/README.md) | `950681bca95a` |
-| [docs/acquisition/README.md](../../docs/acquisition/README.md) | `fa257e06bf36` |
+| [docs/acquisition/README.md](../../docs/acquisition/README.md) | `7bbefd1411d5` |
 | [docs/acquisition/acquisition-campaign-2026-10-02-results.md](../../docs/acquisition/acquisition-campaign-2026-10-02-results.md) | `9497bd3fc5f6` |
 | [docs/acquisition/experiments.md](../../docs/acquisition/experiments.md) | `757ecf58decd` |
 | [docs/acquisition/lifecycle-matrix.md](../../docs/acquisition/lifecycle-matrix.md) | `ff94ba6c1774` |
 | [docs/acquisition/lifecycle-qualification-preparation.md](../../docs/acquisition/lifecycle-qualification-preparation.md) | `893035af4f25` |
 | [docs/acquisition/live-acquisition-campaign.md](../../docs/acquisition/live-acquisition-campaign.md) | `beebdf691f97` |
 | [docs/acquisition/observer-passive-qualification-2026-10-03.md](../../docs/acquisition/observer-passive-qualification-2026-10-03.md) | `e61d91daea97` |
+| [docs/acquisition/packet-capture-and-elevation.md](../../docs/acquisition/packet-capture-and-elevation.md) | `6b65cf34ece1` |
 | [docs/acquisition/passive-and-retrieval-validation-2026-10-03.md](../../docs/acquisition/passive-and-retrieval-validation-2026-10-03.md) | `491e8b28239c` |
 | [docs/acquisition/private-acquisition-latency.md](../../docs/acquisition/private-acquisition-latency.md) | `49e23fdcc97d` |
 | [docs/acquisition/private-campaign-2026-10-03-quarantine.md](../../docs/acquisition/private-campaign-2026-10-03-quarantine.md) | `a9b8c563ee32` |
@@ -50,7 +51,7 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [docs/acquisition/scan-comparison-plan.md](../../docs/acquisition/scan-comparison-plan.md) | `5c2a312cd514` |
 | [docs/acquisition/scan-tsf-results-2026-10-03.md](../../docs/acquisition/scan-tsf-results-2026-10-03.md) | `26ea16e56034` |
 | [docs/acquisition/timing-qualification-validation-2026-10-04.md](../../docs/acquisition/timing-qualification-validation-2026-10-04.md) | `eb03fb30c7e4` |
-| [docs/adapters/README.md](../../docs/adapters/README.md) | `c728c41f1b6d` |
+| [docs/adapters/README.md](../../docs/adapters/README.md) | `d07377b32240` |
 | [docs/adapters/axml.md](../../docs/adapters/axml.md) | `db1bd219145b` |
 | [docs/adapters/backend-and-reference-next-steps.md](../../docs/adapters/backend-and-reference-next-steps.md) | `9da7599bbb12` |
 | [docs/adapters/diagrams/vendor-return-paths.mmd](../../docs/adapters/diagrams/vendor-return-paths.mmd) | `060abaf8a568` |
@@ -64,12 +65,14 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [docs/adapters/qualcomm-rx-export-boundary.md](../../docs/adapters/qualcomm-rx-export-boundary.md) | `e350bdd2ad10` |
 | [docs/adapters/qualcomm-software-center-timing-leads.md](../../docs/adapters/qualcomm-software-center-timing-leads.md) | `e29b1e10617c` |
 | [docs/adapters/qualcomm.md](../../docs/adapters/qualcomm.md) | `0549a1d14d80` |
+| [docs/adapters/quts-callback-framing-and-wlanlib.md](../../docs/adapters/quts-callback-framing-and-wlanlib.md) | `2c9876d246d8` |
 | [docs/adapters/quts-discovery-gate.md](../../docs/adapters/quts-discovery-gate.md) | `30bf4e274fe7` |
-| [docs/adapters/quts-endpoint-writer-and-receive.md](../../docs/adapters/quts-endpoint-writer-and-receive.md) | `6af25cd432c4` |
+| [docs/adapters/quts-endpoint-writer-and-receive.md](../../docs/adapters/quts-endpoint-writer-and-receive.md) | `68155d6bd752` |
 | [docs/adapters/quts-live-gate-and-commonio.md](../../docs/adapters/quts-live-gate-and-commonio.md) | `4b5bc00d22b1` |
 | [docs/adapters/quts-mhi-route-validation.md](../../docs/adapters/quts-mhi-route-validation.md) | `f575f0b39901` |
 | [docs/adapters/static-inspection-runbook.md](../../docs/adapters/static-inspection-runbook.md) | `b19845fec9a0` |
 | [docs/adapters/windows-bss-host-time.md](../../docs/adapters/windows-bss-host-time.md) | `c1d8d6725b1d` |
+| [docs/adapters/wlanlib-dispatch-and-completion.md](../../docs/adapters/wlanlib-dispatch-and-completion.md) | `0f12d3f5a372` |
 | [docs/clock-models/README.md](../../docs/clock-models/README.md) | `bee9e1e5a820` |
 | [docs/clock-models/clock-relationship-investigation.md](../../docs/clock-models/clock-relationship-investigation.md) | `36cdf2738990` |
 | [docs/clock-models/counter-rate-identifiability.md](../../docs/clock-models/counter-rate-identifiability.md) | `fc7ac3dc7bc5` |
@@ -97,9 +100,9 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [docs/ftm/ftm-raw-access-followup.md](../../docs/ftm/ftm-raw-access-followup.md) | `0f3d5b59bebb` |
 | [docs/ftm/ftm-result-provenance.md](../../docs/ftm/ftm-result-provenance.md) | `b92a2ddb2d94` |
 | [docs/glossary.md](../../docs/glossary.md) | `838e3c21d99f` |
-| [docs/knowledge/assumptions-and-corrections.md](../../docs/knowledge/assumptions-and-corrections.md) | `205a39fd3839` |
-| [docs/knowledge/current-findings.md](../../docs/knowledge/current-findings.md) | `aa668f6f50d4` |
-| [docs/knowledge/interface-directory.md](../../docs/knowledge/interface-directory.md) | `51ff0a67e227` |
+| [docs/knowledge/assumptions-and-corrections.md](../../docs/knowledge/assumptions-and-corrections.md) | `0c3fd0c8e8ec` |
+| [docs/knowledge/current-findings.md](../../docs/knowledge/current-findings.md) | `d858cd4f5e7b` |
+| [docs/knowledge/interface-directory.md](../../docs/knowledge/interface-directory.md) | `9f1ae636b013` |
 | [docs/knowledge/refresh-validation.md](../../docs/knowledge/refresh-validation.md) | `13243a024baa` |
 | [docs/knowledge/workflow-diagrams.md](../../docs/knowledge/workflow-diagrams.md) | `cb387f0069df` |
 | [docs/memory-ring/README.md](../../docs/memory-ring/README.md) | `c74a8452329e` |
@@ -135,7 +138,8 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [research/acquisition/Get-CampaignIdentity.ps1](../../research/acquisition/Get-CampaignIdentity.ps1) | `2955126771e2` |
 | [research/acquisition/Invoke-PassiveObservation.ps1](../../research/acquisition/Invoke-PassiveObservation.ps1) | `7ef262fcd61a` |
 | [research/acquisition/Observe-QutsRegistry.ps1](../../research/acquisition/Observe-QutsRegistry.ps1) | `10ba3bf3c91f` |
-| [research/acquisition/README.md](../../research/acquisition/README.md) | `8a672e0f6f5b` |
+| [research/acquisition/Observe-WifiDataPath.ps1](../../research/acquisition/Observe-WifiDataPath.ps1) | `90c2e48ded73` |
+| [research/acquisition/README.md](../../research/acquisition/README.md) | `5d68a6ff314e` |
 | [research/acquisition/analyze_quarantined_tsf.py](../../research/acquisition/analyze_quarantined_tsf.py) | `ec7beb1f4e8f` |
 | [research/acquisition/analyze_quts_registry.py](../../research/acquisition/analyze_quts_registry.py) | `bc74e49161e7` |
 | [research/acquisition/analyze_scan_comparison.py](../../research/acquisition/analyze_scan_comparison.py) | `53ca52b97c8d` |
@@ -148,19 +152,21 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [research/acquisition/run_acquisition_campaign.py](../../research/acquisition/run_acquisition_campaign.py) | `2441e402d286` |
 | [research/acquisition/run_passive_observation.py](../../research/acquisition/run_passive_observation.py) | `73f59f63c534` |
 | [research/acquisition/run_scan_comparison.py](../../research/acquisition/run_scan_comparison.py) | `d9d4a3596ed5` |
+| [research/acquisition/wifi-path.wprp](../../research/acquisition/wifi-path.wprp) | `f04eb0db9934` |
 | [research/adapters/Get-QualcommAdapter.ps1](../../research/adapters/Get-QualcommAdapter.ps1) | `065ffad62964` |
 | [research/adapters/Invoke-QualcommStaticInspection.ps1](../../research/adapters/Invoke-QualcommStaticInspection.ps1) | `1366f4ada851` |
-| [research/adapters/README.md](../../research/adapters/README.md) | `62846cd75525` |
+| [research/adapters/README.md](../../research/adapters/README.md) | `88000364782a` |
 | [research/adapters/cached_beacon.c](../../research/adapters/cached_beacon.c) | `c6ac75115a82` |
 | [research/adapters/device_services.c](../../research/adapters/device_services.c) | `dae2dac610a2` |
 | [research/adapters/ghidra/AnnotateQualcommTiming.java](../../research/adapters/ghidra/AnnotateQualcommTiming.java) | `89e3b0b23f2d` |
 | [research/adapters/ghidra/TraceAtlasQuts.java](../../research/adapters/ghidra/TraceAtlasQuts.java) | `baae8731ab45` |
 | [research/adapters/ghidra/TraceQualcommPacketlog.java](../../research/adapters/ghidra/TraceQualcommPacketlog.java) | `0429c7eba643` |
-| [research/adapters/ghidra/TraceQutsDiscovery.java](../../research/adapters/ghidra/TraceQutsDiscovery.java) | `c7c59809f494` |
+| [research/adapters/ghidra/TraceQutsDiscovery.java](../../research/adapters/ghidra/TraceQutsDiscovery.java) | `b3c9dcb7e5de` |
 | [research/adapters/inspect_management_rx.py](../../research/adapters/inspect_management_rx.py) | `54abff40c5da` |
 | [research/adapters/inspect_private_exports.py](../../research/adapters/inspect_private_exports.py) | `ed20202a71a8` |
 | [research/adapters/inspect_qik_inventory.py](../../research/adapters/inspect_qik_inventory.py) | `ade4e664ddc4` |
 | [research/adapters/inspect_windows_bss_time.py](../../research/adapters/inspect_windows_bss_time.py) | `b0cdb123c85e` |
+| [research/adapters/inspect_wlanlib_dispatch.py](../../research/adapters/inspect_wlanlib_dispatch.py) | `c9d0cde12690` |
 | [research/adapters/package_tools/Expand-QccBlocks.ps1](../../research/adapters/package_tools/Expand-QccBlocks.ps1) | `817d861c092a` |
 | [research/adapters/package_tools/Read-MsiTables.ps1](../../research/adapters/package_tools/Read-MsiTables.ps1) | `f74d47953a38` |
 | [research/adapters/package_tools/Read-TypeLibrary.ps1](../../research/adapters/package_tools/Read-TypeLibrary.ps1) | `09fde4ca4dca` |
@@ -226,6 +232,7 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [tests/Test-NdisV2Preflight.ps1](../../tests/Test-NdisV2Preflight.ps1) | `b9dbce9159ba` |
 | [tests/Test-PassiveLauncher.ps1](../../tests/Test-PassiveLauncher.ps1) | `c2f5d0abf341` |
 | [tests/Test-ScanContextSummary.ps1](../../tests/Test-ScanContextSummary.ps1) | `84ed8746f69b` |
+| [tests/Test-WifiPathHelpers.ps1](../../tests/Test-WifiPathHelpers.ps1) | `63b23d5444f5` |
 | [tests/native_ftm_result.c](../../tests/native_ftm_result.c) | `e23553339699` |
 | [tests/native_timestamp_export.c](../../tests/native_timestamp_export.c) | `c8202461af14` |
 | [tests/test_analyze_latch.py](../../tests/test_analyze_latch.py) | `17461a88eb1e` |
@@ -270,4 +277,5 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [tests/test_tsf_routes.py](../../tests/test_tsf_routes.py) | `b461867a2900` |
 | [tests/test_validation_archive.py](../../tests/test_validation_archive.py) | `4b880ac2bfb0` |
 | [tests/test_windows_bss_time.py](../../tests/test_windows_bss_time.py) | `defb090e6d97` |
+| [tests/test_wlanlib_dispatch.py](../../tests/test_wlanlib_dispatch.py) | `ff1967e520eb` |
 | [tests/test_workflow_diagrams.py](../../tests/test_workflow_diagrams.py) | `b1577f449b54` |

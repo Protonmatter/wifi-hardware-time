@@ -10,6 +10,7 @@ Start with the current results, then use the plans and historical reports for co
 
 | Question | Read | Evidence and limit |
 |---|---|---|
+| What can a live packet capture reveal, and what required elevation? | [Packet capture and elevation](packet-capture-and-elevation.md) | 589 Ethernet packets with host timestamp options; kernel trace not collected after a canceled administrator launch |
 | Did the latest queries close timing or publication gaps? | [Timing qualification follow-up](timing-qualification-validation-2026-10-04.md) | Fresh documented queries returned 23; software tests passed; live timing and new-change hosted CI remain unqualified |
 | Why is private collection blocked? | [Quarantined campaign](private-campaign-2026-10-03-quarantine.md) | Live unmatched reports; rejected capture and retained quarantine |
 | Can ordinary scans produce similar reports? | [Scan results](scan-tsf-results-2026-10-03.md) | Three observed patterns; all three failed the four-second profile |

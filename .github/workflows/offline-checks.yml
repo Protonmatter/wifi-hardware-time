@@ -62,6 +62,9 @@ jobs:
       - name: Check passive launcher exit codes (no acquisition)
         shell: powershell
         run: ./tests/Test-PassiveLauncher.ps1
+      - name: Check packet observer child status and cleanup (no acquisition)
+        shell: powershell
+        run: ./tests/Test-WifiPathHelpers.ps1
       - name: Check scan context classification (no acquisition)
         shell: powershell
         run: ./tests/Test-ScanContextSummary.ps1

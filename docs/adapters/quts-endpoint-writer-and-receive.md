@@ -108,6 +108,11 @@ These are internal callback pointers. Copying the descriptor alone does not own
 its strings. Any future application export must copy the needed text while its
 producer permits access, or prove an equivalent retained-owner contract.
 
+The later [callback/framing and WLANLIB follow-up](quts-callback-framing-and-wlanlib.md)
+closes the static callback-to-DIAG connection and identifies an enabled vendor
+interface on the active FastConnect device. The unresolved arrows below record
+the boundary of this earlier pass, not an absence of the subsequently traced code.
+
 **FastConnect implication:** the earlier qualified capture observed the missing
 `QCDeviceControlFile` result for this PCI adapter. The new writer trace connects
 that missing advertisement to endpoint construction. It does not create an
@@ -291,8 +296,9 @@ Validation in this pass:
 
 ## Next experiment and glossary
 
-The writer and receive-copy locations are now established statically. The next
-bounded work is:
+The writer and receive-copy locations were established in this pass. The later
+[follow-up](quts-callback-framing-and-wlanlib.md) advances items 1 and 2 below;
+live complete-record and timing qualification remain open:
 
 1. Close the concrete callback-to-DIAG registration and queue association, then
    inspect the selected frame-stream decoder's incomplete and invalid cases.

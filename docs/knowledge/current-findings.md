@@ -1,6 +1,6 @@
 # Current research findings
 
-We can read diagnostic counters and locate owned byte-return patterns. A qualified live trace observes QUTS's missing control-endpoint query on the active Wi-Fi adapter. Static tracing now follows endpoint construction and received bytes into separate owned chunks. These findings narrow the transport gap; a complete attributable Wi-Fi timing record, bounded cancellation and hardware-to-host clock relationship remain unqualified.
+We can read diagnostic counters and trace real byte-return mechanisms. WLANLIB is attributable to FastConnect and reaches the existing QcomWifi private commands. An ART2 firmware-event producer now connects to a cached payload fetch, but discarded metadata, cache consumption and validity/concurrency gaps prevent timing qualification. QUTS framing and ownership are mapped separately; no new complete timing event or hardware-to-host relationship is established.
 
 ## Contents
 
@@ -32,6 +32,11 @@ reports preserve what was observed in their original runs.
 | Endpoint writer | `ScanDevices` constructs entry `+0x894` from discovery/validation data after the active-device gate | Connects the missing network advertisement to endpoint construction; does not create a FastConnect endpoint |
 | Native receive ownership | A 128 KiB reusable read buffer feeds separate owned callback chunks of at most 16 KiB | Real copy/ownership implementation located; chunk boundaries are not complete-record boundaries |
 | Receive cancellation | Located stop, cancel, close and worker-wait paths; selected wait uses an unlimited sentinel | Requires a separately qualified bounded shutdown contract before operational use |
+| QUTS callback and framing | Static callback registration reaches a retained-buffer queue, partial-frame state, CRC checking and copied decoded payloads | Locate protocol rejection/loss rules and the remaining native-item-to-client association |
+| FastConnect WLANLIB interface | Read-only device enumeration finds an enabled vendor interface; its GUID/reference match registration in the exact driver | An attributable private-interface lead, not yet a QUTS DIAG stream or timing export |
+| WLANLIB dispatch/completion | Same selected WDF device as QcomWifi; Qmux notification completes with a one-byte state; iwpriv reaches the existing TSF table | Separate request completion from hardware sampling and meaningful output length |
+| ART2 firmware-byte return | UTF producer feeds a length-plus-payload fetch, which consumes cached state; mismatch logging does not always reject publication | Concrete producer/return connection, with mode, identity, copy and timing-schema qualification still open |
+| Live Npcap baseline | 589 Ethernet-format packets; only host timestamp types advertised; adapter remained Up on the exact driver | Useful traffic observation; paired kernel trace was not collected after a canceled administrator launch |
 | Qualification audit | Exact driver catalog membership accepted; selected package signatures verified; 247 tests passed with zero skips | Closes the prior compiler/fixture gap; unsigned QUTS files and timing qualification remain separate |
 
 ## What changed
@@ -70,14 +75,32 @@ scope behind each correction. The largest recent changes are:
   The inspected Usb open may configure communication state/timeouts, so a future
   passive-read claim must account for connection initialization too.
 - The [endpoint and receive trace](../adapters/quts-endpoint-writer-and-receive.md)
-  locates the endpoint writer, `ReadFromDevice`, a copied `Device::Buffer` callback,
-  and separate DIAG framing code. Callback-to-DIAG registration and the exact Wi-Fi
-  producer connection remain open. A successful zero-byte read, cancellation
-  request or allocated transport chunk is not a complete firmware record.
+  locates the endpoint writer and copied transport chunks. The later
+  [callback/framing trace](../adapters/quts-callback-framing-and-wlanlib.md) closes
+  registration through `receiveData`, the locked queue and frame decoding.
+  Explicit pressure-drop paths make loss reporting a separate requirement.
+- Fresh exact-device enumeration identifies WLANLIB, and the pinned Wi-Fi driver
+  registers the matching GUID/reference string. Missing QUTS discovery metadata
+  therefore does not mean there is no vendor interface. Its timing semantics and
+  native-record-to-client association remain open.
+- The [WLANLIB dispatch trace](../adapters/wlanlib-dispatch-and-completion.md)
+  ties the interface to the existing QcomWifi device and private-command table.
+  Its ART2 path carries test-event bytes, but drops the segment envelope and can
+  publish length after logging mismatches. The fetch clears cache state and has
+  no demonstrated reader/writer snapshot lock or timing-event identity contract.
+- The Qmux “5G in use” follow-up traces a Wi-Fi channel flag, supporting **5 GHz
+  Wi-Fi**, not a demonstrated cellular-state interpretation. Its input byte
+  selects query or wait; it cannot select a new response schema.
+- [Packet capture and elevation](../acquisition/packet-capture-and-elevation.md)
+  now records a successful non-elevated Npcap run, a canceled normal administrator
+  launch, and repeatable privilege/child-cleanup receipts. Nanosecond pcapng
+  representation is not evidence of radio timestamp accuracy.
 - The previously skipped native C and Windows BSS image tests passed after
   configuring the installed toolchain and exact fixtures. Published revision
-  `01d2c51` has successful hosted CI; later revisions require their own hosted
-  results. The earlier MHI follow-up passed all 247 local tests with zero skips.
+  `1522bca` has successful PR and push hosted checks. Its local suite passed all
+  262 tests with zero skips. The callback/framing, WLANLIB and packet-observer
+  follow-ups require their containing revision's own hosted checks in
+  [PR #3](https://github.com/Protonmatter/wifi-hardware-time/pull/3).
 
 ## The remaining connection
 

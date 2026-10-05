@@ -19,6 +19,8 @@ TSF (Timing Synchronization Function) is the Wi-Fi timer; a cross timestamp rela
 | [quts-mhi-route-validation.md](quts-mhi-route-validation.md) | What do the MHI patterns actually match, and which live/CI qualification gates remain open? |
 | [quts-live-gate-and-commonio.md](quts-live-gate-and-commonio.md) | What did the qualified live query trace establish, and which concrete endpoint-opening code sits beneath CommonIo? |
 | [quts-endpoint-writer-and-receive.md](quts-endpoint-writer-and-receive.md) | Where is the endpoint built, how are received bytes copied, and what remains before complete-record and cancellation qualification? |
+| [quts-callback-framing-and-wlanlib.md](quts-callback-framing-and-wlanlib.md) | How does the callback reach DIAG framing, and which vendor interface is attributable to the active FastConnect device? |
+| [wlanlib-dispatch-and-completion.md](wlanlib-dispatch-and-completion.md) | Which WLANLIB requests return bytes, what owns pending requests, and why does the ART2 event fetch remain unqualified for timing? |
 | [qualcomm-management-timing-producer.md](qualcomm-management-timing-producer.md) | Which additional timing fields are declared, when must event data be copied, and does host event history include management RX? |
 | [windows-bss-host-time.md](windows-bss-host-time.md) | Where does the Windows BSS host timestamp originate, and can it change without replacing the frame? |
 | [qualcomm-bss-serialization.md](qualcomm-bss-serialization.md) | Where are frame bytes, age metadata and vendor context constructed for the Windows BSS list? |

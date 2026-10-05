@@ -12,7 +12,7 @@ These tools identify the adapter, inspect its advertised services and read cache
 |---|---|
 | [Invoke-QualcommStaticInspection.ps1](Invoke-QualcommStaticInspection.ps1) | Scriptify entry point for preview/apply static inspection; see [runbook](../../docs/adapters/static-inspection-runbook.md). Internal `package_tools` workers are invoked through this gate. |
 | [ghidra/TraceAtlasQuts.java](ghidra/TraceAtlasQuts.java) | Exact-hash QPSTServer 496 trace. Default preview; add `--apply` for a new private output directory. |
-| [ghidra/TraceQutsDiscovery.java](ghidra/TraceQutsDiscovery.java) | Pinned native QUTS discovery/protocol traces; private assembly and decompilation exports. See the [discovery gate](../../docs/adapters/quts-discovery-gate.md) and [endpoint/receive seed groups](../../docs/adapters/quts-endpoint-writer-and-receive.md#reproduce-the-trace). |
+| [ghidra/TraceQutsDiscovery.java](ghidra/TraceQutsDiscovery.java) | Pinned native QUTS discovery/protocol traces; private assembly and decompilation exports. Default includes one caller level; optional `scope:seeds-only` limits export to selected functions. See [callback/framing seeds](../../docs/adapters/quts-callback-framing-and-wlanlib.md#reproduction-and-validation). |
 | [inspect_qik_inventory.py](inspect_qik_inventory.py) | Validate decoded vendor package file associations, sizes and PE metadata without loading code. See [archive findings](../../docs/adapters/qualcomm-archive-transport-findings.md) for reproduction and limits. |
 | [ghidra/TraceQualcommPacketlog.java](ghidra/TraceQualcommPacketlog.java) | Bounded exact-image cross-reference and private assembly/decompilation exports; see [producer findings](../../docs/memory-ring/packetlog-producer-trace.md). |
 | [ghidra/AnnotateQualcommTiming.java](ghidra/AnnotateQualcommTiming.java) | Exact-hash Ghidra annotations and private decompilation reports. See the [offline workspace guide](../../docs/adapters/ghidra-workspace.md). |
@@ -22,6 +22,7 @@ These tools identify the adapter, inspect its advertised services and read cache
 | [device_services.c](device_services.c) | Probe or native helper; consult its header and the matching research report before use. |
 | [Get-QualcommAdapter.ps1](Get-QualcommAdapter.ps1) | Read-only adapter/driver identity discovery. |
 | [inspect_private_exports.py](inspect_private_exports.py) | Inspect an owned exact-build driver file and record selected private return-path offsets and hashes; no device access. |
+| [inspect_wlanlib_dispatch.py](inspect_wlanlib_dispatch.py) | File-only selector and code-window inventory for WLANLIB. Keeps IOCTL, WMI and status namespaces separate; no request execution or timing qualification. See [dispatch findings](../../docs/adapters/wlanlib-dispatch-and-completion.md). |
 
 ## Read before running
 
