@@ -39,6 +39,13 @@ The separate [owned-export C prototype](owned-timestamp-export-prototype.md)
 now exercises software record ownership and rejection rules with synthetic data.
 It does not connect to the running driver or satisfy the required real acquisition.
 
+The later [live fixed-byte positive control](device-service-positive-control.md)
+establishes one driver-to-application return, and the
+[source-operation record layer](source-operation-record.md) preserves operation
+metadata and original bytes through the native broker. These close software and
+transport prerequisites within their stated scope. A real, complete timing event
+still has not met this acceptance gate.
+
 The [owned-event extension](owned-event-extension.md) now implements separate
 synthetic MLO and management records with tested ownership, reference decoding,
 loss tracking and rejection rules. These are positive software qualification
@@ -48,7 +55,7 @@ results; a real producer connection remains the separate hardware dependency.
 
 | Requirement | What would satisfy it | Current gap |
 |---|---|---|
-| Acquisition interface | Exact-build public/private ABI with bounded lengths, status and owned result lifetime | Internal paths identified; safe return mechanism missing |
+| Acquisition interface | Exact-build public/private ABI with bounded lengths, status and owned result lifetime | Fixed-byte return and software ownership established; complete timing producer not connected |
 | Raw value and units | Actual producer value, declared clock domain, unit and meaningful bit width | RX split storage words identified; timing semantics unqualified |
 | Event reference point | Defined transmit/receive event or capture point for the recorded value | Diagnostic PPDU-start label is not independent event-point qualification |
 | Identity | Source clock/domain and generation, separately from frame/report/exchange identity; request binding only when claiming a solicited response | RX PPDU ID and TSF clock ID are distinct leads; internal FTM request byte is not an on-air dialog token |

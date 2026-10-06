@@ -7,6 +7,7 @@ We have connected the posted receive buffer, copy-engine completion, HIF queue a
 - [Scope and terms](#scope-and-terms)
 - [Connected producer path](#connected-producer-path)
 - [Buffer geometry and synchronization](#buffer-geometry-and-synchronization)
+- [Pool construction and descriptor admission](#pool-construction-and-descriptor-admission)
 - [Completion identity and byte count](#completion-identity-and-byte-count)
 - [Copy opportunities](#copy-opportunities)
 - [Why the copy-engine history is insufficient](#why-the-copy-engine-history-is-insufficient)
@@ -124,6 +125,53 @@ also verify the expected empty fragment state and source lifetime. No live value
 for those fields were read in this pass. The inspected HIF queue is not a new
 capacity-validation API merely because it retains the received count.
 
+## Pool construction and descriptor admission
+
+The follow-up trace resolves where the cached MDL originates. It also rejects an
+otherwise tempting inference: successful pool initialization or a zero return
+from the mapping helper does **not** establish that an MDL-backed flush occurred.
+An MDL describes memory; it does not itself establish data freshness or ownership.
+
+| Step | Exact-build location | Selected static behavior |
+|---|---|---|
+| Construct pool in `ol_ath_open` | `0x187c20`, geometry at `0x187dd4..0x187ebc` | Allocate `0x3880` metadata objects of `0x1e0` bytes; give each a retained capacity of `0x800` bytes |
+| Allocate backing blocks | `0x187ed4..0x187fa8` | Obtain `0x1c4` blocks of `0x10000` bytes, subdivided into 32 buffers per block; store each buffer's virtual/DMA addresses |
+| Create cached MDL | `0x187fd0..0x188034` | Allocate from each buffer's base and capacity; store the result at buffer `+0x68` |
+| Null-MDL branch | `0x188004..0x188024` | Log allocation failure and continue the loop; this branch does not abort it |
+| Bind pool to HIF | caller `0x188080..0x18808c`, store `0x1972c0` | Pass the pool into `hif_open`, which stores it at HIF context `+0x118`, the field used by the inspected replenishment path |
+| Preserve cached descriptor on checkout | `0x0067a0` | Save and restore `+0x68` across metadata reset; does not require a non-null descriptor |
+| Temporary mapping MDL fails | `0x006dd8` to `0x006e7c`, return `0x006e84` | Skip the flush and still return zero from the selected mapping helper |
+| Temporary receive-sync MDL fails | `0x006f18` to `0x006f84` | Skip the flush and return from the void synchronization helper |
+
+The mapping helper's temporary MDL is freed after use rather than installed in
+buffer `+0x68`. A successful temporary allocation at posting therefore does not
+guarantee a cached MDL at receive completion. A failure at completion cannot be
+excluded by observing only the earlier map return value.
+
+The backing-memory allocator also has two branches, selected by a global at
+`0x32e5d8`. Through `0x0082b0` and `0x007c10`, it reaches `0x007988`:
+
+- With a zero selector, the branch calls `MmAllocateContiguousMemorySpecifyCache`.
+  The fifth argument comes from allocation request `+0x28`; the pool constructor
+  supplies `1`, corresponding to `MmCached`. The assembly preserves this argument
+  even though the approximate C export omitted it. Microsoft's
+  [allocation signature](https://learn.microsoft.com/en-us/windows-hardware/drivers/ddi/wdm/nf-wdm-mmallocatecontiguousmemoryspecifycache)
+  and [cache-type definition](https://learn.microsoft.com/en-us/windows-hardware/drivers/ddi/wdm/ne-wdm-_memory_caching_type)
+  define its meaning.
+- With a nonzero selector, it uses an indirect operation at table `+0x110`.
+  The [DMA contract follow-up](dma-backing-contract.md) now identifies this as
+  `AllocateCommonBufferWithBounds`, reached through a framework-supplied adapter.
+  The selector's file initializer and located configuration writer both supply
+  `1`. This favors the common-buffer path statically; live selection and coherency
+  remain unobserved. That call also requests cached memory explicitly.
+
+**Exporter consequence:** source admission needs evidence for the actual buffer,
+allocation mode and required synchronization. Presence in the pool, a nominal
+capacity of 2 KiB, an MDL pointer or a successful mapping return is insufficient
+on its own. Validate actual geometry and lifetime before copying. These are
+static failure-path findings, not an observed allocation failure, stale payload
+or defect in the running driver's DMA behavior.
+
 ## Completion identity and byte count
 
 The common receive-drain wrapper at `0x1f2d48` calls slot `+0x40` of the selected CE
@@ -221,6 +269,11 @@ broader path interpretation. Its live geometry, synchronization, table-selection
 and exporter flags remain false. Hosted checks belong to the exact containing
 revision in [PR #3](https://github.com/Protonmatter/wifi-hardware-time/pull/3/checks).
 
+The source-validity follow-up adds pool-constructor and backing-allocation
+fingerprints, import identities, the nonfatal MDL branch and HIF pool binding.
+Its new `manual_pool_admission` result is explicitly static. Raw Ghidra evidence
+is private under `artifacts/tsf-source-validity-20261005/`.
+
 Local validation on 2026-10-05:
 
 - Python compilation and the configured full suite passed: **295 tests, zero skips**,
@@ -236,5 +289,14 @@ Local validation on 2026-10-05:
 These validate static evidence and tooling, not a live owned event, DMA coherence,
 request association, hardware-to-QPC conversion or synchronization accuracy.
 Publication and hosted checks are recorded separately from this local evidence.
+
+**Later source-validity follow-up on the same date:** all **317 configured offline
+tests passed with zero skips**, including seven ingress tests. Five bounded
+Ghidra runs exported 12 functions with complete instruction lists and successful
+decompilation; the selected findings were checked against ARM64 instructions.
+The final read-only adapter check reported **Up / 1.0.4374.1300**. No elevation,
+private request, memory read or driver modification was used. These results
+preceded publication; revision-specific hosted checks are tracked separately in
+[PR #3](https://github.com/Protonmatter/wifi-hardware-time/pull/3).
 
 Return to [TSF research](README.md) or [the event-ingress report](tsf-event-ingress-and-owned-copy.md).

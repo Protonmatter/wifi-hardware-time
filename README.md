@@ -17,6 +17,7 @@ This project asks whether Wi-Fi hardware can provide trustworthy timestamps for 
 ## Start here
 
 - Current interpretation: [latest findings](docs/knowledge/current-findings.md) and [assumptions corrected by evidence](docs/knowledge/assumptions-and-corrections.md).
+- Next integration: [complete-event implementation plan](docs/overview/complete-event-2026-10-05/engineering-plan.md), including primary-source route research and the executed receive-lifetime audit.
 - Find a call or string: [reference index](docs/knowledge/reference-index.md) and [interface directory](docs/knowledge/interface-directory.md).
 - Repeat static research: [inspection runbook](docs/adapters/static-inspection-runbook.md), [script catalog](catalog/scripts.json) and [research skill](skills/qualcomm-timing-research/SKILL.md).
 - View every current workflow: [diagram gallery](docs/knowledge/workflow-diagrams.md).

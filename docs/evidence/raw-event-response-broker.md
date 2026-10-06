@@ -180,6 +180,11 @@ the maximum response plus one rejection byte, then validates that immutable
 snapshot. Mutable-input growth cannot bypass the bound. All returned hardware,
 source-copy and clock qualification fields remain false.
 
+The additive [source-operation record](source-operation-record.md) fits inside
+this opaque payload and binds original WMI/HTC or fixed-control bytes to an
+explicit operation profile and source metadata. Its consumer checks both layers;
+the `WHTR` header and native C ABI remain unchanged.
+
 ## Build and run
 
 With installed Visual Studio C tools and SDK, ordinary user permissions:

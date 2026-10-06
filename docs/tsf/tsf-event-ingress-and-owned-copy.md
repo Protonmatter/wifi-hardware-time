@@ -171,6 +171,29 @@ the length and explain possible transformations; they do not prove a live 48- or
 
 ## Ownership and the copy point
 
+**Selected boundary for a source-based or instrumented WMI exporter:** retain the
+event before the original header load at `0x168d7c`, after obtaining and validating
+the source span. This is more precise than simply saying "before `0x216b00`":
+
+- For the selected pooled representation, the source is buffer `+0x10` plus
+  offset `+0x30`. Logical length `+0x38` still includes the four-byte WMI header.
+- `0x168d7c` reads that header; `0x168d80` retains only its low 24 bits as the
+  dispatch selector. Save all four original bytes, including the upper byte.
+- `0x168d94` stores the shortened logical length and `0x168da4` stores the advanced
+  data offset. `0x168e0c` subsequently calls the normalizing decoder.
+- The selected code reads the header before a local length check. An exporter
+  must validate its own source span before reading or copying it; reaching this
+  instruction is not an independent bounds certificate.
+- The source length still derives from the earlier HTC processing. Preserve
+  separately validated HTC metadata at A/B if investigating the transport extent;
+  do not recover it by reading backward from a WMI pointer without a span contract.
+
+These addresses identify an integration location, not an application API. No
+breakpoint, hook or driver patch was installed. The inspector reports this as
+`manual_wmi_copy_boundary`, with live source validation and installation false.
+The [pool admission follow-up](hif-receive-buffer-producer.md#pool-construction-and-descriptor-admission)
+also establishes why a successful map call cannot replace a coherency contract.
+
 For `0x5005`, cleanup table entry `0x1bda9c` resolves to `0x1bb558`: check slot-zero's
 allocation flag, then free its non-null pointer only when allocated. The common
 tail at `0x1bb56c..0x1bb574` frees the wrapper and clears its owner pointer. The

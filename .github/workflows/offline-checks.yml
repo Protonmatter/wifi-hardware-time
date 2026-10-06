@@ -62,6 +62,9 @@ jobs:
       - name: Concurrent raw-event response broker (no hardware)
         shell: powershell
         run: ./research/export_contract/Build-RawEventBroker.ps1 -Architecture x64
+      - name: Build saved TSF trace-byte exporter (no acquisition)
+        shell: powershell
+        run: ./research/tsf/Build-TsfTraceBytes.ps1 -Architecture x64
       - name: Device-service positive control build and rejection tests (no hardware)
         shell: powershell
         run: |

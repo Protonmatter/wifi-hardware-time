@@ -140,6 +140,11 @@ must first be established for the specific candidate.
 
 ## IHV binary request bridge
 
+The [nested-query follow-up](ihv-query-producer-map.md) now maps the query/set/method
+dispatch and selected producers. Its query branch can submit GPIO output, initiate
+a scan and mutate host state. Other cases return BSS/channel information or PCI
+configuration data. No complete timing-event producer is qualified by those routes.
+
 Another nonempty completion caller, `0x12e860`, belongs to the routine labelled
 `WdiPropertyIhvRequestHdlr` at `0x12e4f0`. IHV means independent hardware vendor.
 This is a broader binary request/response route than the interface-information

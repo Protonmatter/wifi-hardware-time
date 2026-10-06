@@ -1,9 +1,9 @@
 # Owned timestamp exporter: offline prototype
 
-This C11 prototype owns and validates bounded synthetic records at an application
-handoff boundary. It does not open a device, implement a kernel handler, expose an
-IOCTL, or qualify real timestamp meaning. Every accepted record is explicitly
-synthetic and has `live_clock_eligible == 0`.
+These software prototypes own and validate bounded records at an application
+handoff boundary. The original C timestamp exporter accepts synthetic records;
+the raw broker and source-record layer also support unqualified saved replay.
+They do not open a device, implement a kernel handler or qualify a hardware clock.
 
 <!-- current-context:2026-10-04 -->
 **Current context (2026-10-04):** A QUTS client-owned byte return is now located statically. Keep client ownership, server publication, firmware identity and timing accuracy as separate qualification states. See [current findings](../../docs/knowledge/current-findings.md).
@@ -11,6 +11,7 @@ synthetic and has `live_clock_eligible == 0`.
 
 ## Contents
 
+- [Source-operation records](../../docs/evidence/source-operation-record.md): [Python encoder/consumer](source_record.py) keeps original bytes, operation metadata and explicit unknowns together inside the existing broker payload. Diagnostic fixtures/replay only.
 - [Concurrent raw-event response broker](../../docs/evidence/raw-event-response-broker.md): native user-mode queue, complete publication, application read tickets, cancellation, loss counters and two-stage shutdown. Fixture/replay only; the Qualcomm kernel adapter remains unconnected.
 - [Owned MLO and management-event extension](../../docs/evidence/owned-event-extension.md): tested software ownership, decoding, rejection and generation behavior; separate from live hardware qualification.
 - [Contract, limits and validation](../../docs/evidence/owned-timestamp-export-prototype.md)

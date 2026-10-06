@@ -2,6 +2,18 @@
 
 We can read diagnostic counters and trace real byte-return mechanisms. WLANLIB is attributable to FastConnect and reaches the existing QcomWifi private commands. An ART2 firmware-event producer now connects to a cached payload fetch, but discarded metadata, cache consumption and validity/concurrency gaps prevent timing qualification. QUTS framing and ownership are mapped separately; no new complete timing event or hardware-to-host relationship is established.
 
+**Current priority, 2026-10-05:** retain the nested IHV query/control map as
+deferred exploratory research. For clock work, qualify the complete operation:
+entry route, framing, selector precedence, state effects, producer, returned bytes
+and completion meaning. The eight-byte positive control remains valid evidence
+for its specific return path; it does not qualify another operation or a timing producer.
+
+The [complete-event implementation plan](../overview/complete-event-2026-10-05/engineering-plan.md)
+now compares the viable routes against primary sources and executes a bounded
+receive-lifetime audit. The remaining native implementation needs a supported or
+instrumented producer integration; packet filters and existing trace names alone
+do not supply it.
+
 ## Contents
 
 - [Established findings](#established-findings)
@@ -18,18 +30,27 @@ was observed in their original runs.
 
 | Area | Established result | Practical use |
 |---|---|---|
+| Supplied QMSL 6.1.48.1 runtime | Native log copy/pop and callback registration located; batch getter can change logging masks; managed wrapper has size/length limits and a lossy timestamp formatter | [Queue contract](../adapters/qmsl-diagnostic-queue.md); pursue original-byte callbacks with explicit ownership, not batch polling or formatted timestamps; exact Wi-Fi producer remains unconnected |
 | Private TSF/SoC reports | Exact-build counter observations and action-dependent cache/refresh behavior | Diagnostic records and rejection fixtures |
+| Saved TSF trace bytes | Two historical captures contain 88 selected UserData payloads, all numeric text plus one NUL; no trailing bytes or extended-data items | No complete firmware event hidden after the parsed text in these selected payloads; no new acquisition or clock qualification |
+| CAPTUREH and QDSS alternatives | Separate beamforming cache; QDSS firmware-trace-to-file paths, DMA mapping control and matching MAC/PHY configuration files located | Real byte-production/return leads; original TSF content, mapping producer, schema and live completeness remain unqualified |
+| Firmware catalog and copied diagnostics | Data20.msc entry 25950 names TSF/QTIMER/TQM and vdev/MAC/TSF IDs; WMI diagnostic event `0x1d011` feeds a version-gated allocated-copy queue and formatter | Stronger timing-producer lead; no captured matching-version record or owned application binary return; distinct from QDSS |
 | Action-4 submission | The inspected HTC queue can return success with accepted work still queued; optional barriers serve deletion queues | Reject request-return QPC as a sampling fence; preserve complete reports with the new diagnostic decoder |
 | TSF event ingress | Logical payload length reaches decoder and callback; fixed-TLV padding retains the original header; exact one-slot cleanup is mapped | Prefer an owned header/payload copy before normalization; actual live wire length and export remain open |
 | HTC transport and return candidates | Logical callback length can derive from an aggregate buffer length; WMI send completion releases outgoing data; separate control/history paths do not establish TSF response return | Preserve declared transport extent and accessible spans; strict offline envelope decoding rejects length/endpoint mismatches |
 | HIF receive producer | Posted pooled metadata reset, CE saved-context return, cache-helper call and one-buffer completion queue connect to HTC | Two copy opportunities before header removal; live capacity, synchronization and application return remain unqualified |
+| Source validity follow-up | Pool construction and HIF binding are traced; cached-MDL allocation failure continues the loop, and mapping can return zero after a temporary-MDL failure | Select the WMI boundary before `0x168d7c`; require actual span/coherency evidence rather than inferring it from pool membership or mapping success |
+| DMA backing contract | Selector initializer/writer favor the framework-provided DMA adapter and `AllocateCommonBufferWithBounds`; the call requests cached memory and returns a device logical address separately from the CPU pointer | Named allocation/lifetime contract; common-buffer allocation alone does not qualify coherency, callback teardown or an application export |
+| Receive shutdown | PCI disable target, ignored DPC-drain status, completion polling/timeout, conditional thread waits and later pool release are traced | A returned stop function or cleared software flag does not prove all relevant users have finished; live rundown and producer export remain open |
 | FTM ranging | Aggregate results and selected signed-difference processing | Ranging diagnostics; no four-time clock-offset input |
 | Management RX | Candidate firmware fields, frame lifetime and selected metadata reduction | Identify where a complete-event copy would need to occur |
 | Packet log | Located producer, reservation and return candidates; cursor can precede copy | Prevent unsafe ring polling from being promoted |
 | MLO offset cache | Located locked writes and lifecycle-related state | Investigate radio-link relationships separately from QPC |
 | Authored exporter | Owned synthetic management/MLO records with rejection and lifecycle tests | Substantive software qualification and an eventual integration boundary |
 | Concurrent raw responses | Native user-mode broker owns complete bytes and handles read tickets, overflow, cancellation, timeout and close; a Python DLL consumer decodes synthetic replay | Tested application-side integration; kernel copy/return adapter and live source qualification remain open |
+| Source-operation records | Operation profile, original WMI/HTC bytes, provenance, software identities and unknown/loss fields survive native publication and decoding together | Diagnostic integration for fixtures/replay; no firmware identity, sampling or clock capability granted |
 | Live device-service control | One elevated fixed-pattern GET returned exactly eight expected bytes through the installed driver; identity/state matched afterward | Live transport positive control; 166.5 microseconds is one API duration, not a hardware sampling bracket |
+| Nested IHV queries — deferred | Selected query cases can reach scans, GPIO output, channel-control callbacks or host-state clearing; device-information read resolves to PCI configuration space | Retained for later exploration at the user's request; no active clock-path or live-operation promotion |
 | Driver request lifecycle | Manual notification queue, forced completion and selected deinitialization/suspend callers traced; their WDF purge targets a different queue | Concrete request-ownership reference for the exporter; producer rundown and live connection still unqualified |
 | QPST/QXDM | Connection interfaces, buffer-return contract and WLAN definition leads | Target the useful interfaces and avoid misleading timestamp accessors |
 | Installed QUTS | Client deserialization allocates a byte array for diagnostic payloads | Real static ownership evidence for a possible application return path |
@@ -52,6 +73,19 @@ was observed in their original runs.
 The [assumption ledger](assumptions-and-corrections.md) records the evidence and
 scope behind each correction. The largest recent changes are:
 
+- The [firmware message catalog](../tsf/firmware-trace-return-candidates.md#the-fuller-firmware-diagnostic-report) supplies a precise next target: message 25950 and the original diagnostic bytes before `0x1b1128` formats them. The copied kernel queue is located; the two saved WlanLogger traces contain no selected FWLOG/report/action text, despite positive host-report controls. No live record or clock capability was obtained.
+- The [firmware trace candidates](../tsf/firmware-trace-return-candidates.md) locate a QDSS save indication and binary file writers in the pinned driver, plus its installed configuration files. CAPTUREH is a separate event with a borrowed cache getter. Neither path is promoted to a complete TSF event return or a clock source.
+- The [saved-trace byte audit](../tsf/saved-trace-byte-audit.md) preserves complete selected ETW UserData and checks bytes the numeric parser could ignore. All 88 selected records in two saved captures contain only numeric text and a terminator. The original firmware-event copy and fresh-sampling requirements remain open.
+- The [source-operation record](../evidence/source-operation-record.md) now binds
+  original bytes and interpretation metadata inside the existing broker payload.
+  Native tests cover full HTC/WMI preservation, while replay of the saved live
+  fixed-byte control preserves its distinct operation and receipt digest. Clock
+  admission and quarantine release remain disabled; the IHV query avenue stays deferred.
+- The [IHV query-producer map](../adapters/ihv-query-producer-map.md) follows the
+  remaining generic payload route into specific controls and data sources. In
+  particular, selector `0xffb00004` constructs GPIO-output command `0x1e002`, and
+  the device-information callback resolves to a parent-bus configuration read.
+  This is static evidence only; none of these operations was executed.
 - A [live device-service control](../evidence/device-service-positive-control.md)
   now supplements software-only broker evidence. The first non-elevated query was
   denied and sent no service command; the separately elevated control returned
@@ -152,14 +186,28 @@ scope behind each correction. The largest recent changes are:
 
 ## The remaining connection
 
+The [2026-10-05 hardware handoff](../evidence/complete-event-hardware-handoff.md)
+rehashes the installed WLAN assembly and QUTS server and checks RawService's
+declaration. Its initialization requires an existing protocol handle; its
+response notification carries handles rather than event bytes. That filename
+search found no matching QMSL runtime. The later supplied QDART installer contains
+an older 6.1.48.1 runtime; the [queue investigation](../adapters/qmsl-diagnostic-queue.md)
+does not establish compatibility with the installed suite's 6.1.360.1 dependency.
+The concrete dependency remains
+an attributable timing producer with a valid owned copy and application return.
+This refresh adds no new live acquisition or clock qualification.
+
 ```text
 Exact Wi-Fi firmware timing producer
              |
-             ?  Adapter-to-diagnostic-protocol connection NOT established
+             ?  Complete event copied while producer storage remains valid
              |
-QUTS diagnostic record / QXDM item
+Supported vendor interface OR instrumented driver return
              |
-             +--> owned client bytes: static implementation located
+             ?  Timing producer-to-response connection NOT established
+             |
+Owned application bytes
+             |  QUTS client copy located; broker tested with fixtures/replay
              |
              ?  Radio clock, event identity, validity and epoch need qualification
              |
@@ -171,12 +219,15 @@ Clock conversion / synchronization / system discipline
 ```
 
 `?` marks a missing evidence connection. Arrows below a question mark are not
-claims that the full pipeline has run. Prefer bounded protocol enumeration and
-one attributable existing record before any new firmware request or logging change.
-QUTS documents that enumeration can return an empty list on failure. An empty
+claims that the full pipeline has run. A newly identified protocol must be bound
+to the exact adapter before retrieving an existing record. QUTS documents that
+enumeration can return an empty list on failure. An empty
 list alone cannot distinguish an absent protocol from a failed query. The
 [first bounded live run](../evidence/quts-enumeration-2026-10-04.md) checked query
 health separately and stopped on missing Wi-Fi attribution before record access.
+Repeating that discovery without a new endpoint or changed evidence would not
+establish the missing producer connection. The next hardware attempt depends on
+a concrete operation or integration package satisfying the handoff above.
 
 ## Qualification boundaries
 

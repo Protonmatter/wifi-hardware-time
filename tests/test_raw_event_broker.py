@@ -17,6 +17,7 @@ if __package__ in (None, ""):
 
 from research.export_contract.read_raw_response import decode_response
 from research.tsf.decode_tsf_report import decode_event
+from research.export_contract.source_record import SourceRecord, build_source_record, decode_broker_source
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -124,9 +125,10 @@ class NativeRawBrokerTests(unittest.TestCase):
                                    cwd=ROOT, capture_output=True, text=True, timeout=15)
             self.assertEqual(child.returncode, 0, child.stdout + child.stderr)
             self.assertIn("Python consumer decoded owned TSF replay", child.stdout)
+            self.assertIn("Bound source metadata and complete HTC bytes survived native publication", child.stdout)
 
 
-def application_roundtrip(library: str) -> None:
+def bind_library(library: str):
     dll = c.CDLL(library)
     dll.rb_create.argtypes = [c.c_uint64, c.c_uint64, c.c_uint64, c.c_uint32]
     dll.rb_create.restype = c.c_void_p
@@ -136,6 +138,46 @@ def application_roundtrip(library: str) -> None:
                             c.POINTER(c.c_size_t), c.POINTER(c.c_size_t)]
     dll.rb_close.argtypes = [c.c_void_p]
     dll.rb_destroy.argtypes = [c.POINTER(c.c_void_p)]
+    return dll
+
+
+def source_record_roundtrip(library: str, record: SourceRecord, *, expected_operation: str,
+                            provenance: str, session: int, generation: int, source_id: int,
+                            sequence: int, endpoint: int | None = None,
+                            evidence_sha256: str | None = None) -> dict:
+    """Software-only native integration helper, also usable with saved private replay."""
+    if provenance not in ("fixture", "replay-unqualified"):
+        raise ValueError("unsupported replay provenance")
+    dll = bind_library(library)
+    broker = c.c_void_p(dll.rb_create(session, generation, source_id, 1 if provenance == "fixture" else 2))
+    if not broker: raise RuntimeError("create failed")
+    try:
+        source = c.create_string_buffer(b"prefix" + record.wire)
+        if dll.rb_publish(broker, generation, source, len(source), 6, len(record.wire),
+                          1 if provenance == "fixture" else 3) != 0:
+            raise RuntimeError("source publication failed")
+        c.memset(source, 0, len(source))
+        ticket = c.c_uint64()
+        if dll.rb_begin_read(broker, c.byref(ticket)) != 0: raise RuntimeError("begin failed")
+        output = c.create_string_buffer(4192)
+        written, required = c.c_size_t(), c.c_size_t()
+        if dll.rb_read(broker, ticket.value, output, len(output), 0, c.byref(written), c.byref(required)) != 0:
+            raise RuntimeError("read failed")
+        result = decode_broker_source(output.raw[:written.value], expected_ticket=ticket.value,
+            expected_session=session, expected_generation=generation, expected_source=source_id,
+            expected_operation=expected_operation, expected_sequence=sequence, expected_endpoint=endpoint,
+            expected_evidence_sha256=evidence_sha256)
+        c.memset(output, 0, len(output))
+        if result["source"]["payload"] != record.diagnostic()["payload"]:
+            raise RuntimeError("source payload changed")
+        return result
+    finally:
+        dll.rb_close(broker)
+        if dll.rb_destroy(c.byref(broker)) != 0: raise RuntimeError("destroy failed")
+
+
+def application_roundtrip(library: str) -> None:
+    dll = bind_library(library)
     broker = c.c_void_p(dll.rb_create(11, 7, 9, 2))
     if not broker: raise RuntimeError("broker creation failed")
     try:
@@ -161,6 +203,18 @@ def application_roundtrip(library: str) -> None:
     finally:
         dll.rb_close(broker)
         if dll.rb_destroy(c.byref(broker)) != 0: raise RuntimeError("destroy failed")
+    trailer = b"\x01\x02\x03\x04"
+    envelope = struct.pack("<BBHBBBB", 2, 2, len(event) + len(trailer), len(trailer), 0, 0, 0) + event + trailer
+    record = build_source_record(envelope, operation="qcom-tsf-htc-reference-60-v1", provenance="fixture",
+        session=11, generation=7, source=9, sequence=1, source_loss_count=None, continuity="unknown",
+        host_interval=None, transport_endpoint=2)
+    result = source_record_roundtrip(library, record, expected_operation="qcom-tsf-htc-reference-60-v1",
+        provenance="fixture", session=11, generation=7, source_id=9, sequence=1, endpoint=2)
+    if result["clock_input_eligible"] or result["source"]["source_loss_count"] is not None:
+        raise RuntimeError("source qualification or loss semantics changed")
+    if result["source"]["payload_diagnostic"]["raw_htc_trailer_hex"] != trailer.hex():
+        raise RuntimeError("transport trailer lost")
+    print("Bound source metadata and complete HTC bytes survived native publication; hardware unqualified")
 
 
 if __name__ == "__main__":

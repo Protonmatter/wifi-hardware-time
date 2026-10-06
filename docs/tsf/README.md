@@ -10,6 +10,10 @@ TSF (Timing Synchronization Function) is the Wi-Fi timer. SoC means system on ch
 
 ## Report and related evidence
 
+- [Firmware trace return candidates](firmware-trace-return-candidates.md): exact-build CAPTUREH cache, QDSS firmware-to-file routes, DMA control and installed trace configurations; no timing-event content or live operation qualified.
+- [Saved trace byte audit](saved-trace-byte-audit.md): 88 selected historical ETW payloads contain numeric text and a terminator, with no unparsed binary tail; raw-event acquisition remains separate.
+- [Receive shutdown contract](receive-shutdown-contract.md): resolved PCI disable, ignored drain status, completion timeout, conditional thread waits and remaining exporter lifetime requirements.
+- [Windows DMA backing contract](dma-backing-contract.md): named common-buffer allocation, selector evidence, distinct CPU/device addresses and cache/lifetime requirements.
 - [Receive-buffer producer before HTC](hif-receive-buffer-producer.md): posted pooled buffers, CE completion identity, HIF queue handoff and two proposed owned-copy points.
 - [Original TSF event, normalization and owned copy](tsf-event-ingress-and-owned-copy.md): where the received length survives, how the decoder borrows or pads data, and the exact callback cleanup boundary.
 - [Action-4 completion and complete-report contract](action4-completion-and-report-contract.md): transport success can leave work queued; exact-build inspection and owned diagnostic decoding preserve that distinction.

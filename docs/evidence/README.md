@@ -8,6 +8,8 @@ This area defines how research observations can be passed to application softwar
 
 ## Documents
 
+- [Complete-event hardware handoff](complete-event-hardware-handoff.md): refreshed installed-file evidence, RawService's existing-protocol requirement and the concrete producer integration deliverable.
+- [Source-operation records](source-operation-record.md): tested metadata-and-original-byte packaging through the native broker, with strict consumer expectations and no clock capability promotion.
 - [Live device-service positive control](device-service-positive-control.md): one exact-driver GET returned eight fixed test bytes; a live transport result, separate from firmware timing.
 - [Driver event-return integration](driver-event-return-integration.md): traced request-queue lifecycle and the required kernel copy, response, cancellation and teardown contract.
 - [Concurrent raw-event broker](raw-event-response-broker.md): tested native-library/application boundary for fixtures and unqualified replay.

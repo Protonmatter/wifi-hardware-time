@@ -20,6 +20,10 @@ This directory ranks useful starting points by what the evidence supports. Names
 | `DoSendCompletion`, `0x1b7690`, `0x1b40a0` | Endpoint completion callback and selected HIF send target; sampling meaning unqualified | [Completion boundary](../tsf/action4-completion-and-report-contract.md) |
 | `decode_tsf_report.py`, `reference-48`, `reference-60`, `0x18b` | Owned diagnostic TLV decoding; explicit reference schema and false live-clock gates | [Offline tools](../tsf/action4-completion-and-report-contract.md#implemented-offline-tools) |
 | `wmi_control_rx`, `0x168ce0`, `0x215928`, `0x216b00` | Original WMI event header/length, registration and selected TSF callback | [Connected ingress](../tsf/tsf-event-ingress-and-owned-copy.md#the-connected-receive-path) |
+| `WMI_CAPTUREH_EVENTID`, `0x1e003`, `0x1ddb90`, `0x1ddb50` | Separate beamforming callback/cache pointer getter; no owned TSF return | [Trace candidates](../tsf/firmware-trace-return-candidates.md#captureh-is-a-separate-event) |
+| `Data20.msc`, `25950`, `wlan_vdev_tsf_report`, `0x1d011`, `0x1b01a0`, `0x1b1128` | Fuller counter/identity definition, version-gated copied diagnostics and later formatter; no live record or application return qualified | [Firmware diagnostic producer](../tsf/firmware-trace-return-candidates.md#the-fuller-firmware-diagnostic-report) |
+| `0x98742004`, `0x122d58`, `qdss_trace_config_v1.cfg`, `qdss_trace_config_v2.cfg` | QDSS DMA controls and installed configuration; no live execution or timing-record schema | [QDSS control/configuration](../tsf/firmware-trace-return-candidates.md) |
+| `QMI_WLFW_QDSS_TRACE_SAVE_IND_V01`, `0x41`, `0x14b778`, `0x14e9c8`, `0x14f448` | Save indication, QMI chunk acquisition and file output; distinct from WMI event `0x5005` | [QDSS file route](../tsf/firmware-trace-return-candidates.md#qdss-has-a-firmware-to-file-path) |
 | `wmitlv_check_and_pad_tlvs`, `0x1ba4e0`, `0x1ba8b0` | Generic decoder and fixed-TLV padding copy; header retained, allocation size differs from received size | [Normalization](../tsf/tsf-event-ingress-and-owned-copy.md#length-and-normalization) |
 | `0x1bda9c`, `0x1bb558`, `0x1bb56c` | TSF cleanup table entry, allocated-slot check and wrapper release | [Callback lifetime](../tsf/tsf-event-ingress-and-owned-copy.md#ownership-and-the-copy-point) |
 | `inspect_tsf_ingress.py`, `EventSnapshot`, `event-wire` | File-only static inspector and owned original-event diagnostic form; no live source attestation | [Reproduction](../tsf/tsf-event-ingress-and-owned-copy.md#reproduction-and-validation) |
@@ -36,6 +40,8 @@ This directory ranks useful starting points by what the evidence supports. Names
 | `WHTR`, `RB_HEADER_BYTES`, `application_read_ticket`, `software_generation` | Pointer-free response format and host software identities; no firmware-token binding | [Response layout](../evidence/raw-event-response-broker.md#response-format) |
 | `WlanDeviceServiceCommand`, `Invoke-DeviceServiceControl.ps1`, `0x12a2a0` | One live fixed-pattern GET through the exact driver; no TSF/FTM event return or hardware sampling claim | [Live control](../evidence/device-service-positive-control.md) |
 | `wht_management_rx`, `0x1a8160`, `WMI_MGMT_RX_EVENT` | Selected management-frame reduction path; complete-event copy must precede cleanup | [Management producer](../adapters/qualcomm-management-timing-producer.md) |
+| `0x32e5d8`, `0x3958b8`, `AllocateCommonBufferWithBounds`, `WdfDmaEnablerWdmGetDmaAdapter` | Backing-allocator selector, framework DMA adapter and common-buffer operation; static, without live coherency qualification | [DMA backing contract](../tsf/dma-backing-contract.md) |
+| `hif_disable`, `0x196c90`, `0x1b57a0`, `0x1b5488`, `0x1b32d8` | PCI disable, DPC drain with ignored status, completion-reference polling and timeout | [Receive shutdown](../tsf/receive-shutdown-contract.md) |
 | `wht_packetlog_offload_write`, `0x220e90` | Packet-log input writer; copied payload has no established complete-management-event identity | [Producer trace](../memory-ring/packetlog-producer-trace.md) |
 | `wht_packetlog_reserve`, `wht_packetlog_copy`, `wht_ihv_request` | Reservation, selected reader and request-completion bridge | [Ghidra navigation](../adapters/ghidra-workspace.md) |
 | `HTT_T2H_MSG_TYPE_MLO_TIMESTAMP_OFFSET_IND`, `0x28`, `0x10c` | Firmware message/internal event and cache-writing lead; units and export are not qualified | [MLO cache](../memory-ring/mlo-cache-and-symbol-search.md) |
@@ -86,11 +92,16 @@ This directory ranks useful starting points by what the evidence supports. Names
 | ART2 subcommand `0x13`, adapter `+0x8948` | Four-byte overall error getter; bypasses the selected test-state gate but supplies no clock |
 | `createDataQueue`, `getDataQueueItems`, `removeDataQueue` | QUTS diagnostic queue lifecycle with count/timeout retrieval |
 | `sendRequestAsync`, `getResponseAsync`, `getAllResponsesAsync` | Service transaction association; request calls can affect hardware and were not executed |
+| `RawService.initializeService`, `initializeServiceQmi`, `initializeServiceWithOptions`, `onAsyncResponse` | Existing protocol handle required; notification carries protocol/transaction handles, without event bytes. See [hardware handoff](../evidence/complete-event-hardware-handoff.md) |
 | `DiagPacket.Read`, `TBinaryProtocol.ReadBinary`, `TCompactProtocol.ReadBinary` | Located managed-byte allocation and deserialization path |
 | `binaryPayload`, `errorCode`, `transactionId`, `sessionIndex`, `protocolIndex` | Bytes, status and distinct identity scopes |
 | `timeStampData`, `hwTimeStampData`, `receiveTimeData`, `INT64_MIN` | DIAG/interpolated, QDSS and host time plus the DiagPacket missing-hardware-time sentinel |
 | `Wlan_FwRttMeasurementRequest`, `Wlan_FwRttResponse` | Database definition leads; firmware/schema match not established |
 | `QLIB_ConnectServer_UserDefinedTransport`, `QLIB_SendSync` | Older QMSL transport/association leads; they do not implement a device transport themselves |
+| `QLIB_DIAG_GetNextPhoneLog`, `0x119d30`, `0x126ca0`, `0x136680` | QMSL 6.1.48.1 copy/pop path; no destination-capacity parameter and no qualified timeout bound. [Details](../adapters/qmsl-diagnostic-queue.md) |
+| `QLIB_DIAG_GetMultipleLogs`, `0x1322a0`, `0x1304e0` | Batch getter can modify logging masks; not passive retrieval |
+| `QLIB_ConfigureCallBacks_V2`, `0x11e280`, `asyncFQMessageCB` | Original binary and optional JSON callback lead; copied application ownership, actual producer and teardown remain to qualify |
+| `QC.QMSLPhone.LogMessage.getTimeStamp` | Display formatter discards 16 low bits; not the raw timestamp or a QPC conversion |
 | `FTM_WLAN_TLV2_Create16`, selector `358`, `rtt_Data`, `rtt_Size` | Installed WLAN RTT method's QMSL builder/result names; not IOCTL numbers |
 | `FTM_WLAN_TLV2_CreateQ5`, selector `20043` | Separate inherited RTT method with a narrowed converted result |
 | `QDBRD_ReadUSB`, `QDBRD_ReadUSBCompletion`, `QDBDSP_IoStop` | QUD USB request/completion pattern and cancellation boundary |

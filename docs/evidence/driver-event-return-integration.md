@@ -6,6 +6,11 @@ The subsequent [live device-service control](device-service-positive-control.md)
 now demonstrates a separate eight-byte return through the installed driver. Its
 source is a fixed test pattern; the source-copy and timing requirements below remain.
 
+The [complete-event hardware handoff](complete-event-hardware-handoff.md) records
+the latest installed-file check and the concrete vendor-interface or instrumented
+producer deliverable. QUTS RawService still requires an attributable protocol;
+its interface declaration does not create that connection.
+
 ## Contents
 
 - [What the exact driver establishes](#what-the-exact-driver-establishes)
@@ -100,6 +105,13 @@ a copied pointer or wrapper does not satisfy that requirement.
 
 ## Required producer and response contract
 
+**Working rule:** qualify the complete operation—entry route, framing, selector
+precedence, state effects, producer, returned bytes and completion meaning.
+The eight-byte device-service control is positive evidence for its exact return
+path. Each timing operation needs its own qualification. The nested IHV
+query/control investigation is deferred exploratory work, not the next active
+clock integration step.
+
 1. **Establish an integration point.** Use driver source, a supported vendor
    callback/export, or another demonstrated complete-event interface. A companion
    driver cannot reach a private callback merely by attaching to the device stack.
@@ -140,6 +152,12 @@ must define and validate a source envelope and its consumer before accepting liv
 data. Do not relabel live data as a fixture or infer missing fields from application
 tickets. A software generation identifies admission continuity; it is not a
 hardware clock epoch.
+
+The [source-operation record layer](source-operation-record.md) now implements
+that packaging boundary for diagnostic fixtures and saved replay. It preserves
+explicit unknowns and rejects mismatched operation/source metadata through the
+native broker. It does not add a live producer or change the required driver-side
+validity, ownership and sampling contract.
 
 ## Cancellation and shutdown
 
