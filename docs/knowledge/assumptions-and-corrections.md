@@ -117,6 +117,8 @@ All rows below use the [2026-10-04 archive/installed-file investigation](../adap
 
 ## Claims that remain open
 
+The [2026-10-06 installed QMSL follow-up](../adapters/qmsl-runtime-365.md) corrects three further assumptions: QMSL/QSPR runtime absence is superseded by the completed installation; different weak-name assembly versions do not by themselves require redirects; and the selected one-second stop wait can fall through to unlimited waits. The software worker/listener path is now connected statically, while its exact Wi-Fi producer and live cancellation remain open.
+
 - The exact firmware producer and byte layout for a complete live timing record.
 - Fresh TSF/SoC sampling, split-word correction and reference instant.
 - Matching QUTS transaction identity to firmware request or unsolicited event identity.

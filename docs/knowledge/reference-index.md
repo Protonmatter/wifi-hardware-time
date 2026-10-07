@@ -10,7 +10,7 @@ Find the calls, file names, terms and short strings recorded in this research. T
 
 ## Search
 
-Indexed **294 source files** and **8298 distinct terms**.
+Indexed **295 source files** and **8358 distinct terms**.
 
 The [JSON index](research-index.json) includes Python definitions/calls, C/Java/PowerShell call-shaped tokens, authored short strings and Markdown code terms. Vendor binaries, local artifacts, historical reproduction sources and generated indexes are excluded. Unresolved call-shaped tokens are explicitly labeled.
 
@@ -51,13 +51,14 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [docs/acquisition/scan-comparison-plan.md](../../docs/acquisition/scan-comparison-plan.md) | `5c2a312cd514` |
 | [docs/acquisition/scan-tsf-results-2026-10-03.md](../../docs/acquisition/scan-tsf-results-2026-10-03.md) | `26ea16e56034` |
 | [docs/acquisition/timing-qualification-validation-2026-10-04.md](../../docs/acquisition/timing-qualification-validation-2026-10-04.md) | `eb03fb30c7e4` |
-| [docs/adapters/README.md](../../docs/adapters/README.md) | `61e4f9a3c4e7` |
+| [docs/adapters/README.md](../../docs/adapters/README.md) | `b0724c7f77df` |
 | [docs/adapters/axml.md](../../docs/adapters/axml.md) | `db1bd219145b` |
 | [docs/adapters/backend-and-reference-next-steps.md](../../docs/adapters/backend-and-reference-next-steps.md) | `9da7599bbb12` |
 | [docs/adapters/diagrams/vendor-return-paths.mmd](../../docs/adapters/diagrams/vendor-return-paths.mmd) | `060abaf8a568` |
 | [docs/adapters/ghidra-workspace.md](../../docs/adapters/ghidra-workspace.md) | `c7338e8eb501` |
 | [docs/adapters/ihv-query-producer-map.md](../../docs/adapters/ihv-query-producer-map.md) | `56fd089e6dbd` |
-| [docs/adapters/qmsl-diagnostic-queue.md](../../docs/adapters/qmsl-diagnostic-queue.md) | `8eec42069df2` |
+| [docs/adapters/qmsl-diagnostic-queue.md](../../docs/adapters/qmsl-diagnostic-queue.md) | `4fb9b5635a37` |
+| [docs/adapters/qmsl-runtime-365.md](../../docs/adapters/qmsl-runtime-365.md) | `9880252a76d7` |
 | [docs/adapters/qualcomm-archive-transport-findings.md](../../docs/adapters/qualcomm-archive-transport-findings.md) | `2ee375b9f1d2` |
 | [docs/adapters/qualcomm-bss-serialization.md](../../docs/adapters/qualcomm-bss-serialization.md) | `7e35c2ffac65` |
 | [docs/adapters/qualcomm-management-rx-handoff.md](../../docs/adapters/qualcomm-management-rx-handoff.md) | `4db69f6d1969` |
@@ -107,9 +108,9 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [docs/ftm/ftm-raw-access-followup.md](../../docs/ftm/ftm-raw-access-followup.md) | `0f3d5b59bebb` |
 | [docs/ftm/ftm-result-provenance.md](../../docs/ftm/ftm-result-provenance.md) | `b92a2ddb2d94` |
 | [docs/glossary.md](../../docs/glossary.md) | `838e3c21d99f` |
-| [docs/knowledge/assumptions-and-corrections.md](../../docs/knowledge/assumptions-and-corrections.md) | `4bd52bfaa779` |
-| [docs/knowledge/current-findings.md](../../docs/knowledge/current-findings.md) | `3af3d524ff5c` |
-| [docs/knowledge/interface-directory.md](../../docs/knowledge/interface-directory.md) | `cde88f3aeed0` |
+| [docs/knowledge/assumptions-and-corrections.md](../../docs/knowledge/assumptions-and-corrections.md) | `4e3c1f424a3e` |
+| [docs/knowledge/current-findings.md](../../docs/knowledge/current-findings.md) | `43e0a4471278` |
+| [docs/knowledge/interface-directory.md](../../docs/knowledge/interface-directory.md) | `d58d6c2fd787` |
 | [docs/knowledge/refresh-validation.md](../../docs/knowledge/refresh-validation.md) | `13243a024baa` |
 | [docs/knowledge/workflow-diagrams.md](../../docs/knowledge/workflow-diagrams.md) | `cb387f0069df` |
 | [docs/memory-ring/README.md](../../docs/memory-ring/README.md) | `c74a8452329e` |
@@ -177,13 +178,13 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [research/adapters/Get-QualcommAdapter.ps1](../../research/adapters/Get-QualcommAdapter.ps1) | `065ffad62964` |
 | [research/adapters/Invoke-DeviceServiceControl.ps1](../../research/adapters/Invoke-DeviceServiceControl.ps1) | `1de419b519f2` |
 | [research/adapters/Invoke-QualcommStaticInspection.ps1](../../research/adapters/Invoke-QualcommStaticInspection.ps1) | `1366f4ada851` |
-| [research/adapters/README.md](../../research/adapters/README.md) | `bb6c9d019c88` |
+| [research/adapters/README.md](../../research/adapters/README.md) | `a5100dd8229c` |
 | [research/adapters/cached_beacon.c](../../research/adapters/cached_beacon.c) | `c6ac75115a82` |
 | [research/adapters/device_service_control.c](../../research/adapters/device_service_control.c) | `e1a231de9b6f` |
 | [research/adapters/device_services.c](../../research/adapters/device_services.c) | `dae2dac610a2` |
 | [research/adapters/ghidra/AnnotateQualcommTiming.java](../../research/adapters/ghidra/AnnotateQualcommTiming.java) | `89e3b0b23f2d` |
 | [research/adapters/ghidra/TraceAtlasQuts.java](../../research/adapters/ghidra/TraceAtlasQuts.java) | `baae8731ab45` |
-| [research/adapters/ghidra/TraceQmslQueue.java](../../research/adapters/ghidra/TraceQmslQueue.java) | `f00899c7a9b4` |
+| [research/adapters/ghidra/TraceQmslQueue.java](../../research/adapters/ghidra/TraceQmslQueue.java) | `b3cd82968f42` |
 | [research/adapters/ghidra/TraceQualcommPacketlog.java](../../research/adapters/ghidra/TraceQualcommPacketlog.java) | `0429c7eba643` |
 | [research/adapters/ghidra/TraceQutsDiscovery.java](../../research/adapters/ghidra/TraceQutsDiscovery.java) | `b3c9dcb7e5de` |
 | [research/adapters/inspect_ihv_queries.py](../../research/adapters/inspect_ihv_queries.py) | `a25322a496ed` |

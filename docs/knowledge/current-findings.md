@@ -24,12 +24,15 @@ do not supply it.
 
 ## Established findings
 
+**2026-10-06 installation follow-up:** [QMSL 6.1.365.1 and QSPR 6.0 interfaces](../adapters/qmsl-runtime-365.md) are now present. The relevant assemblies are weak-named, so their reference-version differences alone do not require binding redirects. The new native image independently reconnects callback registration, worker delivery, listener invocation and payload ownership transfer. Getter size limits and unbounded startup/stop waits remain. Live Wi-Fi attribution and complete timing-event return are still open.
+
 Baseline snapshot: 2026-10-04, with an action-4 offline follow-up on 2026-10-05.
 This page is the current interpretation; dated experiment reports preserve what
 was observed in their original runs.
 
 | Area | Established result | Practical use |
 |---|---|---|
+| Installed QMSL 6.1.365.1 | New exact-hash trace; original-byte callback and worker/listener path; weak-name binding evidence and authored x86 CLR smoke | Use current-build addresses and review actual endpoint/initialization/lifecycle before invocation; no live source enabled |
 | Supplied QMSL 6.1.48.1 runtime | Native log copy/pop and callback registration located; batch getter can change logging masks; managed wrapper has size/length limits and a lossy timestamp formatter | [Queue contract](../adapters/qmsl-diagnostic-queue.md); pursue original-byte callbacks with explicit ownership, not batch polling or formatted timestamps; exact Wi-Fi producer remains unconnected |
 | Private TSF/SoC reports | Exact-build counter observations and action-dependent cache/refresh behavior | Diagnostic records and rejection fixtures |
 | Saved TSF trace bytes | Two historical captures contain 88 selected UserData payloads, all numeric text plus one NUL; no trailing bytes or extended-data items | No complete firmware event hidden after the parsed text in these selected payloads; no new acquisition or clock qualification |

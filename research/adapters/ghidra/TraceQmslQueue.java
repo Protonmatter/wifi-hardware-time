@@ -1,4 +1,5 @@
-// File-only trace of the pinned QMSL FastConnect 6.1.48.1 x86 image.
+// File-only trace of pinned QMSL FastConnect 6.1.48.1 / 6.1.365.1 x86 images.
+// RVAs are explicit, build-specific evidence inputs; never reuse them across builds.
 // Output must be a NEW private directory. Does not load or invoke vendor code.
 // Arguments: output directory, then 1-32 explicit hexadecimal RVAs.
 // Require receipt failures=0, no truncation and WHT_TRACE_OK; process exit alone is insufficient.
@@ -23,16 +24,21 @@ import ghidra.program.model.listing.InstructionIterator;
 import ghidra.program.model.symbol.Reference;
 
 public class TraceQmslQueue extends GhidraScript {
-    private static final String SHA256 =
+    private static final String SHA256_48 =
         "e3db8a1d93ba762a9929604c37d9d45591187a6a1eae15cc29abb22505c71dd3";
+    private static final String SHA256_365 =
+        "437efd33f33b64295375a1f44b272704ee3902a8c908b8147b7de7ba5988f15e";
 
     @Override
     public void run() throws Exception {
-        if (currentProgram == null || !SHA256.equalsIgnoreCase(currentProgram.getExecutableSHA256()) ||
+        String sha256 = currentProgram == null ? null : currentProgram.getExecutableSHA256();
+        String build = SHA256_48.equalsIgnoreCase(sha256) ? "6.1.48.1" :
+            SHA256_365.equalsIgnoreCase(sha256) ? "6.1.365.1" : null;
+        if (currentProgram == null || build == null ||
             !"x86:LE:32:default".equals(currentProgram.getLanguageID().toString()) ||
             !"windows".equals(currentProgram.getCompilerSpec().getCompilerSpecID().toString()) ||
             currentProgram.getImageBase().getOffset() != 0x10000000L) {
-            throw new IllegalArgumentException("Exact x86 QMSL FastConnect 6.1.48.1 image required");
+            throw new IllegalArgumentException("Exact supported x86 QMSL image required (6.1.48.1 or 6.1.365.1)");
         }
         String[] args = getScriptArgs();
         if (args.length < 2 || args.length > 33) {
@@ -73,7 +79,8 @@ public class TraceQmslQueue extends GhidraScript {
         Files.write(output.resolve("xrefs.tsv"), refs, StandardCharsets.UTF_8,
             StandardOpenOption.CREATE_NEW);
         List<String> receipt = new ArrayList<>();
-        receipt.add("sha256\t" + SHA256);
+        receipt.add("sha256\t" + sha256);
+        receipt.add("image_version\t" + build);
         receipt.add("scope\tone reference level from explicit seeds; no exhaustive indirect-call proof");
         receipt.add("entry\tname\tdecompilation\tinstruction_export");
         int failures = 0;
@@ -114,6 +121,6 @@ public class TraceQmslQueue extends GhidraScript {
         Files.write(output.resolve("receipt.tsv"), receipt, StandardCharsets.UTF_8,
             StandardOpenOption.CREATE_NEW);
         if (failures != 0) { throw new IllegalStateException("Incomplete decompilation or instruction export; inspect receipt"); }
-        println("WHT_TRACE_OK functions=" + functions.size() + " seeds=" + seeds.size());
+        println("WHT_TRACE_OK build=" + build + " functions=" + functions.size() + " seeds=" + seeds.size());
     }
 }

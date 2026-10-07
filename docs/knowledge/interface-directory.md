@@ -53,6 +53,8 @@ This directory ranks useful starting points by what the evidence supports. Names
 
 ## Vendor interfaces
 
+For the newly installed x86 QMSL 6.1.365.1, use the [current runtime map](../adapters/qmsl-runtime-365.md), not the older 6.1.48.1 RVAs: V2 registration `0x107740`, setter `0x1313b0`, listener `0x135f60`, worker `0x129720`, payload transfer `0x155d20`, stop `0x129980`, and getter `0x1083b0` -> `0x111ae0`. These are image-relative virtual addresses (RVAs), not raw file offsets; no live timing operation is qualified.
+
 | Call, field or string | Located behavior / limit |
 |---|---|
 | `Qualcomm.AtlasQutsRequest`, `IAtlasQutsRequest`, `IAtlasQutsSecurity` | QPST COM connection-management interfaces |
