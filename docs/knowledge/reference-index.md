@@ -10,7 +10,7 @@ Find the calls, file names, terms and short strings recorded in this research. T
 
 ## Search
 
-Indexed **304 source files** and **8765 distinct terms**.
+Indexed **304 source files** and **8766 distinct terms**.
 
 The [JSON index](research-index.json) includes Python definitions/calls, C/Java/PowerShell call-shaped tokens, authored short strings and Markdown code terms. Vendor binaries, local artifacts, historical reproduction sources and generated indexes are excluded. Unresolved call-shaped tokens are explicitly labeled.
 
@@ -124,7 +124,7 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [docs/memory-ring/unmatched-tsf-and-memory-log.md](../../docs/memory-ring/unmatched-tsf-and-memory-log.md) | `11870e0953ca` |
 | [docs/overview/2026-10-02-research-to-userspace-clock.md](../../docs/overview/2026-10-02-research-to-userspace-clock.md) | `dfa65e864054` |
 | [docs/overview/2026-10-03-first-hardware-clock-plan.md](../../docs/overview/2026-10-03-first-hardware-clock-plan.md) | `76aa080d9cc0` |
-| [docs/overview/2026-10-07-tsf-host-bound-design.md](../../docs/overview/2026-10-07-tsf-host-bound-design.md) | `82dd128b83f4` |
+| [docs/overview/2026-10-07-tsf-host-bound-design.md](../../docs/overview/2026-10-07-tsf-host-bound-design.md) | `a5f394d5d577` |
 | [docs/overview/2026-10-07-tsf-host-bound-plan.md](../../docs/overview/2026-10-07-tsf-host-bound-plan.md) | `233ba5788263` |
 | [docs/overview/OPERATIONS.md](../../docs/overview/OPERATIONS.md) | `325c7d5a27eb` |
 | [docs/overview/README.md](../../docs/overview/README.md) | `a8f2066f64c6` |

@@ -52,6 +52,8 @@ For sample `i` the report gives TSF value `T_i`, and the host records `L_i` (QPC
 
 `T_i - r * U_i <= c <= T_i - r * L_i`
 
+TSF is an integer microsecond counter and QPC an integer tick counter, so the implemented constraint widens each window by one TSF microsecond and one QPC tick: `T_i - r * (U_i + 1 tick) <= c <= T_i + 1 - r * L_i`. A 200 ppm prior on `r` keeps the feasible set bounded.
+
 Each sample contributes two linear constraints on `(r, c)`. The feasible set over all samples in a window is a convex polygon, computed exactly with rational arithmetic, as in the existing [counter-rate analysis](../clock-models/counter-rate-identifiability.md). **The proven error at a query instant `Q` is half the spread of `r * Q + c` over the feasible polygon**, reported against the polygon's centre. This is a worst case under the stated conditions, not a statistic.
 
 The earlier campaign measured request completion in tens of microseconds and report emission in hundreds of microseconds after the request ([latency audit](../acquisition/private-acquisition-latency.md)). A single window is therefore expected to be well below 1,000 us. Intersecting many windows narrows the bound further. The roughly 1.6-second delay before the observer reads a record does not widen the window, because `U_i` is the driver's own trace timestamp.
@@ -62,7 +64,7 @@ The bound holds only if these conditions hold. Each one has its own test, and a 
 
 | Condition | Test | Failure handling |
 |---|---|---|
-| **Attribution:** each report answers the request in its window | Exactly one request in flight. Other activity, including scans, also produces TSF reports, so reports are classified rather than assumed to be ours: a report outside every window is **foreign** and counted; two reports inside one window reject that sample; a window that times out records an **own loss**. If Phase 0 shows that foreign reports carry a different vdev, or recovers the report-type field, that filter is applied first. | Foreign reports do not stop the run. The residual risk, an own loss coinciding with a foreign report inside the same window, is estimated as own-loss count x foreign-report rate x mean window width and reported per run |
+| **Attribution:** each report answers the request in its window | Exactly one request in flight. Other activity, including scans, also produces TSF reports, so reports are classified rather than assumed to be ours: a report outside every window is **foreign** and counted; two reports inside one window reject that sample; a window that times out records an **own loss**. If Phase 0 shows that foreign reports carry a different vdev, or recovers the report-type field, that filter is applied first. | Foreign reports do not stop the run. The residual risk, an own loss coinciding with a foreign report inside the same window, is estimated as own-loss count x foreign-report rate x the 2,000 us acceptance window and reported per run |
 | **Freshness:** action 4 returns a newly captured value | For consecutive samples `i` and `j`, with QPC converted to microseconds, `T_j - T_i` must lie inside `[0.9999 * (L_j - U_i) - 1, 1.0001 * (U_j - L_i) + 1]`. The fixed 100 ppm band exceeds any crystal tolerance, uses no fitted value, and still exposes a cached value by seconds. Repeated values or regressions are violations. | Reject the sample. More than 1% rejected in a run fails the freshness condition for that run |
 | **Shared clock:** station TSF equals access point TSF | Assumption based on the 802.11 rule above. Coarse check: each public-cache beacon timestamp (`WlanGetNetworkBssList`) must not exceed the station TSF predicted for that query's QPC time by more than 1,000 us. A beacon can't be stamped after the instant it is read. | Any violation stops the analysis. The shared-clock link is reported as falsified |
 
@@ -71,6 +73,13 @@ The bound holds only if these conditions hold. Each one has its own test, and a 
 - If such a `k` exists, and the feasible rate interval includes exactly 10 ticks per unit, SoC is reported as **compatible with the QPC domain**. The containment test is the decisive one; an hour of windows of a few hundred microseconds resolves the rate only to roughly 0.1 ppm. Windows can then be combined across the full run without drift, and each report gives its TSF at a known QPC instant.
 - Otherwise SoC is reported as a separate clock, and the 60-second window bound from section 6 is the result.
 - Compatibility is not proof of a shared oscillator. The report must state the test, not a stronger conclusion.
+
+**Saved-data checks (2026-10-07, read-only, campaign `ecfaed68f20e`):**
+
+- All 18 saved action-4 windows measured 214 to 740 us; the IOCTL itself returned in about 50 us.
+- Scan-triggered reports carry vdev 0, the same as ours, so vdev cannot filter them. Every one of our requests logs a `command` record (action 4, vdev 0) before its report group, and the six scan-triggered groups in three scan captures had none. Attribution therefore uses the command record and a 2,000 us acceptance window.
+- The SoC counter fails the fixed 10-ticks-per-unit test by 365 to 688 us within about 24 seconds in all six mixed runs, so SoC is unlikely to share the QPC domain.
+- Without a limit on the rate, a single window leaves the polygon unbounded. A 200 ppm physical prior on the TSF-to-QPC rate is added; the fitted rates in saved runs lie between about -66 and -23 ppm.
 
 ## 4. Phase 0: raw-route check
 
