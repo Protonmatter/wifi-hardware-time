@@ -2,6 +2,10 @@
 
 Two passive checks confirmed that the rebuilt observer could start, report trace health and stop cleanly without sending private requests. They collected no clock reports, so they did not test active delivery or accuracy. This was a historical prerequisite check; the later private campaign still failed and remains quarantined.
 
+<!-- current-context:2026-10-04 -->
+**Current context (2026-10-04):** The private campaign remains quarantined. The new QUTS client ownership finding does not establish firmware drain, report association or a new live acquisition. See [current findings](../knowledge/current-findings.md).
+<!-- /current-context -->
+
 The observer reads diagnostics without requesting clock measurements in this test. ETW is Windows event tracing. A passive check tests the collector; it cannot prove that pending firmware reports have drained. See the [glossary](../glossary.md) for related terms.
 
 Result: **passed**, 2026-10-03 America/New_York. The corrected observer was rebuilt,

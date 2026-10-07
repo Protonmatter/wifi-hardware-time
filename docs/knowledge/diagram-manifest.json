@@ -1,0 +1,126 @@
+{
+  "schema": "wht/diagram-manifest-v1",
+  "diagrams": [
+    {
+      "source": "docs/clock-models/diagrams/packets-timestamp-path.mmd",
+      "targets": [
+        {
+          "file": "docs/clock-models/packet-to-clock-map.md",
+          "block": 0
+        },
+        {
+          "file": "docs/knowledge/workflow-diagrams.md",
+          "block": 0
+        }
+      ]
+    },
+    {
+      "source": "docs/tsf/diagrams/qualcomm-timestamp-path.mmd",
+      "targets": [
+        {
+          "file": "docs/clock-models/packet-to-clock-map.md",
+          "block": 1
+        },
+        {
+          "file": "docs/tsf/README.md",
+          "block": 0
+        },
+        {
+          "file": "docs/knowledge/workflow-diagrams.md",
+          "block": 1
+        }
+      ]
+    },
+    {
+      "source": "docs/ftm/diagrams/ftm-timestamp-path.mmd",
+      "targets": [
+        {
+          "file": "docs/clock-models/packet-to-clock-map.md",
+          "block": 2
+        },
+        {
+          "file": "docs/ftm/README.md",
+          "block": 0
+        },
+        {
+          "file": "docs/knowledge/workflow-diagrams.md",
+          "block": 2
+        }
+      ]
+    },
+    {
+      "source": "docs/clock-models/diagrams/uncertainty-timestamp-path.mmd",
+      "targets": [
+        {
+          "file": "docs/clock-models/packet-to-clock-map.md",
+          "block": 3
+        },
+        {
+          "file": "docs/knowledge/workflow-diagrams.md",
+          "block": 3
+        }
+      ]
+    },
+    {
+      "source": "docs/evidence/diagrams/adoption-timestamp-path.mmd",
+      "targets": [
+        {
+          "file": "docs/clock-models/packet-to-clock-map.md",
+          "block": 4
+        },
+        {
+          "file": "docs/knowledge/workflow-diagrams.md",
+          "block": 4
+        }
+      ]
+    },
+    {
+      "source": "docs/memory-ring/diagrams/report-vs-ring.mmd",
+      "targets": [
+        {
+          "file": "docs/memory-ring/unmatched-tsf-and-memory-log.md",
+          "block": 0
+        },
+        {
+          "file": "docs/knowledge/workflow-diagrams.md",
+          "block": 5
+        }
+      ]
+    },
+    {
+      "source": "docs/ftm/diagrams/notification-routing.mmd",
+      "targets": [
+        {
+          "file": "docs/ftm/ftm-notification-routing.md",
+          "block": 0
+        },
+        {
+          "file": "docs/knowledge/workflow-diagrams.md",
+          "block": 6
+        }
+      ]
+    },
+    {
+      "source": "docs/clock-models/diagrams/ftm-reduction.mmd",
+      "targets": [
+        {
+          "file": "docs/clock-models/clock-relationship-investigation.md",
+          "block": 0
+        },
+        {
+          "file": "docs/knowledge/workflow-diagrams.md",
+          "block": 7
+        }
+      ]
+    },
+    {
+      "source": "docs/adapters/diagrams/vendor-return-paths.mmd",
+      "targets": [
+        {
+          "file": "docs/knowledge/workflow-diagrams.md",
+          "block": 8
+        }
+      ]
+    }
+  ]
+}

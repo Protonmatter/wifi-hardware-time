@@ -26,9 +26,12 @@ flowchart TB
   L -. "match to packet and retry before use" .-> K
   C -. "missing qualification" .-> M
   H -. "missing qualification" .-> M
+  I -. "UNPROVEN: adapter event to diagnostic protocol" .-> Q["Candidate QUTS diagnostic packet"]
+  Q -->|Static client code: deserialize and allocate| O["Owned application byte array<br/>Clock and event meaning still required"]
+  KEY["KEY: solid = modeled packet path or labeled static code<br/>Dotted = missing or conditional connection<br/>Host delivery time is not radio sampling time"]
   classDef gap fill:#fff2dd,stroke:#ac6b12,stroke-width:1.5px,color:#241b0e;
   classDef air fill:#e6eefc,stroke:#315b96,stroke-width:2px,color:#182844;
   classDef hw fill:#fbebeb,stroke:#b83232,stroke-width:1.5px,color:#300;
-  class M,L gap;
+  class M,L,Q,KEY gap;
   class W air;
   class F,G hw;

@@ -1,0 +1,11 @@
+flowchart LR
+  F["Firmware OEM measurement payload"] --> P["64-byte per-record entry, tag 0x2b"]
+  P --> D["+0x18 t3_del / +0x1c t4_del"]
+  D --> S["Signed 32-bit modular difference"]
+  S --> B["Two RTT storage banks"]
+  B --> A["Filtering and mean selection"]
+  A --> C["104-byte aggregate userspace result"]
+  P -.-> U["+0x08..+0x17 opaque region not read by this loop"]
+  U -.-> X["Absolute timestamp interpretation and extraction UNQUALIFIED"]
+  NEW["New static lead: QUTS owned diagnostic bytes<br/>Exact firmware-producer connection still UNPROVEN"]
+  KEY["KEY: solid arrows describe the selected inspected path<br/>Dotted arrows mark missing or conditional relationships<br/>No new live acquisition is claimed"]

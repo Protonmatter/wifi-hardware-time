@@ -2,6 +2,10 @@
 
 This report evaluates how well saved Wi-Fi timing observations predict host timing, including samples withheld from model fitting. It compares simple baselines and more detailed models while retaining data-quality limits. Predictive success is useful for research, but it does not establish the hardware sampling instant, external accuracy or a qualified clock.
 
+<!-- current-context:2026-10-04 -->
+**Current context (2026-10-04):** QUTS and QXDM expose distinct hardware-origin, interpolated and host-delivery times. Owned bytes do not establish fresh hardware-to-QPC sampling or an accuracy bound. See [current findings](../knowledge/current-findings.md).
+<!-- /current-context -->
+
 **Key terms:** Held-out samples are excluded from fitting and used to test predictions. A baseline is a simpler comparison model. An observation timestamp may mark logging rather than the event being measured. See the [glossary](../glossary.md).
 
 ## Contents

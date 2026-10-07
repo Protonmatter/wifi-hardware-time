@@ -2,6 +2,10 @@
 
 This project asks whether Wi-Fi hardware can provide trustworthy timestamps for applications and synchronized clocks. We have recovered useful diagnostic data, but have not demonstrated calibrated synchronization. The research is organized by the question each experiment answers, with its scripts, evidence limits and diagrams linked together.
 
+<!-- current-context:2026-10-06 -->
+**Current context (2026-10-06):** The current Qualcomm complete-event route is no-go pending demonstrated producer access. Static QMSL tracing is complete; diagnostic replay and host API acceptance have local results in the downstream SDK. WPP supplies collection leads with explicit state effects. See [current findings](docs/knowledge/current-findings.md) and the [qualification ledger](docs/overview/gap-closure-ledger.md) for review, publication and hardware limits.
+<!-- /current-context -->
+
 ## Contents
 
 - [Start here](#start-here)
@@ -12,8 +16,14 @@ This project asks whether Wi-Fi hardware can provide trustworthy timestamps for 
 
 ## Start here
 
+- Current interpretation: [latest findings](docs/knowledge/current-findings.md) and [assumptions corrected by evidence](docs/knowledge/assumptions-and-corrections.md).
+- Next integration: [complete-event implementation plan](docs/overview/complete-event-2026-10-05/engineering-plan.md), including primary-source route research and the executed receive-lifetime audit.
+- Find a call or string: [reference index](docs/knowledge/reference-index.md) and [interface directory](docs/knowledge/interface-directory.md).
+- Repeat static research: [inspection runbook](docs/adapters/static-inspection-runbook.md), [script catalog](catalog/scripts.json) and [research skill](skills/qualcomm-timing-research/SKILL.md).
+- View every current workflow: [diagram gallery](docs/knowledge/workflow-diagrams.md).
 - New to the subject: [reading guide](docs/README.md) and [glossary](docs/glossary.md).
 - Want the outcome: [qualification ledger](docs/overview/gap-closure-ledger.md). *Qualification* means evidence supports a particular claim under stated conditions.
+- Reviewing the accumulated change: [PR #3 software review and corrections](docs/overview/pr3-review-2026-10-06.md), with scope, reproduced findings and publication limits.
 - Want the workflow: [packet-to-clock diagrams](docs/clock-models/packet-to-clock-map.md).
 - Want to reproduce work: [operations](docs/overview/OPERATIONS.md) and [script/execution catalog](docs/overview/validation-execution-catalog.md).
 - Using older commands: [file-location guide](docs/overview/repository-layout.md). Paths changed; old live-launch manifests must not be reused.
@@ -36,9 +46,11 @@ TSF is the Wi-Fi timing counter. FTM is a ranging procedure that measures round-
 ## What works and what remains open
 
 - **Observed:** exact-build Qualcomm driver reports expose TSF and another counter. Selected requests refresh or reuse that second counter.
+- **Live transport control:** one [device-service GET](docs/evidence/device-service-positive-control.md) returned eight fixed test bytes through the installed driver. The firmware-timing producer remains unconnected.
 - **Observed with limits:** FTM ranging operations return aggregate results. These do not expose all absolute event times needed to estimate clock offset.
 - **Acquisition stopped:** a private campaign encountered unmatched reports and remains quarantined, meaning further admission is blocked. Three later scans reproduced extra report traffic but failed the original four-second completion profile.
 - **Static findings only:** RX descriptor timestamp fields and in-memory diagnostic-log consumers are located. Static inspection reads source/binary files; it does not demonstrate a working live export.
+- **New static ownership evidence:** the installed QUTS client allocates diagnostic payload bytes into application storage. QXDM supplies WLAN schema leads and a byte-array API. Their connection to the exact Wi-Fi timing producer remains open.
 - **Not qualified:** fresh simultaneous sampling, hardware-to-host conversion, arbitrary RX/TX timestamps, calibrated accuracy and sub-millisecond synchronization.
 - **Preparation only:** new reset, suspend and roaming cases. No new disruptive run is authorized by these documents.
 

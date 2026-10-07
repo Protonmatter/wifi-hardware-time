@@ -2,6 +2,10 @@
 
 Similar-looking counter rates do not prove two values share a clock or were sampled together. This analysis checks which rate relationships the saved data can distinguish. Several conditional explanations remain possible, so a good mathematical fit cannot decide the physical sampling mechanism or provide a calibrated conversion error bound.
 
+<!-- current-context:2026-10-04 -->
+**Current context (2026-10-04):** QUTS and QXDM expose distinct hardware-origin, interpolated and host-delivery times. Owned bytes do not establish fresh hardware-to-QPC sampling or an accuracy bound. See [current findings](../knowledge/current-findings.md).
+<!-- /current-context -->
+
 **Key terms:** Identifiability asks whether the available observations distinguish competing explanations. A conditional result is true only if its assumptions hold. Residual error measures fit to data, not error against an independent reference. See the [glossary](../glossary.md).
 
 This is an offline extension of the [pairing investigation](clock-relationship-investigation.md),

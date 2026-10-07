@@ -2,6 +2,10 @@
 
 Wi-Fi timing crosses several clocks, software layers and evidence types. This glossary explains the terms used throughout the research so that a fast response, precise-looking number or successful command is not mistaken for accurate time. Each distinction affects what an application can safely conclude from a timestamp.
 
+<!-- current-context:2026-10-04 -->
+**Current context (2026-10-04):** Current findings now include complete vendor package inventories, QUTS client ownership and a correction ledger. Historical acquisitions retain their original scope and limits. See [current findings](knowledge/current-findings.md).
+<!-- /current-context -->
+
 ## Contents
 
 - [Clocks and measurements](#clocks-and-measurements)
@@ -57,6 +61,15 @@ Wi-Fi timing crosses several clocks, software layers and evidence types. This gl
 
 | Term | Meaning here |
 |---|---|
+| QUTS / QXDM / QPST | Qualcomm communication service / diagnostic application / support tools. A product being installed does not prove an adapter-specific timing path. |
+| QMSL / QSPR / QDART | Qualcomm library / test framework / test-tool suite. Match their actual assembly and transport dependencies. |
+| QDSS / QMI | Qualcomm diagnostic trace transport / service-message interface. Neither name identifies a Wi-Fi clock domain by itself. |
+| QIK / QCC | The inspected package wrapper and block-container format. Static extraction reads files without running an installer. |
+| COM / IDL / type library | Windows component interface / interface-description source / compiled interface metadata. Reading a type library does not invoke its server. |
+| Thrift / deserialization | A client-service protocol / decoding its bytes into client objects. The inspected readers allocate application byte arrays. |
+| SAFEARRAY / owned bytes | A COM array representation / storage retained by the application independently of a temporary driver pointer. This does not prove producer consistency. |
+| Interpolation / fallback / sentinel | A derived value / replacement value / marker for an unavailable value. Check each schema before admitting a hardware sample. |
+| RSDS / PDB | Native debug identity record / program database containing symbols. A PDB must match the binary identity, not merely its filename. |
 | API / ABI | Software interface / binary-level calling and data-layout rules. An exported function is not necessarily a supported public API. |
 | Driver / firmware / NIC | Host software controlling hardware / software running on the device / network interface controller. Completion at one layer may precede work at another. |
 | NDIS / miniport / filter | Windows networking framework / adapter driver role / intermediate network driver. An observed failure may have been propagated from another layer. |

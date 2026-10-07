@@ -2,6 +2,10 @@
 
 Use this catalog to connect a research finding with the tool that produced or analyzed it. It distinguishes maintained commands from historical source snapshots and records what actually ran. A retained script, successful process or passing software test is not automatically evidence of a qualified hardware timing capability.
 
+<!-- current-context:2026-10-04 -->
+**Current context (2026-10-04):** Current findings now include complete vendor package inventories, QUTS client ownership and a correction ledger. Historical acquisitions retain their original scope and limits. See [current findings](../knowledge/current-findings.md).
+<!-- /current-context -->
+
 **Key terms:** An entry point is a command intended to be run. A snapshot preserves an older source version. Provenance records the source, inputs and conditions behind a result. See the [glossary](../glossary.md).
 
 ## Contents
@@ -31,11 +35,17 @@ permissions, exact-build prerequisites and explicit execution switches.
 
 | Work | Maintained scripts / source | Recorded result and limitation |
 |---|---|---|
+| Vendor package and installed-file snapshots | `research/adapters/Invoke-QualcommStaticInspection.ps1`, `package_tools/`, `inspect_qik_inventory.py` | Preview/apply/unchanged receipts, supported static decoding, read-only MSI/type-library metadata; no vendor execution or device access. See [runbook](../adapters/static-inspection-runbook.md) |
+| Knowledge and workflow maintenance | `research/evidence/Update-ResearchKnowledge.ps1`, `build_knowledge_index.py`, `sync_workflow_diagrams.py` | Authored-source indexing and canonical diagram synchronization; source matches are not a call graph. See [reference index](../knowledge/reference-index.md) |
 | Adapter/build discovery and protocol guards | `research/adapters/Get-QualcommAdapter.ps1`, `research/tsf/qualcomm_protocol.py`, `research/tsf/qualcomm_probe.py` | Exact build and command validation; preview differs from explicit private execution |
 | TSF series capture and decode | `research/tsf/Capture-TsfReport.ps1`, `research/tsf/decode_tsf_etl.c`, `research/tsf/analyze_tsf_series.py` | Repeated private reads; command completion is not sampling time |
+| Owned diagnostic TSF replay | `research/tsf/read_tsf_evidence.py`, `research/evidence/hardware_observation.py` | Replayed 138 retained observations; detached records and clock-input rejection, no new acquisition. See [runbook](../tsf/tsf-evidence-reader.md) |
+| Autonomous peer TSF decoding | `research/tsf/decode_management_tsf.py` | Authored beacon/probe frames only; independent clock/event fields, no local RX timestamp or live capture. See [runbook](../tsf/autonomous-management-tsf.md) |
+| Management-frame RX handoff | `research/adapters/inspect_management_rx.py` | Exact-file schema and handoff inspection; local timestamp positions not consumed by the selected handler. [Report](../adapters/qualcomm-management-rx-handoff.md) |
 | TSF/SoC latch experiment | `research/tsf/Capture-LatchExperiment.ps1`, `research/tsf/analyze_latch.py` | Action-dependent refresh/cache observations; no simultaneous-latch proof |
 | FTM request, callback and aggregation | `research/ftm/ftm_once.c`, `research/ftm/Capture-FtmOnce.ps1`, `research/ftm/decode_ftm_response.py`, `research/ftm/model_ftm_selection.py` | Specialized ranging/callback execution and saved aggregation replay; no absolute four-event export |
 | FTM delta extraction | `research/ftm/Export-FtmDeltaEvents.ps1`, `research/ftm/FtmDeltaLog.ps1`, `research/ftm/analyze_ftm_deltas.py` | 51 saved triplets reproduce signed subtraction; malformed target messages reject |
+| FTM event ingress and lifetime | `research/ftm/inspect_ftm_ingress.py` | Executed offline: exact event schema, registration/cleanup and host-time history import; no owned application timestamp export. See [report](../ftm/ftm-ingress-to-owned-response.md) |
 | Guarded campaign | `research/acquisition/run_acquisition_campaign.py`, `research/acquisition/live_observer.c`, `research/acquisition/campaign_gate.py`, `research/acquisition/Get-CampaignIdentity.ps1`, `research/acquisition/campaign_admission.py` | Earlier 138-request campaign completed; corrected-observer repeat quarantined as recorded separately |
 | Passive observer validation | Existing `capture(..., actions=[], smoke=True)` controller path; retained qualification runner below | Two corrected-observer passes succeeded with zero private requests |
 | Standard timestamp/device-service probes | `research/windows_timestamps/probe_timestamp_caps.py`, `research/windows_timestamps/native_caps.c`, `research/adapters/device_services.c`, `research/adapters/cached_beacon.c` | API outcomes and exact ABI checks; cache and capability errors do not establish hardware absence |
@@ -44,6 +54,8 @@ permissions, exact-build prerequisites and explicit execution switches.
 | Clock-model investigation | `research/clock_models/analyze_observation_quality.py`, `research/clock_models/analyze_clock_pairing_hypothesis.py` | Conditional/held-out models; residual and feasibility are not calibrated uncertainty |
 | Quarantine postmortem | `research/acquisition/analyze_quarantined_tsf.py`, `research/acquisition/Export-TsfContext.ps1` | New maintained offline tools, actually replayed on the failed capture in this follow-up |
 | TSF routes and memory-log lead | `research/tsf/inspect_tsf_routes.py` | Exact-driver direct-branch/import inventory; no complete call-graph or live retrieval claim |
+| TSF response metadata and association | `research/tsf/inspect_tsf_report_contract.py` | Exact expected schema and selected handler read offsets; omitted fields have candidate reference labels only. [Quarantine disposition](../tsf/tsf-association-and-quarantine-disposition.md) remains retain |
+| Private return-path candidates | `research/adapters/inspect_private_exports.py` | Executed offline against the exact owned driver: range hashes, RX-statistics dispatch and fixed test payload; no live export qualification. See [report and commands](../adapters/qualcomm-private-output-routes.md) |
 | Passive quarantine follow-up | `research/acquisition/run_passive_observation.py`, `research/acquisition/Invoke-PassiveObservation.ps1` | One elevated 30-second window passed with zero requests/timing events and clean shutdown; no firmware-drain or ring-retrieval claim |
 | Scan-source comparison | `research/acquisition/run_scan_comparison.py`, `research/acquisition/analyze_scan_comparison.py`, explicit launcher `-ScanComparison` | Three scans reproduced two-report pattern; all fail the four-second completion profile; final diagnostic tail identified late completion |
 | Cancellation/restart tests | Historical cancellation/reset sources in archive below | Prior bounded experiments only; not current live entry points or general reset/drain qualification |

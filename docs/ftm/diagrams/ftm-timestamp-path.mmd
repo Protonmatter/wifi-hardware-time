@@ -12,5 +12,7 @@ sequenceDiagram
   A->>B: Later FTM frame: matched prior t1 / t4 and follow-up token
   Note over B: Full exchange needs local t2 / t3 and peer t1 / t4
   B-->>U: Observed API output: aggregate RTT, count, status, raw auxiliary fields
-  Note over U: Not exposed: four individual timestamps or clock mapping
+  Note over U: Current ranging callback: no four-time export or clock mapping
+  Note over B,U: Separate lead: QXDM WLAN definitions and QUTS owned bytes.<br/>Connection to this exchange is UNPROVEN
   Note over A,U: Model needs four valid times and rate correction.<br/>Delay asymmetry still limits offset estimation
+  Note over A,U: KEY: solid arrows model radio frames.<br/>Dashed arrow is observed aggregate delivery.<br/>Time flows downward within each separate clock

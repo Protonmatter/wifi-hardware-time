@@ -2,10 +2,15 @@
 
 These tools investigate Fine Timing Measurement, the Wi-Fi ranging procedure, and the aggregate results returned by the inspected driver. They check completeness and reproduce arithmetic from saved data. They do not expose four qualified absolute exchange times or turn ranging success into a synchronized application clock.
 
+<!-- current-context:2026-10-04 -->
+**Current context (2026-10-04):** QXDM WLAN RTT definitions are a new schema lead. They have not been matched to a complete live four-event export from this adapter. See [current findings](../../docs/knowledge/current-findings.md).
+<!-- /current-context -->
+
 ## Files
 
 | File | Role |
 |---|---|
+| [inspect_ftm_ingress.py](inspect_ftm_ingress.py) | Offline exact-build event-schema, dispatch and cleanup evidence; see the [ownership report](../../docs/ftm/ftm-ingress-to-owned-response.md). |
 | [analyze_ftm_deltas.py](analyze_ftm_deltas.py) | Offline analysis/model or file transformation; see the tool header for inputs. |
 | [Capture-FtmOnce.ps1](Capture-FtmOnce.ps1) | Bounded experiment controller/launcher; explicit execution and prerequisites apply. |
 | [decode_ftm_response.py](decode_ftm_response.py) | Offline analysis/model or file transformation; see the tool header for inputs. |

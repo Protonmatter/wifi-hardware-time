@@ -1,0 +1,50 @@
+{
+  "version": 1,
+  "scripts": [
+    {
+      "name": "Invoke-QualcommStaticInspection",
+      "path": "research/adapters/Invoke-QualcommStaticInspection.ps1",
+      "sha256": "1366F4ADA851CC5891365EBEC23EB8A45902AB0223642C1052FC5E396B215E18",
+      "owner": "Protonmatter",
+      "risk": "Low",
+      "validation": "python -m unittest discover -s tests -p test_static_inspection.py -v",
+      "rollback": "Inspect and remove only the chosen private output directory; no system state is changed."
+    },
+    {
+      "name": "Update-ResearchKnowledge",
+      "path": "research/evidence/Update-ResearchKnowledge.ps1",
+      "sha256": "4547D8E08593CB24DEF7FC2CD3218BD17F2FEDA8365EE0FE36E7C7071B87C62E",
+      "owner": "Protonmatter",
+      "risk": "Low",
+      "validation": "python -m unittest discover -s tests -p test_knowledge_index.py -v; python research/evidence/build_knowledge_index.py --check",
+      "rollback": "Restore only docs/knowledge/reference-index.md and docs/knowledge/research-index.json."
+    },
+    {
+      "name": "Observe-QutsRegistry",
+      "path": "research/acquisition/Observe-QutsRegistry.ps1",
+      "sha256": "3293E2AFCABB5B7B88F7DB7552AB4FA9736BE8BBC09A9DA4B50E982C8529454F",
+      "owner": "Protonmatter",
+      "risk": "Medium",
+      "validation": "PowerShell parser; tests/Test-QutsRegistryHelpers.ps1; tests/test_quts_registry_analysis.py. Saved 2026-10-04 attempt 06 still qualifies 20/20 controls and 12 attributed queries after the 2026-10-06 offline corrections. No new trace or firmware timing qualification.",
+      "rollback": "Stop or cancel only the unique WPR instance recorded in the private result.json. No device or service restart."
+    },
+    {
+      "name": "Observe-WifiDataPath",
+      "path": "research/acquisition/Observe-WifiDataPath.ps1",
+      "sha256": "216708A40FE911C1AD98BCBA22118CDF49FD642AA4A24695C9A1065AB575004D",
+      "owner": "Protonmatter",
+      "risk": "Medium",
+      "validation": "PowerShell parser/profile preview; tests/Test-WifiPathHelpers.ps1; bounded packet-only live run. Paired kernel tracing remains unvalidated.",
+      "rollback": "Stop/cancel only the unique WPR instance in result.json; wait for or terminate only the owned capture child. No adapter reset or profile change."
+    },
+    {
+      "name": "Invoke-DeviceServiceControl",
+      "path": "research/adapters/Invoke-DeviceServiceControl.ps1",
+      "sha256": "67238C1C7BEF44DE24EC2DC3F167B892E01F1303EECB113047A8B9DAF39236E8",
+      "owner": "Protonmatter",
+      "risk": "Medium",
+      "validation": "Offline ARM64 build/self-test, tests/Test-DeviceServiceControl.ps1 and tests/test_device_service_control.py; one elevated fixed-pattern GET passed. No firmware timing qualification.",
+      "rollback": "No configuration changes. Preserve private receipts before removing only the chosen generated artifacts directory; timeout is not proof of firmware drain."
+    }
+  ]
+}

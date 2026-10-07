@@ -2,6 +2,10 @@
 
 Why do standard Windows timestamp queries return error 23? Both callers still fail despite matching the inspected interface layouts. A reproduced status conversion shows that an invalid request can produce the same error as a CRC fault; this investigation alone does not identify the live failure source or qualify timestamp support.
 
+<!-- current-context:2026-10-04 -->
+**Current context (2026-10-04):** Vendor/private transport research continues alongside documented Windows APIs. No new hardware-to-QPC result is established by file inspection. See [current findings](../knowledge/current-findings.md).
+<!-- /current-context -->
+
 NDIS is the Windows network-driver framework; an OID identifies a driver query. An ABI defines binary argument and data layouts. A cross timestamp relates hardware and host counters; QPC is the Windows host counter. See the [glossary](../glossary.md).
 
 ## Contents

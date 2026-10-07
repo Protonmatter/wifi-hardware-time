@@ -2,6 +2,10 @@
 
 This historical delivery record explains the first offline evidence package shared with the application-clock project. It describes validators, fixtures and lifecycle rules, not a completed hardware clock. Later implementation and live experiments are linked separately so readers can follow progress without confusing an early software milestone with current qualification.
 
+<!-- current-context:2026-10-04 -->
+**Current context (2026-10-04):** A QUTS client-owned byte return is now located statically. Keep client ownership, server publication, firmware identity and timing accuracy as separate qualification states. See [current findings](../knowledge/current-findings.md).
+<!-- /current-context -->
+
 **Key terms:** A fixture is test input, often synthetic. A validator checks rules about that input. A lifecycle model describes behavior when a source starts, fails or changes; a model test is not a hardware transition. See the [glossary](../glossary.md).
 
 Historical delivery record: later host-clock implementation, live experiments and published validation are tracked in the [current gap ledger](../overview/gap-closure-ledger.md) and [research roadmap](../overview/2026-10-02-research-to-userspace-clock.md). Initial-stage CI and implementation statements below describe that stage only.

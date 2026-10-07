@@ -2,6 +2,10 @@
 
 Can private driver paths return Wi-Fi counters faster or report them automatically? Static analysis links counter reports to an averaged transmit delay and identifies automatic-report state changes. It finds no full-counter return in that path; reporting cadence, cleanup, packet export, and physical sampling times remain unqualified.
 
+<!-- current-context:2026-10-04 -->
+**Current context (2026-10-04):** The TSF sampling and response-association contract remains open. New diagnostic return interfaces do not automatically qualify a fresh TSF getter. See [current findings](../knowledge/current-findings.md).
+<!-- /current-context -->
+
 TSF (Timing Synchronization Function) is the Wi-Fi timer; SoC means system on chip. A vdev is a virtual wireless interface. TX completion reports transmit processing; PPDU names a physical-layer radio transmission. RVAs locate evidence within the exact binary. See the [glossary](../glossary.md).
 
 ## Contents

@@ -2,15 +2,21 @@
 
 Can Wi-Fi ranging supply the four timestamps needed to compare clocks? Saved results and driver analysis explain aggregate ranging output and identify an earlier internal measurement buffer. No supported export of the four absolute event times is established. Successful ranging therefore does not qualify clock offset, timestamp accuracy, or general packet timing.
 
+<!-- current-context:2026-10-04 -->
+**Current context (2026-10-04):** QXDM WLAN RTT definitions are a new schema lead. They have not been matched to a complete live four-event export from this adapter. See [current findings](../knowledge/current-findings.md).
+<!-- /current-context -->
+
 FTM (Fine Timing Measurement) is a Wi-Fi ranging exchange. RTT is round-trip time; an ACK is a frame acknowledging receipt. An aggregate combines several measurements into one result. See the [glossary](../glossary.md).
 
 ## Reports
 
 | File | Question answered |
 |---|---|
+| [ftm-ingress-to-owned-response.md](ftm-ingress-to-owned-response.md) | How does the decoded event reach FTM processing, when is it released, and where is the application handoff missing? |
 | [ftm-result-provenance.md](ftm-result-provenance.md) | Why can a successful callback contain zero measurements, and why is its variance field unqualified? |
 | [ftm-raw-access-followup.md](ftm-raw-access-followup.md) | What exists before aggregation, and which export contract is still missing? |
 | [ftm-notification-routing.md](ftm-notification-routing.md) | Do the inspected notification or completion routes carry that raw buffer? |
+| [ftm-buffer-ownership-and-identity.md](ftm-buffer-ownership-and-identity.md) | Who owns the complete response, when is its request byte reused, and which completion state validates parsing? |
 
 ## Four-event model versus observed output
 
@@ -31,8 +37,10 @@ sequenceDiagram
   A->>B: Later FTM frame: matched prior t1 / t4 and follow-up token
   Note over B: Full exchange needs local t2 / t3 and peer t1 / t4
   B-->>U: Observed API output: aggregate RTT, count, status, raw auxiliary fields
-  Note over U: Not exposed: four individual timestamps or clock mapping
+  Note over U: Current ranging callback: no four-time export or clock mapping
+  Note over B,U: Separate lead: QXDM WLAN definitions and QUTS owned bytes.<br/>Connection to this exchange is UNPROVEN
   Note over A,U: Model needs four valid times and rate correction.<br/>Delay asymmetry still limits offset estimation
+  Note over A,U: KEY: solid arrows model radio frames.<br/>Dashed arrow is observed aggregate delivery.<br/>Time flows downward within each separate clock
 ```
 
 Diagram key: solid arrows are modeled radio frames; the dashed arrow is the observed application result. Notes labeled **Model**, **Observed API output**, and **Not exposed** distinguish assumptions, findings, and limits without relying on color. Time labels belong to the local clock shown above each participant. Unequal delay in the two directions still limits clock-offset estimates even when all four times are available.

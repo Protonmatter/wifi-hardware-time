@@ -11,5 +11,8 @@ and within the stated target?"}
   G -->|No or unknown: current state| NO(["Keep conversion unavailable or experimental"])
   G -. "Yes, after independent validation" .-> OK(["Candidate for a scoped accuracy claim"])
   X["Wrong clock epoch, stale source or missing packet identity"] -->|reject| NO
+  T["QXDM fallback, QUTS interpolation<br/>or missing QDSS timestamp sentinel"] -->|reject as a hardware sample| NO
+  B["Owned bytes and 100 ns field units<br/>do not bound clock accuracy"] -. "separate evidence requirement" .-> M
+  KEY["KEY: UNKNOWN means no justified bound yet<br/>Solid arrows show required reasoning or rejection<br/>Dotted arrows require additional qualification"]
   classDef unknown fill:#fff2dd,stroke:#ac6b12,color:#241b0e;
-  class E,A,M,R,NO unknown;
+  class E,A,M,R,NO,T,B,KEY unknown;

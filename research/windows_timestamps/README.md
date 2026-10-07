@@ -2,6 +2,10 @@
 
 These tools query standard Windows timestamp interfaces and analyze where their requests and completion records travel. They help explain unsuccessful capability queries without assuming the hardware lacks timestamps. Native build helpers, trace collectors and offline analyzers have different effects; read the matching experiment before executing a command.
 
+<!-- current-context:2026-10-04 -->
+**Current context (2026-10-04):** Vendor/private transport research continues alongside documented Windows APIs. No new hardware-to-QPC result is established by file inspection. See [current findings](../../docs/knowledge/current-findings.md).
+<!-- /current-context -->
+
 ## Files
 
 | File | Role |

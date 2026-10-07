@@ -1,0 +1,96 @@
+"""File-only WLANLIB provenance and negative-input checks."""
+import contextlib
+import io
+import os
+from pathlib import Path
+import tempfile
+import unittest
+from unittest.mock import patch
+
+from research.adapters.inspect_wlanlib_dispatch import inspect_image, ioctl_fields, main
+
+
+class WlanlibDispatchTests(unittest.TestCase):
+    def test_methods_are_not_direction_or_safety_claims(self):
+        fields = ioctl_fields(0xC3502406)
+        self.assertEqual(fields, dict(device_type="0xc350", access_bits=0,
+                                     function="0x901", method="METHOD_OUT_DIRECT"))
+        self.assertEqual(ioctl_fields(0x81802C04)["method"], "METHOD_BUFFERED")
+
+    def test_selector_requires_uint32_without_coercion(self):
+        for value in (-1, 2**32, True, 1.0, "0x220182"):
+            with self.subTest(value=value), self.assertRaises(ValueError):
+                ioctl_fields(value)
+
+    def test_unknown_driver_never_reaches_pe_parsing(self):
+        with patch("research.adapters.inspect_wlanlib_dispatch.pefile.PE") as parse:
+            for value in (b"", b"MZ" + b"\0" * 1024):
+                with self.assertRaisesRegex(ValueError, "qualified build"):
+                    inspect_image(value)
+            parse.assert_not_called()
+
+    def test_existing_output_preserved_and_missing_input_leaves_no_receipt(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            output = root / "receipt.json"
+            for exists in (False, True):
+                if exists:
+                    output.write_text("preserve", encoding="utf-8")
+                with patch("sys.argv", ["inspect", "--driver", str(root / "absent.sys"),
+                                       "--output", str(output)]), contextlib.redirect_stderr(io.StringIO()):
+                    with self.assertRaises(SystemExit) as raised:
+                        main()
+                self.assertEqual(raised.exception.code, 1)
+                if exists:
+                    self.assertEqual(output.read_text(), "preserve")
+                else:
+                    self.assertFalse(output.exists())
+
+    @unittest.skipUnless(os.environ.get("WIFI_TIME_DRIVER_FIXTURE"), "Owned exact-build fixture not configured")
+    def test_owned_image_keeps_namespaces_and_qualification_separate(self):
+        data = Path(os.environ["WIFI_TIME_DRIVER_FIXTURE"]).read_bytes()
+        result = inspect_image(data)
+        selectors = {item["name"]: item for item in result["ioctl_selectors"]}
+        self.assertEqual(selectors["iwpriv_command"]["value"], "0x220182")
+        self.assertEqual(len(result["ioctl_selectors"]), 11)
+        self.assertEqual({item["namespace"] for item in result["other_constants"]},
+                         {"wmi_command_id", "wmi_event_id", "ntstatus"})
+        lifecycle = result["pending_request_lifecycle"]
+        self.assertEqual(lifecycle["dispatch"], "manual")
+        self.assertFalse(lifecycle["power_managed"])
+        self.assertEqual(lifecycle["queue_handle_offset"], "0x3c0")
+        self.assertEqual(lifecycle["separately_purged_queue_offset"], "0x3b0")
+        self.assertEqual(lifecycle["selected_callers"], ["0x329e8", "0x36c90"])
+        self.assertEqual({item["value"] for item in lifecycle["drain_status_literals"]}, {"0xc00002b6"})
+        self.assertEqual(len(lifecycle["instruction_checks"]), 13)
+        self.assertTrue(all(item["matched"] for item in lifecycle["instruction_checks"]))
+        for field in ("complete_call_coverage", "live_cancellation_qualified",
+                      "producer_rundown_qualified", "firmware_drain_qualified", "timing_producer_connected"):
+            self.assertFalse(lifecycle[field])
+        for field in ("live_request_sent", "runtime_mode_observed", "concurrent_copy_qualified",
+                      "timing_schema_qualified", "hardware_qpc_qualified"):
+            self.assertFalse(result[field])
+        with self.assertRaisesRegex(ValueError, "qualified build"):
+            inspect_image(data[:-1] + bytes([data[-1] ^ 1]))
+
+    @unittest.skipUnless(os.environ.get("WIFI_TIME_DRIVER_FIXTURE"), "Owned exact-build fixture not configured")
+    def test_pending_queue_instruction_and_status_fences(self):
+        # Bypass only the outer hash check in this test to exercise the inner
+        # evidence checks. Production always verifies the full file first.
+        import pefile
+        original = Path(os.environ["WIFI_TIME_DRIVER_FIXTURE"]).read_bytes()
+        pe = pefile.PE(data=original)
+        try:
+            for rva in (0x436D38, 0x11C588, 0x32A94, 0x32CAC, 0x36E68):
+                altered = bytearray(original)
+                altered[pe.get_offset_from_rva(rva)] ^= 1
+                with self.subTest(rva=hex(rva)), patch(
+                    "research.adapters.inspect_wlanlib_dispatch.validate_driver"
+                ), self.assertRaisesRegex(ValueError, "Unexpected scalar"):
+                    inspect_image(bytes(altered))
+        finally:
+            pe.close()
+
+
+if __name__ == "__main__":
+    unittest.main()

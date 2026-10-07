@@ -2,6 +2,10 @@
 
 What timing data does this Qualcomm adapter expose on Windows? Exact-build experiments recovered diagnostic counter reports and aggregate ranging results, while standard timestamp queries failed. Private acquisition remains quarantined after later completion-deadline failures; these findings do not establish a safe clock service, packet timestamp delivery, or calibrated accuracy.
 
+<!-- current-context:2026-10-04 -->
+**Current context (2026-10-04):** Later archive and installed-file inspection located QUTS client-owned byte returns and corrected vendor package/version assumptions; exact adapter-to-producer association remains open. See [current findings](../knowledge/current-findings.md).
+<!-- /current-context -->
+
 TSF (Timing Synchronization Function) is the Wi-Fi timer; FTM (Fine Timing Measurement) is a ranging exchange. ETW is Windows event tracing. An RVA is an address relative to a binary image. See the [glossary](../glossary.md) for IOCTL, SoC and other driver terms.
 
 Current status: private acquisition remains quarantined. The later

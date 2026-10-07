@@ -2,10 +2,16 @@
 
 These documents explain how clock reports are collected, checked and rejected when their source is uncertain. An earlier campaign passed, but the later private campaign remains quarantined. Three scans reproduced extra reports and all missed their completion deadline. Passive collection success does not qualify accurate clock conversion or authorize another private run.
 
+<!-- current-context:2026-10-04 -->
+**Current context (2026-10-04):** The private campaign remains quarantined. The new QUTS client ownership finding does not establish firmware drain, report association or a new live acquisition. See [current findings](../knowledge/current-findings.md).
+<!-- /current-context -->
+
 Start with the current results, then use the plans and historical reports for context. TSF is the Wi-Fi timing counter; quarantine means further private requests are blocked. See the [glossary](../glossary.md) for other terms.
 
 | Question | Read | Evidence and limit |
 |---|---|---|
+| What can a live packet capture reveal, and what required elevation? | [Packet capture and elevation](packet-capture-and-elevation.md) | 589 Ethernet packets with host timestamp options; kernel trace not collected after a canceled administrator launch |
+| Did the latest queries close timing or publication gaps? | [Timing qualification follow-up](timing-qualification-validation-2026-10-04.md) | Fresh documented queries returned 23; software tests passed; live timing and new-change hosted CI remain unqualified |
 | Why is private collection blocked? | [Quarantined campaign](private-campaign-2026-10-03-quarantine.md) | Live unmatched reports; rejected capture and retained quarantine |
 | Can ordinary scans produce similar reports? | [Scan results](scan-tsf-results-2026-10-03.md) | Three observed patterns; all three failed the four-second profile |
 | Does passive collection shut down cleanly? | [Passive validation](passive-and-retrieval-validation-2026-10-03.md) | One repaired live run; no private requests or safe ring getter |
