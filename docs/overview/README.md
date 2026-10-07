@@ -9,6 +9,7 @@ These pages explain what the project has demonstrated, what remains uncertain an
 ## Documents
 
 - [TSF-to-host bound: sub-millisecond proof design](2026-10-07-tsf-host-bound-design.md).
+- [TSF-to-host bound: implementation plan](2026-10-07-tsf-host-bound-plan.md).
 - [First hardware-backed clock: mini implementation plan](2026-10-03-first-hardware-clock-plan.md).
 - [Research-to-Userspace-Clock Implementation Plan](2026-10-02-research-to-userspace-clock.md).
 - [Qualification gap closure ledger](gap-closure-ledger.md).
