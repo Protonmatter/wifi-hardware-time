@@ -10,7 +10,7 @@ Find the calls, file names, terms and short strings recorded in this research. T
 
 ## Search
 
-Indexed **319 source files** and **9116 distinct terms**.
+Indexed **319 source files** and **9117 distinct terms**.
 
 The [JSON index](research-index.json) includes Python definitions/calls, C/Java/PowerShell call-shaped tokens, authored short strings and Markdown code terms. Vendor binaries, local artifacts, historical reproduction sources and generated indexes are excluded. Unresolved call-shaped tokens are explicitly labeled.
 
@@ -125,7 +125,7 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [docs/memory-ring/unmatched-tsf-and-memory-log.md](../../docs/memory-ring/unmatched-tsf-and-memory-log.md) | `11870e0953ca` |
 | [docs/overview/2026-10-02-research-to-userspace-clock.md](../../docs/overview/2026-10-02-research-to-userspace-clock.md) | `dfa65e864054` |
 | [docs/overview/2026-10-03-first-hardware-clock-plan.md](../../docs/overview/2026-10-03-first-hardware-clock-plan.md) | `76aa080d9cc0` |
-| [docs/overview/2026-10-07-tsf-host-bound-design.md](../../docs/overview/2026-10-07-tsf-host-bound-design.md) | `3dc4866a2d14` |
+| [docs/overview/2026-10-07-tsf-host-bound-design.md](../../docs/overview/2026-10-07-tsf-host-bound-design.md) | `09fa0f235671` |
 | [docs/overview/2026-10-07-tsf-host-bound-plan.md](../../docs/overview/2026-10-07-tsf-host-bound-plan.md) | `9f1493563e35` |
 | [docs/overview/OPERATIONS.md](../../docs/overview/OPERATIONS.md) | `325c7d5a27eb` |
 | [docs/overview/README.md](../../docs/overview/README.md) | `a8f2066f64c6` |
@@ -180,7 +180,7 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [research/acquisition/observation_lifecycle.py](../../research/acquisition/observation_lifecycle.py) | `38c030610f30` |
 | [research/acquisition/quts-registry.wprp](../../research/acquisition/quts-registry.wprp) | `1fc7a009f62c` |
 | [research/acquisition/run_acquisition_campaign.py](../../research/acquisition/run_acquisition_campaign.py) | `2441e402d286` |
-| [research/acquisition/run_bound_campaign.py](../../research/acquisition/run_bound_campaign.py) | `a1ff113dca66` |
+| [research/acquisition/run_bound_campaign.py](../../research/acquisition/run_bound_campaign.py) | `bdd1af0fe113` |
 | [research/acquisition/run_passive_observation.py](../../research/acquisition/run_passive_observation.py) | `73f59f63c534` |
 | [research/acquisition/run_scan_comparison.py](../../research/acquisition/run_scan_comparison.py) | `d9d4a3596ed5` |
 | [research/acquisition/wifi-path.wprp](../../research/acquisition/wifi-path.wprp) | `f04eb0db9934` |
@@ -296,7 +296,7 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [tests/test_analyze_latch.py](../../tests/test_analyze_latch.py) | `17461a88eb1e` |
 | [tests/test_analyze_tsf_series.py](../../tests/test_analyze_tsf_series.py) | `080e5ae955cc` |
 | [tests/test_beacon_consistency.py](../../tests/test_beacon_consistency.py) | `79827a84de5b` |
-| [tests/test_bound_campaign.py](../../tests/test_bound_campaign.py) | `671cfb9c9cfd` |
+| [tests/test_bound_campaign.py](../../tests/test_bound_campaign.py) | `1d35240a90ac` |
 | [tests/test_bracket_bound.py](../../tests/test_bracket_bound.py) | `ea61de1d279f` |
 | [tests/test_bss_reader.py](../../tests/test_bss_reader.py) | `165aff4e3b44` |
 | [tests/test_campaign_controller.py](../../tests/test_campaign_controller.py) | `4a67efa7608b` |

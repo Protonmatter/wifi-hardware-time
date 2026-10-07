@@ -32,8 +32,10 @@ TRACE_CAP_BYTES = 1000 * 1024 * 1024
 DOWNLOAD_URLS = ('https://proof.ovh.net/files/100Mb.dat', 'https://ash-speed.hetzner.com/100MB.bin')
 DOWNLOAD_STALL_S = 60
 USER_AGENT = 'wifi-hardware-time-load/1.0'
-# 256 KB buffers, 64 to 128 of them (at most 32 MiB), to absorb logging bursts under CPU load.
-TRACE_BUFFER_OPTIONS = ('-bs', '256', '-nb', '64', '128')
+# ETL files hold whole buffers flushed every second, so file growth scales with buffer size
+# (8 KB measured ~12 MiB/min, 256 KB ~103 MiB/min). Keep the 8 KB default size and raise the
+# count to 256-2048 buffers (at most 16 MiB) so bursts under CPU load are absorbed.
+TRACE_BUFFER_OPTIONS = ('-bs', '8', '-nb', '256', '2048')
 IDENTITY_EVERY = 10
 BEACON_EVERY_S = 10
 OWN_LOSS_LIMIT = 0.01

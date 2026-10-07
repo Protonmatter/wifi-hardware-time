@@ -49,6 +49,10 @@ class BoundCampaignTests(unittest.TestCase):
         size_kb = int(TRACE_BUFFER_OPTIONS[TRACE_BUFFER_OPTIONS.index('-bs') + 1])
         maximum = int(TRACE_BUFFER_OPTIONS[TRACE_BUFFER_OPTIONS.index('-nb') + 2])
         self.assertLessEqual(size_kb * maximum, 32 * 1024)  # at most 32 MiB of trace buffers
+        # ETL files are whole buffers flushed every second, so file growth scales with buffer size;
+        # 8 KB measured about 12 MiB/min, while 256 KB measured about 103 MiB/min.
+        self.assertEqual(size_kb, 8)
+        self.assertGreaterEqual(int(TRACE_BUFFER_OPTIONS[TRACE_BUFFER_OPTIONS.index('-nb') + 1]), 256)
 
     def test_argument_limits(self):
         base = ['--if-index', '5', '--condition', 'idle']
