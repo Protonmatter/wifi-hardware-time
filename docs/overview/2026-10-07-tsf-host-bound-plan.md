@@ -1173,7 +1173,7 @@ Write `docs/clock-models/tsf-host-bound-preview.md` with: an opening synopsis pa
 
 - [ ] **Step 3: Link it, regenerate the index, test and commit**
 
-Add `- [TSF-to-host bound preview](tsf-host-bound-preview.md).` to the documents list in `docs/clock-models/README.md`.
+Add a list item titled "TSF-to-host bound preview" that links `tsf-host-bound-preview.md` to the documents list in `docs/clock-models/README.md`.
 
 ```bash
 python research/evidence/build_knowledge_index.py --write

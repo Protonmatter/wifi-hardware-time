@@ -125,7 +125,7 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [docs/overview/2026-10-02-research-to-userspace-clock.md](../../docs/overview/2026-10-02-research-to-userspace-clock.md) | `dfa65e864054` |
 | [docs/overview/2026-10-03-first-hardware-clock-plan.md](../../docs/overview/2026-10-03-first-hardware-clock-plan.md) | `76aa080d9cc0` |
 | [docs/overview/2026-10-07-tsf-host-bound-design.md](../../docs/overview/2026-10-07-tsf-host-bound-design.md) | `82dd128b83f4` |
-| [docs/overview/2026-10-07-tsf-host-bound-plan.md](../../docs/overview/2026-10-07-tsf-host-bound-plan.md) | `9f55a8d8af25` |
+| [docs/overview/2026-10-07-tsf-host-bound-plan.md](../../docs/overview/2026-10-07-tsf-host-bound-plan.md) | `233ba5788263` |
 | [docs/overview/OPERATIONS.md](../../docs/overview/OPERATIONS.md) | `325c7d5a27eb` |
 | [docs/overview/README.md](../../docs/overview/README.md) | `a8f2066f64c6` |
 | [docs/overview/complete-event-2026-10-05/context-map.md](../../docs/overview/complete-event-2026-10-05/context-map.md) | `ea57333f0cba` |
