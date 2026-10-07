@@ -28,7 +28,12 @@ from research.clock_models.sample_screen import LISTEN_TIMEOUT_S, TIMING_KINDS
 
 MARKER_NAME = 'bound-campaign-quarantine.json'
 TRACE_CAP_BYTES = 1000 * 1024 * 1024
-DOWNLOAD_URL = 'https://speed.cloudflare.com/__down?bytes=100000000'
+# Public 100 MB test files, tried in order. Cloudflare's speed endpoint returned 403 to these clients.
+DOWNLOAD_URLS = ('https://proof.ovh.net/files/100Mb.dat', 'https://ash-speed.hetzner.com/100MB.bin')
+DOWNLOAD_STALL_S = 60
+USER_AGENT = 'wifi-hardware-time-load/1.0'
+# 256 KB buffers, 64 to 128 of them (at most 32 MiB), to absorb logging bursts under CPU load.
+TRACE_BUFFER_OPTIONS = ('-bs', '256', '-nb', '64', '128')
 IDENTITY_EVERY = 10
 BEACON_EVERY_S = 10
 OWN_LOSS_LIMIT = 0.01
@@ -68,28 +73,41 @@ def _save(path: Path, data: object) -> None:
     path.write_text(json.dumps(data, indent=2, allow_nan=False) + '\n', encoding='utf-8')
 
 
+def download_stalled(last_progress: float, now: float) -> bool:
+    return now - last_progress > DOWNLOAD_STALL_S
+
+
 def bound_workload(stop_path: Path, output: Path, max_seconds: int) -> int:
-    """SHA-256 10 ms on / 10 ms off, plus a looped HTTPS download."""
+    """SHA-256 10 ms on / 10 ms off, plus a looped HTTPS download that must keep progressing."""
     start, cycles, payload = time.monotonic(), 0, bytes(65536)
-    totals = dict(downloaded=0, errors=0)
+    totals = dict(downloaded=0, errors=0, last_progress=start)
     stop = threading.Event()
 
     def download() -> None:
+        attempt = 0
         while not stop.is_set():
+            url = DOWNLOAD_URLS[attempt % len(DOWNLOAD_URLS)]
             try:
-                with urllib.request.urlopen(DOWNLOAD_URL, timeout=30) as response:
+                request = urllib.request.Request(url, headers={'User-Agent': USER_AGENT})
+                with urllib.request.urlopen(request, timeout=30) as response:
                     while not stop.is_set():
                         chunk = response.read(65536)
                         if not chunk:
                             break
                         totals['downloaded'] += len(chunk)
+                        totals['last_progress'] = time.monotonic()
             except OSError:
                 totals['errors'] += 1
+                attempt += 1
                 time.sleep(1)
 
     thread = threading.Thread(target=download, daemon=True)
     thread.start()
+    stalled = False
     while not stop_path.exists() and time.monotonic() - start < max_seconds:
+        if download_stalled(totals['last_progress'], time.monotonic()):
+            stalled = True  # Fail the run rather than silently become CPU-only load.
+            break
         end = time.monotonic() + 0.010
         while time.monotonic() < end:
             hashlib.sha256(payload).digest()
@@ -98,11 +116,13 @@ def bound_workload(stop_path: Path, output: Path, max_seconds: int) -> int:
     stop.set()
     thread.join(timeout=35)
     wall = time.monotonic() - start
-    _save(output, dict(workload='sha256-10ms-on-10ms-off plus looped HTTPS download', url=DOWNLOAD_URL,
+    _save(output, dict(workload='sha256-10ms-on-10ms-off plus looped HTTPS download', urls=list(DOWNLOAD_URLS),
                        wall_seconds=wall, hash_operations=cycles, downloaded_bytes=totals['downloaded'],
-                       download_errors=totals['errors'],
+                       download_errors=totals['errors'], download_stalled=stalled,
                        mean_download_mbit_s=totals['downloaded'] * 8 / wall / 1e6 if wall else 0.0,
                        stop_requested=stop_path.exists()))
+    if stalled:
+        return 2
     return 0 if stop_path.exists() else 1
 
 
@@ -203,7 +223,7 @@ def campaign(args: argparse.Namespace) -> int:
     try:
         _save(folder / 'adapter-before.json', baseline)
         trace.start(['-p', PROVIDER, '0x2000000000000010', '0xff', '-o', str(folder / 'tsf.etl'), '-f', 'bin',
-                     '-max', '1024', '-rt', '-ct', 'perf', '-ft', '00:00:01', '-ets'])
+                     '-max', '1024', *TRACE_BUFFER_OPTIONS, '-rt', '-ct', 'perf', '-ft', '00:00:01', '-ets'])
         observer = Observer(session, args.if_index, folder, clock)
         observer.wait(2.5, gate)
         if not observer.ready or observer.association is None:

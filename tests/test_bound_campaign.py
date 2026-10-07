@@ -6,7 +6,8 @@ if __package__ in (None, ""):
 import subprocess
 import tempfile
 import unittest
-from research.acquisition.run_bound_campaign import BoundGate, loss_budget_exceeded, parse, remaining_sleep
+from research.acquisition.run_bound_campaign import (DOWNLOAD_URLS, TRACE_BUFFER_OPTIONS, BoundGate, download_stalled,
+                                                     loss_budget_exceeded, parse, remaining_sleep)
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -37,6 +38,17 @@ class BoundCampaignTests(unittest.TestCase):
         self.assertFalse(loss_budget_exceeded(5, 50))
         self.assertFalse(loss_budget_exceeded(1, 100))
         self.assertTrue(loss_budget_exceeded(2, 100))
+
+    def test_download_stall_detection_fails_fast(self):
+        self.assertFalse(download_stalled(last_progress=100.0, now=159.9))
+        self.assertTrue(download_stalled(last_progress=100.0, now=160.1))
+        self.assertTrue(all(url.startswith('https://') for url in DOWNLOAD_URLS))
+        self.assertGreaterEqual(len(DOWNLOAD_URLS), 2)
+
+    def test_trace_buffers_are_explicit_and_bounded(self):
+        size_kb = int(TRACE_BUFFER_OPTIONS[TRACE_BUFFER_OPTIONS.index('-bs') + 1])
+        maximum = int(TRACE_BUFFER_OPTIONS[TRACE_BUFFER_OPTIONS.index('-nb') + 2])
+        self.assertLessEqual(size_kb * maximum, 32 * 1024)  # at most 32 MiB of trace buffers
 
     def test_argument_limits(self):
         base = ['--if-index', '5', '--condition', 'idle']
