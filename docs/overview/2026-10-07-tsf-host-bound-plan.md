@@ -199,7 +199,7 @@ if __name__ == '__main__':
 
 - [ ] **Step 2: Run the tests and confirm they fail**
 
-Run: `python -m unittest tests.test_bracket_bound -v`
+Run: `python -m unittest discover -s tests -p test_bracket_bound.py -v`
 Expected: `ModuleNotFoundError: No module named 'research.clock_models.bracket_bound'`.
 
 - [ ] **Step 3: Implement the module**
@@ -343,7 +343,7 @@ def coverage(reports: list[SpanReport], start_qpc: int, end_qpc: int) -> Fractio
 
 - [ ] **Step 4: Run the tests and confirm they pass**
 
-Run: `python -m unittest tests.test_bracket_bound -v`
+Run: `python -m unittest discover -s tests -p test_bracket_bound.py -v`
 Expected: 7 tests `OK`.
 
 - [ ] **Step 5: Commit**
@@ -486,7 +486,7 @@ if __name__ == '__main__':
 
 - [ ] **Step 2: Run the tests and confirm they fail**
 
-Run: `python -m unittest tests.test_sample_screen -v`
+Run: `python -m unittest discover -s tests -p test_sample_screen.py -v`
 Expected: `ModuleNotFoundError: No module named 'research.clock_models.sample_screen'`.
 
 - [ ] **Step 3: Implement the module**
@@ -653,7 +653,7 @@ def screen(records: list[dict], requests: list[Request], qpc_hz: int) -> Screen:
 
 - [ ] **Step 4: Run the tests and confirm they pass**
 
-Run: `python -m unittest tests.test_sample_screen -v`
+Run: `python -m unittest discover -s tests -p test_sample_screen.py -v`
 Expected: 10 tests `OK`.
 
 - [ ] **Step 5: Commit**
@@ -723,7 +723,7 @@ if __name__ == '__main__':
 
 - [ ] **Step 2: Run the tests and confirm they fail**
 
-Run: `python -m unittest tests.test_soc_domain -v`
+Run: `python -m unittest discover -s tests -p test_soc_domain.py -v`
 Expected: `ModuleNotFoundError: No module named 'research.clock_models.soc_domain_test'`.
 
 - [ ] **Step 3: Implement the module**
@@ -764,7 +764,7 @@ def soc_domain(samples: list[Sample], ticks_per_unit: int = 10) -> dict:
 
 - [ ] **Step 4: Run the tests and confirm they pass**
 
-Run: `python -m unittest tests.test_soc_domain -v`
+Run: `python -m unittest discover -s tests -p test_soc_domain.py -v`
 Expected: 3 tests `OK`.
 
 - [ ] **Step 5: Commit**
@@ -827,7 +827,7 @@ if __name__ == '__main__':
 
 - [ ] **Step 2: Run the tests and confirm they fail**
 
-Run: `python -m unittest tests.test_beacon_consistency -v`
+Run: `python -m unittest discover -s tests -p test_beacon_consistency.py -v`
 Expected: `ModuleNotFoundError`.
 
 - [ ] **Step 3: Implement the module**
@@ -874,7 +874,7 @@ def check_beacons(beacons: list[Beacon], spans: list[SpanReport]) -> dict:
 
 - [ ] **Step 4: Run the tests and confirm they pass**
 
-Run: `python -m unittest tests.test_beacon_consistency -v`
+Run: `python -m unittest discover -s tests -p test_beacon_consistency.py -v`
 Expected: 3 tests `OK`.
 
 - [ ] **Step 5: Commit**
@@ -969,7 +969,7 @@ if __name__ == '__main__':
 
 - [ ] **Step 2: Run the tests and confirm they fail**
 
-Run: `python -m unittest tests.test_analyze_bound_run -v`
+Run: `python -m unittest discover -s tests -p test_analyze_bound_run.py -v`
 Expected: `ModuleNotFoundError`.
 
 - [ ] **Step 3: Implement the module**
@@ -1140,7 +1140,7 @@ if __name__ == '__main__':
 
 - [ ] **Step 4: Run the tests and confirm they pass**
 
-Run: `python -m unittest tests.test_analyze_bound_run -v`
+Run: `python -m unittest discover -s tests -p test_analyze_bound_run.py -v`
 Expected: 3 tests `OK`.
 
 - [ ] **Step 5: Run the full suite and commit**
@@ -1238,7 +1238,7 @@ if __name__ == '__main__':
 
 - [ ] **Step 2: Run the tests and confirm they fail**
 
-Run: `python -m unittest tests.test_bss_reader -v`
+Run: `python -m unittest discover -s tests -p test_bss_reader.py -v`
 Expected: `ModuleNotFoundError`.
 
 - [ ] **Step 3: Implement the module**
@@ -1385,7 +1385,7 @@ class BssReader:
 
 - [ ] **Step 4: Run the tests and confirm they pass**
 
-Run: `python -m unittest tests.test_bss_reader -v`
+Run: `python -m unittest discover -s tests -p test_bss_reader.py -v`
 Expected: 3 tests `OK`.
 
 - [ ] **Step 5: Live read-only smoke (no elevation, public API only)**
@@ -1480,7 +1480,7 @@ if __name__ == '__main__':
 
 - [ ] **Step 2: Run the tests and confirm they fail**
 
-Run: `python -m unittest tests.test_bound_campaign -v`
+Run: `python -m unittest discover -s tests -p test_bound_campaign.py -v`
 Expected: `ModuleNotFoundError`.
 
 - [ ] **Step 3: Implement the controller**
@@ -1807,7 +1807,7 @@ if __name__ == '__main__':
 
 - [ ] **Step 4: Run the tests and confirm they pass**
 
-Run: `python -m unittest tests.test_bound_campaign -v`
+Run: `python -m unittest discover -s tests -p test_bound_campaign.py -v`
 Expected: 5 tests `OK`.
 
 - [ ] **Step 5: Build the native helpers into this worktree's `artifacts/`**
