@@ -33,7 +33,7 @@ See the [glossary](../glossary.md) for other project terms.
 
 **Goal (selected 2026-10-07):** the current Qualcomm machine tracks its associated access point's TSF with absolute error below 1,000 us at a stated QPC instant.
 
-**Equipment:** the laptop and its existing access point only. No second node, GPS/PPS or wired reference is available (user decision, 2026-10-07).
+**Equipment:** the laptop and its existing access point only. No second node, GPS/PPS or wired reference is available (user decision, 2026-10-07). The access point is a consumer router without shell access, so its TSF cannot be read independently on the access point itself.
 
 **The claim has two links:**
 
@@ -62,7 +62,7 @@ The bound holds only if these conditions hold. Each one has its own test, and a 
 
 | Condition | Test | Failure handling |
 |---|---|---|
-| **Attribution:** each report answers the request in its window | Exactly one request in flight. The next request waits for the matching report or the timeout. Any report without an outstanding request, or a second report for one request, is a violation. If Phase 0 recovers the report-type field, it must indicate a TSF report. | Stop the run and quarantine it |
+| **Attribution:** each report answers the request in its window | Exactly one request in flight. Other activity, including scans, also produces TSF reports, so reports are classified rather than assumed to be ours: a report outside every window is **foreign** and counted; two reports inside one window reject that sample; a window that times out records an **own loss**. If Phase 0 shows that foreign reports carry a different vdev, or recovers the report-type field, that filter is applied first. | Foreign reports do not stop the run. The residual risk, an own loss coinciding with a foreign report inside the same window, is estimated as own-loss count x foreign-report rate x mean window width and reported per run |
 | **Freshness:** action 4 returns a newly captured value | For consecutive samples `i` and `j`, with QPC converted to microseconds, `T_j - T_i` must lie inside `[0.9999 * (L_j - U_i) - 1, 1.0001 * (U_j - L_i) + 1]`. The fixed 100 ppm band exceeds any crystal tolerance, uses no fitted value, and still exposes a cached value by seconds. Repeated values or regressions are violations. | Reject the sample. More than 1% rejected in a run fails the freshness condition for that run |
 | **Shared clock:** station TSF equals access point TSF | Assumption based on the 802.11 rule above. Coarse check: each public-cache beacon timestamp (`WlanGetNetworkBssList`) must not exceed the station TSF predicted for that query's QPC time by more than 1,000 us. A beacon can't be stamped after the instant it is read. | Any violation stops the analysis. The shared-clock link is reported as falsified |
 
@@ -83,10 +83,12 @@ The bound holds only if these conditions hold. Each one has its own test, and a 
 - The vendor WPP package's level `0xff`, full-logging and trigger scripts change extra driver state and restart the adapter, so they are unsuitable.
 - The vendor script enables firmware diagnostics only for `DEV_1101`. This adapter is `DEV_1107`.
 
-**Remaining offline question (about half a day, Ghidra, read-only):**
+**Remaining offline questions (about half a day, read-only):**
 
 1. Find the callers of the driver's two generic 16-byte hex-dump format strings, and of the format string `receive WMI_VDEV_TSF_REPORT_EVENTID on %d, tsf: %lu %lu`.
 2. Determine which debug level and component bits gate each caller.
+3. In the saved scan-experiment and campaign captures, compare the logged vdev of reports that followed our requests with reports produced during scans. A consistent difference becomes the first attribution filter in section 3.
+4. Any raw capture must record the actual received length separately from the decoded 60-byte layout. If firmware sends 48 bytes, the words the driver pads to reach 60 bytes (including the candidate TQM words at `0x30` and `0x34`) are not firmware output.
 
 **Outcomes:**
 
@@ -103,7 +105,7 @@ Phase 0 is time-boxed. It must not grow into another open-ended search for a raw
 |---|---|
 | Firmware action | 4 only. Never 3, 5 or 6 |
 | Requests in flight | One |
-| Report timeout | 5 seconds; a timeout stops the run |
+| Report timeout | 5 seconds. A timeout rejects the sample and counts an own loss; more than 1% own losses stops the run |
 | Request spacing | Nominal 2 seconds, never below the earlier 500 ms minimum. Actual spacing is recorded; the earlier campaign achieved about 4 seconds |
 | Run length | 60 minutes idle, then 60 minutes under load |
 | Load | The earlier campaign's SHA-256 CPU workload (10 ms work, 10 ms sleep), plus a looped HTTPS download from `https://speed.cloudflare.com/__down?bytes=100000000`, with throughput recorded |
@@ -117,8 +119,8 @@ Phase 0 is time-boxed. It must not grow into another open-ended search for a raw
 
 - the adapter is not Up, or the driver hash changes;
 - the connected BSSID, channel or PHY changes;
-- an unsolicited or duplicate report arrives;
-- a request fails or times out;
+- a report cannot be decoded;
+- a request call fails, or own losses exceed 1% of requests;
 - the trace reports lost events or buffers;
 - the trace file reaches its cap;
 - a controller operation exceeds its 5-second supervisory deadline.
@@ -141,6 +143,7 @@ Phase 0 is time-boxed. It must not grow into another open-ended search for a raw
 - median, p95 and maximum proven error over all feasible windows;
 - share of run time covered by feasible windows;
 - count of rejected samples, by reason;
+- foreign-report count and rate, own-loss count, and the estimated misattributed-sample count;
 - infeasible-window count and positions;
 - SoC domain test result, and the unconstrained SoC-to-QPC rate;
 - beacon-check violation count;
@@ -155,6 +158,7 @@ These are fixed before any collection and must not change after seeing data.
 - every feasible window's maximum proven error is below 1,000 us;
 - feasible windows cover at least 90% of the run's duration;
 - rejected samples are at most 1% of samples;
+- the estimated number of misattributed samples (section 3) is below 0.05 per run;
 - the beacon check has zero violations.
 
 A proven error of 100 us or less is reported as a stretch result, not as a pass condition. A run stopped by a stop condition is a failed run, not a pass with a smaller sample.
@@ -184,8 +188,9 @@ Branch `prove-tsf-host-bound`, created from `d1055a1`, with its own pull request
 Each module is written test-first against synthetic fixtures. Required rejection fixtures:
 
 - a stale value repeated across two windows;
-- a report arriving with no outstanding request;
-- a duplicate report;
+- a foreign report outside every window, which must be counted without stopping the run;
+- two reports inside one window, which must reject that sample;
+- an own loss followed by a foreign report in the next window, which must feed the misattribution estimate;
 - an epoch change inside a run;
 - an infeasible window;
 - a beacon timestamp ahead of the predicted station TSF;
@@ -209,3 +214,4 @@ No live request is sent until the modules and their tests pass, Phase 0 is compl
 - **[Hardware-route decision](../evidence/hardware-route-decision-2026-10-06.md):** the complete-event route remains no-go. This design does not depend on it. It uses the already exercised action-4 request and its logged report.
 - **[Counter-rate identifiability](../clock-models/counter-rate-identifiability.md):** the 18 existing action-4 samples show about 7.3 to 8.0 ppm between TSF and SoC increments and a 176 to 194-unit spread in their difference. This campaign targets about 900 to 1,800 samples per run so those observations can be tested rather than re-fitted.
 - **`userspace-clock`:** no provider is enabled by this design. A passing result supports a separate provider proposal.
+- **Gap register (2026-10-07, Codex planning output):** this design is one concrete attempt at G02, G04, G20 and G21, and partially addresses G03, G06, G08, G24 and G26. G01 and G09 (an independent access point comparison) cannot be closed with a consumer router and no second reference, which is why the shared-clock link stays an assumption. The alternative routes G30 to G54 (QUTS, QMSL, WPP raw bytes, FTM, QDSS, ART2/UTF, packet log, MLO and CAPTUREH) are deferred until this campaign reports a result.
