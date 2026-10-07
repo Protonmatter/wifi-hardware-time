@@ -27,7 +27,7 @@ from research.acquisition.campaign_gate import ReportGate
 from research.clock_models.sample_screen import LISTEN_TIMEOUT_S, TIMING_KINDS
 
 MARKER_NAME = 'bound-campaign-quarantine.json'
-TRACE_CAP_BYTES = 250 * 1024 * 1024
+TRACE_CAP_BYTES = 1000 * 1024 * 1024
 DOWNLOAD_URL = 'https://speed.cloudflare.com/__down?bytes=100000000'
 IDENTITY_EVERY = 10
 BEACON_EVERY_S = 10
@@ -203,7 +203,7 @@ def campaign(args: argparse.Namespace) -> int:
     try:
         _save(folder / 'adapter-before.json', baseline)
         trace.start(['-p', PROVIDER, '0x2000000000000010', '0xff', '-o', str(folder / 'tsf.etl'), '-f', 'bin',
-                     '-max', '256', '-rt', '-ct', 'perf', '-ft', '00:00:01', '-ets'])
+                     '-max', '1024', '-rt', '-ct', 'perf', '-ft', '00:00:01', '-ets'])
         observer = Observer(session, args.if_index, folder, clock)
         observer.wait(2.5, gate)
         if not observer.ready or observer.association is None:

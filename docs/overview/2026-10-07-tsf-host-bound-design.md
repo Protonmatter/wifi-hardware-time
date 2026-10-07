@@ -120,7 +120,7 @@ Phase 0 is time-boxed. It must not grow into another open-ended search for a raw
 | Request spacing | Nominal 2 seconds, never below the earlier 500 ms minimum. Actual spacing is recorded; the earlier campaign achieved about 4 seconds |
 | Run length | 60 minutes idle, then 60 minutes under load |
 | Load | The earlier campaign's SHA-256 CPU workload (10 ms work, 10 ms sleep), plus a looped HTTPS download from `https://speed.cloudflare.com/__down?bytes=100000000`, with throughput recorded |
-| Trace session | New, uniquely named and owned. QPC event clock, frequency recorded. One sequential file capped at 256 MiB; reaching the cap stops the run |
+| Trace session | New, uniquely named and owned. QPC event clock, frequency recorded. One sequential file capped at 1,024 MiB (run stops at 1,000 MiB); reaching the cap stops the run. The first 60-minute idle attempt on 2026-10-07 stopped at the original 250 MiB cap after about 25 minutes, because the trace grows by 10 to 12 MiB per minute |
 | Beacon check | Public `WlanGetNetworkBssList` read every 10 seconds, using the existing cache collector's identity checks |
 | Elevation | One UAC approval per run |
 

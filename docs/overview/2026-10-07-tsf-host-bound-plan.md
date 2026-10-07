@@ -39,7 +39,7 @@ This plan turns the [TSF-to-host bound design](2026-10-07-tsf-host-bound-design.
 - Freshness band: **100 ppm**, plus 1 us rounding, with no fitted values.
 - Sliding analysis spans: **60 s**, step **10 s**, at least **3** samples.
 - Pass criteria (both idle and load): maximum proven error below 1,000 us; feasible coverage at least 90%; rejected samples at most 1%; estimated misattributed samples below 0.05; beacon check with at least one check and zero violations.
-- Trace: WlanLogger `{bb6f5b93-635c-47be-816f-e895e77064a8}`, keywords `0x2000000000000010`, level `0xff`, QPC clock, one sequential file, run stops at 250 MiB.
+- Trace: WlanLogger `{bb6f5b93-635c-47be-816f-e895e77064a8}`, keywords `0x2000000000000010`, level `0xff`, QPC clock, one sequential file, run stops at 1,000 MiB (raised from 250 MiB after the first 60-minute attempt filled it in about 25 minutes).
 - Live runs need Administrator rights and explicit `--execute`; any stop writes `artifacts/bound-campaign-quarantine.json`, which the tool never removes.
 - Exact arithmetic (`fractions.Fraction`) for every bound; floats only for display.
 - Raw captures stay under `artifacts/` (git-ignored) and the private evidence repository. Never commit captures, BSSIDs or SSIDs.
