@@ -1,6 +1,7 @@
 """Synthetic rejection tests; no device access or hardware qualification."""
 from copy import deepcopy
 from dataclasses import replace
+from itertools import permutations
 import json
 from pathlib import Path
 import struct
@@ -92,6 +93,33 @@ class AssociationTests(unittest.TestCase):
         f = fixture()
         f["events"].extend([a.Registry(900, 999, 999, 23, 0, 50, ""),
                             a.Registry(901, 999, 999, 22, 0, 50, PATH)])
+        self.assertTrue(a.analyze(**f)["live_query_callsite_validated"])
+
+    def test_tied_lifecycle_order_cannot_bind_a_later_query(self):
+        tied = [a.Registry(900, 999, 999, 23, 0, 50, ""),
+                a.Registry(900, 999, 999, 22, 0, 50, PATH)]
+        for order in permutations(tied):
+            with self.subTest(order=tuple(e.opcode for e in order)):
+                f = fixture()
+                f["events"].extend(order)
+                self.assertFalse(a.analyze(**f)["live_query_callsite_validated"])
+
+    def test_tied_lifecycle_needs_a_later_delete_and_create_to_recover(self):
+        for opcode in (22, 24, 25):
+            with self.subTest(opcode=opcode):
+                f = fixture()
+                f["events"].extend([a.Registry(900, 999, 999, 23, 0, 50, ""),
+                                    a.Registry(900, 999, 999, 22, 0, 50, PATH),
+                                    a.Registry(910, 999, 999, opcode, 0, 50, PATH)])
+                self.assertFalse(a.analyze(**f)["live_query_callsite_validated"])
+                f["events"].extend([a.Registry(920, 999, 999, 23, 0, 50, ""),
+                                    a.Registry(921, 999, 999, 22, 0, 50, PATH)])
+                self.assertTrue(a.analyze(**f)["live_query_callsite_validated"])
+
+    def test_tied_lifecycle_of_different_keys_does_not_reject_target(self):
+        f = fixture()
+        f["events"].extend([a.Registry(900, 999, 999, 22, 0, 60, PATH + "other"),
+                            a.Registry(900, 999, 999, 22, 0, 50, PATH)])
         self.assertTrue(a.analyze(**f)["live_query_callsite_validated"])
 
     def test_missing_start_end_or_late_control_does_not_qualify(self):

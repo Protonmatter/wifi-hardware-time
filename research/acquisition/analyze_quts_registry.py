@@ -146,13 +146,17 @@ def analyze(header: dict[str, Any], events: list[Registry | Stack], before: dict
         if isinstance(e, Stack):
             stacks[e.pid, e.tid, e.qpc].append(e)
     identities = Counter((e.pid, e.tid, e.qpc) for e in registry if e.opcode == 16)
-    lifecycle_instants = {(e.key, e.qpc) for e in registry if e.opcode in (22, 23, 24, 25)}
+    lifecycle_counts = Counter((e.key, e.qpc) for e in registry if e.opcode in (22, 23, 24, 25))
     key_paths: dict[int, str | None] = {}
     candidates, matched = 0, 0
     rejected: Counter[str] = Counter()
     statuses: Counter[str] = Counter()
     for e in registry:
-        if e.opcode == 23:  # global KCB delete, not an individual handle close
+        if e.opcode in (22, 23, 24, 25) and lifecycle_counts[e.key, e.qpc] > 1:
+            # Equal timestamps do not order a key's lifecycle across ETW buffers.
+            # Poison this generation until a later distinct delete/create pair.
+            key_paths[e.key] = None
+        elif e.opcode == 23:  # global KCB delete, not an individual handle close
             key_paths.pop(e.key, None)
         elif e.opcode in (22, 24, 25) and e.status == 0:
             prior = key_paths.get(e.key)
@@ -161,7 +165,7 @@ def analyze(header: dict[str, Any], events: list[Registry | Stack], before: dict
             else:
                 key_paths[e.key] = e.name
         elif e.opcode == 16 and e.pid in bases and e.name == "QCDeviceControlFile":
-            if (e.key, e.qpc) in lifecycle_instants:
+            if (e.key, e.qpc) in lifecycle_counts:
                 rejected["ambiguous_key_lifecycle_order"] += 1
                 continue
             path = key_paths.get(e.key)

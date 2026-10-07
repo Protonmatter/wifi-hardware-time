@@ -223,6 +223,9 @@ $repoRoot = (Get-Location).Path
   decompilation and 4,096 instructions per function. Truncation is recorded.
 - Outputs: `xrefs.tsv`, `receipt.tsv`, private `*.asm.txt` and `*.c.txt` files.
   Read the receipt and log: Ghidra can return exit 0 despite a script error.
+  The 2026-10-06 review correction rejects seeds that resolve no functions before
+  creating output. A success marker requires a nonempty resolved selection;
+  per-function instruction truncation and decompiler warnings still need review.
 - Permissions: ordinary file access. No elevation or live capture.
 - Rollback: close the research project and remove only its local output/project
   if no longer needed. Keep proprietary exports out of Git.

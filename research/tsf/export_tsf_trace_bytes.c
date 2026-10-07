@@ -96,5 +96,6 @@ int wmain(int argc,wchar_t **argv) {
     closed=CloseTrace(trace);
     printf("{\"kind\":\"summary\",\"events\":%llu,\"wlan_events\":%llu,\"exported\":%llu,\"payload_bytes\":%llu,\"process_status\":%lu,\"close_status\":%lu,\"bound_failure\":%s}\n",
         total,wlan,emitted,payload_bytes,status,closed,failed?"true":"false");
+    if (fflush(stdout) == EOF) return 1;
     return status || closed || failed || ferror(stdout) ? 1 : 0;
 }

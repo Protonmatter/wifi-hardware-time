@@ -48,7 +48,6 @@ public class TraceQualcommPacketlog extends GhidraScript {
             seeds.add(address);
         }
         Path output = Path.of(args[0]).toAbsolutePath();
-        Files.createDirectory(output);
         List<String> refs = new ArrayList<>();
         refs.add("target\tfrom\ttype\tcontaining_function");
         Set<Function> functions = new LinkedHashSet<>();
@@ -65,7 +64,9 @@ public class TraceQualcommPacketlog extends GhidraScript {
                 if (caller != null) { functions.add(caller); }
             }
         }
+        if (functions.isEmpty()) { throw new IllegalStateException("No functions resolved from the seeds"); }
         if (functions.size() > 96) { throw new IllegalStateException("Function bound exceeded"); }
+        Files.createDirectory(output);
         Files.write(output.resolve("xrefs.tsv"), refs, StandardCharsets.UTF_8,
             StandardOpenOption.CREATE_NEW);
         List<String> receipt = new ArrayList<>();

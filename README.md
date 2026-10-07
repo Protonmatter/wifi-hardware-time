@@ -2,8 +2,8 @@
 
 This project asks whether Wi-Fi hardware can provide trustworthy timestamps for applications and synchronized clocks. We have recovered useful diagnostic data, but have not demonstrated calibrated synchronization. The research is organized by the question each experiment answers, with its scripts, evidence limits and diagrams linked together.
 
-<!-- current-context:2026-10-04 -->
-**Current context (2026-10-04):** Current findings now include complete vendor package inventories, QUTS client ownership and a correction ledger. Historical acquisitions retain their original scope and limits. See [current findings](docs/knowledge/current-findings.md).
+<!-- current-context:2026-10-06 -->
+**Current context (2026-10-06):** The current Qualcomm complete-event route is no-go pending demonstrated producer access. Static QMSL tracing is complete; diagnostic replay and host API acceptance have local results in the downstream SDK. WPP supplies collection leads with explicit state effects. See [current findings](docs/knowledge/current-findings.md) and the [qualification ledger](docs/overview/gap-closure-ledger.md) for review, publication and hardware limits.
 <!-- /current-context -->
 
 ## Contents
@@ -23,6 +23,7 @@ This project asks whether Wi-Fi hardware can provide trustworthy timestamps for 
 - View every current workflow: [diagram gallery](docs/knowledge/workflow-diagrams.md).
 - New to the subject: [reading guide](docs/README.md) and [glossary](docs/glossary.md).
 - Want the outcome: [qualification ledger](docs/overview/gap-closure-ledger.md). *Qualification* means evidence supports a particular claim under stated conditions.
+- Reviewing the accumulated change: [PR #3 software review and corrections](docs/overview/pr3-review-2026-10-06.md), with scope, reproduced findings and publication limits.
 - Want the workflow: [packet-to-clock diagrams](docs/clock-models/packet-to-clock-map.md).
 - Want to reproduce work: [operations](docs/overview/OPERATIONS.md) and [script/execution catalog](docs/overview/validation-execution-catalog.md).
 - Using older commands: [file-location guide](docs/overview/repository-layout.md). Paths changed; old live-launch manifests must not be reused.

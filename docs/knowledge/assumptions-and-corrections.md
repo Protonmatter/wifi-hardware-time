@@ -69,6 +69,14 @@ Several plausible shortcuts became incorrect when we followed the bytes or repea
 
 ## Vendor packages and application returns
 
+The [2026-10-06 QMSL 6.1.365.1 trace](../adapters/qmsl-runtime-365.md) supersedes
+runtime-absence statements for that installation snapshot. It closes the
+selected worker/listener ownership connection, not the hardware route. The
+[current decision](../evidence/hardware-route-decision-2026-10-06.md) remains
+no-go until supported/vendor/instrumented producer access, exact Wi-Fi attribution
+and bounded lifecycle are established. Different weak-name assembly-reference
+versions alone do not require a binding redirect.
+
 The supplied QDART runtime adds the following exact-version corrections; its
 6.1.48.1 behavior does not establish behavior of the installed suite's dependencies.
 

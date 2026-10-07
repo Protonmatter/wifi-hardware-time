@@ -208,8 +208,9 @@ there is no device configuration to restore.
   or firmware acquisition occurred.
 - Private replay evidence is under `artifacts/source-operation-record-20261005/`.
   It is not public Git content and is not an independent timing reference.
-- These changes are local until separately published. Hosted CI for `df71460`
-  covers the preceding revision, not this source-record layer.
+- At this experiment's original validation checkpoint, these changes were local
+  and hosted CI for `df71460` covered the preceding revision. Current publication
+  and review status are tracked in the [gap ledger](../overview/gap-closure-ledger.md).
 
 The remaining hardware dependency is still a complete producer-owned event with
 demonstrated source validity, publication, identity and lifetime. This software

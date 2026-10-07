@@ -61,18 +61,46 @@ function Invoke-ReadControls([string]$Phase,[string]$DriverKey){
     $controls | ConvertTo-Json -Depth 4 | Set-Content -LiteralPath (Join-Path $outputRoot 'positive-controls.json') -Encoding UTF8
 }
 
-function Invoke-BoundedWpr([string[]]$Arguments){
+function Invoke-BoundedWpr([string[]]$Arguments,[ValidateRange(100,30000)][int]$TimeoutMs=30000){
     $script:commandCount++
     $stem=Join-Path $outputRoot ('wpr-'+$script:commandCount)
-    # These arguments are locally constructed, with no embedded quotes permitted.
-    foreach($arg in $Arguments){if($arg.Contains('"')){throw 'Embedded quote in WPR argument'}}
+    # Reject arguments that cannot use this deliberately restricted quoting form.
+    foreach($arg in $Arguments){if($arg.Contains('"') -or $arg.EndsWith('\')){throw 'Unsupported WPR argument quoting'}}
     $quoted=@($Arguments | ForEach-Object {'"'+$_+'"'}) -join ' '
-    $p=Start-Process -FilePath $wpr -ArgumentList $quoted -WindowStyle Hidden -PassThru -RedirectStandardOutput ($stem+'.stdout.txt') -RedirectStandardError ($stem+'.stderr.txt')
+    $p=New-Object Diagnostics.Process
+    $started=$false
+    $stdout=$null
+    $stderr=$null
     try {
-        if(-not $p.WaitForExit(30000)){$p.Kill();$p.WaitForExit();throw 'WPR command exceeded 30 seconds'}
+        $p.StartInfo.FileName=$wpr
+        $p.StartInfo.Arguments=$quoted
+        $p.StartInfo.UseShellExecute=$false
+        $p.StartInfo.CreateNoWindow=$true
+        $p.StartInfo.RedirectStandardOutput=$true
+        $p.StartInfo.RedirectStandardError=$true
+        if(-not $p.Start()){throw 'WPR child did not start'}
+        $started=$true
+        $stdout=$p.StandardOutput.ReadToEndAsync()
+        $stderr=$p.StandardError.ReadToEndAsync()
+        if(-not $p.WaitForExit($TimeoutMs)){throw 'WPR command exceeded its deadline'}
         if($p.ExitCode -ne 0){throw ('WPR failed with exit '+$p.ExitCode+'; see '+$stem)}
         return $stem
-    } finally {$p.Dispose()}
+    } finally {
+        try {
+            if($started -and -not $p.HasExited){
+                $p.Kill()
+                if(-not $p.WaitForExit(5000)){throw 'WPR owned-child termination unconfirmed'}
+            }
+            if($null -ne $stdout){
+                if(-not $stdout.Wait(5000)){throw 'WPR stdout did not close'}
+                [IO.File]::WriteAllText(($stem+'.stdout.txt'),$stdout.Result)
+            }
+            if($null -ne $stderr){
+                if(-not $stderr.Wait(5000)){throw 'WPR stderr did not close'}
+                [IO.File]::WriteAllText(($stem+'.stderr.txt'),$stderr.Result)
+            }
+        } finally {$p.Dispose()}
+    }
 }
 
 function Get-IdentitySnapshot {

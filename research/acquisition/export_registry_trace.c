@@ -86,5 +86,6 @@ int wmain(int argc,wchar_t **argv){
     status=ProcessTrace(&trace,1,NULL,NULL);closed=CloseTrace(trace);
     printf("{\"kind\":\"summary\",\"process_status\":%lu,\"close_status\":%lu,\"bound_failure\":%s,\"events\":%llu,\"registry_total\":%llu,\"stack_total\":%llu,\"exported\":%llu,\"first_registry\":\"%lld\",\"last_registry\":\"%lld\"}\n",
         status,closed,failed?"true":"false",total,registry_total,stack_total,exported,first_registry,last_registry);
+    if(fflush(stdout)==EOF)return 1;
     return status||closed||failed||ferror(stdout)?1:0;
 }

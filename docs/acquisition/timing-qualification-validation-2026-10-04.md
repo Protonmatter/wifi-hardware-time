@@ -1,6 +1,6 @@
 # Timing qualification: live query results and remaining dependencies
 
-A fresh, bounded Windows query run returned no timestamp capabilities or hardware-to-host sample. Wi-Fi remained Up on the same exact driver. All 206 offline tests passed, but firmware sampling, live buffer publication and synchronization accuracy remain unqualified. The latest hosted CI success covers the earlier committed revision; the new local research changes still need publication before GitHub can test them.
+A fresh, bounded Windows query run returned no timestamp capabilities or hardware-to-host sample. Wi-Fi remained Up on the same exact driver. All 206 offline tests passed, but firmware sampling, live buffer publication and synchronization accuracy remain unqualified. At this report's initial validation checkpoint, hosted CI covered the preceding committed revision. Current publication and review status are tracked in the [gap ledger](../overview/gap-closure-ledger.md).
 
 <!-- current-context:2026-10-04 -->
 **Current context (2026-10-04):** The private campaign remains quarantined. The new QUTS client ownership finding does not establish firmware drain, report association or a new live acquisition. See [current findings](../knowledge/current-findings.md).

@@ -22,10 +22,10 @@
     {
       "name": "Observe-QutsRegistry",
       "path": "research/acquisition/Observe-QutsRegistry.ps1",
-      "sha256": "525DAD8F8FE3853BE69351FD440CD9471941D6B1F60AA2878BEE48E7AD67C956",
+      "sha256": "3293E2AFCABB5B7B88F7DB7552AB4FA9736BE8BBC09A9DA4B50E982C8529454F",
       "owner": "Protonmatter",
       "risk": "Medium",
-      "validation": "PowerShell parser and preview; offline rejection tests; 2026-10-04 attempt 06 qualified 20/20 controls and 12 attributed queries. No firmware timing qualification.",
+      "validation": "PowerShell parser; tests/Test-QutsRegistryHelpers.ps1; tests/test_quts_registry_analysis.py. Saved 2026-10-04 attempt 06 still qualifies 20/20 controls and 12 attributed queries after the 2026-10-06 offline corrections. No new trace or firmware timing qualification.",
       "rollback": "Stop or cancel only the unique WPR instance recorded in the private result.json. No device or service restart."
     },
     {

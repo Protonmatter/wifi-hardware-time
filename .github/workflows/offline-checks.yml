@@ -77,6 +77,21 @@ jobs:
       - name: Check packet observer child status and cleanup (no acquisition)
         shell: powershell
         run: ./tests/Test-WifiPathHelpers.ps1
+      - name: Check registry observer child status and cleanup (no acquisition)
+        shell: powershell
+        run: ./tests/Test-QutsRegistryHelpers.ps1
+      - name: Reject buffered exporter output failure (stubbed trace APIs)
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $vswhere = Join-Path ${env:ProgramFiles(x86)} 'Microsoft Visual Studio/Installer/vswhere.exe'
+          $installation = & $vswhere -latest -products '*' -property installationPath
+          if ($LASTEXITCODE -ne 0 -or -not $installation) { throw 'Visual Studio unavailable' }
+          Import-Module (Join-Path $installation 'Common7/Tools/Microsoft.VisualStudio.DevShell.dll')
+          Enter-VsDevShell -VsInstallPath $installation -SkipAutomaticLocation -DevCmdArguments '-arch=x64 -host_arch=x64' | Out-Null
+          $env:WIFI_TIME_NATIVE_CC = 'cl.exe'
+          python -m unittest discover -s tests -p test_trace_export_output.py -v
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - name: Check scan context classification (no acquisition)
         shell: powershell
         run: ./tests/Test-ScanContextSummary.ps1

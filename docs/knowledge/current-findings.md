@@ -2,15 +2,36 @@
 
 We can read diagnostic counters and trace real byte-return mechanisms. WLANLIB is attributable to FastConnect and reaches the existing QcomWifi private commands. An ART2 firmware-event producer now connects to a cached payload fetch, but discarded metadata, cache consumption and validity/concurrency gaps prevent timing qualification. QUTS framing and ownership are mapped separately; no new complete timing event or hardware-to-host relationship is established.
 
-**Current priority, 2026-10-05:** retain the nested IHV query/control map as
-deferred exploratory research. For clock work, qualify the complete operation:
-entry route, framing, selector precedence, state effects, producer, returned bytes
-and completion meaning. The eight-byte positive control remains valid evidence
-for its specific return path; it does not qualify another operation or a timing producer.
+**Current decision, 2026-10-06:** the installed Qualcomm live route is
+[no-go pending demonstrated supported/vendor/instrumented producer access](../evidence/hardware-route-decision-2026-10-06.md).
+The current QMSL callback trace is complete for its static scope; repeating it
+does not supply an attributable endpoint or bounded vendor lifecycle. Retain
+the nested IHV map as deferred exploratory research and the private campaign as
+quarantined. Linux remains a conditional alternate requiring a physical target
+and explicit selection. Independently, the coordinator reports S8's local host
+profile passed and S9's local patch was preserved/verified without publication;
+S3 now has a reviewed five-profile replay provider, CLI, immutable observations
+and 15 passing focused tests. The downstream suite passed 64 tests after
+acceptance-verifier corrections; unchanged original measurements still pass.
+Four calls exceeded 1 ms, so the p99 result is not a worst-case latency bound.
+These local results enable no radio clock capability and are not yet published.
+
+The [PR #3 software review](../overview/pr3-review-2026-10-06.md) subsequently
+corrected four reproduced source defects and passed 344 configured repository
+tests. Source review, saved-evidence reanalysis and offline subprocess/native
+tests leave the hardware gates unchanged. Subsequent publication, fresh hosted
+CI and merge state are tracked on [PR #3](https://github.com/Protonmatter/wifi-hardware-time/pull/3).
+
+The installed [WPP External 2.3.1.1 assessment](../evidence/wpp-external-2311-file-assessment.md)
+adds concrete ETL collection/configuration leads. Its scripts can change logging
+and restart the Wi-Fi device; their presence does not demonstrate a complete
+original timing-event return. No vendor tool was executed and the no-go remains.
 
 The [complete-event implementation plan](../overview/complete-event-2026-10-05/engineering-plan.md)
-now compares the viable routes against primary sources and executes a bounded
-receive-lifetime audit. The remaining native implementation needs a supported or
+records the completed route comparison and bounded receive-lifetime audit. The
+[qualification ledger](../overview/gap-closure-ledger.md) and
+[component review map](../overview/pr3-component-review-map-2026-10-06.md) now pin
+current work and exact PR base/head. The remaining native implementation needs a supported or
 instrumented producer integration; packet filters and existing trace names alone
 do not supply it.
 
@@ -33,6 +54,7 @@ was observed in their original runs.
 | Area | Established result | Practical use |
 |---|---|---|
 | Installed QMSL 6.1.365.1 | New exact-hash trace; original-byte callback and worker/listener path; weak-name binding evidence and authored x86 CLR smoke | Use current-build addresses and review actual endpoint/initialization/lifecycle before invocation; no live source enabled |
+| Installed WPP External 2.3.1.1 | 88 files hashed; guide and selected Wi-Fi/diagnostic-bridge scripts inspected without execution; GUI resource version 1.0.0.0 | Collection tooling is present; exact provider payload, target predicates, dependencies, ownership and live cleanup remain unqualified |
 | Supplied QMSL 6.1.48.1 runtime | Native log copy/pop and callback registration located; batch getter can change logging masks; managed wrapper has size/length limits and a lossy timestamp formatter | [Queue contract](../adapters/qmsl-diagnostic-queue.md); pursue original-byte callbacks with explicit ownership, not batch polling or formatted timestamps; exact Wi-Fi producer remains unconnected |
 | Private TSF/SoC reports | Exact-build counter observations and action-dependent cache/refresh behavior | Diagnostic records and rejection fixtures |
 | Saved TSF trace bytes | Two historical captures contain 88 selected UserData payloads, all numeric text plus one NUL; no trailing bytes or extended-data items | No complete firmware event hidden after the parsed text in these selected payloads; no new acquisition or clock qualification |
@@ -189,16 +211,20 @@ scope behind each correction. The largest recent changes are:
 
 ## The remaining connection
 
-The [2026-10-05 hardware handoff](../evidence/complete-event-hardware-handoff.md)
-rehashes the installed WLAN assembly and QUTS server and checks RawService's
-declaration. Its initialization requires an existing protocol handle; its
-response notification carries handles rather than event bytes. That filename
-search found no matching QMSL runtime. The later supplied QDART installer contains
-an older 6.1.48.1 runtime; the [queue investigation](../adapters/qmsl-diagnostic-queue.md)
-does not establish compatibility with the installed suite's 6.1.360.1 dependency.
-The concrete dependency remains
-an attributable timing producer with a valid owned copy and application return.
-This refresh adds no new live acquisition or clock qualification.
+The [hardware handoff](../evidence/complete-event-hardware-handoff.md) retains the
+2026-10-05 RawService inspection: initialization requires an existing protocol
+handle and response notification carries handles rather than event bytes.
+Its runtime-absence search is now historical. The
+[installed 6.1.365.1 investigation](../adapters/qmsl-runtime-365.md) establishes
+current runtime files and a selected worker/listener ownership chain, while
+leaving actual vendor loading, exact live Wi-Fi attribution and bounded shutdown
+unqualified. Weak-name reference differences alone do not require binding redirects.
+
+The concrete missing prerequisite is demonstrated access to a supported complete-
+event interface or instrumented producer with valid copying and owned application
+return. The [S2 decision](../evidence/hardware-route-decision-2026-10-06.md) records
+the no-go and what evidence reopens each route. No live operation is selected;
+this refresh adds no live acquisition or clock qualification.
 
 ```text
 Exact Wi-Fi firmware timing producer

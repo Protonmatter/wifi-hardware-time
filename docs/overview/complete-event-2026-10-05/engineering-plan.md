@@ -1,6 +1,18 @@
 # Complete-event integration: implementation plan
 
-First resolve what the selected receive shutdown actually stops, waits for and frees, and make that evidence repeatable. Then connect a supported or instrumented producer to an owned response. Only a real retained event can qualify that connection. Timing interpretation and host-clock correlation follow as separate phases, with explicit failure and continuity rules.
+The bounded receive-shutdown audit and current QMSL callback trace are complete within their static scope. The 2026-10-06 route decision is no-go for current installed Qualcomm live integration: demonstrated supported/vendor/instrumented producer access remains missing. A real retained event is still required to qualify that connection. Diagnostic replay and host API acceptance can proceed independently; timing interpretation and host-clock correlation retain separate gates.
+
+**Current status:** [S0/S2 closure and the qualification ledger](../gap-closure-ledger.md),
+[exact PR component map](../pr3-component-review-map-2026-10-06.md), and
+[hardware route ruling](../../evidence/hardware-route-decision-2026-10-06.md).
+S1's [6.1.365.1 worker/listener trace](../../adapters/qmsl-runtime-365.md) has already
+finished; do not restart it from the old runtime. The coordinator reports S8's
+local host profile passed and S9's local patch was preserved/verified without
+publication. S3 replay implementation, documentation and review are complete for
+the five-profile diagnostic slice: 15 focused and 64 downstream tests passed.
+The [WPP file assessment](../../evidence/wpp-external-2311-file-assessment.md)
+adds collection tooling but no demonstrated complete-event producer. Linux has
+not been selected.
 
 ## Read the decisions first
 
@@ -16,16 +28,16 @@ First resolve what the selected receive shutdown actually stops, waits for and f
 |---|---|---|---|
 | A. Reassess routes | Compare vendor/private, NDIS, WPP, cross-timestamp and Linux producer routes | Pinned source receipts and qualified decision table | Research completed |
 | B. Audit Windows source lifetime | Follow HIF disable/stop, queued receives, callback clearing, MDL/backing release and DMA-enabler ordering | Exact-image receipt, branch/call evidence, tests and unresolved edges | Bounded audit implemented and tested; full live ordering remains open |
-| C. Integrate an actual producer | Supported event facility or reviewed source/instrumented driver; copy at WMI pre-mutation or earlier HIF boundary | Buildable integration against a real callback/return contract | Requires external integration access |
+| C. Integrate an actual producer | Supported event facility or reviewed source/instrumented driver; copy at WMI pre-mutation or earlier HIF boundary | Buildable integration against a real callback/return contract | No-go now; demonstrated external integration access required under S2 |
 | D. Retrieve one event | One bounded existing-event acquisition; validate owned response and compare original bytes/metadata | Hardware receipt plus rejection, pressure, cancellation and teardown results | Depends on C and reviewed live experiment |
-| E. Adopt diagnostic observations | Versioned live provenance and consumer tests; retain raw event and explicit unknowns | Research handoff to `userspace-clock`, with independent capability states | Depends on D |
+| E. Adopt live diagnostic observations | Versioned live provenance and consumer tests; retain raw event and explicit unknowns | Research handoff to `userspace-clock`, with independent capability states | Live adoption depends on D; separate five-profile S3 replay is implemented/reviewed with 15 focused tests passing and hardware disabled |
 | F. Establish clock use | Prove event/clock meaning, request association where required, fresh sample relation and hardware/host conversion | Sampling bounds and independent accuracy validation | Separate hardware/reference gates |
 
 Phase B is bounded to the selected exact-build shutdown chain and its immediate
 dispatch targets. If it leaves an indirect target or join unproven, record that
 edge rather than extending a success claim. It cannot substitute for phase C.
 
-**Executed result:** [receive-shutdown evidence](../../tsf/receive-shutdown-contract.md)
+**2026-10-05 executed result:** [receive-shutdown evidence](../../tsf/receive-shutdown-contract.md)
 and the inspector now preserve ignored drain status, a caller-unreported
 completion timeout, conditional thread waits and selected release order.
 All 320 configured offline tests passed with zero skips. The remaining callback

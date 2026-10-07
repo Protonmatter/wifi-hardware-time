@@ -1,6 +1,16 @@
 # The missing hardware event connection
 
-The application can retain and validate owned bytes, and a live driver control has returned a fixed test pattern. We still need a demonstrated operation that copies a real timing event before its source storage is released. A fresh installed-file check leaves that dependency open: QUTS RawService requires an existing protocol connection, and the matching QMSL runtime was not found in the selected locations.
+The application can retain and validate owned bytes, and a live driver control has returned a fixed test pattern. We still need a demonstrated operation that copies a real timing event before its source storage is released. The current installed Qualcomm route is no-go until supported/vendor/instrumented producer access is demonstrated. QMSL 6.1.365.1 now supplies completed static callback evidence, but no attributable live timing endpoint or bounded lifecycle.
+
+**Current decision, 2026-10-06:** read the
+[complete-event gate evaluation and reopening criteria](hardware-route-decision-2026-10-06.md).
+The [current QMSL installation and trace](../adapters/qmsl-runtime-365.md) supersede
+the runtime-absence snapshot below. Its selected worker/listener path is already
+traced; it is not pending work. The 2026-10-05 file-only report is retained as
+historical evidence. Linux is a conditional alternate, not an adopted route.
+The later [WPP installation assessment](wpp-external-2311-file-assessment.md)
+adds trace-configuration leads without establishing original timing-event
+emission or changing that decision; no supplied tool or trigger was executed.
 
 ## Contents
 
@@ -15,7 +25,8 @@ The application can retain and validate owned bytes, and a live driver control h
 
 This **2026-10-05 file-only refresh** inspected installed files without loading
 vendor code or contacting a device. It is additional static evidence, not another
-live QUTS discovery or TSF campaign.
+live QUTS discovery or TSF campaign. Its missing-runtime conclusion applies to
+that search date only, before the later QMSL/QSPR installation.
 
 | Inspected input | SHA-256 | Result |
 |---|---|---|

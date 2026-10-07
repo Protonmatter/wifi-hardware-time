@@ -368,7 +368,9 @@ its executable was not run. The QXDM guide was read as PDF text, not executed.
 
 No live performance, firmware-event association, complete absolute FTM export,
 arbitrary packet timestamping, QPC conversion or calibrated accuracy was validated.
-Hosted CI requires publication of the changes and has not run for this snapshot.
+At this investigation's original validation checkpoint, hosted CI had not run
+for these changes. Current publication and review status are tracked in the
+[gap ledger](../overview/gap-closure-ledger.md).
 
 ## Glossary
 

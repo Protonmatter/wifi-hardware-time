@@ -2,6 +2,20 @@
 
 The strongest native-Windows route still requires a supported event-return facility or instrumentation inside the valid producer lifetime. Packet filters and tracing can only return data their observation point actually receives. Source-accessible Linux offers a practical alternative development path, but the inspected stock ath12k trace/test interfaces do not already provide a generic original WMI-event export for this task.
 
+**2026-10-06 decision:** the current installed Qualcomm/QMSL live route is
+**no-go**, evaluated against every complete-event gate in the
+[hardware route decision](../../evidence/hardware-route-decision-2026-10-06.md).
+The new QMSL runtime and completed static worker/listener trace do not establish
+an attributable live endpoint or bounded teardown. Supported/vendor/instrumented
+producer access is the exact missing primary prerequisite. Linux is conditional
+on compatible physical hardware/OS and explicit backend selection; no platform
+switch has been made. The comparison below retains its 2026-10-05 source scope.
+
+The [installed WPP follow-up](../../evidence/wpp-external-2311-file-assessment.md)
+adds exact trace/configuration scripts and dependencies as evidence. It does not
+locate a complete original timing-payload emitter or demonstrate current adapter
+binding, owned return or bounded cleanup, so it does not change the no-go.
+
 ## Contents
 
 - [Decision table](#decision-table)
@@ -99,6 +113,8 @@ or firmware command. Those distinctions guide the exact-driver shutdown trace.
 - A newly located logging callsite that actually preserves the required bytes.
 
 Without one of those changes, additional byte-broker tests or repeated negative
-discovery cannot create the missing hardware connection. The executable next
-slice is the [shutdown/ownership audit](engineering-plan.md), with bounded scope
-and an explicit report if an indirect call or external integration remains open.
+discovery cannot create the missing hardware connection. The bounded
+[shutdown/ownership audit](engineering-plan.md) and current QMSL callback trace
+have since completed within their static scope. The next hardware step must
+satisfy the [route reopening criteria](../../evidence/hardware-route-decision-2026-10-06.md);
+repeating those completed audits is not the next implementation phase.

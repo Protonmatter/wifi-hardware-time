@@ -171,8 +171,9 @@ python -m unittest discover -s tests -p test_ihv_queries.py -v
   installed ARM64 compiler and exact owned driver/Windows fixtures; documentation,
   workflow/index consistency and Git whitespace checks. The focused new suite
   passed four tests. No new live acquisition or elevation was used.
-- These follow-up files are local until separately committed. Hosted checks for
-  `df71460` cover the preceding publication, not this new query map.
+- At this follow-up's original validation checkpoint, these files were local and
+  hosted checks for `df71460` covered the preceding publication. Current publication
+  and review status are tracked in the [gap ledger](../overview/gap-closure-ledger.md).
 
 ## Glossary
 
