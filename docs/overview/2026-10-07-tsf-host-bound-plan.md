@@ -1828,7 +1828,7 @@ From an elevated prompt:
 
 ```powershell
 $a = Get-NetAdapter | Where-Object { $_.InterfaceDescription -match 'FastConnect' -and $_.Status -eq 'Up' }
-python research/acquisition/run_bound_campaign.py --if-index $a.ifIndex --interface-guid $a.InterfaceGuid --condition idle --duration-s 300
+python research/acquisition/run_bound_campaign.py --if-index $a.ifIndex --condition idle --duration-s 300
 ```
 
 Expected: JSON with `"preview": true`, the plan, and `"adapter_status": "Up"`. No trace session, probe or file under `artifacts/BoundCampaign-*`.
@@ -1842,6 +1842,8 @@ git commit -m "Add long-run action-4 bound campaign controller"
 ```
 
 ---
+
+**Execution note (2026-10-07):** the implemented controller takes the interface GUID from `identity()` (its `InterfaceGuid` field) instead of a separate `--interface-guid` argument, and preview mode no longer requires Administrator rights; `--execute` still does. Task 10 commands omit `--interface-guid`.
 
 ### Task 9: Phase 0 hex-dump caller check
 
@@ -1877,7 +1879,7 @@ git commit -m "Record Phase 0 hex-dump caller result"
 
 ```powershell
 $a = Get-NetAdapter | Where-Object { $_.InterfaceDescription -match 'FastConnect' -and $_.Status -eq 'Up' }
-python research/acquisition/run_bound_campaign.py --if-index $a.ifIndex --interface-guid $a.InterfaceGuid --condition idle --duration-s 300 --execute
+python research/acquisition/run_bound_campaign.py --if-index $a.ifIndex --condition idle --duration-s 300 --execute
 python research/clock_models/analyze_bound_run.py run artifacts/BoundCampaign-<id>/idle
 ```
 

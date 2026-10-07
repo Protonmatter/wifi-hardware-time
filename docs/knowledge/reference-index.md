@@ -10,7 +10,7 @@ Find the calls, file names, terms and short strings recorded in this research. T
 
 ## Search
 
-Indexed **315 source files** and **8954 distinct terms**.
+Indexed **319 source files** and **9099 distinct terms**.
 
 The [JSON index](research-index.json) includes Python definitions/calls, C/Java/PowerShell call-shaped tokens, authored short strings and Markdown code terms. Vendor binaries, local artifacts, historical reproduction sources and generated indexes are excluded. Unresolved call-shaped tokens are explicitly labeled.
 
@@ -126,7 +126,7 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [docs/overview/2026-10-02-research-to-userspace-clock.md](../../docs/overview/2026-10-02-research-to-userspace-clock.md) | `dfa65e864054` |
 | [docs/overview/2026-10-03-first-hardware-clock-plan.md](../../docs/overview/2026-10-03-first-hardware-clock-plan.md) | `76aa080d9cc0` |
 | [docs/overview/2026-10-07-tsf-host-bound-design.md](../../docs/overview/2026-10-07-tsf-host-bound-design.md) | `a5f394d5d577` |
-| [docs/overview/2026-10-07-tsf-host-bound-plan.md](../../docs/overview/2026-10-07-tsf-host-bound-plan.md) | `9deb760fb06b` |
+| [docs/overview/2026-10-07-tsf-host-bound-plan.md](../../docs/overview/2026-10-07-tsf-host-bound-plan.md) | `5349d34dd0c2` |
 | [docs/overview/OPERATIONS.md](../../docs/overview/OPERATIONS.md) | `325c7d5a27eb` |
 | [docs/overview/README.md](../../docs/overview/README.md) | `a8f2066f64c6` |
 | [docs/overview/complete-event-2026-10-05/context-map.md](../../docs/overview/complete-event-2026-10-05/context-map.md) | `ea57333f0cba` |
@@ -172,6 +172,7 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [research/acquisition/analyze_quarantined_tsf.py](../../research/acquisition/analyze_quarantined_tsf.py) | `ec7beb1f4e8f` |
 | [research/acquisition/analyze_quts_registry.py](../../research/acquisition/analyze_quts_registry.py) | `cdd861483fb1` |
 | [research/acquisition/analyze_scan_comparison.py](../../research/acquisition/analyze_scan_comparison.py) | `53ca52b97c8d` |
+| [research/acquisition/bss_reader.py](../../research/acquisition/bss_reader.py) | `48b63d24f633` |
 | [research/acquisition/campaign_admission.py](../../research/acquisition/campaign_admission.py) | `3fbcc1b190c5` |
 | [research/acquisition/campaign_gate.py](../../research/acquisition/campaign_gate.py) | `1d347eea2011` |
 | [research/acquisition/export_registry_trace.c](../../research/acquisition/export_registry_trace.c) | `7139169e81f3` |
@@ -179,6 +180,7 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [research/acquisition/observation_lifecycle.py](../../research/acquisition/observation_lifecycle.py) | `38c030610f30` |
 | [research/acquisition/quts-registry.wprp](../../research/acquisition/quts-registry.wprp) | `1fc7a009f62c` |
 | [research/acquisition/run_acquisition_campaign.py](../../research/acquisition/run_acquisition_campaign.py) | `2441e402d286` |
+| [research/acquisition/run_bound_campaign.py](../../research/acquisition/run_bound_campaign.py) | `977a39c0f424` |
 | [research/acquisition/run_passive_observation.py](../../research/acquisition/run_passive_observation.py) | `73f59f63c534` |
 | [research/acquisition/run_scan_comparison.py](../../research/acquisition/run_scan_comparison.py) | `d9d4a3596ed5` |
 | [research/acquisition/wifi-path.wprp](../../research/acquisition/wifi-path.wprp) | `f04eb0db9934` |
@@ -294,7 +296,9 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [tests/test_analyze_latch.py](../../tests/test_analyze_latch.py) | `17461a88eb1e` |
 | [tests/test_analyze_tsf_series.py](../../tests/test_analyze_tsf_series.py) | `080e5ae955cc` |
 | [tests/test_beacon_consistency.py](../../tests/test_beacon_consistency.py) | `79827a84de5b` |
+| [tests/test_bound_campaign.py](../../tests/test_bound_campaign.py) | `1cf5ef050468` |
 | [tests/test_bracket_bound.py](../../tests/test_bracket_bound.py) | `ea61de1d279f` |
+| [tests/test_bss_reader.py](../../tests/test_bss_reader.py) | `165aff4e3b44` |
 | [tests/test_campaign_controller.py](../../tests/test_campaign_controller.py) | `4a67efa7608b` |
 | [tests/test_campaign_gate.py](../../tests/test_campaign_gate.py) | `d7590b368736` |
 | [tests/test_clock_pairing_hypothesis.py](../../tests/test_clock_pairing_hypothesis.py) | `5261e0ce7a7e` |
