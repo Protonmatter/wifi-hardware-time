@@ -106,6 +106,8 @@ The bound holds only if these conditions hold. Each one has its own test, and a 
 
 Phase 0 is time-boxed. It must not grow into another open-ended search for a raw export.
 
+**Result (2026-10-07):** question 3 is answered: scan-triggered reports carry the same vdev as ours, so attribution uses the command record instead (section 3). Questions 1, 2 and 4 (hex-dump callers, their gating, and raw received length) were not pursued in this session. The campaign therefore runs on the logged values, and the missing report-type and clock-ID fields stay a stated limitation. The window bound does not depend on them.
+
 ## 5. Collection campaign
 
 **Reused tools:** `research/tsf/qualcomm_probe.py` (action 4 only), `research/acquisition/live_observer.c` and `research/tsf/decode_tsf_etl.c`. The provider is WlanLogger `{bb6f5b93-635c-47be-816f-e895e77064a8}`, as in the earlier campaign.
