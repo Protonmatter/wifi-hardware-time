@@ -59,6 +59,15 @@ def summarize(samples: list[Sample], qpc_hz: int, beacons: tuple[Beacon, ...] | 
         soc_domain=soc, beacon_check=check_beacons(list(beacons), spans))
 
 
+def frequency(value: int | str) -> int:
+    """Accept an integer or the evidence bundle's decimal-string QPC frequency."""
+    if type(value) is str and value.isdigit():
+        value = int(value)
+    if type(value) is not int or value <= 0:
+        raise ValueError('QPC frequency must be a positive integer')
+    return value
+
+
 def _lines(path: Path) -> list[dict]:
     if path.stat().st_size > MAX_FILE_BYTES:
         raise ValueError(f'{path.name} exceeds size limit')
@@ -68,7 +77,7 @@ def _lines(path: Path) -> list[dict]:
 def analyze_legacy(path: Path) -> dict:
     data = json.loads(path.read_text(encoding='utf-8'))
     validate_bundle(data)
-    hz = data['manifest']['qpc_frequency_hz']
+    hz = frequency(data['manifest']['qpc_frequency_hz'])
 
     def samples(action: int) -> list[Sample]:
         return [Sample(o['sequence'], int(o['tsf_raw']), int(o['soc_raw']), int(o['host_before_qpc']), int(o['report_qpc']))
@@ -84,9 +93,7 @@ def analyze_legacy(path: Path) -> dict:
 
 def load_run(folder: Path) -> dict:
     result = json.loads((folder / 'run-result.json').read_text(encoding='utf-8'))
-    hz = result['qpc_frequency_hz']
-    if type(hz) is not int or hz <= 0:
-        raise ValueError('Run lacks a positive QPC frequency')
+    hz = frequency(result['qpc_frequency_hz'])
     records = _lines(folder / 'raw-timing.jsonl')
     header = next((r for r in records if r.get('kind') == 'header'), None)
     if header is None or header['perf_frequency_hz'] != hz or header['events_lost'] or header['buffers_lost']:

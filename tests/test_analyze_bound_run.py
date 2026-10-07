@@ -7,7 +7,7 @@ import json
 import subprocess
 import tempfile
 import unittest
-from research.clock_models.analyze_bound_run import analyze_run, evaluate
+from research.clock_models.analyze_bound_run import analyze_run, evaluate, frequency
 
 ROOT = Path(__file__).resolve().parents[1]
 HZ = 10_000_000
@@ -53,6 +53,13 @@ class AnalyzeTests(unittest.TestCase):
             verdict = evaluate(analyze_run(Path(a)), analyze_run(Path(b)))
             self.assertFalse(verdict['passed'])
             self.assertFalse(verdict['load']['run_completed'])
+
+    def test_frequency_accepts_bundle_decimal_strings_only(self):
+        self.assertEqual(frequency('10000000'), 10_000_000)
+        self.assertEqual(frequency(10_000_000), 10_000_000)
+        for bad in ('10e6', '-1', 0, 1.5, None):
+            with self.subTest(bad=bad), self.assertRaises(ValueError):
+                frequency(bad)
 
     def test_cli_help_from_unrelated_directory(self):
         with tempfile.TemporaryDirectory() as directory:

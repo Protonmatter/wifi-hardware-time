@@ -8,6 +8,7 @@ A counter value becomes useful time only when its clock, event and conversion ar
 
 ## Documents
 
+- [TSF-to-host bound preview on saved action-4 samples](tsf-host-bound-preview.md).
 - [Qualifying the TSF, FTM and host-clock relationships](clock-relationship-investigation.md).
 - [TSF versus SoC: what the reported increments can identify](counter-rate-identifiability.md).
 - [Packet-to-clock timestamp map and uncertainty ledger](packet-to-clock-map.md).
