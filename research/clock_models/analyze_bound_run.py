@@ -100,7 +100,8 @@ def load_run(folder: Path) -> dict:
         raise ValueError('Trace header missing, mismatched or lossy')
     receipts = _lines(folder / 'requests.jsonl')
     requests = [request_from_receipt(r['sequence'], r) for r in receipts]
-    beacons = [Beacon(b['qpc_before'], b['ap_tsf_us']) for b in _lines(folder / 'beacons.jsonl')]
+    # The cache can refresh during the call, so a returned beacon predates only the call's return.
+    beacons = [Beacon(b['qpc_after'], b['ap_tsf_us']) for b in _lines(folder / 'beacons.jsonl')]
     return dict(qpc_hz=hz, records=records, requests=requests, beacons=beacons, completed=result.get('success') is True)
 
 

@@ -54,6 +54,17 @@ class AnalyzeTests(unittest.TestCase):
             self.assertFalse(verdict['passed'])
             self.assertFalse(verdict['load']['run_completed'])
 
+    def test_beacon_received_during_the_cache_call_is_not_a_violation(self):
+        with tempfile.TemporaryDirectory() as a:
+            write_run(Path(a))
+            lower = 10_000_000 + 20 * 20_000_000
+            station_at_call_start = 7_000_000_000 + (lower + 10_000_000) // 10
+            beacon = dict(qpc_before=lower + 10_000_000, qpc_after=lower + 10_100_000,  # a 10 ms call
+                          ap_tsf_us=station_at_call_start + 3_000)  # stamped 3 ms into the call
+            (Path(a) / 'beacons.jsonl').write_text(json.dumps(beacon) + '\n', encoding='utf-8')
+            check = analyze_run(Path(a))['analysis']['beacon_check']
+            self.assertEqual((check['checked'], check['violations']), (1, 0))
+
     def test_frequency_accepts_bundle_decimal_strings_only(self):
         self.assertEqual(frequency('10000000'), 10_000_000)
         self.assertEqual(frequency(10_000_000), 10_000_000)
