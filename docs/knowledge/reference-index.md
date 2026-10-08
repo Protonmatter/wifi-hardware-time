@@ -174,7 +174,7 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [research/acquisition/analyze_quarantined_tsf.py](../../research/acquisition/analyze_quarantined_tsf.py) | `ec7beb1f4e8f` |
 | [research/acquisition/analyze_quts_registry.py](../../research/acquisition/analyze_quts_registry.py) | `cdd861483fb1` |
 | [research/acquisition/analyze_scan_comparison.py](../../research/acquisition/analyze_scan_comparison.py) | `53ca52b97c8d` |
-| [research/acquisition/bss_reader.py](../../research/acquisition/bss_reader.py) | `b24ed58a13a3` |
+| [research/acquisition/bss_reader.py](../../research/acquisition/bss_reader.py) | `161de8e40ee4` |
 | [research/acquisition/campaign_admission.py](../../research/acquisition/campaign_admission.py) | `3fbcc1b190c5` |
 | [research/acquisition/campaign_gate.py](../../research/acquisition/campaign_gate.py) | `1d347eea2011` |
 | [research/acquisition/export_registry_trace.c](../../research/acquisition/export_registry_trace.c) | `7139169e81f3` |
