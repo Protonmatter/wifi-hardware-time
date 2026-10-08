@@ -6,8 +6,27 @@ if __package__ in (None, ""):
 import subprocess
 import tempfile
 import unittest
-from research.acquisition.run_bound_campaign import (DOWNLOAD_URLS, TRACE_BUFFER_OPTIONS, BoundGate, download_stalled,
-                                                     loss_budget_exceeded, parse, remaining_sleep)
+import json
+import threading
+from research.acquisition.run_bound_campaign import (DOWNLOAD_URLS, TRACE_BUFFER_OPTIONS, BoundGate, CampaignBusy,
+                                                     CampaignLock, download_stalled, finalize, loss_budget_exceeded,
+                                                     parse, persist_outcome, remaining_sleep)
+
+HEADER = dict(kind='header', clock_type=1, perf_frequency_hz=10_000_000, events_lost=0, buffers_lost=0)
+LIVE = [dict(kind='report', raw_timestamp=10, vdev=0, tsf_raw=1, received_qpc=99)]
+
+
+class Decoded:
+    def __init__(self, stdout: str):
+        self.stdout = stdout
+
+
+def decoder(stdout=None, error=None):
+    def run_fn(command, timeout):
+        if error is not None:
+            raise error
+        return Decoded(stdout)
+    return run_fn
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -53,6 +72,63 @@ class BoundCampaignTests(unittest.TestCase):
         # 8 KB measured about 12 MiB/min, while 256 KB measured about 103 MiB/min.
         self.assertEqual(size_kb, 8)
         self.assertGreaterEqual(int(TRACE_BUFFER_OPTIONS[TRACE_BUFFER_OPTIONS.index('-nb') + 1]), 256)
+
+    def test_finalize_turns_every_decoding_failure_into_a_reason(self):
+        good = json.dumps(HEADER) + '\n' + json.dumps({k: v for k, v in LIVE[0].items() if k != 'received_qpc'}) + '\n'
+        cases = dict(decoder_error=decoder(error=RuntimeError('decoder exit 1')),
+                     timeout=decoder(error=subprocess.TimeoutExpired('decode', 600)),
+                     empty=decoder(''), malformed=decoder('not json\n'),
+                     no_header=decoder(json.dumps(LIVE[0]) + '\n'),
+                     lossy=decoder(json.dumps(dict(HEADER, events_lost=3)) + '\n'),
+                     mismatch=decoder(json.dumps(HEADER) + '\n'))
+        with tempfile.TemporaryDirectory() as d:
+            for name, run_fn in cases.items():
+                with self.subTest(case=name):
+                    reason = finalize(Path('decode.exe'), Path(d) / 'tsf.etl', Path(d) / 'raw.jsonl', LIVE, run_fn)
+                    self.assertIsInstance(reason, str)
+            self.assertIsNone(finalize(Path('decode.exe'), Path(d) / 'tsf.etl', Path(d) / 'raw.jsonl', LIVE, decoder(good)))
+
+    def test_failure_persists_marker_and_result(self):
+        with tempfile.TemporaryDirectory() as d:
+            folder, marker = Path(d) / 'run', Path(d) / 'marker.json'
+            folder.mkdir()
+            persist_outcome(folder, marker, dict(condition='idle'), 'Post-collection decoding failed: boom', lambda: 'now')
+            self.assertTrue(marker.exists())
+            result = json.loads((folder / 'run-result.json').read_text(encoding='utf-8'))
+            self.assertFalse(result['success'])
+            self.assertIn('decoding failed', result['error'])
+            persist_outcome(folder, Path(d) / 'other.json', dict(condition='idle'), None, lambda: 'now')
+            self.assertFalse((Path(d) / 'other.json').exists())
+
+    @unittest.skipUnless(sys.platform == 'win32', 'Named mutexes are Windows-only')
+    def test_adapter_lock_excludes_a_second_controller(self):
+        guid = '{01234567-89AB-CDEF-0123-456789ABCDEF}'
+        outcome = {}
+
+        def contend(key):
+            try:
+                with CampaignLock(guid, namespace='Local'):
+                    outcome[key] = 'acquired'
+            except CampaignBusy:
+                outcome[key] = 'busy'
+
+        with CampaignLock(guid, namespace='Local'):
+            thread = threading.Thread(target=contend, args=('while_held',))
+            thread.start(); thread.join()
+        thread = threading.Thread(target=contend, args=('after_release',))
+        thread.start(); thread.join()
+        self.assertEqual(outcome, dict(while_held='busy', after_release='acquired'))
+
+    @unittest.skipUnless(sys.platform == 'win32', 'Named mutexes are Windows-only')
+    def test_abandoned_lock_refuses_to_run(self):
+        guid = '{89ABCDEF-0123-4567-89AB-CDEF01234567}'
+        lock = CampaignLock(guid, namespace='Local')
+        thread = threading.Thread(target=lock.acquire)  # The owning thread exits without releasing.
+        thread.start(); thread.join()
+        with self.assertRaises(CampaignBusy):
+            with CampaignLock(guid, namespace='Local'):
+                pass
+        lock.close_handle()
 
     def test_argument_limits(self):
         base = ['--if-index', '5', '--condition', 'idle']

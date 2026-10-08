@@ -75,6 +75,95 @@ def _save(path: Path, data: object) -> None:
     path.write_text(json.dumps(data, indent=2, allow_nan=False) + '\n', encoding='utf-8')
 
 
+WAIT_OBJECT_0, WAIT_ABANDONED, WAIT_TIMEOUT = 0x0, 0x80, 0x102
+
+
+class CampaignBusy(RuntimeError):
+    """Another controller holds, or a crashed controller abandoned, this adapter's campaign lock."""
+
+
+class CampaignLock:
+    """Adapter-scoped named mutex held for a whole run, through cleanup and result persistence."""
+
+    def __init__(self, adapter_guid: str, namespace: str = 'Global'):
+        self.name = namespace + '\\WifiHardwareTimeBound-' + adapter_guid.strip('{}').lower()
+        self.handle = None
+
+    @staticmethod
+    def _kernel():
+        k = ct.WinDLL('kernel32', use_last_error=True)
+        k.CreateMutexW.argtypes = [ct.c_void_p, ct.c_int, ct.c_wchar_p]
+        k.CreateMutexW.restype = ct.c_void_p
+        k.WaitForSingleObject.argtypes = [ct.c_void_p, ct.c_uint32]
+        k.WaitForSingleObject.restype = ct.c_uint32
+        k.ReleaseMutex.argtypes = [ct.c_void_p]
+        k.CloseHandle.argtypes = [ct.c_void_p]
+        return k
+
+    def acquire(self) -> 'CampaignLock':
+        k = self._kernel()
+        handle = k.CreateMutexW(None, False, self.name)
+        if not handle:
+            raise ct.WinError(ct.get_last_error())
+        status = k.WaitForSingleObject(handle, 0)
+        if status == WAIT_OBJECT_0:
+            self.handle = handle
+            return self
+        if status == WAIT_ABANDONED:
+            k.ReleaseMutex(handle)
+            k.CloseHandle(handle)
+            raise CampaignBusy('A previous bound campaign ended without releasing its adapter lock; review it before rerunning')
+        k.CloseHandle(handle)
+        if status == WAIT_TIMEOUT:
+            raise CampaignBusy('Another bound campaign is running on this adapter')
+        raise OSError('Campaign lock wait failed with status ' + hex(status))
+
+    def release(self) -> None:
+        if self.handle:
+            k = self._kernel()
+            k.ReleaseMutex(self.handle)
+            k.CloseHandle(self.handle)
+            self.handle = None
+
+    def close_handle(self) -> None:
+        """Close without releasing, for a lock acquired on a thread that has since exited."""
+        if self.handle:
+            self._kernel().CloseHandle(self.handle)
+            self.handle = None
+
+    def __enter__(self) -> 'CampaignLock':
+        return self.acquire()
+
+    def __exit__(self, *exc) -> bool:
+        self.release()
+        return False
+
+
+def finalize(decoder: Path, etl: Path, output: Path, live_timing: list[dict], run_fn) -> str | None:
+    """Decode and verify the trace; any failure becomes a reason, never an escaping exception."""
+    try:
+        decoded = run_fn([str(decoder), str(etl)], timeout=600)
+        output.write_text(decoded.stdout, encoding='utf-8')
+        offline = [json.loads(line) for line in decoded.stdout.splitlines() if line.strip()]
+        if not offline or offline[0].get('kind') != 'header':
+            return 'Decoder output has no trace header'
+        if offline[0].get('events_lost') or offline[0].get('buffers_lost'):
+            return 'Trace reported lost events or buffers'
+        live = [{k: v for k, v in e.items() if k != 'received_qpc'} for e in live_timing]
+        if live != [e for e in offline if e.get('kind') in TIMING_KINDS]:
+            return 'Live and offline timing records disagree'
+        return None
+    except BaseException as error:
+        return 'Post-collection decoding failed: ' + type(error).__name__ + ': ' + str(error)
+
+
+def persist_outcome(folder: Path, marker: Path, summary: dict, failure: str | None, utc_fn) -> None:
+    """Write the quarantine marker first on failure, then the run result."""
+    if failure:
+        _save(marker, dict(created_utc=utc_fn(), run=str(folder), reason=failure))
+    _save(folder / 'run-result.json', dict(summary, success=failure is None, error=failure))
+
+
 def download_stalled(last_progress: float, now: float) -> bool:
     return now - last_progress > DOWNLOAD_STALL_S
 
@@ -215,6 +304,28 @@ def campaign(args: argparse.Namespace) -> int:
     if not ct.windll.shell32.IsUserAnAdmin():
         print('Administrator rights required for --execute.', file=sys.stderr)
         return 1
+    try:
+        lock = CampaignLock(baseline['InterfaceGuid']).acquire()
+    except CampaignBusy as busy:
+        print(f'{busy}.', file=sys.stderr)
+        return 1
+    try:
+        # Re-check under the lock so no other controller can write or clear it meanwhile.
+        if marker.exists():
+            print(f'Quarantine marker present: {marker}. Review it before any new run.', file=sys.stderr)
+            return 1
+        return _execute(args, clock, baseline, plan, marker)
+    except BaseException as error:
+        _save(marker, dict(created_utc=utc(), run=None, reason=f'Controller error: {type(error).__name__}: {error}'))
+        raise
+    finally:
+        lock.release()
+
+
+def _execute(args: argparse.Namespace, clock, baseline: dict, plan: dict, marker: Path) -> int:
+    from research.acquisition.bss_reader import BssReader, CacheEntryUnavailable
+    from research.acquisition.run_acquisition_campaign import (PROVIDER, ROOT, Observer, TraceOwner, identity, run,
+                                                               same_identity, utc)
     folder = ROOT / 'artifacts' / f'BoundCampaign-{uuid.uuid4().hex[:12]}' / args.condition
     folder.mkdir(parents=True)
     session = 'WifiBound-' + uuid.uuid4().hex[:12]
@@ -307,21 +418,14 @@ def campaign(args: argparse.Namespace) -> int:
         except BaseException as error:
             failure = failure or f'Final identity: {error}'
     if failure is None:
-        decoded = run([str(ROOT / 'artifacts/decode_tsf_etl.exe'), str(folder / 'tsf.etl')], timeout=600)
-        (folder / 'raw-timing.jsonl').write_text(decoded.stdout, encoding='utf-8')
-        offline = [json.loads(line) for line in decoded.stdout.splitlines()]
-        live = [{k: v for k, v in e.items() if k != 'received_qpc'} for e in gate.timing]
-        if live != [e for e in offline if e['kind'] in TIMING_KINDS]:
-            failure = 'Live and offline timing records disagree'
-        elif offline[0]['events_lost'] or offline[0]['buffers_lost']:
-            failure = 'Trace reported lost events or buffers'
-    _save(folder / 'run-result.json', dict(success=failure is None, error=failure, condition=args.condition,
-                                           duration_s=args.duration_s, request_count=len(receipts),
-                                           own_losses_live=losses, beacon_reads=beacon_count,
-                                           beacon_skips=beacon_skips,
-                                           qpc_frequency_hz=clock.frequency, firmware_sampling_validated=False))
+        failure = finalize(ROOT / 'artifacts/decode_tsf_etl.exe', folder / 'tsf.etl', folder / 'raw-timing.jsonl',
+                           gate.timing, run)
+    persist_outcome(folder, marker, dict(condition=args.condition, duration_s=args.duration_s,
+                                         request_count=len(receipts), own_losses_live=losses,
+                                         beacon_reads=beacon_count, beacon_skips=beacon_skips,
+                                         qpc_frequency_hz=clock.frequency, firmware_sampling_validated=False),
+                    failure, utc)
     if failure:
-        _save(marker, dict(created_utc=utc(), run=str(folder), reason=failure))
         print(f'Run stopped: {failure}. Quarantine marker written: {marker}', file=sys.stderr)
         return 1
     print(json.dumps(dict(run=str(folder), requests=len(receipts), own_losses_live=losses)))
