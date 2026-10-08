@@ -7,6 +7,15 @@
       "session": "WifiBound-e71bb37c9e9e",
       "condition": "idle",
       "duration_s": 3600,
+      "qpc_hz": 10000000,
+      "collection": {
+        "first_request_qpc": 18644854788965,
+        "last_request_qpc": 18680829044963,
+        "first_timing_qpc": 18644854789303,
+        "last_timing_qpc": 18680829047795,
+        "recorded_start_qpc": null,
+        "recorded_end_qpc": null
+      },
       "workload": null
     },
     "screen": {
@@ -84,10 +93,21 @@
       "session": "WifiBound-f21cb4b05935",
       "condition": "load",
       "duration_s": 3600,
+      "qpc_hz": 10000000,
+      "collection": {
+        "first_request_qpc": 18756878505260,
+        "last_request_qpc": 18792843373585,
+        "first_timing_qpc": 18756878505660,
+        "last_timing_qpc": 18792843376283,
+        "recorded_start_qpc": null,
+        "recorded_end_qpc": null
+      },
       "workload": {
         "stop_requested": true,
         "download_stalled": false,
-        "downloaded_bytes": 15829630976
+        "downloaded_bytes": 15829630976,
+        "wall_seconds": 3605.766527700005,
+        "hash_operations": 8965042
       }
     },
     "screen": {
@@ -162,6 +182,9 @@
       "run_completed": true,
       "condition_recorded": true,
       "duration_at_least_3600s": true,
+      "collection_span_at_least_3540s": true,
+      "trace_covers_collection": true,
+      "recorded_interval_consistent": true,
       "max_bound_below_1000us": true,
       "coverage_at_least_90pct": true,
       "rejected_at_most_1pct": true,
@@ -173,6 +196,9 @@
       "run_completed": true,
       "condition_recorded": true,
       "duration_at_least_3600s": true,
+      "collection_span_at_least_3540s": true,
+      "trace_covers_collection": true,
+      "recorded_interval_consistent": true,
       "max_bound_below_1000us": true,
       "coverage_at_least_90pct": true,
       "rejected_at_most_1pct": true,

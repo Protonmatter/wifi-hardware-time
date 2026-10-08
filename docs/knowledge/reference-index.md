@@ -10,7 +10,7 @@ Find the calls, file names, terms and short strings recorded in this research. T
 
 ## Search
 
-Indexed **321 source files** and **9265 distinct terms**.
+Indexed **321 source files** and **9310 distinct terms**.
 
 The [JSON index](research-index.json) includes Python definitions/calls, C/Java/PowerShell call-shaped tokens, authored short strings and Markdown code terms. Vendor binaries, local artifacts, historical reproduction sources and generated indexes are excluded. Unresolved call-shaped tokens are explicitly labeled.
 
@@ -36,7 +36,7 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [.github/workflows/offline-checks.yml](../../.github/workflows/offline-checks.yml) | `736ac3c3badc` |
 | [README.md](../../README.md) | `0303197c46f6` |
 | [docs/README.md](../../docs/README.md) | `950681bca95a` |
-| [docs/acquisition/README.md](../../docs/acquisition/README.md) | `b5a73542751e` |
+| [docs/acquisition/README.md](../../docs/acquisition/README.md) | `bf4734c28a20` |
 | [docs/acquisition/acquisition-campaign-2026-10-02-results.md](../../docs/acquisition/acquisition-campaign-2026-10-02-results.md) | `9497bd3fc5f6` |
 | [docs/acquisition/experiments.md](../../docs/acquisition/experiments.md) | `757ecf58decd` |
 | [docs/acquisition/lifecycle-matrix.md](../../docs/acquisition/lifecycle-matrix.md) | `ff94ba6c1774` |
@@ -51,8 +51,8 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [docs/acquisition/scan-comparison-plan.md](../../docs/acquisition/scan-comparison-plan.md) | `5c2a312cd514` |
 | [docs/acquisition/scan-tsf-results-2026-10-03.md](../../docs/acquisition/scan-tsf-results-2026-10-03.md) | `26ea16e56034` |
 | [docs/acquisition/timing-qualification-validation-2026-10-04.md](../../docs/acquisition/timing-qualification-validation-2026-10-04.md) | `719e9a66c240` |
-| [docs/acquisition/tsf-host-bound-methodology.md](../../docs/acquisition/tsf-host-bound-methodology.md) | `4be60c8e5673` |
-| [docs/acquisition/tsf-host-bound-results.md](../../docs/acquisition/tsf-host-bound-results.md) | `6f1609bb9b26` |
+| [docs/acquisition/tsf-host-bound-methodology.md](../../docs/acquisition/tsf-host-bound-methodology.md) | `1b12df7b6a9f` |
+| [docs/acquisition/tsf-host-bound-results.md](../../docs/acquisition/tsf-host-bound-results.md) | `502a587ca339` |
 | [docs/adapters/README.md](../../docs/adapters/README.md) | `b0724c7f77df` |
 | [docs/adapters/axml.md](../../docs/adapters/axml.md) | `db1bd219145b` |
 | [docs/adapters/backend-and-reference-next-steps.md](../../docs/adapters/backend-and-reference-next-steps.md) | `9da7599bbb12` |
@@ -114,7 +114,7 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [docs/ftm/ftm-result-provenance.md](../../docs/ftm/ftm-result-provenance.md) | `b92a2ddb2d94` |
 | [docs/glossary.md](../../docs/glossary.md) | `838e3c21d99f` |
 | [docs/knowledge/assumptions-and-corrections.md](../../docs/knowledge/assumptions-and-corrections.md) | `6524c41cee4e` |
-| [docs/knowledge/current-findings.md](../../docs/knowledge/current-findings.md) | `f278164fcb4b` |
+| [docs/knowledge/current-findings.md](../../docs/knowledge/current-findings.md) | `bac7b206fd23` |
 | [docs/knowledge/interface-directory.md](../../docs/knowledge/interface-directory.md) | `d58d6c2fd787` |
 | [docs/knowledge/refresh-validation.md](../../docs/knowledge/refresh-validation.md) | `13243a024baa` |
 | [docs/knowledge/workflow-diagrams.md](../../docs/knowledge/workflow-diagrams.md) | `cb387f0069df` |
@@ -182,7 +182,7 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [research/acquisition/observation_lifecycle.py](../../research/acquisition/observation_lifecycle.py) | `38c030610f30` |
 | [research/acquisition/quts-registry.wprp](../../research/acquisition/quts-registry.wprp) | `1fc7a009f62c` |
 | [research/acquisition/run_acquisition_campaign.py](../../research/acquisition/run_acquisition_campaign.py) | `2441e402d286` |
-| [research/acquisition/run_bound_campaign.py](../../research/acquisition/run_bound_campaign.py) | `6e30e5e682c4` |
+| [research/acquisition/run_bound_campaign.py](../../research/acquisition/run_bound_campaign.py) | `ca15a98ada3c` |
 | [research/acquisition/run_passive_observation.py](../../research/acquisition/run_passive_observation.py) | `73f59f63c534` |
 | [research/acquisition/run_scan_comparison.py](../../research/acquisition/run_scan_comparison.py) | `d9d4a3596ed5` |
 | [research/acquisition/wifi-path.wprp](../../research/acquisition/wifi-path.wprp) | `f04eb0db9934` |
@@ -210,7 +210,7 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [research/adapters/package_tools/expand_qpst.py](../../research/adapters/package_tools/expand_qpst.py) | `281d00e4f129` |
 | [research/adapters/package_tools/inspect_files.py](../../research/adapters/package_tools/inspect_files.py) | `fa1bc578c3fb` |
 | [research/clock_models/README.md](../../research/clock_models/README.md) | `900bf9db38f8` |
-| [research/clock_models/analyze_bound_run.py](../../research/clock_models/analyze_bound_run.py) | `9d3c4724a3a0` |
+| [research/clock_models/analyze_bound_run.py](../../research/clock_models/analyze_bound_run.py) | `e8a1d099efb2` |
 | [research/clock_models/analyze_clock_pairing_hypothesis.py](../../research/clock_models/analyze_clock_pairing_hypothesis.py) | `c2bc6fd87880` |
 | [research/clock_models/analyze_observation_quality.py](../../research/clock_models/analyze_observation_quality.py) | `eb5263987e77` |
 | [research/clock_models/beacon_consistency.py](../../research/clock_models/beacon_consistency.py) | `d3306f07bef7` |
@@ -294,11 +294,11 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [tests/native_timestamp_export.c](../../tests/native_timestamp_export.c) | `c8202461af14` |
 | [tests/native_trace_export_output.c](../../tests/native_trace_export_output.c) | `7fd32ad60409` |
 | [tests/test_action4_completion.py](../../tests/test_action4_completion.py) | `73cd36c53479` |
-| [tests/test_analyze_bound_run.py](../../tests/test_analyze_bound_run.py) | `659a18476294` |
+| [tests/test_analyze_bound_run.py](../../tests/test_analyze_bound_run.py) | `1f85f474c136` |
 | [tests/test_analyze_latch.py](../../tests/test_analyze_latch.py) | `17461a88eb1e` |
 | [tests/test_analyze_tsf_series.py](../../tests/test_analyze_tsf_series.py) | `080e5ae955cc` |
 | [tests/test_beacon_consistency.py](../../tests/test_beacon_consistency.py) | `79827a84de5b` |
-| [tests/test_bound_campaign.py](../../tests/test_bound_campaign.py) | `2747d87d3a19` |
+| [tests/test_bound_campaign.py](../../tests/test_bound_campaign.py) | `6b4f75aab0c7` |
 | [tests/test_bracket_bound.py](../../tests/test_bracket_bound.py) | `ea61de1d279f` |
 | [tests/test_bss_reader.py](../../tests/test_bss_reader.py) | `a5dcf05d5293` |
 | [tests/test_campaign_controller.py](../../tests/test_campaign_controller.py) | `4a67efa7608b` |

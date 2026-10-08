@@ -250,3 +250,14 @@ An independent review of PR #4 at head `ea83906` (2026-10-07) reported seven fin
 | P2 | The stopped-run maxima range was wrong (175 to 198 us) | **Accepted** | Corrected to 175.1 to 296.5 us |
 
 Both counted runs pass the stricter evaluation unchanged: 352.2 us idle and 190.8 us loaded. The derived verdict record was regenerated; it stores run labels only, not local paths.
+
+### Second review round
+
+A second review at head `2fd7cff` accepted the conditional result, reproduced the retrospective rate-only bound exactly (894.669 us idle, 785.584 us loaded), and found two incomplete fixes:
+
+| # | Finding | Response | Change |
+|---|---|---|---|
+| P1 | A crashed controller does not leave a persistent stop: a named mutex disappears when its only holder dies, and the abandoned-lock branch released without persisting quarantine, so a second attempt succeeded | **Accepted** | `admit()` writes a durable adapter-scoped in-progress record after taking the lock and before collection; only `complete()` after a successful, persisted run removes it. An abandoned lock writes the quarantine marker. Tests: a child controller killed while holding the lock blocks two later admissions until the record is reconciled; an abandoned lock blocks every later attempt |
+| P2 | Acceptance read the declared duration and partial workload fields: 78 s of requests with one byte and no CPU work passed | **Accepted** | Evaluation checks the actual first-to-last request span (at least 3,540 s), trace coverage of both ends (within 5 s), any recorded collection interval against the receipts, and workload runtime, CPU work (at least 100 hashes per second) and download volume (at least 1 Mbit/s mean). The controller now records the collection interval. Tests cover a truncated trace labelled as an hour, missing trace coverage, a mismatched interval, and zero CPU work, one byte or one second of workload |
+
+The review also distinguished the retrospective bound from a causal one usable by a live application. Its causal figures (1,742.482 us idle, 1,347.739 us loaded; about 99.44% and 99.22% coverage if the guarantee expires at 1,000 us) are recorded in the results document as the review's values, not recomputed here. Wording was changed from "measured" to "bounds computed from measured traces". Both counted runs pass the stricter evaluation unchanged.
