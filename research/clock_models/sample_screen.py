@@ -43,6 +43,8 @@ class Screen:
     own_losses: int
     duration_s: Fraction
     expected_misattributed: Fraction
+    # Screened-out samples that still carry a report (late or stale), for diagnostics only.
+    rejected_samples: tuple[tuple[str, Sample], ...] = ()
 
 
 def request_from_receipt(sequence: int, receipt: dict) -> Request:
@@ -109,7 +111,7 @@ def screen(records: list[dict], requests: list[Request], qpc_hz: int) -> Screen:
     limits = [(r.lower_qpc, min(r.lower_qpc + timeout, n.lower_qpc)) for r, n in zip(requests, requests[1:])]
     limits.append((requests[-1].lower_qpc, requests[-1].lower_qpc + timeout))
     claimed: set[int] = set()
-    rejected, candidates = [], []
+    rejected, candidates, rejected_samples = [], [], []
     own_losses = foreign_groups = foreign_commands = 0
     for request, (begin, end) in zip(requests, limits):
         accept_end = min(begin + accept_ticks, end - 1)
@@ -128,6 +130,10 @@ def screen(records: list[dict], requests: list[Request], qpc_hz: int) -> Screen:
             reason = 'command_record_missing_or_extra'
         elif not reports:
             reason = 'late_report' if later_reports else 'own_loss'
+            if later_reports:
+                late = later_reports[0]
+                rejected_samples.append(('late_report', Sample(request.sequence, late['tsf'], late['soc'],
+                                                               request.lower_qpc, late['ts'])))
             later_reports = later_reports[1:]
         elif len(reports) > 1:
             reason = 'multiple_reports_in_window'
@@ -148,10 +154,12 @@ def screen(records: list[dict], requests: list[Request], qpc_hz: int) -> Screen:
             rejected.append((request.sequence, reason))
     accepted, stale = freshness_filter(candidates, qpc_hz)
     rejected.extend(stale)
+    stale_sequences = {sequence for sequence, _ in stale}
+    rejected_samples.extend(('stale_or_inconsistent', s) for s in candidates if s.sequence in stale_sequences)
     unclaimed = [e for i, e in enumerate(events) if i not in claimed]
     foreign_groups += sum(e['type'] == 'report' for e in unclaimed)
     foreign_commands += sum(e['type'] == 'command' for e in unclaimed)
     duration = Fraction(limits[-1][1] - limits[0][0], qpc_hz)
     expected = own_losses * Fraction(foreign_groups) / duration * Fraction(MAX_WINDOW_US, US_PER_S)
     return Screen(tuple(accepted), tuple(sorted(rejected)), foreign_groups, foreign_commands,
-                  own_losses, duration, expected)
+                  own_losses, duration, expected, tuple(sorted(rejected_samples, key=lambda item: item[1].sequence)))

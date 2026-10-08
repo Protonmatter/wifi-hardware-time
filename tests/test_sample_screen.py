@@ -79,6 +79,17 @@ class ScreenTests(unittest.TestCase):
         self.assertEqual([s.sequence for s in result.accepted], [1, 2, 3])
         self.assertEqual(result.own_losses, 0)
 
+    def test_rejected_samples_with_reports_are_returned_for_diagnostics(self):
+        reqs = requests(3)
+        first = ours(reqs[0].lower_qpc)
+        late = ours(reqs[1].lower_qpc, report_at=5_000_000)
+        stale = ours(reqs[2].lower_qpc, tsf=first[1]['tsf_raw'])
+        result = screen(first + late + stale, reqs, HZ)
+        kinds = {reason: sample.sequence for reason, sample in result.rejected_samples}
+        self.assertEqual(kinds, {'late_report': 2, 'stale_or_inconsistent': 3})
+        late_sample = dict((r, s) for r, s in result.rejected_samples)['late_report']
+        self.assertEqual(late_sample.upper_qpc, reqs[1].lower_qpc + 5_000_000)
+
     def test_missing_command_record_rejects_sample(self):
         reqs = requests(1)
         result = screen(ours(reqs[0].lower_qpc, command=False), reqs, HZ)
