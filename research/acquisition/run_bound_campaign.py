@@ -196,7 +196,7 @@ def parse(argv: list[str] | None = None) -> argparse.Namespace:
 
 
 def campaign(args: argparse.Namespace) -> int:
-    from research.acquisition.bss_reader import BssReader
+    from research.acquisition.bss_reader import BssReader, CacheEntryUnavailable
     from research.acquisition.run_acquisition_campaign import (PROVIDER, ROOT, Clock, Observer, TraceOwner,
                                                                identity, run, same_identity, utc)
     marker = ROOT / 'artifacts' / MARKER_NAME
@@ -220,7 +220,7 @@ def campaign(args: argparse.Namespace) -> int:
     session = 'WifiBound-' + uuid.uuid4().hex[:12]
     gate, trace = BoundGate(), TraceOwner(session, folder)
     observer = worker = reader = None
-    failure, receipts, beacon_count, losses = None, [], 0, 0
+    failure, receipts, beacon_count, losses, beacon_skips = None, [], 0, 0, []
     _save(folder / 'session.json', dict(SessionName=session, StartedUtc=utc(), Plan=plan))
     try:
         _save(folder / 'adapter-before.json', baseline)
@@ -248,11 +248,15 @@ def campaign(args: argparse.Namespace) -> int:
                 if (folder / 'tsf.etl').stat().st_size > TRACE_CAP_BYTES:
                     raise RuntimeError('Trace cap reached')
                 if time.monotonic() >= next_beacon:
-                    beacon = reader.read(clock.now)
-                    beacon_file.write(json.dumps(dict(qpc_before=beacon.qpc_before, qpc_after=beacon.qpc_after,
-                                                      ap_tsf_us=beacon.ap_tsf_us, bssid_sha256=beacon.bssid_sha256)) + '\n')
-                    beacon_file.flush()
-                    beacon_count += 1
+                    try:
+                        beacon = reader.read(clock.now)
+                        beacon_file.write(json.dumps(dict(qpc_before=beacon.qpc_before, qpc_after=beacon.qpc_after,
+                                                          ap_tsf_us=beacon.ap_tsf_us, bssid_sha256=beacon.bssid_sha256)) + '\n')
+                        beacon_file.flush()
+                        beacon_count += 1
+                    except CacheEntryUnavailable as missing:
+                        # A cache gap is not an association change; record it and skip this read.
+                        beacon_skips.append(dict(qpc=clock.now(), entries=missing.count))
                     next_beacon = time.monotonic() + BEACON_EVERY_S
                 number += 1
                 receipt = submit(ROOT, folder, number, args.if_index, clock.frequency, observer, gate)
@@ -314,6 +318,7 @@ def campaign(args: argparse.Namespace) -> int:
     _save(folder / 'run-result.json', dict(success=failure is None, error=failure, condition=args.condition,
                                            duration_s=args.duration_s, request_count=len(receipts),
                                            own_losses_live=losses, beacon_reads=beacon_count,
+                                           beacon_skips=beacon_skips,
                                            qpc_frequency_hz=clock.frequency, firmware_sampling_validated=False))
     if failure:
         _save(marker, dict(created_utc=utc(), run=str(folder), reason=failure))

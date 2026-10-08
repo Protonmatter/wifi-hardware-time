@@ -72,6 +72,20 @@ def parse_bss_list(buffer: bytes, bssid: bytes) -> list[int]:
     return stamps
 
 
+class CacheEntryUnavailable(Exception):
+    """The cache held zero or several entries for the connected BSSID; skip this read."""
+
+    def __init__(self, count: int):
+        super().__init__(f'Connected BSS present {count} times in the cache')
+        self.count = count
+
+
+def single_stamp(stamps: list[int]) -> int:
+    if len(stamps) != 1:
+        raise CacheEntryUnavailable(len(stamps))
+    return stamps[0]
+
+
 @dataclass(frozen=True)
 class BeaconRead:
     qpc_before: int
@@ -130,8 +144,6 @@ class BssReader:
             stamps = parse_bss_list(ct.string_at(listing.value, total), bssid)
         finally:
             self.api.WlanFreeMemory(listing)
-        if len(stamps) != 1:
-            raise RuntimeError('Connected BSS is not uniquely present in the cache')
         if self.connected_bssid() != bssid:
             raise RuntimeError('Association changed during the read')
-        return BeaconRead(before, after, stamps[0], hashlib.sha256(bssid).hexdigest())
+        return BeaconRead(before, after, single_stamp(stamps), hashlib.sha256(bssid).hexdigest())
