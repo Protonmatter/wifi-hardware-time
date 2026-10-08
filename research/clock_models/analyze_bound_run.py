@@ -25,6 +25,11 @@ from research.evidence.validate_research_bundle import validate_bundle
 MAX_FILE_BYTES = 512 * 1024 * 1024
 QPC_CLOCK_TYPE = 1  # ETW logfile ClientContext: 1 = QPC, 2 = system time, 3 = CPU cycle counter
 REQUIRED_DURATION_S = 3600
+# Acceptance checks on what actually ran, derived from receipts and the trace, not from declared values.
+SPAN_TOLERANCE_S = 60          # first-to-last request span may fall short of the duration by request spacing
+TRACE_EDGE_TOLERANCE_S = 5     # first/last timing record within one listening interval of first/last request
+MIN_HASHES_PER_S = 100         # CPU work floor (the counted load run did about 2,500 per second)
+MIN_DOWNLOAD_BYTES_PER_S = 125_000  # 1 Mbit/s mean download floor (the counted load run averaged 35 Mbit/s)
 UNVERIFIED_CONDITIONS = (
     'causal capture: each TSF was sampled after its request left the host and before its report was logged '
     '(a constant capture delay is invisible to the freshness screen)',
@@ -117,11 +122,17 @@ def load_run(folder: Path) -> dict:
     workload = json.loads(workload_path.read_text(encoding='utf-8')) if workload_path.exists() else None
     # Run label only (campaign folder / condition): unique per run, without exposing local paths.
     resolved = folder.resolve()
+    timing = [r['raw_timestamp'] for r in records if r.get('kind') in ('command', 'report', 'soc_timer', 'delay')]
+    collection = dict(first_request_qpc=requests[0].lower_qpc if requests else None,
+                      last_request_qpc=requests[-1].lower_qpc if requests else None,
+                      first_timing_qpc=min(timing) if timing else None, last_timing_qpc=max(timing) if timing else None,
+                      recorded_start_qpc=result.get('collection_start_qpc'), recorded_end_qpc=result.get('collection_end_qpc'))
     identity = dict(folder=f'{resolved.parent.name}/{resolved.name}', session=session.get('SessionName'),
                     condition=result.get('condition'),
-                    duration_s=result.get('duration_s'),
+                    duration_s=result.get('duration_s'), qpc_hz=hz, collection=collection,
                     workload=None if workload is None else {k: workload.get(k) for k in
-                                                            ('stop_requested', 'download_stalled', 'downloaded_bytes')})
+                                                            ('stop_requested', 'download_stalled', 'downloaded_bytes',
+                                                             'wall_seconds', 'hash_operations')})
     return dict(qpc_hz=hz, records=records, requests=requests, beacons=beacons, completed=result.get('success') is True,
                 identity=identity)
 
@@ -142,6 +153,23 @@ def analyze_run(folder: Path) -> dict:
                 accuracy_vs_utc=None, clock_provider_enabled=False)
 
 
+def execution_checks(identity: dict) -> dict:
+    """Check the collection that actually happened: request span, trace coverage, recorded interval."""
+    c, hz = identity.get('collection') or {}, identity.get('qpc_hz')
+    first, last = c.get('first_request_qpc'), c.get('last_request_qpc')
+    known = type(hz) is int and hz > 0 and type(first) is int and type(last) is int
+    span_ok = known and last - first >= (REQUIRED_DURATION_S - SPAN_TOLERANCE_S) * hz
+    edge = TRACE_EDGE_TOLERANCE_S * hz if known else 0
+    t0, t1 = c.get('first_timing_qpc'), c.get('last_timing_qpc')
+    covered = (known and type(t0) is int and type(t1) is int
+               and first <= t0 <= first + edge and last <= t1 <= last + edge)
+    start, end = c.get('recorded_start_qpc'), c.get('recorded_end_qpc')
+    # Older runs did not record the interval; when recorded, it must match the receipts exactly.
+    consistent = (start is None and end is None) or (start == first and end == last)
+    return dict(collection_span_at_least_3540s=bool(span_ok), trace_covers_collection=bool(covered),
+                recorded_interval_consistent=consistent)
+
+
 def evaluate(idle: dict, load: dict) -> dict:
     verdict = {}
     for name, run in (('idle', idle), ('load', load)):
@@ -153,14 +181,20 @@ def evaluate(idle: dict, load: dict) -> dict:
             run_completed=run['run_completed'],
             condition_recorded=identity.get('condition') == name,
             duration_at_least_3600s=type(identity.get('duration_s')) is int and identity['duration_s'] >= REQUIRED_DURATION_S,
+            **execution_checks(identity),
             max_bound_below_1000us=widths is not None and Fraction(widths['max_exact']) < 1000,
             coverage_at_least_90pct=Fraction(analysis['coverage_exact']) >= Fraction(9, 10),
             rejected_at_most_1pct=info['request_count'] > 0 and Fraction(info['rejected_count'], info['request_count']) <= Fraction(1, 100),
             misattribution_below_0_05=Fraction(info['expected_misattributed_exact']) < Fraction(5, 100),
             beacon_checked_without_violation=beacon['checked'] > 0 and beacon['violations'] == 0)
         if name == 'load':
-            criteria['workload_completed'] = (workload.get('stop_requested') is True and workload.get('download_stalled') is False
-                                              and type(workload.get('downloaded_bytes')) is int and workload['downloaded_bytes'] > 0)
+            wall = workload.get('wall_seconds')
+            criteria['workload_completed'] = (
+                workload.get('stop_requested') is True and workload.get('download_stalled') is False
+                and isinstance(wall, (int, float)) and wall >= REQUIRED_DURATION_S - SPAN_TOLERANCE_S
+                and type(workload.get('hash_operations')) is int and workload['hash_operations'] >= MIN_HASHES_PER_S * wall
+                and type(workload.get('downloaded_bytes')) is int
+                and workload['downloaded_bytes'] >= MIN_DOWNLOAD_BYTES_PER_S * wall)
         criteria['stretch_100us'] = widths is not None and Fraction(widths['max_exact']) <= 100
         verdict[name] = criteria
     idle_id, load_id = idle.get('run') or {}, load.get('run') or {}
