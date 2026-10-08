@@ -67,6 +67,18 @@ class ScreenTests(unittest.TestCase):
         expected = 2 * Fraction(1) / result.duration_s * Fraction(2_000, 1_000_000)
         self.assertEqual(result.expected_misattributed, expected)
 
+    def test_foreign_substitution_for_a_lost_report_is_only_estimated(self):
+        # Known limitation: if our report is lost and a foreign report lands in the acceptance window, the
+        # sample is accepted; the misattribution estimate is the only safeguard, so it must count this risk.
+        reqs = requests(3)
+        records = ours(reqs[0].lower_qpc) + ours(reqs[2].lower_qpc)
+        records += [dict(kind='command', raw_timestamp=reqs[1].lower_qpc + 500, vdev=0, action=4)]
+        records += group(reqs[1].lower_qpc + 1_500, tsf_at(reqs[1].lower_qpc + 1_500))  # foreign, inside the window
+        records += ours(reqs[2].lower_qpc + 30_000_000, command=False)  # a foreign group elsewhere sets the rate
+        result = screen(records, reqs, HZ)
+        self.assertEqual([s.sequence for s in result.accepted], [1, 2, 3])
+        self.assertEqual(result.own_losses, 0)
+
     def test_missing_command_record_rejects_sample(self):
         reqs = requests(1)
         result = screen(ours(reqs[0].lower_qpc, command=False), reqs, HZ)

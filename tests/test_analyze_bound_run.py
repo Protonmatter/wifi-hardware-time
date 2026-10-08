@@ -13,7 +13,8 @@ ROOT = Path(__file__).resolve().parents[1]
 HZ = 10_000_000
 
 
-def write_run(folder: Path, count=40, foreign=0, success=True):
+def write_run(folder: Path, count=40, foreign=0, success=True, condition='idle', duration_s=3600, session=None,
+              workload=None):
     records, receipts, beacons = [dict(kind='header', clock_type=1, perf_frequency_hz=HZ, events_lost=0, buffers_lost=0)], [], []
     for i in range(count):
         lower = 10_000_000 + i * 20_000_000
@@ -34,14 +35,24 @@ def write_run(folder: Path, count=40, foreign=0, success=True):
     (folder / 'raw-timing.jsonl').write_text(''.join(json.dumps(r) + '\n' for r in records), encoding='utf-8')
     (folder / 'requests.jsonl').write_text(''.join(json.dumps(r) + '\n' for r in receipts), encoding='utf-8')
     (folder / 'beacons.jsonl').write_text(''.join(json.dumps(b) + '\n' for b in beacons), encoding='utf-8')
-    (folder / 'run-result.json').write_text(json.dumps(dict(success=success, qpc_frequency_hz=HZ)), encoding='utf-8')
+    (folder / 'run-result.json').write_text(json.dumps(dict(success=success, qpc_frequency_hz=HZ, condition=condition,
+                                                            duration_s=duration_s)), encoding='utf-8')
+    (folder / 'session.json').write_text(json.dumps(dict(SessionName=session or f'WifiBound-{folder.name}')), encoding='utf-8')
+    if condition == 'load':
+        load = dict(stop_requested=True, download_stalled=False, downloaded_bytes=10**9) if workload is None else workload
+        (folder / 'workload.json').write_text(json.dumps(load), encoding='utf-8')
+
+
+def pair(a: str, b: str, **load_options):
+    write_run(Path(a))
+    write_run(Path(b), condition='load', **load_options)
+    return analyze_run(Path(a)), analyze_run(Path(b))
 
 
 class AnalyzeTests(unittest.TestCase):
     def test_clean_run_passes_every_criterion(self):
         with tempfile.TemporaryDirectory() as a, tempfile.TemporaryDirectory() as b:
-            write_run(Path(a)); write_run(Path(b), foreign=3)
-            idle, load = analyze_run(Path(a)), analyze_run(Path(b))
+            idle, load = pair(a, b, foreign=3)
             self.assertEqual(idle['screen']['accepted_count'], 40)
             self.assertEqual(load['screen']['foreign_groups'], 3)
             verdict = evaluate(idle, load)
@@ -49,10 +60,64 @@ class AnalyzeTests(unittest.TestCase):
 
     def test_stopped_run_fails(self):
         with tempfile.TemporaryDirectory() as a, tempfile.TemporaryDirectory() as b:
-            write_run(Path(a)); write_run(Path(b), success=False)
-            verdict = evaluate(analyze_run(Path(a)), analyze_run(Path(b)))
+            verdict = evaluate(*pair(a, b, success=False))
             self.assertFalse(verdict['passed'])
             self.assertFalse(verdict['load']['run_completed'])
+
+    def test_verdict_is_always_conditional(self):
+        with tempfile.TemporaryDirectory() as a, tempfile.TemporaryDirectory() as b:
+            verdict = evaluate(*pair(a, b))
+            self.assertTrue(verdict['passed'])
+            self.assertFalse(verdict['physical_bound_proven'])
+            self.assertTrue(any(c.startswith('causal capture') for c in verdict['conditional_on']))
+            self.assertTrue(any(c.startswith('affine clock') for c in verdict['conditional_on']))
+
+    def test_constant_capture_delay_is_not_detectable(self):
+        # Known limitation: every TSF captured 5 ms before its window still passes screening, so a pass is
+        # conditional on causal capture rather than proof of it.
+        with tempfile.TemporaryDirectory() as a:
+            write_run(Path(a))
+            path = Path(a) / 'raw-timing.jsonl'
+            records = [json.loads(line) for line in path.read_text(encoding='utf-8').splitlines()]
+            for record in records:
+                if record['kind'] == 'report':
+                    record['tsf_raw'] -= 5_000
+                if record['kind'] == 'delay':
+                    record['tsf_delay_raw'] = (record['tsf_delay_raw'] - 5_000) & 0xffffffff
+            path.write_text(''.join(json.dumps(r) + '\n' for r in records), encoding='utf-8')
+            self.assertEqual(analyze_run(Path(a))['screen']['accepted_count'], 40)
+
+    def test_same_run_supplied_twice_fails(self):
+        with tempfile.TemporaryDirectory() as a:
+            write_run(Path(a))
+            run = analyze_run(Path(a))
+            verdict = evaluate(run, run)
+            self.assertFalse(verdict['passed'])
+            self.assertFalse(verdict['distinct_runs'])
+
+    def test_recorded_condition_must_match_its_role(self):
+        with tempfile.TemporaryDirectory() as a, tempfile.TemporaryDirectory() as b:
+            idle, load = pair(a, b)
+            verdict = evaluate(load, idle)
+            self.assertFalse(verdict['passed'])
+            self.assertFalse(verdict['idle']['condition_recorded'])
+
+    def test_short_run_is_diagnostic_only(self):
+        with tempfile.TemporaryDirectory() as a, tempfile.TemporaryDirectory() as b:
+            write_run(Path(a), duration_s=80)
+            write_run(Path(b), condition='load')
+            verdict = evaluate(analyze_run(Path(a)), analyze_run(Path(b)))
+            self.assertFalse(verdict['passed'])
+            self.assertFalse(verdict['idle']['duration_at_least_3600s'])
+
+    def test_load_requires_a_completed_progressing_workload(self):
+        for workload in (dict(stop_requested=True, download_stalled=True, downloaded_bytes=10**9),
+                         dict(stop_requested=True, download_stalled=False, downloaded_bytes=0),
+                         dict(stop_requested=False, download_stalled=False, downloaded_bytes=10**9)):
+            with self.subTest(workload=workload), tempfile.TemporaryDirectory() as a, tempfile.TemporaryDirectory() as b:
+                verdict = evaluate(*pair(a, b, workload=workload))
+                self.assertFalse(verdict['passed'])
+                self.assertFalse(verdict['load']['workload_completed'])
 
     def test_beacon_received_during_the_cache_call_is_not_a_violation(self):
         with tempfile.TemporaryDirectory() as a:
@@ -64,6 +129,21 @@ class AnalyzeTests(unittest.TestCase):
             (Path(a) / 'beacons.jsonl').write_text(json.dumps(beacon) + '\n', encoding='utf-8')
             check = analyze_run(Path(a))['analysis']['beacon_check']
             self.assertEqual((check['checked'], check['violations']), (1, 0))
+
+    def test_non_qpc_trace_clock_is_rejected(self):
+        for clock_type in (2, 3, None):
+            with self.subTest(clock_type=clock_type), tempfile.TemporaryDirectory() as a:
+                write_run(Path(a))
+                path = Path(a) / 'raw-timing.jsonl'
+                lines = path.read_text(encoding='utf-8').splitlines()
+                header = json.loads(lines[0])
+                if clock_type is None:
+                    del header['clock_type']
+                else:
+                    header['clock_type'] = clock_type
+                path.write_text('\n'.join([json.dumps(header)] + lines[1:]) + '\n', encoding='utf-8')
+                with self.assertRaises(ValueError):
+                    analyze_run(Path(a))
 
     def test_frequency_accepts_bundle_decimal_strings_only(self):
         self.assertEqual(frequency('10000000'), 10_000_000)
