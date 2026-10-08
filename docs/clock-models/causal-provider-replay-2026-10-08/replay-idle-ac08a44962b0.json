@@ -1,0 +1,161 @@
+{
+  "retrospective": {
+    "schema": "wht/causal-provider-replay-v1",
+    "mode": "retrospective",
+    "run": "BoundCampaign-ac08a44962b0/idle",
+    "session": "WifiBound-e71bb37c9e9e",
+    "source": {
+      "commit": "9c9dea2fda98e8eb2d2830e252ed01b46011d2b8",
+      "research_tree_modified": false
+    },
+    "inputs": {
+      "raw-timing.jsonl": "c573e8b52dbf98524124e66c8ff0630f5cad09d01cb5706948f07debfe5f26d3",
+      "requests.jsonl": "9f1939a670669889ec2cfeee6bbbbc40ce3b1085840e1e4d03e3688cfab2ae4e",
+      "live-observer.jsonl": "9948f25dfc7e5fff2a5c51da3a2705a2bbd1036097142797e9c24d1d9f59456b",
+      "run-result.json": "f4b141aa0cf415afb2bb6b1a823a971179e04dad408c4ebaf817c5f25561ad84"
+    },
+    "screening_policy": "sample_screen.screen() over the complete recording",
+    "screen": {
+      "accepted": 1276,
+      "rejected": 1,
+      "rejected_with_reports": 1
+    },
+    "label": "retrospective rate-only bound conditioned on offline sample screening",
+    "max_half_width_us": 894.669,
+    "max_half_width_exact": "89466911/100000",
+    "worst_gap_s": 6.963,
+    "gap_count": 1275,
+    "rate_prior_ppm": 200,
+    "quantization": "window widened by 1 QPC tick; TSF value widened by 1 us",
+    "conditions": [
+      "causal capture: each TSF was captured inside its window [lower_qpc, upper_qpc]",
+      "bounded rate: TSF advances within the rate prior of nominal at every instant, with no unmodelled phase steps",
+      "continuity: one continuous TSF within the epoch",
+      "station TSF equals access point TSF (802.11 synchronization; not checked here)"
+    ]
+  },
+  "causal-etw": {
+    "schema": "wht/causal-provider-replay-v1",
+    "mode": "causal-etw",
+    "run": "BoundCampaign-ac08a44962b0/idle",
+    "session": "WifiBound-e71bb37c9e9e",
+    "source": {
+      "commit": "9c9dea2fda98e8eb2d2830e252ed01b46011d2b8",
+      "research_tree_modified": false
+    },
+    "inputs": {
+      "raw-timing.jsonl": "c573e8b52dbf98524124e66c8ff0630f5cad09d01cb5706948f07debfe5f26d3",
+      "requests.jsonl": "9f1939a670669889ec2cfeee6bbbbc40ce3b1085840e1e4d03e3688cfab2ae4e",
+      "live-observer.jsonl": "9948f25dfc7e5fff2a5c51da3a2705a2bbd1036097142797e9c24d1d9f59456b",
+      "run-result.json": "f4b141aa0cf415afb2bb6b1a823a971179e04dad408c4ebaf817c5f25561ad84"
+    },
+    "screening_policy": "sample_screen.screen() over the complete recording",
+    "screen": {
+      "accepted": 1276,
+      "rejected": 1,
+      "rejected_with_reports": 1
+    },
+    "availability_rule": "one QPC tick after the report ETW timestamp (reproduces the earlier review)",
+    "label": "causal clock-model replay conditioned on offline sample screening",
+    "rate_prior_ppm": 200,
+    "threshold_us": 1000,
+    "quantization": "window widened by 1 QPC tick; TSF value widened by 1 us",
+    "declared_interval_qpc": [
+      18644854788965,
+      18680879044963
+    ],
+    "durations_ticks": {
+      "acquiring": "6927",
+      "tracking": "71632547349/2",
+      "stale": "415950793/2",
+      "invalid": "0"
+    },
+    "coverage_declared": 0.994227,
+    "samples_ingested": 1276,
+    "incompatible": [],
+    "rejected_checked": [
+      {
+        "sequence": 590,
+        "reason": "late_report",
+        "compatible": true
+      }
+    ],
+    "max_half_width_before_next_sample_us": 1742.482,
+    "max_half_width_before_next_sample_exact": "34849639/20000",
+    "stale_interval_count": 39,
+    "longest_stale_s": 3.71241,
+    "conditions": [
+      "causal capture: each TSF was captured inside its window [lower_qpc, upper_qpc]",
+      "bounded rate: TSF advances within the rate prior of nominal at every instant, with no unmodelled phase steps",
+      "continuity: one continuous TSF within the epoch",
+      "station TSF equals access point TSF (802.11 synchronization; not checked here)"
+    ],
+    "review_interval_qpc": [
+      18644854795892,
+      18680829047561
+    ],
+    "coverage_review_interval": 0.9944
+  },
+  "causal-arrival": {
+    "schema": "wht/causal-provider-replay-v1",
+    "mode": "causal-arrival",
+    "run": "BoundCampaign-ac08a44962b0/idle",
+    "session": "WifiBound-e71bb37c9e9e",
+    "source": {
+      "commit": "9c9dea2fda98e8eb2d2830e252ed01b46011d2b8",
+      "research_tree_modified": false
+    },
+    "inputs": {
+      "raw-timing.jsonl": "c573e8b52dbf98524124e66c8ff0630f5cad09d01cb5706948f07debfe5f26d3",
+      "requests.jsonl": "9f1939a670669889ec2cfeee6bbbbc40ce3b1085840e1e4d03e3688cfab2ae4e",
+      "live-observer.jsonl": "9948f25dfc7e5fff2a5c51da3a2705a2bbd1036097142797e9c24d1d9f59456b",
+      "run-result.json": "f4b141aa0cf415afb2bb6b1a823a971179e04dad408c4ebaf817c5f25561ad84"
+    },
+    "screening_policy": "sample_screen.screen() over the complete recording",
+    "screen": {
+      "accepted": 1276,
+      "rejected": 1,
+      "rejected_with_reports": 1
+    },
+    "availability_rule": "max of the reader-thread receipt of the delay record (the last record a sample needs) and the request completion QPC; later queueing and ingestion latency not included",
+    "label": "causal clock-model replay conditioned on offline sample screening",
+    "rate_prior_ppm": 200,
+    "threshold_us": 1000,
+    "quantization": "window widened by 1 QPC tick; TSF value widened by 1 us",
+    "declared_interval_qpc": [
+      18644854788965,
+      18680879044963
+    ],
+    "durations_ticks": {
+      "acquiring": "13516196",
+      "tracking": "56695239281/2",
+      "stale": "15326240323/2",
+      "invalid": "0"
+    },
+    "coverage_declared": 0.786904,
+    "samples_ingested": 1276,
+    "incompatible": [],
+    "rejected_checked": [
+      {
+        "sequence": 590,
+        "reason": "late_report",
+        "compatible": true
+      }
+    ],
+    "max_half_width_before_next_sample_us": 1978.711,
+    "max_half_width_before_next_sample_exact": "39574223/20000",
+    "stale_interval_count": 841,
+    "longest_stale_s": 3.299488,
+    "conditions": [
+      "causal capture: each TSF was captured inside its window [lower_qpc, upper_qpc]",
+      "bounded rate: TSF advances within the rate prior of nominal at every instant, with no unmodelled phase steps",
+      "continuity: one continuous TSF within the epoch",
+      "station TSF equals access point TSF (802.11 synchronization; not checked here)"
+    ],
+    "review_interval_qpc": [
+      18644868305161,
+      18680849275262
+    ],
+    "coverage_review_interval": 0.787204
+  }
+}

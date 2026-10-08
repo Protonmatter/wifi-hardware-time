@@ -10,7 +10,7 @@ Find the calls, file names, terms and short strings recorded in this research. T
 
 ## Search
 
-Indexed **324 source files** and **9347 distinct terms**.
+Indexed **329 source files** and **9472 distinct terms**.
 
 The [JSON index](research-index.json) includes Python definitions/calls, C/Java/PowerShell call-shaped tokens, authored short strings and Markdown code terms. Vendor binaries, local artifacts, historical reproduction sources and generated indexes are excluded. Unresolved call-shaped tokens are explicitly labeled.
 
@@ -78,7 +78,8 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [docs/adapters/static-inspection-runbook.md](../../docs/adapters/static-inspection-runbook.md) | `b19845fec9a0` |
 | [docs/adapters/windows-bss-host-time.md](../../docs/adapters/windows-bss-host-time.md) | `c1d8d6725b1d` |
 | [docs/adapters/wlanlib-dispatch-and-completion.md](../../docs/adapters/wlanlib-dispatch-and-completion.md) | `542f96378fab` |
-| [docs/clock-models/README.md](../../docs/clock-models/README.md) | `1627bc2ceb16` |
+| [docs/clock-models/README.md](../../docs/clock-models/README.md) | `bfa9598ef0a3` |
+| [docs/clock-models/causal-provider-replay.md](../../docs/clock-models/causal-provider-replay.md) | `48e9a239580f` |
 | [docs/clock-models/clock-relationship-investigation.md](../../docs/clock-models/clock-relationship-investigation.md) | `36cdf2738990` |
 | [docs/clock-models/counter-rate-identifiability.md](../../docs/clock-models/counter-rate-identifiability.md) | `fc7ac3dc7bc5` |
 | [docs/clock-models/diagrams/ftm-reduction.mmd](../../docs/clock-models/diagrams/ftm-reduction.mmd) | `75cab435f2de` |
@@ -114,7 +115,7 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [docs/ftm/ftm-result-provenance.md](../../docs/ftm/ftm-result-provenance.md) | `b92a2ddb2d94` |
 | [docs/glossary.md](../../docs/glossary.md) | `838e3c21d99f` |
 | [docs/knowledge/assumptions-and-corrections.md](../../docs/knowledge/assumptions-and-corrections.md) | `6524c41cee4e` |
-| [docs/knowledge/current-findings.md](../../docs/knowledge/current-findings.md) | `bac7b206fd23` |
+| [docs/knowledge/current-findings.md](../../docs/knowledge/current-findings.md) | `ec210019f6b6` |
 | [docs/knowledge/interface-directory.md](../../docs/knowledge/interface-directory.md) | `d58d6c2fd787` |
 | [docs/knowledge/refresh-validation.md](../../docs/knowledge/refresh-validation.md) | `13243a024baa` |
 | [docs/knowledge/workflow-diagrams.md](../../docs/knowledge/workflow-diagrams.md) | `cb387f0069df` |
@@ -216,8 +217,10 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [research/clock_models/analyze_observation_quality.py](../../research/clock_models/analyze_observation_quality.py) | `eb5263987e77` |
 | [research/clock_models/beacon_consistency.py](../../research/clock_models/beacon_consistency.py) | `d3306f07bef7` |
 | [research/clock_models/bracket_bound.py](../../research/clock_models/bracket_bound.py) | `c8b07e06adcc` |
+| [research/clock_models/causal_provider.py](../../research/clock_models/causal_provider.py) | `4a69ce24126c` |
 | [research/clock_models/rate_bound.py](../../research/clock_models/rate_bound.py) | `cf4ec7326cef` |
-| [research/clock_models/sample_screen.py](../../research/clock_models/sample_screen.py) | `b54e35d80895` |
+| [research/clock_models/replay_causal_provider.py](../../research/clock_models/replay_causal_provider.py) | `50db450be7f1` |
+| [research/clock_models/sample_screen.py](../../research/clock_models/sample_screen.py) | `23d27e0de478` |
 | [research/clock_models/soc_domain_test.py](../../research/clock_models/soc_domain_test.py) | `46d606b9c7dd` |
 | [research/evidence/README.md](../../research/evidence/README.md) | `b8b828633765` |
 | [research/evidence/Update-ResearchKnowledge.ps1](../../research/evidence/Update-ResearchKnowledge.ps1) | `4547d8e08593` |
@@ -305,6 +308,7 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [tests/test_bss_reader.py](../../tests/test_bss_reader.py) | `a5dcf05d5293` |
 | [tests/test_campaign_controller.py](../../tests/test_campaign_controller.py) | `4a67efa7608b` |
 | [tests/test_campaign_gate.py](../../tests/test_campaign_gate.py) | `d7590b368736` |
+| [tests/test_causal_provider.py](../../tests/test_causal_provider.py) | `4abc943a41d2` |
 | [tests/test_clock_pairing_hypothesis.py](../../tests/test_clock_pairing_hypothesis.py) | `5261e0ce7a7e` |
 | [tests/test_decode_tsf_report.py](../../tests/test_decode_tsf_report.py) | `535d24bdd33c` |
 | [tests/test_device_service_control.py](../../tests/test_device_service_control.py) | `2ed65785ca04` |
@@ -339,9 +343,10 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [tests/test_rate_bound.py](../../tests/test_rate_bound.py) | `580506762966` |
 | [tests/test_raw_event_broker.py](../../tests/test_raw_event_broker.py) | `cc1ae80f9d63` |
 | [tests/test_read_tsf_evidence.py](../../tests/test_read_tsf_evidence.py) | `c0ea33b069f1` |
+| [tests/test_replay_causal_provider.py](../../tests/test_replay_causal_provider.py) | `ee35d6774150` |
 | [tests/test_research_layout.py](../../tests/test_research_layout.py) | `6cc62e5d0625` |
 | [tests/test_ring_publication_model.py](../../tests/test_ring_publication_model.py) | `9a6fcec1e071` |
-| [tests/test_sample_screen.py](../../tests/test_sample_screen.py) | `53d7ba269508` |
+| [tests/test_sample_screen.py](../../tests/test_sample_screen.py) | `31191eadf647` |
 | [tests/test_scan_comparison.py](../../tests/test_scan_comparison.py) | `61d5ecc0b798` |
 | [tests/test_scan_postmortem.py](../../tests/test_scan_postmortem.py) | `efa6f9491d9a` |
 | [tests/test_soc_domain.py](../../tests/test_soc_domain.py) | `b5750a60faf9` |
