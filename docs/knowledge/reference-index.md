@@ -10,7 +10,7 @@ Find the calls, file names, terms and short strings recorded in this research. T
 
 ## Search
 
-Indexed **321 source files** and **9310 distinct terms**.
+Indexed **324 source files** and **9347 distinct terms**.
 
 The [JSON index](research-index.json) includes Python definitions/calls, C/Java/PowerShell call-shaped tokens, authored short strings and Markdown code terms. Vendor binaries, local artifacts, historical reproduction sources and generated indexes are excluded. Unresolved call-shaped tokens are explicitly labeled.
 
@@ -129,8 +129,9 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [docs/overview/2026-10-03-first-hardware-clock-plan.md](../../docs/overview/2026-10-03-first-hardware-clock-plan.md) | `76aa080d9cc0` |
 | [docs/overview/2026-10-07-tsf-host-bound-design.md](../../docs/overview/2026-10-07-tsf-host-bound-design.md) | `ee3958dfee4d` |
 | [docs/overview/2026-10-07-tsf-host-bound-plan.md](../../docs/overview/2026-10-07-tsf-host-bound-plan.md) | `9f1493563e35` |
+| [docs/overview/2026-10-08-causal-provider-design.md](../../docs/overview/2026-10-08-causal-provider-design.md) | `3b81c2bbae8a` |
 | [docs/overview/OPERATIONS.md](../../docs/overview/OPERATIONS.md) | `325c7d5a27eb` |
-| [docs/overview/README.md](../../docs/overview/README.md) | `a8f2066f64c6` |
+| [docs/overview/README.md](../../docs/overview/README.md) | `6e23537d5ca4` |
 | [docs/overview/complete-event-2026-10-05/context-map.md](../../docs/overview/complete-event-2026-10-05/context-map.md) | `ea57333f0cba` |
 | [docs/overview/complete-event-2026-10-05/decision-log.md](../../docs/overview/complete-event-2026-10-05/decision-log.md) | `c089c83e1be6` |
 | [docs/overview/complete-event-2026-10-05/devex-review.md](../../docs/overview/complete-event-2026-10-05/devex-review.md) | `09bd1acc7f04` |
@@ -215,6 +216,7 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [research/clock_models/analyze_observation_quality.py](../../research/clock_models/analyze_observation_quality.py) | `eb5263987e77` |
 | [research/clock_models/beacon_consistency.py](../../research/clock_models/beacon_consistency.py) | `d3306f07bef7` |
 | [research/clock_models/bracket_bound.py](../../research/clock_models/bracket_bound.py) | `c8b07e06adcc` |
+| [research/clock_models/rate_bound.py](../../research/clock_models/rate_bound.py) | `cf4ec7326cef` |
 | [research/clock_models/sample_screen.py](../../research/clock_models/sample_screen.py) | `b54e35d80895` |
 | [research/clock_models/soc_domain_test.py](../../research/clock_models/soc_domain_test.py) | `46d606b9c7dd` |
 | [research/evidence/README.md](../../research/evidence/README.md) | `b8b828633765` |
@@ -334,6 +336,7 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [tests/test_qualcomm_protocol.py](../../tests/test_qualcomm_protocol.py) | `dcf25de3126f` |
 | [tests/test_quarantined_tsf.py](../../tests/test_quarantined_tsf.py) | `d61f48c0d3d9` |
 | [tests/test_quts_registry_analysis.py](../../tests/test_quts_registry_analysis.py) | `3e98ed5f0fcb` |
+| [tests/test_rate_bound.py](../../tests/test_rate_bound.py) | `580506762966` |
 | [tests/test_raw_event_broker.py](../../tests/test_raw_event_broker.py) | `cc1ae80f9d63` |
 | [tests/test_read_tsf_evidence.py](../../tests/test_read_tsf_evidence.py) | `c0ea33b069f1` |
 | [tests/test_research_layout.py](../../tests/test_research_layout.py) | `6cc62e5d0625` |
