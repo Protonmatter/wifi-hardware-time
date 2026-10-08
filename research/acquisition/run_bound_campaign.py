@@ -27,7 +27,7 @@ from research.acquisition.campaign_gate import ReportGate
 from research.clock_models.sample_screen import LISTEN_TIMEOUT_S, TIMING_KINDS
 
 MARKER_NAME = 'bound-campaign-quarantine.json'
-TRACE_CAP_BYTES = 1000 * 1024 * 1024
+TRACE_CAP_BYTES = 3000 * 1024 * 1024  # loaded runs measured ~26 MiB/min
 # Public 100 MB test files, tried in order. Cloudflare's speed endpoint returned 403 to these clients.
 DOWNLOAD_URLS = ('https://proof.ovh.net/files/100Mb.dat', 'https://ash-speed.hetzner.com/100MB.bin')
 DOWNLOAD_STALL_S = 60
@@ -225,7 +225,7 @@ def campaign(args: argparse.Namespace) -> int:
     try:
         _save(folder / 'adapter-before.json', baseline)
         trace.start(['-p', PROVIDER, '0x2000000000000010', '0xff', '-o', str(folder / 'tsf.etl'), '-f', 'bin',
-                     '-max', '1024', *TRACE_BUFFER_OPTIONS, '-rt', '-ct', 'perf', '-ft', '00:00:01', '-ets'])
+                     '-max', '3072', *TRACE_BUFFER_OPTIONS, '-rt', '-ct', 'perf', '-ft', '00:00:01', '-ets'])
         observer = Observer(session, args.if_index, folder, clock)
         observer.wait(2.5, gate)
         if not observer.ready or observer.association is None:
