@@ -1,6 +1,7 @@
 """Replay recorded runs through the causal TSF provider. Offline only.
 
-Modes: retrospective (rate-only bound, samples on both sides of each gap), causal-etw (availability
+Modes: retrospective (rate-only bound, samples on both sides of each gap), settle (two-phase
+timestamps: events on a 1 s grid settled once a later sample has arrived), causal-etw (availability
 one tick after the report's ETW timestamp; reproduces the earlier review), and causal-arrival
 (availability at the recorded reader boundary). Results are a causal clock-model replay conditioned
 on offline sample screening: samples are qualified by sample_screen.screen() over the whole run.
@@ -22,8 +23,10 @@ from research.clock_models.analyze_bound_run import _lines, load_run
 from research.clock_models.causal_provider import CONDITIONS, AvailableSample, CausalProvider
 from research.clock_models.rate_bound import retrospective_max_half_width
 from research.clock_models.sample_screen import LISTEN_TIMEOUT_S, screen
+from research.clock_models.settle import settle_replay
 
 ROOT = Path(__file__).resolve().parents[2]
+SETTLE_STEP_S = 1
 SCREENING_LABEL = 'causal clock-model replay conditioned on offline sample screening'
 AVAILABILITY_RULES = {
     'causal-etw': 'one QPC tick after the report ETW timestamp (reproduces the earlier review)',
@@ -169,6 +172,17 @@ def replay_run(folder: Path, mode: str) -> dict:
                     conditions=list(CONDITIONS))
         return meta
     completed = {r['sequence']: r['qpc_request_completed'] for r in _lines(folder / 'requests.jsonl')}
+    if mode == 'settle':
+        delay_seen = arrival_map(_lines(folder / 'live-observer.jsonl'))
+        items = [AvailableSample(s.sequence, s.tsf_us, s.lower_qpc, s.upper_qpc,
+                                 availability(s, 'causal-arrival', delay_seen, completed)) for s in accepted]
+        retro = retrospective_max_half_width(accepted, hz)
+        meta.update(label='two-phase settled timestamps conditioned on offline sample screening',
+                    availability_rule=AVAILABILITY_RULES['causal-arrival'],
+                    settle=settle_replay(items, hz, step_qpc=SETTLE_STEP_S * hz),
+                    worst_settled_half_width_any_instant_us=round(float(retro['max_half_width_us']), 3),
+                    worst_settled_half_width_any_instant_exact=str(retro['max_half_width_us']))
+        return meta
     delay_seen = arrival_map(_lines(folder / 'live-observer.jsonl')) if mode == 'causal-arrival' else {}
     events = [('accepted', None, AvailableSample(s.sequence, s.tsf_us, s.lower_qpc, s.upper_qpc,
                                                   availability(s, mode, delay_seen, completed))) for s in accepted]
@@ -189,10 +203,10 @@ def replay_run(folder: Path, mode: str) -> dict:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('folder', type=Path)
-    parser.add_argument('--mode', choices=('retrospective', 'causal-etw', 'causal-arrival', 'all'), default='all')
+    parser.add_argument('--mode', choices=('retrospective', 'settle', 'causal-etw', 'causal-arrival', 'all'), default='all')
     args = parser.parse_args()
     try:
-        modes = ('retrospective', 'causal-etw', 'causal-arrival') if args.mode == 'all' else (args.mode,)
+        modes = ('retrospective', 'settle', 'causal-etw', 'causal-arrival') if args.mode == 'all' else (args.mode,)
         print(json.dumps({mode: replay_run(args.folder, mode) for mode in modes}, indent=2))
         return 0
     except (OSError, ValueError, KeyError, TypeError) as error:
