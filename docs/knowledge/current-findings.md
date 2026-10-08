@@ -1,8 +1,10 @@
 # Current research findings
 
-We can read diagnostic counters and trace real byte-return mechanisms. WLANLIB is attributable to FastConnect and reaches the existing QcomWifi private commands. An ART2 firmware-event producer now connects to a cached payload fetch, but discarded metadata, cache consumption and validity/concurrency gaps prevent timing qualification. QUTS framing and ownership are mapped separately; no new complete timing event or hardware-to-host relationship is established.
+We can acquire diagnostic TSF observations through a persistent exact-build worker and calculate conditional TSF-to-QPC intervals from screened records. The first five-minute persistent idle smoke completed cleanly. Complete original-event export, physical capture timing, AP/UTC accuracy and multi-device synchronization remain separate unqualified capabilities.
 
-**Current decision, 2026-10-06:** the installed Qualcomm live route is
+**Current result, 2026-10-08:** the [persistent sampler smoke](../acquisition/persistent-tsf-smoke-2026-10-08.md) completed 139 real pending-to-success requests, accepted 138 samples offline, and closed with no outstanding I/O or trace loss. Arrival-aware tracking was 92.884% over the declared 302.999-second interval. All 297 replayed event-grid points settled with median/max conditional rate-only half-widths of 280.429/614.883 us after a median 2.341-second wait. The exact retrospective covered-interval maximum was 648.30025 us. The [math reference](../clock-models/tsf-mathematics.md) states the assumptions and the [phase 2 roadmap](../overview/persistent-tsf-next-steps.md) separates research, implementation, testing and qualification gates. No online sample admission is implemented.
+
+**Separate complete-event decision, 2026-10-06:** the installed Qualcomm original-event export route is
 [no-go pending demonstrated supported/vendor/instrumented producer access](../evidence/hardware-route-decision-2026-10-06.md).
 The current QMSL callback trace is complete for its static scope; repeating it
 does not supply an attributable endpoint or bounded vendor lifecycle. Retain
@@ -44,6 +46,8 @@ do not supply it.
 - [Continue or reproduce](#continue-or-reproduce)
 
 ## Established findings
+
+**2026-10-08 persistent sampling:** normal live session reuse and clean shutdown are established for one 300-second idle run on the qualified build. Requested one-second slots produced actual 2.005-second median and 4.009-second maximum gaps with the report wait retained. Cancellation, timeout recovery, firmware drain, long-run/load qualification and independent accuracy were not tested by this smoke. [Results and input/source hashes](../acquisition/persistent-tsf-smoke-2026-10-08.md).
 
 **2026-10-08 settled timestamps:** with [two-phase timestamps](../clock-models/settled-timestamps.md), all 7,195 events in the two counted runs (one per second) settled below 1 ms after a median wait of about 3 s: guarantee median about 310 to 325 us, worst 895 us idle and 786 us loaded; constant-rate best estimate median about 127 to 130 us. Assumptions and offline screening as below.
 

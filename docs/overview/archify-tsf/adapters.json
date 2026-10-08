@@ -1,0 +1,214 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Live and offline adapters: shared contract, different evidence",
+    "locale": "en",
+    "quality_profile": "showcase",
+    "output": "artifacts/archify-tsf/adapters/adapters.html"
+  },
+  "components": [
+    {
+      "id": "core",
+      "label": "Sampler core",
+      "sublabel": "injected dependencies",
+      "type": "backend",
+      "pos": [
+        390,
+        260
+      ],
+      "size": [
+        190,
+        72
+      ]
+    },
+    {
+      "id": "live",
+      "label": "Win32 backend",
+      "sublabel": "explicit live selection",
+      "type": "backend",
+      "pos": [
+        60,
+        260
+      ],
+      "size": [
+        190,
+        72
+      ]
+    },
+    {
+      "id": "kernel",
+      "label": "Kernel / driver",
+      "sublabel": "real overlapped action 4",
+      "type": "external",
+      "pos": [
+        60,
+        60
+      ],
+      "size": [
+        190,
+        72
+      ]
+    },
+    {
+      "id": "identity",
+      "label": "Live identity check",
+      "sublabel": "exact adapter + hash",
+      "type": "security",
+      "pos": [
+        60,
+        470
+      ],
+      "size": [
+        190,
+        72
+      ]
+    },
+    {
+      "id": "fake",
+      "label": "Deterministic fake",
+      "sublabel": "no device API loaded",
+      "type": "backend",
+      "pos": [
+        720,
+        260
+      ],
+      "size": [
+        190,
+        72
+      ]
+    },
+    {
+      "id": "cases",
+      "label": "Adversarial cases",
+      "sublabel": "deadlines + loss + faults",
+      "type": "security",
+      "pos": [
+        720,
+        60
+      ],
+      "size": [
+        190,
+        72
+      ]
+    },
+    {
+      "id": "clock",
+      "label": "Fake clock / owner",
+      "sublabel": "time and permits injected",
+      "type": "backend",
+      "pos": [
+        720,
+        470
+      ],
+      "size": [
+        190,
+        72
+      ]
+    },
+    {
+      "id": "receipt",
+      "label": "Same receipt contract",
+      "sublabel": "terminal state + provenance",
+      "type": "database",
+      "pos": [
+        390,
+        470
+      ],
+      "size": [
+        190,
+        72
+      ]
+    },
+    {
+      "id": "scope",
+      "label": "Qualification boundary",
+      "sublabel": "software tests vs hardware",
+      "type": "security",
+      "pos": [
+        390,
+        680
+      ],
+      "size": [
+        190,
+        72
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "core-live",
+      "from": "core",
+      "to": "live",
+      "variant": "default",
+      "label": "live mode"
+    },
+    {
+      "id": "live-kernel",
+      "from": "live",
+      "to": "kernel",
+      "variant": "default",
+      "label": "native calls"
+    },
+    {
+      "id": "identity-live",
+      "from": "identity",
+      "to": "live",
+      "variant": "security",
+      "label": "validate once"
+    },
+    {
+      "id": "core-fake",
+      "from": "core",
+      "to": "fake",
+      "variant": "default",
+      "label": "offline mode"
+    },
+    {
+      "id": "cases-fake",
+      "from": "cases",
+      "to": "fake",
+      "variant": "default",
+      "label": "outcomes"
+    },
+    {
+      "id": "clock-fake",
+      "from": "clock",
+      "to": "fake",
+      "variant": "default",
+      "label": "deterministic"
+    },
+    {
+      "id": "core-receipt",
+      "from": "core",
+      "to": "receipt",
+      "variant": "default",
+      "label": "record"
+    },
+    {
+      "id": "receipt-scope",
+      "from": "receipt",
+      "to": "scope",
+      "variant": "default",
+      "label": "interpret"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Live adapter",
+      "items": [
+        "One device handle and fresh per-request buffers/event. At most one outstanding IOCTL.",
+        "Requires exact profile, campaign guard, observer readiness and explicit execution."
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "Offline adapter",
+      "items": [
+        "The same core receives a fake kernel, identity validator, clock and controller.",
+        "Tests establish software decisions and resource ownership; they do not establish firmware drain or accuracy."
+      ]
+    }
+  ]
+}

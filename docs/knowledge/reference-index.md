@@ -10,7 +10,7 @@ Find the calls, file names, terms and short strings recorded in this research. T
 
 ## Search
 
-Indexed **332 source files** and **9517 distinct terms**.
+Indexed **347 source files** and **10053 distinct terms**.
 
 The [JSON index](research-index.json) includes Python definitions/calls, C/Java/PowerShell call-shaped tokens, authored short strings and Markdown code terms. Vendor binaries, local artifacts, historical reproduction sources and generated indexes are excluded. Unresolved call-shaped tokens are explicitly labeled.
 
@@ -34,9 +34,9 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | File | Normalized text SHA-256 prefix |
 |---|---|
 | [.github/workflows/offline-checks.yml](../../.github/workflows/offline-checks.yml) | `736ac3c3badc` |
-| [README.md](../../README.md) | `0303197c46f6` |
-| [docs/README.md](../../docs/README.md) | `950681bca95a` |
-| [docs/acquisition/README.md](../../docs/acquisition/README.md) | `bf4734c28a20` |
+| [README.md](../../README.md) | `633829f96abc` |
+| [docs/README.md](../../docs/README.md) | `c101460d8e4f` |
+| [docs/acquisition/README.md](../../docs/acquisition/README.md) | `ab17d2d62b8d` |
 | [docs/acquisition/acquisition-campaign-2026-10-02-results.md](../../docs/acquisition/acquisition-campaign-2026-10-02-results.md) | `9497bd3fc5f6` |
 | [docs/acquisition/experiments.md](../../docs/acquisition/experiments.md) | `757ecf58decd` |
 | [docs/acquisition/lifecycle-matrix.md](../../docs/acquisition/lifecycle-matrix.md) | `ff94ba6c1774` |
@@ -45,6 +45,8 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [docs/acquisition/observer-passive-qualification-2026-10-03.md](../../docs/acquisition/observer-passive-qualification-2026-10-03.md) | `e61d91daea97` |
 | [docs/acquisition/packet-capture-and-elevation.md](../../docs/acquisition/packet-capture-and-elevation.md) | `6b65cf34ece1` |
 | [docs/acquisition/passive-and-retrieval-validation-2026-10-03.md](../../docs/acquisition/passive-and-retrieval-validation-2026-10-03.md) | `491e8b28239c` |
+| [docs/acquisition/persistent-tsf-sampler.md](../../docs/acquisition/persistent-tsf-sampler.md) | `5b25fdeb86be` |
+| [docs/acquisition/persistent-tsf-smoke-2026-10-08.md](../../docs/acquisition/persistent-tsf-smoke-2026-10-08.md) | `85fc73cbee0c` |
 | [docs/acquisition/private-acquisition-latency.md](../../docs/acquisition/private-acquisition-latency.md) | `49e23fdcc97d` |
 | [docs/acquisition/private-campaign-2026-10-03-quarantine.md](../../docs/acquisition/private-campaign-2026-10-03-quarantine.md) | `a9b8c563ee32` |
 | [docs/acquisition/private-timing-acquisition-plan.md](../../docs/acquisition/private-timing-acquisition-plan.md) | `147aae2851af` |
@@ -78,7 +80,7 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [docs/adapters/static-inspection-runbook.md](../../docs/adapters/static-inspection-runbook.md) | `b19845fec9a0` |
 | [docs/adapters/windows-bss-host-time.md](../../docs/adapters/windows-bss-host-time.md) | `c1d8d6725b1d` |
 | [docs/adapters/wlanlib-dispatch-and-completion.md](../../docs/adapters/wlanlib-dispatch-and-completion.md) | `542f96378fab` |
-| [docs/clock-models/README.md](../../docs/clock-models/README.md) | `27c2f772a23c` |
+| [docs/clock-models/README.md](../../docs/clock-models/README.md) | `bd94b7b68bf3` |
 | [docs/clock-models/causal-provider-replay.md](../../docs/clock-models/causal-provider-replay.md) | `48e9a239580f` |
 | [docs/clock-models/clock-relationship-investigation.md](../../docs/clock-models/clock-relationship-investigation.md) | `36cdf2738990` |
 | [docs/clock-models/counter-rate-identifiability.md](../../docs/clock-models/counter-rate-identifiability.md) | `fc7ac3dc7bc5` |
@@ -89,6 +91,7 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [docs/clock-models/qualcomm-observation-matrix.md](../../docs/clock-models/qualcomm-observation-matrix.md) | `4ec14c29650d` |
 | [docs/clock-models/settled-timestamps.md](../../docs/clock-models/settled-timestamps.md) | `906e040633d9` |
 | [docs/clock-models/tsf-host-bound-preview.md](../../docs/clock-models/tsf-host-bound-preview.md) | `0c7cdc36f331` |
+| [docs/clock-models/tsf-mathematics.md](../../docs/clock-models/tsf-mathematics.md) | `cd4c4bda5001` |
 | [docs/evidence/README.md](../../docs/evidence/README.md) | `915959c23a13` |
 | [docs/evidence/api-direction.md](../../docs/evidence/api-direction.md) | `cf1792471da3` |
 | [docs/evidence/complete-event-hardware-handoff.md](../../docs/evidence/complete-event-hardware-handoff.md) | `cdd4b940d27e` |
@@ -115,11 +118,11 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [docs/ftm/ftm-raw-access-followup.md](../../docs/ftm/ftm-raw-access-followup.md) | `0f3d5b59bebb` |
 | [docs/ftm/ftm-result-provenance.md](../../docs/ftm/ftm-result-provenance.md) | `b92a2ddb2d94` |
 | [docs/glossary.md](../../docs/glossary.md) | `838e3c21d99f` |
-| [docs/knowledge/assumptions-and-corrections.md](../../docs/knowledge/assumptions-and-corrections.md) | `6524c41cee4e` |
-| [docs/knowledge/current-findings.md](../../docs/knowledge/current-findings.md) | `b0ad085af372` |
+| [docs/knowledge/assumptions-and-corrections.md](../../docs/knowledge/assumptions-and-corrections.md) | `d14237bd84da` |
+| [docs/knowledge/current-findings.md](../../docs/knowledge/current-findings.md) | `1b1ee49f6408` |
 | [docs/knowledge/interface-directory.md](../../docs/knowledge/interface-directory.md) | `d58d6c2fd787` |
 | [docs/knowledge/refresh-validation.md](../../docs/knowledge/refresh-validation.md) | `13243a024baa` |
-| [docs/knowledge/workflow-diagrams.md](../../docs/knowledge/workflow-diagrams.md) | `cb387f0069df` |
+| [docs/knowledge/workflow-diagrams.md](../../docs/knowledge/workflow-diagrams.md) | `b8c181f3970f` |
 | [docs/memory-ring/README.md](../../docs/memory-ring/README.md) | `c74a8452329e` |
 | [docs/memory-ring/diagrams/report-vs-ring.mmd](../../docs/memory-ring/diagrams/report-vs-ring.mmd) | `6c655d36bf66` |
 | [docs/memory-ring/mlo-cache-and-symbol-search.md](../../docs/memory-ring/mlo-cache-and-symbol-search.md) | `8bb3e293cf2a` |
@@ -132,8 +135,9 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [docs/overview/2026-10-07-tsf-host-bound-design.md](../../docs/overview/2026-10-07-tsf-host-bound-design.md) | `ee3958dfee4d` |
 | [docs/overview/2026-10-07-tsf-host-bound-plan.md](../../docs/overview/2026-10-07-tsf-host-bound-plan.md) | `9f1493563e35` |
 | [docs/overview/2026-10-08-causal-provider-design.md](../../docs/overview/2026-10-08-causal-provider-design.md) | `3b81c2bbae8a` |
-| [docs/overview/OPERATIONS.md](../../docs/overview/OPERATIONS.md) | `325c7d5a27eb` |
+| [docs/overview/OPERATIONS.md](../../docs/overview/OPERATIONS.md) | `9b54d26085b0` |
 | [docs/overview/README.md](../../docs/overview/README.md) | `6e23537d5ca4` |
+| [docs/overview/archify-tsf/README.md](../../docs/overview/archify-tsf/README.md) | `32356d2702bd` |
 | [docs/overview/complete-event-2026-10-05/context-map.md](../../docs/overview/complete-event-2026-10-05/context-map.md) | `ea57333f0cba` |
 | [docs/overview/complete-event-2026-10-05/decision-log.md](../../docs/overview/complete-event-2026-10-05/decision-log.md) | `c089c83e1be6` |
 | [docs/overview/complete-event-2026-10-05/devex-review.md](../../docs/overview/complete-event-2026-10-05/devex-review.md) | `09bd1acc7f04` |
@@ -141,7 +145,8 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [docs/overview/complete-event-2026-10-05/problem-and-scope.md](../../docs/overview/complete-event-2026-10-05/problem-and-scope.md) | `be433e778ef0` |
 | [docs/overview/complete-event-2026-10-05/route-research.md](../../docs/overview/complete-event-2026-10-05/route-research.md) | `43a6d6651269` |
 | [docs/overview/complete-event-2026-10-05/test-matrix.md](../../docs/overview/complete-event-2026-10-05/test-matrix.md) | `76b88fdb0da5` |
-| [docs/overview/gap-closure-ledger.md](../../docs/overview/gap-closure-ledger.md) | `0952136c5ee6` |
+| [docs/overview/gap-closure-ledger.md](../../docs/overview/gap-closure-ledger.md) | `19344fdc6847` |
+| [docs/overview/persistent-tsf-next-steps.md](../../docs/overview/persistent-tsf-next-steps.md) | `ecbc3a939942` |
 | [docs/overview/pr3-component-review-map-2026-10-06.md](../../docs/overview/pr3-component-review-map-2026-10-06.md) | `ca9f272db098` |
 | [docs/overview/pr3-review-2026-10-06.md](../../docs/overview/pr3-review-2026-10-06.md) | `ebcce676c2f1` |
 | [docs/overview/repository-layout.md](../../docs/overview/repository-layout.md) | `3b542e8223f3` |
@@ -173,7 +178,7 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [research/acquisition/Invoke-PassiveObservation.ps1](../../research/acquisition/Invoke-PassiveObservation.ps1) | `7ef262fcd61a` |
 | [research/acquisition/Observe-QutsRegistry.ps1](../../research/acquisition/Observe-QutsRegistry.ps1) | `86db852d5563` |
 | [research/acquisition/Observe-WifiDataPath.ps1](../../research/acquisition/Observe-WifiDataPath.ps1) | `90c2e48ded73` |
-| [research/acquisition/README.md](../../research/acquisition/README.md) | `5d68a6ff314e` |
+| [research/acquisition/README.md](../../research/acquisition/README.md) | `929a2e205c97` |
 | [research/acquisition/analyze_quarantined_tsf.py](../../research/acquisition/analyze_quarantined_tsf.py) | `ec7beb1f4e8f` |
 | [research/acquisition/analyze_quts_registry.py](../../research/acquisition/analyze_quts_registry.py) | `cdd861483fb1` |
 | [research/acquisition/analyze_scan_comparison.py](../../research/acquisition/analyze_scan_comparison.py) | `53ca52b97c8d` |
@@ -183,9 +188,10 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [research/acquisition/export_registry_trace.c](../../research/acquisition/export_registry_trace.c) | `7139169e81f3` |
 | [research/acquisition/live_observer.c](../../research/acquisition/live_observer.c) | `d9fbeebe8e90` |
 | [research/acquisition/observation_lifecycle.py](../../research/acquisition/observation_lifecycle.py) | `38c030610f30` |
+| [research/acquisition/persistent_sampler.py](../../research/acquisition/persistent_sampler.py) | `fffde6ae82cd` |
 | [research/acquisition/quts-registry.wprp](../../research/acquisition/quts-registry.wprp) | `1fc7a009f62c` |
 | [research/acquisition/run_acquisition_campaign.py](../../research/acquisition/run_acquisition_campaign.py) | `2441e402d286` |
-| [research/acquisition/run_bound_campaign.py](../../research/acquisition/run_bound_campaign.py) | `ca15a98ada3c` |
+| [research/acquisition/run_bound_campaign.py](../../research/acquisition/run_bound_campaign.py) | `e114cc97b82d` |
 | [research/acquisition/run_passive_observation.py](../../research/acquisition/run_passive_observation.py) | `73f59f63c534` |
 | [research/acquisition/run_scan_comparison.py](../../research/acquisition/run_scan_comparison.py) | `d9d4a3596ed5` |
 | [research/acquisition/wifi-path.wprp](../../research/acquisition/wifi-path.wprp) | `f04eb0db9934` |
@@ -213,15 +219,15 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [research/adapters/package_tools/expand_qpst.py](../../research/adapters/package_tools/expand_qpst.py) | `281d00e4f129` |
 | [research/adapters/package_tools/inspect_files.py](../../research/adapters/package_tools/inspect_files.py) | `fa1bc578c3fb` |
 | [research/clock_models/README.md](../../research/clock_models/README.md) | `900bf9db38f8` |
-| [research/clock_models/analyze_bound_run.py](../../research/clock_models/analyze_bound_run.py) | `e8a1d099efb2` |
+| [research/clock_models/analyze_bound_run.py](../../research/clock_models/analyze_bound_run.py) | `5dfe1adbe3ab` |
 | [research/clock_models/analyze_clock_pairing_hypothesis.py](../../research/clock_models/analyze_clock_pairing_hypothesis.py) | `c2bc6fd87880` |
 | [research/clock_models/analyze_observation_quality.py](../../research/clock_models/analyze_observation_quality.py) | `eb5263987e77` |
 | [research/clock_models/beacon_consistency.py](../../research/clock_models/beacon_consistency.py) | `d3306f07bef7` |
 | [research/clock_models/bracket_bound.py](../../research/clock_models/bracket_bound.py) | `c8b07e06adcc` |
 | [research/clock_models/causal_provider.py](../../research/clock_models/causal_provider.py) | `4a69ce24126c` |
 | [research/clock_models/rate_bound.py](../../research/clock_models/rate_bound.py) | `cf4ec7326cef` |
-| [research/clock_models/replay_causal_provider.py](../../research/clock_models/replay_causal_provider.py) | `a8d1e379ffe9` |
-| [research/clock_models/sample_screen.py](../../research/clock_models/sample_screen.py) | `23d27e0de478` |
+| [research/clock_models/replay_causal_provider.py](../../research/clock_models/replay_causal_provider.py) | `56fda22e4bd3` |
+| [research/clock_models/sample_screen.py](../../research/clock_models/sample_screen.py) | `7ce9feb69de8` |
 | [research/clock_models/settle.py](../../research/clock_models/settle.py) | `07c6c8a733b4` |
 | [research/clock_models/soc_domain_test.py](../../research/clock_models/soc_domain_test.py) | `46d606b9c7dd` |
 | [research/evidence/README.md](../../research/evidence/README.md) | `b8b828633765` |
@@ -274,6 +280,10 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [research/tsf/qualcomm_probe.py](../../research/tsf/qualcomm_probe.py) | `73f3bd49ef9a` |
 | [research/tsf/qualcomm_protocol.py](../../research/tsf/qualcomm_protocol.py) | `ad839192c1b0` |
 | [research/tsf/read_tsf_evidence.py](../../research/tsf/read_tsf_evidence.py) | `ebe7305387a2` |
+| [research/tsf/sampler_receipts.py](../../research/tsf/sampler_receipts.py) | `18b1d784e570` |
+| [research/tsf/sampler_win32.py](../../research/tsf/sampler_win32.py) | `74eeded2d7a2` |
+| [research/tsf/sampler_worker.py](../../research/tsf/sampler_worker.py) | `f5498e857a4f` |
+| [research/tsf/tsf_sampler.py](../../research/tsf/tsf_sampler.py) | `1df10e64b9e0` |
 | [research/windows_timestamps/Build-NdisExperiment.ps1](../../research/windows_timestamps/Build-NdisExperiment.ps1) | `956aff3ba824` |
 | [research/windows_timestamps/Capture-NdisTimestampStatus.ps1](../../research/windows_timestamps/Capture-NdisTimestampStatus.ps1) | `32f00e7c974d` |
 | [research/windows_timestamps/Capture-NdisTimestampStatusV2.ps1](../../research/windows_timestamps/Capture-NdisTimestampStatusV2.ps1) | `646f9ac0549c` |
@@ -337,6 +347,8 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [tests/test_observer_drain.py](../../tests/test_observer_drain.py) | `e2f9aa288de4` |
 | [tests/test_packetlog_return.py](../../tests/test_packetlog_return.py) | `afebcce544db` |
 | [tests/test_passive_observation.py](../../tests/test_passive_observation.py) | `e737a27dbc7c` |
+| [tests/test_persistent_controller.py](../../tests/test_persistent_controller.py) | `d276c7ff5783` |
+| [tests/test_persistent_receipts.py](../../tests/test_persistent_receipts.py) | `0f898accb1b6` |
 | [tests/test_private_export_routes.py](../../tests/test_private_export_routes.py) | `72cf687fa2bb` |
 | [tests/test_qik_inventory.py](../../tests/test_qik_inventory.py) | `e14b563d2cb6` |
 | [tests/test_qualcomm_protocol.py](../../tests/test_qualcomm_protocol.py) | `dcf25de3126f` |
@@ -349,6 +361,8 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [tests/test_research_layout.py](../../tests/test_research_layout.py) | `6cc62e5d0625` |
 | [tests/test_ring_publication_model.py](../../tests/test_ring_publication_model.py) | `9a6fcec1e071` |
 | [tests/test_sample_screen.py](../../tests/test_sample_screen.py) | `31191eadf647` |
+| [tests/test_sampler_win32.py](../../tests/test_sampler_win32.py) | `ce4e8f01b280` |
+| [tests/test_sampler_worker.py](../../tests/test_sampler_worker.py) | `b7d99c53bbef` |
 | [tests/test_scan_comparison.py](../../tests/test_scan_comparison.py) | `61d5ecc0b798` |
 | [tests/test_scan_postmortem.py](../../tests/test_scan_postmortem.py) | `efa6f9491d9a` |
 | [tests/test_settle.py](../../tests/test_settle.py) | `fb4cbc70feac` |
@@ -361,6 +375,7 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [tests/test_tsf_ingress.py](../../tests/test_tsf_ingress.py) | `61ec8a922cb1` |
 | [tests/test_tsf_report_contract.py](../../tests/test_tsf_report_contract.py) | `0d8a83ee060c` |
 | [tests/test_tsf_routes.py](../../tests/test_tsf_routes.py) | `b461867a2900` |
+| [tests/test_tsf_sampler.py](../../tests/test_tsf_sampler.py) | `cbf73592b664` |
 | [tests/test_validation_archive.py](../../tests/test_validation_archive.py) | `4b880ac2bfb0` |
 | [tests/test_windows_bss_time.py](../../tests/test_windows_bss_time.py) | `defb090e6d97` |
 | [tests/test_wlanlib_dispatch.py](../../tests/test_wlanlib_dispatch.py) | `300bf34a99a7` |

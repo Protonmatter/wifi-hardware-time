@@ -114,7 +114,25 @@ def load_run(folder: Path) -> dict:
     if header.get('clock_type') != QPC_CLOCK_TYPE:
         raise ValueError('Trace clock is not QPC; raw timestamps cannot be used as QPC ticks')
     receipts = _lines(folder / 'requests.jsonl')
-    requests = [request_from_receipt(r['sequence'], r) for r in receipts]
+    persistent = result.get('sampler') == 'persistent' or any('schema' in r or 'session_id' in r for r in receipts)
+    sampler_session = None
+    lifecycle_clean = True
+    if persistent:
+        from research.tsf.sampler_receipts import validate_session, session_clean
+        try:
+            start = json.loads((folder / 'sampler-session-start.json').read_text(encoding='utf-8'))
+            sampler_session = json.loads((folder / 'sampler-session.json').read_text(encoding='utf-8'))
+        except (OSError, ValueError) as error:
+            raise ValueError('Persistent sampler session evidence missing or corrupt') from error
+        validate_session(start)
+        validate_session(sampler_session)
+        for field in ('session_id', 'clock', 'qpc_frequency_hz', 'started_qpc', 'identity'):
+            if start[field] != sampler_session[field]:
+                raise ValueError('Persistent sampler start/final evidence mismatch')
+        lifecycle_clean = session_clean(sampler_session) and sampler_session['request_count'] == len(receipts)
+        if any(r.get('sequence') != i for i, r in enumerate(receipts, 1)):
+            raise ValueError('Persistent request sequence gap or duplicate')
+    requests = [request_from_receipt(r['sequence'], r, session=sampler_session, qpc_hz=hz) for r in receipts]
     # The cache can refresh during the call, so a returned beacon predates only the call's return.
     beacons = [Beacon(b['qpc_after'], b['ap_tsf_us']) for b in _lines(folder / 'beacons.jsonl')]
     session = json.loads((folder / 'session.json').read_text(encoding='utf-8')) if (folder / 'session.json').exists() else {}
@@ -133,7 +151,8 @@ def load_run(folder: Path) -> dict:
                     workload=None if workload is None else {k: workload.get(k) for k in
                                                             ('stop_requested', 'download_stalled', 'downloaded_bytes',
                                                              'wall_seconds', 'hash_operations')})
-    return dict(qpc_hz=hz, records=records, requests=requests, beacons=beacons, completed=result.get('success') is True,
+    return dict(qpc_hz=hz, records=records, requests=requests, beacons=beacons,
+                completed=result.get('success') is True and lifecycle_clean,
                 identity=identity)
 
 

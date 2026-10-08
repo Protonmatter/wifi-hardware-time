@@ -1,0 +1,49 @@
+{
+  "archify_revision": "73aaa0696e8f72c232ea710e6fa94fd953f3e773",
+  "version": "3.0.1",
+  "source_snapshot": "sampler implementation measured in the 2026-10-08 smoke; no committed-HEAD claim at collection",
+  "diagrams": [
+    {
+      "slug": "layers",
+      "type": "architecture",
+      "title": "Persistent TSF: system layers",
+      "specification_sha256": "c2e30ce20182873c7ce68465ab8836d7e83cdbf985b758e4e20f48a82ddbe885"
+    },
+    {
+      "slug": "workflow",
+      "type": "workflow",
+      "title": "Persistent acquisition: guarded workflow",
+      "specification_sha256": "a869f802a67a416976d96e9866bdc5831103045a0350dfb604a3c2b3ded5eb7f"
+    },
+    {
+      "slug": "lifecycle",
+      "type": "lifecycle",
+      "title": "Sampler lifecycle: completion is the release boundary",
+      "specification_sha256": "44c6931ca2f3e1d1c73b5e1d1bb362aa063696f1d1846281498f0fac797d7aea"
+    },
+    {
+      "slug": "time-source",
+      "type": "architecture",
+      "title": "Time sources: TSF observation and QPC relationship",
+      "specification_sha256": "dcb15207cfc289e03928969bc59d2828660a3bc001dbda6ce2f161ea57acce18"
+    },
+    {
+      "slug": "timestamps",
+      "type": "sequence",
+      "title": "Timestamp sequence: sampling, completion and availability",
+      "specification_sha256": "9da2798764541dad619b398c06d1dc80e244b3c9bcfce0a09e7bc72bb6a00ff3"
+    },
+    {
+      "slug": "algorithm",
+      "type": "workflow",
+      "title": "Clock algorithm: preserve event, bound now, settle later",
+      "specification_sha256": "9346b45b6fcf92ad7108f526de18ddaf2730b5f0c96722bfdbec955dd492d9d1"
+    },
+    {
+      "slug": "adapters",
+      "type": "architecture",
+      "title": "Live and offline adapters: shared contract, different evidence",
+      "specification_sha256": "f0552b0cb4f8931f165a7c4a8b5930a1e65f6528ced8afc0ac15de743614d8a0"
+    }
+  ]
+}

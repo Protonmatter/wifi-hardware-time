@@ -1,15 +1,17 @@
 # Collecting and qualifying clock reports
 
-These documents explain how clock reports are collected, checked and rejected when their source is uncertain. An earlier campaign passed, but the later private campaign remains quarantined. Three scans reproduced extra reports and all missed their completion deadline. Passive collection success does not qualify accurate clock conversion or authorize another private run.
+These documents explain how clock reports are collected, checked and rejected when their source is uncertain. The persistent bound-campaign profile completed a five-minute idle smoke; its timing conclusions remain conditional and screened offline. The historical strict campaign remains quarantined. Passive or normal-completion success does not qualify physical accuracy or authorize another private run.
 
-<!-- current-context:2026-10-04 -->
-**Current context (2026-10-04):** The private campaign remains quarantined. The new QUTS client ownership finding does not establish firmware drain, report association or a new live acquisition. See [current findings](../knowledge/current-findings.md).
+<!-- current-context:2026-10-08 -->
+**Current context (2026-10-08):** [Persistent sampling](persistent-tsf-smoke-2026-10-08.md) completed 139 requests with clean shutdown; offline screening accepted 138. Report wait remains enabled and the historical strict-campaign quarantine is unchanged. See the [next research and testing gates](../overview/persistent-tsf-next-steps.md).
 <!-- /current-context -->
 
 Start with the current results, then use the plans and historical reports for context. TSF is the Wi-Fi timing counter; quarantine means further private requests are blocked. See the [glossary](../glossary.md) for other terms.
 
 | Question | Read | Evidence and limit |
 |---|---|---|
+| Does one persistent device session work? | [Sampler contract](persistent-tsf-sampler.md) and [first live smoke](persistent-tsf-smoke-2026-10-08.md) | 139 pending-to-success requests; no real cancellation/timeout qualification or physical accuracy proof |
+| What mathematics and work come next? | [Math reference](../clock-models/tsf-mathematics.md), [roadmap](../overview/persistent-tsf-next-steps.md) and [Archify views](../overview/archify-tsf/README.md) | Separate acquisition, online admission, settlement, physical validation and merge gates |
 | Can the laptop bound its Wi-Fi TSF below 1 ms? | [TSF-to-host bound results](tsf-host-bound-results.md) | Passed 2026-10-08 as a conditional bound: 352 us idle and 191 us loaded worst case over an hour each (895 and 786 us retrospective without the constant-rate assumption; a live causal bound exceeds 1 ms in the longest gaps); access point link assumed; separate profile, the 2026-10-03 quarantine is unchanged |
 | How was the bound measured, tested and debugged? | [TSF-to-host bound methodology](tsf-host-bound-methodology.md) | Every analysis, attempt, measurement and fix, with commands and derived per-run records |
 | What can a live packet capture reveal, and what required elevation? | [Packet capture and elevation](packet-capture-and-elevation.md) | 589 Ethernet packets with host timestamp options; kernel trace not collected after a canceled administrator launch |

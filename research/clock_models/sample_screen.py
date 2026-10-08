@@ -47,7 +47,12 @@ class Screen:
     rejected_samples: tuple[tuple[str, Sample], ...] = ()
 
 
-def request_from_receipt(sequence: int, receipt: dict) -> Request:
+def request_from_receipt(sequence: int, receipt: dict, *, session: dict | None = None,
+                         qpc_hz: int | None = None) -> Request:
+    if 'schema' in receipt or 'session_id' in receipt or session is not None:
+        from research.tsf.sampler_receipts import normalize
+        lower, succeeded = normalize(sequence, receipt, session, qpc_hz)
+        return Request(sequence, lower, succeeded)
     lower = receipt.get('qpc_request_before')
     if type(lower) is not int:
         raise ValueError('Receipt lacks integer qpc_request_before')

@@ -4,6 +4,7 @@ These diagrams show where timing values originate, where software copies them an
 
 ## Contents
 
+- [Persistent TSF Archify views](../overview/archify-tsf/README.md): system layers, workflow, lifecycle, time sources, timestamp sequence, algorithms and live/offline adapters.
 - [Packet path](#packet-path)
 - [Private TSF reports](#private-tsf-reports)
 - [Four-event FTM model](#four-event-ftm-model)

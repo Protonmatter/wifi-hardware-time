@@ -1,0 +1,239 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "Persistent acquisition: guarded workflow",
+    "locale": "en",
+    "quality_profile": "showcase",
+    "output": "artifacts/archify-tsf/workflow/workflow.html"
+  },
+  "lanes": [
+    {
+      "id": "control",
+      "label": "Controller and report delivery"
+    },
+    {
+      "id": "sampler",
+      "label": "Sampler worker"
+    },
+    {
+      "id": "stop",
+      "label": "Failure path",
+      "variant": "exception"
+    }
+  ],
+  "mainPath": [
+    "guard",
+    "ready",
+    "slot",
+    "permit",
+    "submit",
+    "receipt",
+    "wait",
+    "next"
+  ],
+  "nodes": [
+    {
+      "id": "guard",
+      "lane": "control",
+      "col": 0,
+      "type": "security",
+      "label": "Campaign guard",
+      "sublabel": "lock + unfinished record",
+      "width": 154
+    },
+    {
+      "id": "ready",
+      "lane": "sampler",
+      "col": 1,
+      "type": "backend",
+      "label": "Establish readiness",
+      "sublabel": "identity + open once",
+      "width": 154
+    },
+    {
+      "id": "slot",
+      "lane": "control",
+      "col": 2,
+      "type": "backend",
+      "label": "Next fixed slot",
+      "sublabel": "skip missed slots",
+      "width": 154
+    },
+    {
+      "id": "permit",
+      "lane": "control",
+      "col": 3,
+      "type": "security",
+      "label": "Fresh permit",
+      "sublabel": "owner still alive",
+      "width": 154
+    },
+    {
+      "id": "submit",
+      "lane": "sampler",
+      "col": 3,
+      "type": "backend",
+      "label": "Submit action 4",
+      "sublabel": "single outstanding I/O",
+      "width": 154
+    },
+    {
+      "id": "receipt",
+      "lane": "sampler",
+      "col": 4,
+      "type": "backend",
+      "label": "Terminal receipt",
+      "sublabel": "real result + QPC",
+      "width": 154
+    },
+    {
+      "id": "wait",
+      "lane": "control",
+      "col": 4,
+      "type": "backend",
+      "label": "Keep report wait",
+      "sublabel": "existing five-second policy",
+      "width": 154
+    },
+    {
+      "id": "next",
+      "lane": "control",
+      "col": 5,
+      "type": "backend",
+      "label": "Continue or finish",
+      "sublabel": "same stop conditions",
+      "width": 154
+    },
+    {
+      "id": "reports",
+      "lane": "control",
+      "col": 4,
+      "type": "messagebus",
+      "label": "Reports received",
+      "sublabel": "observer to controller",
+      "width": 154,
+      "yOffset": -110
+    },
+    {
+      "id": "stop",
+      "lane": "stop",
+      "col": 3,
+      "type": "security",
+      "label": "Stop admission",
+      "sublabel": "failure stays latched",
+      "width": 154
+    },
+    {
+      "id": "drain",
+      "lane": "stop",
+      "col": 4,
+      "type": "security",
+      "label": "Retain and drain",
+      "sublabel": "no worker kill",
+      "width": 154
+    },
+    {
+      "id": "quarantine",
+      "lane": "stop",
+      "col": 5,
+      "type": "database",
+      "label": "Quarantine",
+      "sublabel": "no automatic clearance",
+      "width": 154
+    }
+  ],
+  "edges": [
+    {
+      "id": "guard-ready",
+      "from": "guard",
+      "to": "ready",
+      "variant": "default",
+      "label": "admitted"
+    },
+    {
+      "id": "ready-slot",
+      "from": "ready",
+      "to": "slot",
+      "variant": "default",
+      "label": "ready"
+    },
+    {
+      "id": "slot-permit",
+      "from": "slot",
+      "to": "permit",
+      "variant": "default"
+    },
+    {
+      "id": "permit-submit",
+      "from": "permit",
+      "to": "submit",
+      "variant": "default",
+      "label": "consume"
+    },
+    {
+      "id": "submit-receipt",
+      "from": "submit",
+      "to": "receipt",
+      "variant": "default",
+      "label": "terminal"
+    },
+    {
+      "id": "receipt-wait",
+      "from": "receipt",
+      "to": "wait",
+      "variant": "default"
+    },
+    {
+      "id": "reports-wait",
+      "from": "reports",
+      "to": "wait",
+      "variant": "dashed",
+      "label": "observe"
+    },
+    {
+      "id": "wait-next",
+      "from": "wait",
+      "to": "next",
+      "variant": "default",
+      "label": "wait resolved"
+    },
+    {
+      "id": "submit-stop",
+      "from": "submit",
+      "to": "stop",
+      "variant": "security",
+      "label": "failure"
+    },
+    {
+      "id": "stop-drain",
+      "from": "stop",
+      "to": "drain",
+      "variant": "default"
+    },
+    {
+      "id": "drain-quarantine",
+      "from": "drain",
+      "to": "quarantine",
+      "variant": "default"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Cadence",
+      "items": [
+        "Persistent mode requests one-second spacing by default; 0.5 s is the minimum.",
+        "Report waits, identity checks and processing remain in achieved request gaps."
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "Long waits",
+      "items": [
+        "Heartbeat and observer pumping continue while waiting for a slot.",
+        "Identity checks use a 30-second monotonic timer; stalled-owner lease is 60 seconds."
+      ]
+    }
+  ]
+}

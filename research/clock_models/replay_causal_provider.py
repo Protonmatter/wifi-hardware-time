@@ -156,6 +156,9 @@ def replay_run(folder: Path, mode: str) -> dict:
     result = screen(data['records'], data['requests'], hz)
     accepted = list(result.accepted)
     files = ('raw-timing.jsonl', 'requests.jsonl', 'live-observer.jsonl', 'run-result.json')
+    # Preserve the existing availability formula; include new evidence inputs in provenance.
+    if (folder / 'sampler-session.json').exists():
+        files += ('sampler-session-start.json', 'sampler-session.json', 'sampler-schedule.jsonl')
     meta = dict(schema='wht/causal-provider-replay-v1', mode=mode, run=data['identity']['folder'],
                 session=data['identity']['session'], source=_revision(),
                 inputs={name: _sha256(folder / name) for name in files if (folder / name).exists()},

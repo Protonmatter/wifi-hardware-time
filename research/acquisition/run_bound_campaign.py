@@ -13,6 +13,7 @@ from pathlib import Path
 if __package__ in (None, ""):
     sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 import argparse
+import contextlib
 import ctypes as ct
 import datetime
 import hashlib
@@ -324,10 +325,13 @@ def parse(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument('--if-index', type=int)
     parser.add_argument('--condition', choices=('idle', 'load'))
     parser.add_argument('--duration-s', type=int, default=3600)
-    parser.add_argument('--spacing-s', type=float, default=2.0)
+    parser.add_argument('--sampler', choices=('per-request', 'persistent'), default='per-request')
+    parser.add_argument('--spacing-s', type=float, default=None)
     parser.add_argument('--execute', action='store_true', help='Send private requests; default is preview only')
     parser.add_argument('--workload', nargs=3, metavar=('STOP', 'OUTPUT', 'SECONDS'), help=argparse.SUPPRESS)
     args = parser.parse_args(argv)
+    if args.spacing_s is None:
+        args.spacing_s = 1.0 if args.sampler == 'persistent' else 2.0
     if args.workload is None:
         if args.if_index is None or args.condition is None:
             parser.error('--if-index and --condition are required')
@@ -351,6 +355,8 @@ def campaign(args: argparse.Namespace) -> int:
     plan = dict(condition=args.condition, duration_s=args.duration_s, spacing_s=args.spacing_s, action=4,
                 provider=PROVIDER, trace_cap_bytes=TRACE_CAP_BYTES, identity_every=IDENTITY_EVERY,
                 beacon_every_s=BEACON_EVERY_S, own_loss_limit=OWN_LOSS_LIMIT, marker=str(marker))
+    if args.sampler == 'persistent':
+        plan.update(sampler='persistent', identity_every=None, identity_every_s=30, report_wait_retained=True)
     if not args.execute:
         print(json.dumps(dict(preview=True, plan=plan, adapter_status=baseline['Status'],
                               driver_version=baseline['DriverVersion']), indent=2))
@@ -388,6 +394,8 @@ def _execute(args: argparse.Namespace, clock, baseline: dict, plan: dict, marker
     session = 'WifiBound-' + uuid.uuid4().hex[:12]
     gate, trace = BoundGate(), TraceOwner(session, folder)
     observer = worker = reader = None
+    sampler = None
+    persistent = args.sampler == 'persistent'
     failure, receipts, beacon_count, losses, beacon_skips = None, [], 0, 0, []
     _save(folder / 'session.json', dict(SessionName=session, StartedUtc=utc(), Plan=plan))
     try:
@@ -398,6 +406,13 @@ def _execute(args: argparse.Namespace, clock, baseline: dict, plan: dict, marker
         observer.wait(2.5, gate)
         if not observer.ready or observer.association is None:
             raise RuntimeError('Observer readiness or association not established')
+        if persistent:
+            from research.acquisition.persistent_sampler import (PersistentClient, RequestSlots, IdentityTimer,
+                                                                  wait_for_slot)
+            sampler = PersistentClient(ROOT, folder, args.if_index, clock.frequency, baseline, marker,
+                                       in_progress_path(ROOT / 'artifacts', baseline['InterfaceGuid']),
+                                       clock, observer, gate)
+            sampler.start()
         reader = BssReader(baseline['InterfaceGuid'])
         if args.condition == 'load':
             worker = subprocess.Popen([sys.executable, __file__, '--workload', str(folder / 'workload-stop'),
@@ -405,12 +420,22 @@ def _execute(args: argparse.Namespace, clock, baseline: dict, plan: dict, marker
                                       stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
             observer.wait(2, gate)
         end, next_beacon, number = time.monotonic() + args.duration_s, 0.0, 0
+        if persistent:
+            slots, identity_timer = RequestSlots(time.monotonic(), args.spacing_s), IdentityTimer(time.monotonic())
+        previous_submission = None
         with (folder / 'requests.jsonl').open('w', encoding='utf-8') as requests_file, \
-             (folder / 'beacons.jsonl').open('w', encoding='utf-8') as beacon_file:
+             (folder / 'beacons.jsonl').open('w', encoding='utf-8') as beacon_file, \
+             ((folder / 'sampler-schedule.jsonl').open('w', encoding='utf-8') if persistent
+              else contextlib.nullcontext()) as schedule_file:
             while time.monotonic() < end:
                 cycle = time.monotonic()
-                if number % IDENTITY_EVERY == 0:
+                identity_started = clock.now() if persistent else None
+                checked_identity = identity_timer.due(cycle) if persistent else number % IDENTITY_EVERY == 0
+                if checked_identity:
                     same_identity(identity(args.if_index), baseline)
+                    if persistent:
+                        identity_timer.checked(time.monotonic())
+                identity_finished = clock.now() if persistent else None
                 if worker is not None and worker.poll() is not None:
                     raise RuntimeError('Workload exited prematurely')
                 if (folder / 'tsf.etl').stat().st_size > TRACE_CAP_BYTES:
@@ -426,28 +451,73 @@ def _execute(args: argparse.Namespace, clock, baseline: dict, plan: dict, marker
                         # A cache gap is not an association change; record it and skip this read.
                         beacon_skips.append(dict(qpc=clock.now(), entries=missing.count))
                     next_beacon = time.monotonic() + BEACON_EVERY_S
+                if persistent:
+                    sampler.pulse()
+                    slot_identity_checks = []
+                    def check_slot_identity():
+                        before = clock.now()
+                        same_identity(identity(args.if_index), baseline)
+                        slot_identity_checks.append(dict(started_qpc=before, finished_qpc=clock.now()))
+                    scheduled, skipped = wait_for_slot(slots, end, identity_timer, sampler.pulse,
+                        check_slot_identity, lambda seconds: observer.wait(seconds, gate), time.monotonic)
+                    if scheduled >= end:
+                        break
+                    if time.monotonic() >= end:
+                        break
                 number += 1
-                receipt = submit(ROOT, folder, number, args.if_index, clock.frequency, observer, gate)
+                receipt = (sampler.submit(number) if persistent else
+                           submit(ROOT, folder, number, args.if_index, clock.frequency, observer, gate))
+                if persistent:
+                    slots.submitted(receipt.get('submission_monotonic', time.monotonic()))
                 receipt['sequence'] = number
                 requests_file.write(json.dumps(receipt) + '\n')
                 requests_file.flush()
                 receipts.append(receipt)
                 listen_end = time.monotonic() + LISTEN_TIMEOUT_S
+                listen_started_qpc = clock.now() if persistent else None
                 while not gate.report_after(receipt['qpc_request_before']) and time.monotonic() < listen_end:
+                    if persistent:
+                        sampler.pulse()
                     observer.pump(gate)
                     time.sleep(0.005)
                 if not gate.report_after(receipt['qpc_request_before']):
                     losses += 1
                 if loss_budget_exceeded(losses, number):
                     raise RuntimeError('Own-loss budget exceeded')
-                observer.wait(remaining_sleep(args.spacing_s, time.monotonic() - cycle), gate)
+                if persistent:
+                    reports = [event for event in gate.timing[-16:] if event['kind'] == 'report'
+                               and event['raw_timestamp'] >= receipt['qpc_request_before']]
+                    schedule_file.write(json.dumps(dict(sequence=number, scheduled_monotonic=scheduled,
+                        skipped_slots=skipped, qpc_request_before=receipt['qpc_request_before'],
+                        qpc_request_completed=receipt['qpc_request_completed'],
+                        report_raw_qpc=reports[0]['raw_timestamp'] if reports else None,
+                        report_received_qpc=reports[0].get('received_qpc') if reports else None,
+                        report_wait_started_qpc=listen_started_qpc, report_wait_finished_qpc=clock.now(),
+                        identity_checked=checked_identity, identity_started_qpc=identity_started,
+                        identity_finished_qpc=identity_finished, slot_identity_checks=slot_identity_checks,
+                        processing_finished_qpc=clock.now(),
+                        actual_spacing_s=((receipt['qpc_request_before'] - previous_submission) / clock.frequency
+                                          if previous_submission is not None else None))) + '\n')
+                    schedule_file.flush()
+                    previous_submission = receipt['qpc_request_before']
+                else:
+                    observer.wait(remaining_sleep(args.spacing_s, time.monotonic() - cycle), gate)
         observer.wait(2.0, gate)
     except BaseException as error:
         gate.quarantine(str(error))
         failure = str(error)
     finally:
+        if sampler is not None:
+            try:
+                if not sampler.close(failed=failure is not None):
+                    failure = failure or 'Persistent sampler lifecycle incomplete; worker may be draining'
+            except BaseException as error:
+                failure = failure or f'Sampler cleanup: {error}'
         if reader is not None:
-            reader.close()
+            try:
+                reader.close()
+            except BaseException as error:
+                failure = failure or f'Beacon reader cleanup: {error}'
         if worker is not None:
             (folder / 'workload-stop').touch()
             try:
@@ -482,7 +552,8 @@ def _execute(args: argparse.Namespace, clock, baseline: dict, plan: dict, marker
                                          beacon_reads=beacon_count, beacon_skips=beacon_skips,
                                          collection_start_qpc=receipts[0]['qpc_request_before'] if receipts else None,
                                          collection_end_qpc=receipts[-1]['qpc_request_before'] if receipts else None,
-                                         qpc_frequency_hz=clock.frequency, firmware_sampling_validated=False),
+                                         qpc_frequency_hz=clock.frequency, firmware_sampling_validated=False,
+                                         sampler=args.sampler),
                     failure, utc)
     if failure:
         print(f'Run stopped: {failure}. Quarantine marker written: {marker}', file=sys.stderr)

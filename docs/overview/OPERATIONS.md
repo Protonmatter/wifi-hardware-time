@@ -1,6 +1,6 @@
 # Operations
 
-This guide explains how to run the maintained research tools and interpret their output. Start with offline checks, then read the prerequisites for any hardware operation. Private acquisition remains blocked after ambiguous reports, and old launch manifests must not be reused after the folder reorganization or treated as fresh qualification.
+This guide explains how to run the maintained research tools and interpret their output. Start with offline checks, then read the prerequisites for the exact hardware profile. The historical strict campaign remains quarantined; later diagnostic-window campaigns have separate recorded outcomes. Old launch manifests must not be reused after source or layout changes or treated as fresh qualification.
 
 <!-- current-context:2026-10-04 -->
 **Current context (2026-10-04):** Current findings now include complete vendor package inventories, QUTS client ownership and a correction ledger. Historical acquisitions retain their original scope and limits. See [current findings](../knowledge/current-findings.md).
@@ -23,7 +23,9 @@ This guide explains how to run the maintained research tools and interpret their
 
 ## Current admission state
 
-Private acquisition remains quarantined. Historical execution examples below
+The optional [persistent bound sampler](../acquisition/persistent-tsf-sampler.md) completed a separately authorized [five-minute idle smoke](../acquisition/persistent-tsf-smoke-2026-10-08.md) on 2026-10-08. Report wait remains enabled. Read its exact lifecycle/evidence contract and the [phase 2 gates](persistent-tsf-next-steps.md) before planning another run. Publication, offline tests and a normal smoke success do not authorize cancellation experiments, lifecycle disruption or quarantine reconciliation.
+
+The historical strict acquisition remains quarantined. Historical execution examples below
 are reproduction instructions, not a rearm decision. The last scan comparison
 also retained its failed-observation lock. Inspect exact owned-resource cleanup
 before any separately reviewed new observation; do not clear the private marker.

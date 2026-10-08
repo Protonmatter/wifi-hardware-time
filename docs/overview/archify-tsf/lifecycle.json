@@ -1,0 +1,190 @@
+{
+  "schema_version": 2,
+  "diagram_type": "lifecycle",
+  "meta": {
+    "title": "Sampler lifecycle: completion is the release boundary",
+    "locale": "en",
+    "quality_profile": "showcase",
+    "output": "artifacts/archify-tsf/lifecycle/lifecycle.html"
+  },
+  "lanes": [
+    {
+      "id": "main",
+      "label": "One request at a time"
+    },
+    {
+      "id": "cancel",
+      "label": "Failure and cancellation"
+    },
+    {
+      "id": "drain",
+      "label": "Retained ownership"
+    },
+    {
+      "id": "terminal",
+      "label": "Session closure"
+    }
+  ],
+  "states": [
+    {
+      "id": "ready",
+      "type": "start",
+      "label": "READY",
+      "sublabel": "fresh permit required",
+      "lane": "main",
+      "col": 0
+    },
+    {
+      "id": "flight",
+      "type": "active",
+      "label": "IN_FLIGHT",
+      "sublabel": "one kernel request",
+      "lane": "main",
+      "col": 1
+    },
+    {
+      "id": "success",
+      "type": "success",
+      "label": "Completed success",
+      "sublabel": "request terminal",
+      "lane": "main",
+      "col": 2
+    },
+    {
+      "id": "deadline",
+      "type": "failure",
+      "label": "Deadline exceeded",
+      "sublabel": "2 seconds; sticky",
+      "lane": "cancel",
+      "col": 1
+    },
+    {
+      "id": "cancel",
+      "type": "active",
+      "label": "Cancel requested",
+      "sublabel": "not proof of drain",
+      "lane": "cancel",
+      "col": 2
+    },
+    {
+      "id": "pending",
+      "type": "waiting",
+      "label": "Drain pending",
+      "sublabel": "retain all resources",
+      "lane": "drain",
+      "col": 2
+    },
+    {
+      "id": "stopped",
+      "type": "failure",
+      "label": "STOPPED",
+      "sublabel": "terminal; run failed",
+      "lane": "drain",
+      "col": 3
+    },
+    {
+      "id": "closed",
+      "type": "neutral",
+      "label": "CLOSED",
+      "sublabel": "actual handle closure",
+      "lane": "terminal",
+      "col": 3
+    }
+  ],
+  "transitions": [
+    {
+      "id": "ready-flight",
+      "from": "ready",
+      "to": "flight",
+      "variant": "default",
+      "label": "permit"
+    },
+    {
+      "id": "flight-success",
+      "from": "flight",
+      "to": "success",
+      "variant": "default",
+      "label": "success"
+    },
+    {
+      "id": "success-ready",
+      "from": "success",
+      "to": "ready",
+      "variant": "default",
+      "label": "next permit"
+    },
+    {
+      "id": "flight-deadline",
+      "from": "flight",
+      "to": "deadline",
+      "variant": "security",
+      "label": "timeout"
+    },
+    {
+      "id": "deadline-cancel",
+      "from": "deadline",
+      "to": "cancel",
+      "variant": "default"
+    },
+    {
+      "id": "flight-cancel",
+      "from": "flight",
+      "to": "cancel",
+      "variant": "security",
+      "label": "owner lost"
+    },
+    {
+      "id": "cancel-pending",
+      "from": "cancel",
+      "to": "pending",
+      "variant": "default",
+      "label": "unresolved"
+    },
+    {
+      "id": "pending-stopped",
+      "from": "pending",
+      "to": "stopped",
+      "variant": "default",
+      "label": "terminal"
+    },
+    {
+      "id": "flight-stopped",
+      "from": "flight",
+      "to": "stopped",
+      "variant": "security",
+      "label": "I/O error"
+    },
+    {
+      "id": "stopped-closed",
+      "from": "stopped",
+      "to": "closed",
+      "variant": "default",
+      "label": "close"
+    },
+    {
+      "id": "ready-closed",
+      "from": "ready",
+      "to": "closed",
+      "variant": "default",
+      "label": "clean stop"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "rose",
+      "title": "Sticky failure",
+      "items": [
+        "A deadline or cancellation attempt fails the run even if completion later succeeds.",
+        "ERROR_NOT_FOUND, WAIT_TIMEOUT and ERROR_IO_INCOMPLETE do not prove terminal completion."
+      ]
+    },
+    {
+      "dot": "cyan",
+      "title": "Owned resources",
+      "items": [
+        "Finite polls are at most 50 ms. Pending operation lifetime can be indefinite.",
+        "No close, exception or disconnect may release unresolved buffers, event or device."
+      ]
+    }
+  ]
+}
