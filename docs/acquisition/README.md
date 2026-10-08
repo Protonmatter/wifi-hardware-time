@@ -10,7 +10,7 @@ Start with the current results, then use the plans and historical reports for co
 
 | Question | Read | Evidence and limit |
 |---|---|---|
-| Can the laptop bound its Wi-Fi TSF below 1 ms? | [TSF-to-host bound results](tsf-host-bound-results.md) | Passed 2026-10-08: 352 us idle and 191 us loaded worst case over an hour each; access point link assumed; separate profile, the 2026-10-03 quarantine is unchanged |
+| Can the laptop bound its Wi-Fi TSF below 1 ms? | [TSF-to-host bound results](tsf-host-bound-results.md) | Passed 2026-10-08 as a conditional bound: 352 us idle and 191 us loaded worst case over an hour each (895 and 786 us without the constant-rate assumption); access point link assumed; separate profile, the 2026-10-03 quarantine is unchanged |
 | How was the bound measured, tested and debugged? | [TSF-to-host bound methodology](tsf-host-bound-methodology.md) | Every analysis, attempt, measurement and fix, with commands and derived per-run records |
 | What can a live packet capture reveal, and what required elevation? | [Packet capture and elevation](packet-capture-and-elevation.md) | 589 Ethernet packets with host timestamp options; kernel trace not collected after a canceled administrator launch |
 | Did the latest queries close timing or publication gaps? | [Timing qualification follow-up](timing-qualification-validation-2026-10-04.md) | Fresh documented queries returned 23; software tests passed; live timing and new-change hosted CI remain unqualified |

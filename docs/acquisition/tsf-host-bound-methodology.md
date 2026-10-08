@@ -14,8 +14,9 @@ This is the full record of how the sub-millisecond TSF bound was designed, built
 - [8. Investigations and fixes](#8-investigations-and-fixes)
 - [9. Work not done and stated limitations](#9-work-not-done-and-stated-limitations)
 - [10. Environment, records and reproduction](#10-environment-records-and-reproduction)
+- [11. Independent review and responses](#11-independent-review-and-responses)
 
-**Terms:** **TSF** is the 802.11 microsecond timer a station keeps aligned to its access point. **QPC** is Windows `QueryPerformanceCounter` (10 MHz here). A **window** is the QPC interval in which one firmware TSF capture must have happened. The **proven half-width** is the worst-case TSF error at any instant of an analyzed span. **ETW** is Event Tracing for Windows. See the [glossary](../glossary.md).
+**Terms:** **TSF** is the 802.11 microsecond timer a station keeps aligned to its access point. **QPC** is Windows `QueryPerformanceCounter` (10 MHz here). A **window** is the QPC interval in which one firmware TSF capture must have happened. The **bound half-width** is the worst-case TSF error at any instant of an analyzed span, conditional on the assumptions in section 9. **ETW** is Event Tracing for Windows. See the [glossary](../glossary.md).
 
 ## 1. Objective and constraints
 
@@ -78,7 +79,7 @@ All checks below used the six saved mixed runs of campaign `ecfaed68f20e` (2026-
 
 **Beacon check** ([`beacon_consistency.py`](../../research/clock_models/beacon_consistency.py)): each cached router beacon timestamp from `WlanGetNetworkBssList` must not exceed the predicted station TSF upper bound at the cache call's **return** by more than 1,000 us.
 
-**Pass criteria (fixed before collection, both idle and load):** run completed; maximum proven half-width below 1,000 us; feasible coverage at least 90%; rejected samples at most 1%; estimated misattributed samples below 0.05; at least one beacon check and zero violations. A maximum of 100 us or less is a stretch result only.
+**Pass criteria (fixed before collection, both idle and load):** run completed; maximum bound half-width below 1,000 us; feasible coverage at least 90%; rejected samples at most 1%; estimated misattributed samples below 0.05; at least one beacon check and zero violations. A maximum of 100 us or less is a stretch result only.
 
 ## 5. Software built and how it was verified
 
@@ -135,7 +136,7 @@ python research\acquisition\run_bound_campaign.py --if-index $a.ifIndex --condit
 
 All values from the analyzer. Stopped runs are diagnostics only and do not count towards the verdict.
 
-| Run | Condition | Minutes | Outcome | Accepted / requests | Rejected | Foreign | Proven median / p95 / max (us) | Coverage | Beacon checks / violations | Trace MiB (MiB/min) | Download |
+| Run | Condition | Minutes | Outcome | Accepted / requests | Rejected | Foreign | Bound median / p95 / max (us) | Coverage | Beacon checks / violations | Trace MiB (MiB/min) | Download |
 |---|---|---:|---|---|---|---:|---|---:|---|---|---|
 | `eb49c4217b0a` | idle smoke | 5 | Completed, not counted | 98 / 98 | 0 | 0 | 145.3 / 167.9 / 169.2 | 100% | 25 / 0 | 60 (12.0) | not applicable |
 | `00e0aa837bfa` | idle | 24.7 | Stopped: 250 MiB cap | 522 / 522 | 0 | 4 | 136.8 / 156.6 / 191.9 | 100% | 129 / 0 | 250 (10.1) | not applicable |
@@ -199,6 +200,7 @@ Each fix was made only after the cause was established. None changed a pass thre
 
 ## 9. Work not done and stated limitations
 
+- **Causal capture and constant rate are assumed.** The bound holds only if each TSF was captured inside its host window and the clock followed one rate within each 60-second span. Neither is verified; see section 11. With only a 200 ppm rate limit, the worst case is 894.7 us idle and 785.6 us under load.
 - **Phase 0 raw-field check.** The callers of the driver's generic hex-dump routines, their gating and the raw received report length were not pursued in this work. The report-type and clock-ID fields therefore remain unobserved, and the report is assumed to describe the associated link's TSF.
 - **Station TSF to access point TSF** is assumed (802.11 station synchronization) and checked only coarsely.
 - **No UTC or external-timescale claim.**
@@ -232,3 +234,19 @@ python research/clock_models/analyze_bound_run.py evaluate artifacts/BoundCampai
 ```
 
 **Derived records in this repository** ([`tsf-host-bound-2026-10-07/`](tsf-host-bound-2026-10-07/)): the evaluation of both counted runs, the smoke analysis, a diagnostic analysis of each stopped run, and the preview on saved samples. They contain counts, bounds and QPC-relative values only: no BSSIDs, SSIDs, MAC addresses or raw TSF captures.
+
+## 11. Independent review and responses
+
+An independent review of PR #4 at head `ea83906` (2026-10-07) reported seven findings. It reproduced the published numbers exactly from the retained data and built synthetic counterexamples for the first five. Responses:
+
+| # | Finding | Response | Change |
+|---|---|---|---|
+| P1 | The freshness screen cannot prove capture inside the window; a constant 5 ms capture delay passed every check | **Accepted.** Increment checks cancel a constant delay, so the result is restated as a conditional bound. Uniform beacon-cycle phase and a ±160 us line fit argue against a periodic latch but do not exclude a constant offset | Results and findings reworded; the verdict carries `physical_bound_proven: false` and lists its conditions; regression tests for constant-age staleness and for foreign substitution of a lost report |
+| P1 | The polygon assumes one constant rate between samples; a clock varying within the 200 ppm prior can lie outside the reported interval | **Accepted, with an added measurement.** The constant-rate condition is stated. Separately, assuming only a 200 ppm instantaneous rate limit, the counted runs bound at 894.7 us idle and 785.6 us loaded, still below 1 ms | Assumptions section and measurement added; not adopted as a pass criterion after collection |
+| P1 | Two controllers could run against one adapter at once | **Accepted** | Adapter-scoped named mutex held from before the marker check through cleanup and persistence; an abandoned lock refuses to run; concurrency and abandonment tests |
+| P1 | A decoder failure after cleanup left no result and no marker | **Accepted** | `finalize()` converts every decoding failure into a reason; `persist_outcome()` writes the marker before the result; an unexpected controller exception also writes the marker; tests cover decoder error, timeout, empty, malformed, headerless, lossy and mismatched output |
+| P2 | `evaluate()` trusted argument order and ignored duration and workload | **Accepted** | Requires distinct runs, recorded `idle`/`load` conditions, at least 3,600 s, and a completed load workload that downloaded data without stalling; short runs stay diagnostic |
+| P2 | Non-QPC trace clocks were accepted | **Accepted** | ETW clock type 1 (QPC) is required; system-time, cycle-counter and missing clock types are rejected |
+| P2 | The stopped-run maxima range was wrong (175 to 198 us) | **Accepted** | Corrected to 175.1 to 296.5 us |
+
+Both counted runs pass the stricter evaluation unchanged: 352.2 us idle and 190.8 us loaded. The derived verdict record was regenerated; it stores run labels only, not local paths.

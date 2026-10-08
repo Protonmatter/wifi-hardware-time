@@ -2,6 +2,13 @@
   "idle": {
     "schema": "wht/tsf-host-bound-run-v1",
     "run_completed": true,
+    "run": {
+      "folder": "BoundCampaign-ac08a44962b0/idle",
+      "session": "WifiBound-e71bb37c9e9e",
+      "condition": "idle",
+      "duration_s": 3600,
+      "workload": null
+    },
     "screen": {
       "request_count": 1277,
       "accepted_count": 1276,
@@ -72,6 +79,17 @@
   "load": {
     "schema": "wht/tsf-host-bound-run-v1",
     "run_completed": true,
+    "run": {
+      "folder": "BoundCampaign-04ddf1083b85/load",
+      "session": "WifiBound-f21cb4b05935",
+      "condition": "load",
+      "duration_s": 3600,
+      "workload": {
+        "stop_requested": true,
+        "download_stalled": false,
+        "downloaded_bytes": 15829630976
+      }
+    },
     "screen": {
       "request_count": 1212,
       "accepted_count": 1210,
@@ -142,7 +160,9 @@
   "verdict": {
     "idle": {
       "run_completed": true,
-      "max_proven_error_below_1000us": true,
+      "condition_recorded": true,
+      "duration_at_least_3600s": true,
+      "max_bound_below_1000us": true,
       "coverage_at_least_90pct": true,
       "rejected_at_most_1pct": true,
       "misattribution_below_0_05": true,
@@ -151,13 +171,23 @@
     },
     "load": {
       "run_completed": true,
-      "max_proven_error_below_1000us": true,
+      "condition_recorded": true,
+      "duration_at_least_3600s": true,
+      "max_bound_below_1000us": true,
       "coverage_at_least_90pct": true,
       "rejected_at_most_1pct": true,
       "misattribution_below_0_05": true,
       "beacon_checked_without_violation": true,
+      "workload_completed": true,
       "stretch_100us": false
     },
-    "passed": true
+    "distinct_runs": true,
+    "passed": true,
+    "conditional_on": [
+      "causal capture: each TSF was sampled after its request left the host and before its report was logged (a constant capture delay is invisible to the freshness screen)",
+      "affine clock within each 60-second span: TSF follows one constant rate between samples",
+      "station TSF equals access point TSF (802.11 synchronization; coarse beacon check only)"
+    ],
+    "physical_bound_proven": false
   }
 }
