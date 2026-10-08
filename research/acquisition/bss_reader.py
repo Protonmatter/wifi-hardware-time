@@ -52,7 +52,8 @@ class WLAN_SECURITY_ATTRIBUTES(ct.Structure):
 
 
 class WLAN_CONNECTION_ATTRIBUTES(ct.Structure):
-    _fields_ = [('isState', ct.c_int), ('wlanConnectionMode', ct.c_int), ('strProfileName', ct.c_wchar * 256),
+    # WCHAR is 16-bit in the WLAN API; ctypes.c_wchar is 32-bit off Windows, so use a fixed 16-bit array.
+    _fields_ = [('isState', ct.c_int), ('wlanConnectionMode', ct.c_int), ('strProfileName', ct.c_uint16 * 256),
                 ('wlanAssociationAttributes', WLAN_ASSOCIATION_ATTRIBUTES),
                 ('wlanSecurityAttributes', WLAN_SECURITY_ATTRIBUTES)]
 
