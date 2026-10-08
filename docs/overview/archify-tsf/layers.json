@@ -1,0 +1,200 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Persistent TSF: system layers",
+    "locale": "en",
+    "quality_profile": "showcase",
+    "output": "artifacts/archify-tsf/layers/layers.html"
+  },
+  "components": [
+    {
+      "id": "controller",
+      "label": "Campaign controller",
+      "sublabel": "slots + fresh permits",
+      "type": "security",
+      "pos": [
+        40,
+        50
+      ],
+      "size": [
+        190,
+        72
+      ]
+    },
+    {
+      "id": "worker",
+      "label": "Persistent worker",
+      "sublabel": "one owned session",
+      "type": "backend",
+      "pos": [
+        380,
+        50
+      ],
+      "size": [
+        190,
+        72
+      ]
+    },
+    {
+      "id": "driver",
+      "label": "Qualified adapter",
+      "sublabel": "Win32 + Qualcomm driver",
+      "type": "external",
+      "pos": [
+        720,
+        50
+      ],
+      "size": [
+        190,
+        72
+      ]
+    },
+    {
+      "id": "observer",
+      "label": "Trace observer",
+      "sublabel": "raw QPC + received QPC",
+      "type": "messagebus",
+      "pos": [
+        720,
+        250
+      ],
+      "size": [
+        190,
+        72
+      ]
+    },
+    {
+      "id": "evidence",
+      "label": "Private evidence",
+      "sublabel": "receipts + ETL + journal",
+      "type": "database",
+      "pos": [
+        380,
+        250
+      ],
+      "size": [
+        190,
+        72
+      ]
+    },
+    {
+      "id": "screen",
+      "label": "Offline screening",
+      "sublabel": "association + freshness",
+      "type": "security",
+      "pos": [
+        380,
+        450
+      ],
+      "size": [
+        190,
+        72
+      ]
+    },
+    {
+      "id": "model",
+      "label": "Clock models",
+      "sublabel": "exact conditional bounds",
+      "type": "backend",
+      "pos": [
+        720,
+        450
+      ],
+      "size": [
+        190,
+        72
+      ]
+    },
+    {
+      "id": "results",
+      "label": "Provisional + settled",
+      "sublabel": "preserve original event",
+      "type": "frontend",
+      "pos": [
+        720,
+        650
+      ],
+      "size": [
+        190,
+        72
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "controller-worker",
+      "from": "controller",
+      "to": "worker",
+      "variant": "security",
+      "label": "permit"
+    },
+    {
+      "id": "worker-driver",
+      "from": "worker",
+      "to": "driver",
+      "variant": "default",
+      "label": "action 4"
+    },
+    {
+      "id": "driver-observer",
+      "from": "driver",
+      "to": "observer",
+      "variant": "dashed",
+      "label": "reports"
+    },
+    {
+      "id": "worker-evidence",
+      "from": "worker",
+      "to": "evidence",
+      "variant": "default",
+      "label": "receipts"
+    },
+    {
+      "id": "observer-evidence",
+      "from": "observer",
+      "to": "evidence",
+      "variant": "default",
+      "label": "record"
+    },
+    {
+      "id": "evidence-screen",
+      "from": "evidence",
+      "to": "screen",
+      "variant": "default",
+      "label": "load"
+    },
+    {
+      "id": "screen-model",
+      "from": "screen",
+      "to": "model",
+      "variant": "default",
+      "label": "accepted"
+    },
+    {
+      "id": "model-results",
+      "from": "model",
+      "to": "results",
+      "variant": "default",
+      "label": "evaluate"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Ownership",
+      "items": [
+        "The controller owns campaign exclusion and unfinished-run protection.",
+        "The worker owns device, event, OVERLAPPED and buffers until completion."
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "Evidence boundary",
+      "items": [
+        "These views describe the sampler measured on 2026-10-08; the result summary identifies its source hashes.",
+        "Recorded acquisition reaches the clock models through offline screening. Online admission is later work."
+      ]
+    }
+  ]
+}

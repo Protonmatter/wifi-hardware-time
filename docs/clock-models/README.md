@@ -8,6 +8,12 @@ A counter value becomes useful time only when its clock, event and conversion ar
 
 ## Documents
 
+- [Current mathematics: rate envelopes, availability, settlement and affine polygon](tsf-mathematics.md).
+- [Persistent sampler live smoke and interpretation](../acquisition/persistent-tsf-smoke-2026-10-08.md).
+- [Next research, implementation and testing gates](../overview/persistent-tsf-next-steps.md).
+- [Two-phase TSF timestamps: settled results](settled-timestamps.md).
+- [Causal TSF provider: replay results](causal-provider-replay.md).
+- [TSF-to-host bound preview on saved action-4 samples](tsf-host-bound-preview.md).
 - [Qualifying the TSF, FTM and host-clock relationships](clock-relationship-investigation.md).
 - [TSF versus SoC: what the reported increments can identify](counter-rate-identifiability.md).
 - [Packet-to-clock timestamp map and uncertainty ledger](packet-to-clock-map.md).

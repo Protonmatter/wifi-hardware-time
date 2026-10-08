@@ -1,0 +1,380 @@
+[
+  {
+    "schema": "wht/tsf-host-bound-legacy-preview-v1",
+    "bundle_id": "c470b4f2f8f92a6911e17a2f37ed20fffa7afae0b693977f4d29f0e0da8df8e4",
+    "preview": true,
+    "not_screened": [
+      "foreign-report classification",
+      "own-loss accounting"
+    ],
+    "action4": {
+      "sample_count": 3,
+      "span_count": 1,
+      "infeasible_spans": [],
+      "coverage": 1.0,
+      "coverage_exact": "1",
+      "proven_half_width_us": {
+        "median": 293.493,
+        "p95": 293.493,
+        "max": 293.493,
+        "max_exact": "8536979416891327723/29087480248963808"
+      },
+      "window_width_us": {
+        "min": 355.6,
+        "median": 397.0,
+        "max": 585.9
+      },
+      "request_spacing_s": {
+        "median": 12.014,
+        "max": 12.198
+      },
+      "soc_domain": {
+        "sample_count": 3,
+        "ticks_per_unit": 10,
+        "fixed_rate_feasible": false,
+        "fixed_rate_gap_qpc_ticks": 3649,
+        "rate_interval": {
+          "lower": {
+            "numerator": "242116719",
+            "denominator": "24211307"
+          },
+          "upper": {
+            "numerator": "242126548",
+            "denominator": "24211307"
+          }
+        },
+        "rate_interval_contains_nominal": false,
+        "compatible_with_qpc_domain": false,
+        "shared_oscillator_proven": false
+      },
+      "beacon_check": {
+        "checked": 0,
+        "unchecked": 0,
+        "violations": 0,
+        "tolerance_us": 1000,
+        "worst_excess_us": null,
+        "scope": "coarse: AP timestamp must not exceed predicted station TSF; cache age unknown"
+      }
+    },
+    "action4_freshness_rejections": 0,
+    "action3_freshness": {
+      "samples": 8,
+      "rejected": 0
+    }
+  },
+  {
+    "schema": "wht/tsf-host-bound-legacy-preview-v1",
+    "bundle_id": "3c9bf04e2151c9a0d6ea948c45867e14a1d3bc48496825e5c737e160ee7e84f2",
+    "preview": true,
+    "not_screened": [
+      "foreign-report classification",
+      "own-loss accounting"
+    ],
+    "action4": {
+      "sample_count": 3,
+      "span_count": 1,
+      "infeasible_spans": [],
+      "coverage": 1.0,
+      "coverage_exact": "1",
+      "proven_half_width_us": {
+        "median": 142.845,
+        "p95": 142.845,
+        "max": 142.845,
+        "max_exact": "71571521483/501043258"
+      },
+      "window_width_us": {
+        "min": 213.8,
+        "median": 284.6,
+        "max": 546.3
+      },
+      "request_spacing_s": {
+        "median": 11.98,
+        "max": 13.072
+      },
+      "soc_domain": {
+        "sample_count": 3,
+        "ticks_per_unit": 10,
+        "fixed_rate_feasible": false,
+        "fixed_rate_gap_qpc_ticks": 6880,
+        "rate_interval": {
+          "lower": {
+            "numerator": "50104326",
+            "denominator": "5010295"
+          },
+          "upper": {
+            "numerator": "250526614",
+            "denominator": "25051475"
+          }
+        },
+        "rate_interval_contains_nominal": false,
+        "compatible_with_qpc_domain": false,
+        "shared_oscillator_proven": false
+      },
+      "beacon_check": {
+        "checked": 0,
+        "unchecked": 0,
+        "violations": 0,
+        "tolerance_us": 1000,
+        "worst_excess_us": null,
+        "scope": "coarse: AP timestamp must not exceed predicted station TSF; cache age unknown"
+      }
+    },
+    "action4_freshness_rejections": 0,
+    "action3_freshness": {
+      "samples": 8,
+      "rejected": 0
+    }
+  },
+  {
+    "schema": "wht/tsf-host-bound-legacy-preview-v1",
+    "bundle_id": "662948be1d416dbe5b30910a87795f376d52931218bb53a7746358779c3ed128",
+    "preview": true,
+    "not_screened": [
+      "foreign-report classification",
+      "own-loss accounting"
+    ],
+    "action4": {
+      "sample_count": 3,
+      "span_count": 1,
+      "infeasible_spans": [],
+      "coverage": 1.0,
+      "coverage_exact": "1",
+      "proven_half_width_us": {
+        "median": 286.391,
+        "p95": 286.391,
+        "max": 286.391,
+        "max_exact": "27756761087/96919066"
+      },
+      "window_width_us": {
+        "min": 238.7,
+        "median": 260.7,
+        "max": 571.7
+      },
+      "request_spacing_s": {
+        "median": 12.081,
+        "max": 12.149
+      },
+      "soc_domain": {
+        "sample_count": 3,
+        "ticks_per_unit": 10,
+        "fixed_rate_feasible": false,
+        "fixed_rate_gap_qpc_ticks": 5666,
+        "rate_interval": {
+          "lower": {
+            "numerator": "121148833",
+            "denominator": "12114600"
+          },
+          "upper": {
+            "numerator": "24230599",
+            "denominator": "2422920"
+          }
+        },
+        "rate_interval_contains_nominal": false,
+        "compatible_with_qpc_domain": false,
+        "shared_oscillator_proven": false
+      },
+      "beacon_check": {
+        "checked": 0,
+        "unchecked": 0,
+        "violations": 0,
+        "tolerance_us": 1000,
+        "worst_excess_us": null,
+        "scope": "coarse: AP timestamp must not exceed predicted station TSF; cache age unknown"
+      }
+    },
+    "action4_freshness_rejections": 0,
+    "action3_freshness": {
+      "samples": 8,
+      "rejected": 0
+    }
+  },
+  {
+    "schema": "wht/tsf-host-bound-legacy-preview-v1",
+    "bundle_id": "2672a4a16208fa97a88631bd5e07e5bf49a1291b2c5c6e158372e17e48dd4487",
+    "preview": true,
+    "not_screened": [
+      "foreign-report classification",
+      "own-loss accounting"
+    ],
+    "action4": {
+      "sample_count": 3,
+      "span_count": 1,
+      "infeasible_spans": [],
+      "coverage": 1.0,
+      "coverage_exact": "1",
+      "proven_half_width_us": {
+        "median": 296.087,
+        "p95": 296.087,
+        "max": 296.087,
+        "max_exact": "119929230702343379/405047604897822"
+      },
+      "window_width_us": {
+        "min": 254.6,
+        "median": 347.3,
+        "max": 612.1
+      },
+      "request_spacing_s": {
+        "median": 12.054,
+        "max": 12.141
+      },
+      "soc_domain": {
+        "sample_count": 3,
+        "ticks_per_unit": 10,
+        "fixed_rate_feasible": false,
+        "fixed_rate_gap_qpc_ticks": 4925,
+        "rate_interval": {
+          "lower": {
+            "numerator": "241940485",
+            "denominator": "24193556"
+          },
+          "upper": {
+            "numerator": "24107935",
+            "denominator": "2410651"
+          }
+        },
+        "rate_interval_contains_nominal": false,
+        "compatible_with_qpc_domain": false,
+        "shared_oscillator_proven": false
+      },
+      "beacon_check": {
+        "checked": 0,
+        "unchecked": 0,
+        "violations": 0,
+        "tolerance_us": 1000,
+        "worst_excess_us": null,
+        "scope": "coarse: AP timestamp must not exceed predicted station TSF; cache age unknown"
+      }
+    },
+    "action4_freshness_rejections": 0,
+    "action3_freshness": {
+      "samples": 8,
+      "rejected": 0
+    }
+  },
+  {
+    "schema": "wht/tsf-host-bound-legacy-preview-v1",
+    "bundle_id": "33f39f9fe89b9e1c35bfb50964212ff2cc26af925552de18f587c5746d6b7ff0",
+    "preview": true,
+    "not_screened": [
+      "foreign-report classification",
+      "own-loss accounting"
+    ],
+    "action4": {
+      "sample_count": 3,
+      "span_count": 1,
+      "infeasible_spans": [],
+      "coverage": 1.0,
+      "coverage_exact": "1",
+      "proven_half_width_us": {
+        "median": 293.193,
+        "p95": 293.193,
+        "max": 293.193,
+        "max_exact": "670227611731441613/2285963217767761"
+      },
+      "window_width_us": {
+        "min": 259.3,
+        "median": 274.8,
+        "max": 585.3
+      },
+      "request_spacing_s": {
+        "median": 12.127,
+        "max": 12.21
+      },
+      "soc_domain": {
+        "sample_count": 3,
+        "ticks_per_unit": 10,
+        "fixed_rate_feasible": false,
+        "fixed_rate_gap_qpc_ticks": 4342,
+        "rate_interval": {
+          "lower": {
+            "numerator": "9360577",
+            "denominator": "936041"
+          },
+          "upper": {
+            "numerator": "121691724",
+            "denominator": "12168533"
+          }
+        },
+        "rate_interval_contains_nominal": false,
+        "compatible_with_qpc_domain": false,
+        "shared_oscillator_proven": false
+      },
+      "beacon_check": {
+        "checked": 0,
+        "unchecked": 0,
+        "violations": 0,
+        "tolerance_us": 1000,
+        "worst_excess_us": null,
+        "scope": "coarse: AP timestamp must not exceed predicted station TSF; cache age unknown"
+      }
+    },
+    "action4_freshness_rejections": 0,
+    "action3_freshness": {
+      "samples": 8,
+      "rejected": 0
+    }
+  },
+  {
+    "schema": "wht/tsf-host-bound-legacy-preview-v1",
+    "bundle_id": "84796ad0adf978c1edf1936feae87a63e67c0d6adb66c95706dd0a0c4f024128",
+    "preview": true,
+    "not_screened": [
+      "foreign-report classification",
+      "own-loss accounting"
+    ],
+    "action4": {
+      "sample_count": 3,
+      "span_count": 1,
+      "infeasible_spans": [],
+      "coverage": 1.0,
+      "coverage_exact": "1",
+      "proven_half_width_us": {
+        "median": 291.359,
+        "p95": 291.359,
+        "max": 291.359,
+        "max_exact": "2845071836187690711/9764841723730318"
+      },
+      "window_width_us": {
+        "min": 240.4,
+        "median": 259.4,
+        "max": 739.5
+      },
+      "request_spacing_s": {
+        "median": 12.093,
+        "max": 12.131
+      },
+      "soc_domain": {
+        "sample_count": 3,
+        "ticks_per_unit": 10,
+        "fixed_rate_feasible": false,
+        "fixed_rate_gap_qpc_ticks": 6035,
+        "rate_interval": {
+          "lower": {
+            "numerator": "242231415",
+            "denominator": "24222538"
+          },
+          "upper": {
+            "numerator": "120936110",
+            "denominator": "12092899"
+          }
+        },
+        "rate_interval_contains_nominal": false,
+        "compatible_with_qpc_domain": false,
+        "shared_oscillator_proven": false
+      },
+      "beacon_check": {
+        "checked": 0,
+        "unchecked": 0,
+        "violations": 0,
+        "tolerance_us": 1000,
+        "worst_excess_us": null,
+        "scope": "coarse: AP timestamp must not exceed predicted station TSF; cache age unknown"
+      }
+    },
+    "action4_freshness_rejections": 0,
+    "action3_freshness": {
+      "samples": 8,
+      "rejected": 0
+    }
+  }
+]

@@ -1,8 +1,12 @@
 # Current research findings
 
-We can read diagnostic counters and trace real byte-return mechanisms. WLANLIB is attributable to FastConnect and reaches the existing QcomWifi private commands. An ART2 firmware-event producer now connects to a cached payload fetch, but discarded metadata, cache consumption and validity/concurrency gaps prevent timing qualification. QUTS framing and ownership are mapped separately; no new complete timing event or hardware-to-host relationship is established.
+**Review update:** [Integrated PR reconciliation](../overview/pr-reconciliation-2026-10-08.md) corrects acquisition failure paths, uncertainty expiry and settlement. Revised smoke tracking coverage is 92.862589%; original capture and analysis records remain preserved.
 
-**Current decision, 2026-10-06:** the installed Qualcomm live route is
+We can acquire diagnostic TSF observations through a persistent exact-build worker and calculate conditional TSF-to-QPC intervals from screened records. The first five-minute persistent idle smoke completed cleanly. Complete original-event export, physical capture timing, AP/UTC accuracy and multi-device synchronization remain separate unqualified capabilities.
+
+**Current result, 2026-10-08:** the [persistent sampler smoke](../acquisition/persistent-tsf-smoke-2026-10-08.md) completed 139 real pending-to-success requests, accepted 138 samples offline, and closed with no outstanding I/O or trace loss. Arrival-aware tracking was 92.884% over the declared 302.999-second interval. All 297 replayed event-grid points settled with median/max conditional rate-only half-widths of 280.429/614.883 us after a median 2.341-second wait. The exact retrospective covered-interval maximum was 648.30025 us. The [math reference](../clock-models/tsf-mathematics.md) states the assumptions and the [phase 2 roadmap](../overview/persistent-tsf-next-steps.md) separates research, implementation, testing and qualification gates. No online sample admission is implemented.
+
+**Separate complete-event decision, 2026-10-06:** the installed Qualcomm original-event export route is
 [no-go pending demonstrated supported/vendor/instrumented producer access](../evidence/hardware-route-decision-2026-10-06.md).
 The current QMSL callback trace is complete for its static scope; repeating it
 does not supply an attributable endpoint or bounded vendor lifecycle. Retain
@@ -44,6 +48,14 @@ do not supply it.
 - [Continue or reproduce](#continue-or-reproduce)
 
 ## Established findings
+
+**2026-10-08 persistent sampling:** normal live session reuse and clean shutdown are established for one 300-second idle run on the qualified build. Requested one-second slots produced actual 2.005-second median and 4.009-second maximum gaps with the report wait retained. Cancellation, timeout recovery, firmware drain, long-run/load qualification and independent accuracy were not tested by this smoke. [Results and input/source hashes](../acquisition/persistent-tsf-smoke-2026-10-08.md).
+
+**2026-10-08 settled timestamps:** with [two-phase timestamps](../clock-models/settled-timestamps.md), all 7,195 events in the two counted runs (one per second) settled below 1 ms after a median wait of about 3 s: guarantee median about 310 to 325 us, worst 895 us idle and 786 us loaded; constant-rate best estimate median about 127 to 130 us. Assumptions and offline screening as below.
+
+**2026-10-08 causal provider replay:** a [causal provider](../clock-models/causal-provider-replay.md) replayed over both counted runs reproduces the review figures exactly. Using each sample only from its recorded arrival (median about 2 s after capture), it kept a conditional sub-millisecond interval for 78.7% of the idle hour and 72.4% of the loaded hour, flagging the rest as stale, with no inconsistent sample. Screening was offline.
+
+**2026-10-08 TSF-to-host bound:** the [live bound campaign](../acquisition/tsf-host-bound-results.md) passed every predeclared criterion. Over one hour idle and one hour under CPU and network load, the station TSF was bounded at any QPC instant to a conditional worst case of 352 us and 191 us respectively, with medians of about 135 to 140 us. The bound assumes causal capture inside each window and a constant rate within each 60-second span; with only a 200 ppm rate limit the retrospective bound is 895 us and 786 us, while a causal (live) bound reported by review reaches about 1.7 ms and 1.3 ms in the longest gaps, so a live provider must expire its sub-millisecond guarantee during long gaps. Attribution used the driver's command record, and freshness, trace completeness and a coarse beacon check were screened for every sample. The link from station TSF to access point TSF remains an assumption on this equipment, and no clock provider is enabled.
 
 **2026-10-06 installation follow-up:** [QMSL 6.1.365.1 and QSPR 6.0 interfaces](../adapters/qmsl-runtime-365.md) are now present. The relevant assemblies are weak-named, so their reference-version differences alone do not require binding redirects. The new native image independently reconnects callback registration, worker delivery, listener invocation and payload ownership transfer. Getter size limits and unbounded startup/stop waits remain. Live Wi-Fi attribution and complete timing-event return are still open.
 

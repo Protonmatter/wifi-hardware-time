@@ -2,23 +2,34 @@
 
 This page tracks which research questions have useful answers and which clock capabilities still lack evidence. Scans can introduce extra counter reports, and software tests can reject unsafe assumptions. Safe hardware sampling, complete record retrieval and calibrated synchronization remain open, so downstream applications must keep those capabilities disabled or experimental.
 
-<!-- current-context:2026-10-06 -->
-**Current context (2026-10-06):** The installed QMSL 6.1.365.1 worker/listener and ownership trace is complete within its static scope. The [hardware route decision](../evidence/hardware-route-decision-2026-10-06.md) is **no-go for current live Qualcomm integration**: no supported/vendor/instrumented producer access or attributable timing endpoint has been demonstrated. The [PR component map](pr3-component-review-map-2026-10-06.md) pins current publication and review coverage. No live clock capability is enabled.
+<!-- current-context:2026-10-08 -->
+**Current context (2026-10-08):** The persistent diagnostic-TSF profile has a clean five-minute live smoke and conditional offline timing results. Complete original-event export, firmware-drain qualification, online admission and physical/shared-clock accuracy remain separate open gates. The older [hardware route decision](../evidence/hardware-route-decision-2026-10-06.md) remains relevant to complete-event producer access; it does not erase the later diagnostic-window result.
 <!-- /current-context -->
 
 **Key terms:** A gate is an explicit requirement before a capability may be enabled. Calibration compares results against an independently characterized reference. A model is a mathematical or software explanation, not a measurement by itself. See the [glossary](../glossary.md).
 
-Updated 2026-10-06, America/New_York. This ledger distinguishes an answered
+Updated 2026-10-08, America/New_York. This ledger distinguishes an answered
 research question from a passing acquisition profile or enabled clock capability.
 The private campaign remains quarantined.
 
-## Current implementation status
+## Persistent diagnostic-TSF status, 2026-10-08
+
+| Gate | Current disposition | Evidence / next dependency |
+|---|---|---|
+| Persistent sampler software | Implemented, independently reviewed and offline-tested | [Contract and acceptance map](../acquisition/persistent-tsf-sampler.md); the audited per-request probe is unchanged |
+| First live persistent smoke | Passed for normal completion on the exact build | [139 requests, 138 screened samples and clean lifecycle](../acquisition/persistent-tsf-smoke-2026-10-08.md); long-run/load and real failure paths remain open |
+| Conditional TSF/QPC results | Useful with explicit assumptions | [Mathematics](../clock-models/tsf-mathematics.md); 92.884% arrival-aware coverage and 297/297 settled event-grid points in the smoke |
+| Report-wait decoupling / online admission | Not implemented | Need supported report lifecycle/association and causal admission contracts before consumer ingestion |
+| Physical/AP/UTC/multi-node accuracy | Unqualified | Need independent reference and combined error budget; `physical_bound_proven` remains false |
+| Publication / merge | Separate from qualification | [Sequenced roadmap](persistent-tsf-next-steps.md); verify exact-head CI and dependency stack, then obtain the relevant user authorization |
+
+## Complete-event track snapshot, 2026-10-06
 
 | Slice / gate | Current disposition | Evidence / next dependency |
 |---|---|---|
 | S0 current handoff | Documentation stabilization and component software review complete; subsequent publication/merge tracked on PR #3 | [Final review](pr3-review-2026-10-06.md): four reproduced findings corrected and 344 configured tests passed. The [220-file map](pr3-component-review-map-2026-10-06.md) remains the published baseline inventory; local review is not a GitHub approval or hardware qualification |
 | S1 QMSL current-build trace | Completed static slice; do not repeat without changed evidence | [6.1.365.1 callback, worker, ownership and shutdown evidence](../adapters/qmsl-runtime-365.md); attributed live endpoint and bounded lifecycle remain open |
-| S2 route decision | **No-go for current installed Qualcomm live route** | [Gate-by-gate decision and reopening criteria](../evidence/hardware-route-decision-2026-10-06.md); primary Windows producer requires demonstrated supported/vendor/instrumented access |
+| S2 route decision | **No-go for the complete-original-event export route** | [Gate-by-gate decision and reopening criteria](../evidence/hardware-route-decision-2026-10-06.md); primary Windows producer requires demonstrated supported/vendor/instrumented access |
 | S3 downstream diagnostic replay | Implemented and reviewed locally; 15 focused tests pass | Five pinned source-record profiles, immutable observations, explicit digest/source selection and CLI; isolated standard-library-only smoke passed; hardware/conversion capabilities remain disabled |
 | S4 producer / S5 G1a first event / G1b lifecycle | Gated | Need actual route integration, then a reviewed finite acquisition and ownership/lifecycle results; fixed-byte return is not the required event |
 | S6 hardware/host relationship / S7 synchronization | Gated separately | Source semantics, fresh sampling and independent reference/controlled peers remain missing |

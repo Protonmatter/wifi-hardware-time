@@ -2,8 +2,8 @@
 
 This project asks whether Wi-Fi hardware can provide trustworthy timestamps for applications and synchronized clocks. We have recovered useful diagnostic data, but have not demonstrated calibrated synchronization. The research is organized by the question each experiment answers, with its scripts, evidence limits and diagrams linked together.
 
-<!-- current-context:2026-10-06 -->
-**Current context (2026-10-06):** The current Qualcomm complete-event route is no-go pending demonstrated producer access. Static QMSL tracing is complete; diagnostic replay and host API acceptance have local results in the downstream SDK. WPP supplies collection leads with explicit state effects. See [current findings](docs/knowledge/current-findings.md) and the [qualification ledger](docs/overview/gap-closure-ledger.md) for review, publication and hardware limits.
+<!-- current-context:2026-10-08 -->
+**Current context (2026-10-08):** Persistent action-4 sampling completed a five-minute idle live smoke with 139 successful requests and clean shutdown. Offline screening accepted 138 samples; corrected arrival-aware replay reports conditional integer-estimate uncertainty below 1 ms for 92.863% of its declared interval, and all 297 event-grid points settled below a 1-ms half-width after a median 2.341-second wait. These are conditional station-TSF/QPC results, not calibrated AP/UTC accuracy. Read the [review corrections and retained-data comparison](docs/overview/pr-reconciliation-2026-10-08.md), [original tested findings](docs/acquisition/persistent-tsf-smoke-2026-10-08.md), [mathematics](docs/clock-models/tsf-mathematics.md) and [next research and implementation gates](docs/overview/persistent-tsf-next-steps.md). The separate complete-original-event export route remains unqualified.
 <!-- /current-context -->
 
 ## Contents
@@ -17,6 +17,7 @@ This project asks whether Wi-Fi hardware can provide trustworthy timestamps for 
 ## Start here
 
 - Current interpretation: [latest findings](docs/knowledge/current-findings.md) and [assumptions corrected by evidence](docs/knowledge/assumptions-and-corrections.md).
+- Persistent sampler: [contract and tests](docs/acquisition/persistent-tsf-sampler.md), [live smoke results](docs/acquisition/persistent-tsf-smoke-2026-10-08.md), [math reference](docs/clock-models/tsf-mathematics.md), [roadmap](docs/overview/persistent-tsf-next-steps.md) and [seven Archify views](docs/overview/archify-tsf/README.md).
 - Next integration: [complete-event implementation plan](docs/overview/complete-event-2026-10-05/engineering-plan.md), including primary-source route research and the executed receive-lifetime audit.
 - Find a call or string: [reference index](docs/knowledge/reference-index.md) and [interface directory](docs/knowledge/interface-directory.md).
 - Repeat static research: [inspection runbook](docs/adapters/static-inspection-runbook.md), [script catalog](catalog/scripts.json) and [research skill](skills/qualcomm-timing-research/SKILL.md).
@@ -46,12 +47,13 @@ TSF is the Wi-Fi timing counter. FTM is a ranging procedure that measures round-
 ## What works and what remains open
 
 - **Observed:** exact-build Qualcomm driver reports expose TSF and another counter. Selected requests refresh or reuse that second counter.
+- **Live persistent smoke:** one owned session completed 139 pending-to-success requests, with no cancellation, trace loss or unfinished operation. Achieved request gaps were 2.005 seconds median and 4.009 seconds maximum with report wait retained. This is one idle smoke run, not a long-run/load qualification.
 - **Live transport control:** one [device-service GET](docs/evidence/device-service-positive-control.md) returned eight fixed test bytes through the installed driver. The firmware-timing producer remains unconnected.
 - **Observed with limits:** FTM ranging operations return aggregate results. These do not expose all absolute event times needed to estimate clock offset.
-- **Acquisition stopped:** a private campaign encountered unmatched reports and remains quarantined, meaning further admission is blocked. Three later scans reproduced extra report traffic but failed the original four-second completion profile.
+- **Historical strict campaign quarantined:** its unmatched-report disposition remains unchanged. The later bound-campaign profile separately records foreign reports for offline screening; it does not clear that quarantine or prove firmware drain. Three earlier scans failed the original four-second completion profile.
 - **Static findings only:** RX descriptor timestamp fields and in-memory diagnostic-log consumers are located. Static inspection reads source/binary files; it does not demonstrate a working live export.
 - **New static ownership evidence:** the installed QUTS client allocates diagnostic payload bytes into application storage. QXDM supplies WLAN schema leads and a byte-array API. Their connection to the exact Wi-Fi timing producer remains open.
-- **Not qualified:** fresh simultaneous sampling, hardware-to-host conversion, arbitrary RX/TX timestamps, calibrated accuracy and sub-millisecond synchronization.
+- **Not qualified:** fresh simultaneous sampling, calibrated hardware-to-host accuracy, arbitrary RX/TX timestamps, AP/UTC accuracy and multi-device sub-millisecond synchronization.
 - **Preparation only:** new reset, suspend and roaming cases. No new disruptive run is authorized by these documents.
 
 The inspected hardware includes Qualcomm FastConnect 7800 and ALFA AWUS036AXML / MediaTek MT7921AUN. Findings apply to their stated builds; a product name alone is not sufficient provenance.

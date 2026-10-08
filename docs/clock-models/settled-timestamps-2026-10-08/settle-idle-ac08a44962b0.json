@@ -1,0 +1,62 @@
+{
+  "settle": {
+    "schema": "wht/causal-provider-replay-v1",
+    "mode": "settle",
+    "run": "BoundCampaign-ac08a44962b0/idle",
+    "session": "WifiBound-e71bb37c9e9e",
+    "source": {
+      "commit": "ef8adf09e43003bcd8f8fe857d47a215b8b31543",
+      "research_tree_modified": false
+    },
+    "inputs": {
+      "raw-timing.jsonl": "c573e8b52dbf98524124e66c8ff0630f5cad09d01cb5706948f07debfe5f26d3",
+      "requests.jsonl": "9f1939a670669889ec2cfeee6bbbbc40ce3b1085840e1e4d03e3688cfab2ae4e",
+      "live-observer.jsonl": "9948f25dfc7e5fff2a5c51da3a2705a2bbd1036097142797e9c24d1d9f59456b",
+      "run-result.json": "f4b141aa0cf415afb2bb6b1a823a971179e04dad408c4ebaf817c5f25561ad84"
+    },
+    "screening_policy": "sample_screen.screen() over the complete recording",
+    "screen": {
+      "accepted": 1276,
+      "rejected": 1,
+      "rejected_with_reports": 1
+    },
+    "label": "two-phase settled timestamps conditioned on offline sample screening",
+    "availability_rule": "max of the reader-thread receipt of the delay record (the last record a sample needs) and the request completion QPC; later queueing and ingestion latency not included",
+    "settle": {
+      "events": 3598,
+      "step_s": 1.0,
+      "states": {
+        "settled": 3598
+      },
+      "wait_s": {
+        "median": 3.112,
+        "p90": 4.56,
+        "p99": 5.173,
+        "max": 8.029
+      },
+      "half_width_us": {
+        "median": 308.456,
+        "p90": 447.391,
+        "p99": 578.707,
+        "max": 894.669
+      },
+      "affine_half_width_us": {
+        "median": 126.632,
+        "p90": 153.956,
+        "p99": 193.813,
+        "max": 309.651
+      },
+      "sub_millisecond_share": 1.0,
+      "rate_prior_ppm": 200,
+      "conditions": [
+        "causal capture: each TSF was captured inside its window [lower_qpc, upper_qpc]",
+        "bounded rate: TSF advances within the rate prior of nominal at every instant, with no unmodelled phase steps",
+        "continuity: one continuous TSF within the epoch",
+        "station TSF equals access point TSF (802.11 synchronization; not checked here)",
+        "best estimate only: assumes one constant rate within the surrounding 60-second span"
+      ]
+    },
+    "worst_settled_half_width_any_instant_us": 894.669,
+    "worst_settled_half_width_any_instant_exact": "89466911/100000"
+  }
+}

@@ -15,6 +15,7 @@ Start with the question you need answered, then follow its evidence to the relev
 
 ## Choose a reading path
 
+- **Continue the persistent TSF work:** [live smoke findings](acquisition/persistent-tsf-smoke-2026-10-08.md) → [mathematics](clock-models/tsf-mathematics.md) → [next research/implementation/tests](overview/persistent-tsf-next-steps.md). Explore the [Archify diagram specifications](overview/archify-tsf/README.md).
 - **Understand the result:** [current gaps](overview/gap-closure-ledger.md) → [validation ledger](overview/validation.md).
 - **Understand the concepts:** [glossary](glossary.md) → [packet-to-clock map](clock-models/packet-to-clock-map.md).
 - **Reproduce a check:** topic findings → [script catalog](overview/validation-execution-catalog.md) → [operations](overview/OPERATIONS.md). Check whether the command is offline, read-only discovery or an active experiment.

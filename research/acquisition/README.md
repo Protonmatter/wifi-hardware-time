@@ -29,6 +29,8 @@ These tools collect and assess timing observations, enforce request limits and s
 
 ## Read before running
 
+- [Persistent TSF sampler v1](../../docs/acquisition/persistent-tsf-sampler.md): optional session reuse, offline validation and phase 2 limits.
+
 - [Findings and procedures](../../docs/acquisition/README.md).
 - [Operations and current admission state](../../docs/overview/OPERATIONS.md).
 - [Glossary](../../docs/glossary.md) and [migration guide](../../docs/overview/repository-layout.md).

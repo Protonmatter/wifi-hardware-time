@@ -1,0 +1,119 @@
+{
+  "schema_version": 1,
+  "diagram_type": "sequence",
+  "meta": {
+    "title": "Timestamp sequence: sampling, completion and availability",
+    "locale": "en",
+    "quality_profile": "showcase",
+    "output": "artifacts/archify-tsf/timestamps/timestamps.html",
+    "column_fit": "spread"
+  },
+  "participants": [
+    {
+      "id": "controller",
+      "type": "security",
+      "label": "Controller",
+      "sublabel": "scheduling"
+    },
+    {
+      "id": "worker",
+      "type": "backend",
+      "label": "Worker",
+      "sublabel": "I/O owner"
+    },
+    {
+      "id": "driver",
+      "type": "external",
+      "label": "Driver",
+      "sublabel": "Qualcomm"
+    },
+    {
+      "id": "observer",
+      "type": "messagebus",
+      "label": "Observer",
+      "sublabel": "reader thread"
+    },
+    {
+      "id": "replay",
+      "type": "backend",
+      "label": "Replay",
+      "sublabel": "offline"
+    }
+  ],
+  "messages": [
+    {
+      "id": "permit",
+      "from": "controller",
+      "to": "worker",
+      "y": 170,
+      "label": "fresh permit",
+      "variant": "security"
+    },
+    {
+      "id": "ioctl",
+      "from": "worker",
+      "to": "driver",
+      "y": 230,
+      "label": "L: submit action 4",
+      "variant": "emphasis"
+    },
+    {
+      "id": "complete",
+      "from": "driver",
+      "to": "worker",
+      "y": 290,
+      "label": "C: terminal I/O",
+      "variant": "return"
+    },
+    {
+      "id": "receipt",
+      "from": "worker",
+      "to": "controller",
+      "y": 350,
+      "label": "versioned receipt",
+      "variant": "return"
+    },
+    {
+      "id": "trace",
+      "from": "driver",
+      "to": "observer",
+      "y": 410,
+      "label": "U: report timestamp",
+      "variant": "dashed"
+    },
+    {
+      "id": "delivered",
+      "from": "observer",
+      "to": "controller",
+      "y": 470,
+      "label": "D: last record received",
+      "variant": "dashed"
+    },
+    {
+      "id": "offline",
+      "from": "controller",
+      "to": "replay",
+      "y": 550,
+      "label": "persist; offline screen",
+      "variant": "default"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Availability rule",
+      "items": [
+        "A = max(D, C, U + one QPC tick). D is receipt of the delay record completing the group.",
+        "This is the existing replay boundary; later queueing, IPC and ingestion latency are not added."
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "Ordering is illustrative",
+      "items": [
+        "The drawing separates events and is not a measured timeline.",
+        "Terminal I/O and diagnostic report delivery may occur in another order. The controller retains its report wait."
+      ]
+    }
+  ]
+}

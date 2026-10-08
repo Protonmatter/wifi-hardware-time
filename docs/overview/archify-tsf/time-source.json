@@ -1,0 +1,214 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Time sources: TSF observation and QPC relationship",
+    "locale": "en",
+    "quality_profile": "showcase",
+    "output": "artifacts/archify-tsf/time-source/time-source.html"
+  },
+  "components": [
+    {
+      "id": "ap",
+      "label": "Access-point TSF",
+      "sublabel": "802.11 timing reference",
+      "type": "external",
+      "pos": [
+        40,
+        60
+      ],
+      "size": [
+        190,
+        72
+      ]
+    },
+    {
+      "id": "station",
+      "label": "Station TSF counter",
+      "sublabel": "associated Wi-Fi station",
+      "type": "external",
+      "pos": [
+        400,
+        60
+      ],
+      "size": [
+        190,
+        72
+      ]
+    },
+    {
+      "id": "capture",
+      "label": "Action-4 capture",
+      "sublabel": "firmware timing report",
+      "type": "backend",
+      "pos": [
+        760,
+        60
+      ],
+      "size": [
+        190,
+        72
+      ]
+    },
+    {
+      "id": "report",
+      "label": "Driver trace stamp U",
+      "sublabel": "original report QPC",
+      "type": "messagebus",
+      "pos": [
+        760,
+        290
+      ],
+      "size": [
+        190,
+        72
+      ]
+    },
+    {
+      "id": "window",
+      "label": "Conditional sample",
+      "sublabel": "TSF T within [L, U]",
+      "type": "security",
+      "pos": [
+        400,
+        290
+      ],
+      "size": [
+        190,
+        72
+      ]
+    },
+    {
+      "id": "qpc",
+      "label": "Windows QPC",
+      "sublabel": "monotonic host counter",
+      "type": "external",
+      "pos": [
+        40,
+        290
+      ],
+      "size": [
+        190,
+        72
+      ]
+    },
+    {
+      "id": "submit",
+      "label": "Submission stamp L",
+      "sublabel": "QPC before actual IOCTL",
+      "type": "backend",
+      "pos": [
+        40,
+        510
+      ],
+      "size": [
+        190,
+        72
+      ]
+    },
+    {
+      "id": "bound",
+      "label": "TSF at event QPC",
+      "sublabel": "bounded-rate interval",
+      "type": "backend",
+      "pos": [
+        400,
+        510
+      ],
+      "size": [
+        190,
+        72
+      ]
+    },
+    {
+      "id": "limits",
+      "label": "Qualification limits",
+      "sublabel": "AP equality not measured",
+      "type": "security",
+      "pos": [
+        760,
+        510
+      ],
+      "size": [
+        190,
+        72
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "ap-station",
+      "from": "ap",
+      "to": "station",
+      "variant": "dashed",
+      "label": "assumed sync"
+    },
+    {
+      "id": "station-capture",
+      "from": "station",
+      "to": "capture",
+      "variant": "default",
+      "label": "read counter"
+    },
+    {
+      "id": "capture-report",
+      "from": "capture",
+      "to": "report",
+      "variant": "dashed",
+      "label": "diagnostic"
+    },
+    {
+      "id": "report-window",
+      "from": "report",
+      "to": "window",
+      "variant": "default",
+      "label": "upper bound"
+    },
+    {
+      "id": "qpc-submit",
+      "from": "qpc",
+      "to": "submit",
+      "variant": "default",
+      "label": "read QPC"
+    },
+    {
+      "id": "submit-window",
+      "from": "submit",
+      "to": "window",
+      "variant": "default",
+      "label": "lower bound"
+    },
+    {
+      "id": "window-bound",
+      "from": "window",
+      "to": "bound",
+      "variant": "default",
+      "label": "rate prior"
+    },
+    {
+      "id": "bound-limits",
+      "from": "bound",
+      "to": "limits",
+      "variant": "default",
+      "label": "conditional"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "What the clock means",
+      "items": [
+        "The result estimates the station TSF at an application event QPC.",
+        "QPC frequency converts host ticks; TSF values are interpreted in microseconds."
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "Keep the events separate",
+      "items": [
+        "I/O completion is not a firmware sampling fence. Report delivery is not the original report timestamp.",
+        "Capture-inside-window, rate and continuity are assumptions. No UTC or measured station-to-AP accuracy is established."
+      ]
+    }
+  ]
+}

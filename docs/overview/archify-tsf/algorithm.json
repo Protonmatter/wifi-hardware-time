@@ -1,0 +1,225 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "Clock algorithm: preserve event, bound now, settle later",
+    "locale": "en",
+    "quality_profile": "showcase",
+    "output": "artifacts/archify-tsf/algorithm/algorithm.html"
+  },
+  "lanes": [
+    {
+      "id": "input",
+      "label": "Recorded evidence and offline screening"
+    },
+    {
+      "id": "causal",
+      "label": "Causal bounded-rate model"
+    },
+    {
+      "id": "settle",
+      "label": "Two-phase event result"
+    },
+    {
+      "id": "reject",
+      "label": "Fail closed",
+      "variant": "exception"
+    }
+  ],
+  "mainPath": [
+    "receipts",
+    "associate",
+    "fresh",
+    "available",
+    "check",
+    "update",
+    "query"
+  ],
+  "nodes": [
+    {
+      "id": "receipts",
+      "lane": "input",
+      "col": 0,
+      "type": "security",
+      "label": "Normalize receipts",
+      "sublabel": "verify session lifecycle",
+      "width": 154
+    },
+    {
+      "id": "associate",
+      "lane": "input",
+      "col": 1,
+      "type": "backend",
+      "label": "Associate report",
+      "sublabel": "one action-4 command",
+      "width": 154
+    },
+    {
+      "id": "fresh",
+      "lane": "input",
+      "col": 2,
+      "type": "backend",
+      "label": "Screen sample",
+      "sublabel": "window + freshness",
+      "width": 154
+    },
+    {
+      "id": "available",
+      "lane": "input",
+      "col": 3,
+      "type": "backend",
+      "label": "Availability A",
+      "sublabel": "last record + completion",
+      "width": 154
+    },
+    {
+      "id": "check",
+      "lane": "causal",
+      "col": 3,
+      "type": "security",
+      "label": "Frozen-model check",
+      "sublabel": "before adding sample",
+      "width": 154
+    },
+    {
+      "id": "update",
+      "lane": "causal",
+      "col": 4,
+      "type": "backend",
+      "label": "Intersect envelopes",
+      "sublabel": "exact Fraction bounds",
+      "width": 154
+    },
+    {
+      "id": "query",
+      "lane": "causal",
+      "col": 5,
+      "type": "backend",
+      "label": "Provisional interval",
+      "sublabel": "tracking or stale",
+      "width": 154
+    },
+    {
+      "id": "event",
+      "lane": "settle",
+      "col": 3,
+      "type": "backend",
+      "label": "Keep raw event Q",
+      "sublabel": "immutable original QPC",
+      "width": 154
+    },
+    {
+      "id": "bracket",
+      "lane": "settle",
+      "col": 4,
+      "type": "backend",
+      "label": "Wait for later sample",
+      "sublabel": "must be available",
+      "width": 154
+    },
+    {
+      "id": "settled",
+      "lane": "settle",
+      "col": 5,
+      "type": "backend",
+      "label": "Derived settled result",
+      "sublabel": "pairwise rate bound",
+      "width": 154
+    },
+    {
+      "id": "invalid",
+      "lane": "reject",
+      "col": 3,
+      "type": "security",
+      "label": "Invalid / rejected",
+      "sublabel": "latch model conflict",
+      "width": 154
+    }
+  ],
+  "edges": [
+    {
+      "id": "receipts-associate",
+      "from": "receipts",
+      "to": "associate",
+      "variant": "default"
+    },
+    {
+      "id": "associate-fresh",
+      "from": "associate",
+      "to": "fresh",
+      "variant": "default"
+    },
+    {
+      "id": "fresh-available",
+      "from": "fresh",
+      "to": "available",
+      "variant": "default"
+    },
+    {
+      "id": "available-check",
+      "from": "available",
+      "to": "check",
+      "variant": "default"
+    },
+    {
+      "id": "check-update",
+      "from": "check",
+      "to": "update",
+      "variant": "default",
+      "label": "compatible"
+    },
+    {
+      "id": "update-query",
+      "from": "update",
+      "to": "query",
+      "variant": "default"
+    },
+    {
+      "id": "check-invalid",
+      "from": "check",
+      "to": "invalid",
+      "variant": "security",
+      "label": "conflict"
+    },
+    {
+      "id": "event-bracket",
+      "from": "event",
+      "to": "bracket",
+      "variant": "default"
+    },
+    {
+      "id": "bracket-settled",
+      "from": "bracket",
+      "to": "settled",
+      "variant": "default",
+      "label": "available"
+    },
+    {
+      "id": "update-bracket",
+      "from": "update",
+      "to": "bracket",
+      "variant": "dashed",
+      "label": "samples"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Causal model",
+      "items": [
+        "Nominal TSF rate is 1,000,000 / QPC_Hz microseconds per tick; prior is +/-200 ppm.",
+        "low(Q) = max(T - a*(U+1)) + a*Q; high(Q) = min(T+1 - b*L) + b*Q.",
+        "Acquiring before a usable sample; stale when half-width reaches 1,000 us; conflicts latch invalid."
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "Settlement and scope",
+      "items": [
+        "A later available sample brackets the preserved event with an earlier sample.",
+        "Intersect the two rate envelopes. Optional affine estimate assumes constant rate across 60 seconds.",
+        "These are conditional offline replay results; numerical ingest is not online acquisition admission."
+      ]
+    }
+  ]
+}

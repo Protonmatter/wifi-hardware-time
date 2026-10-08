@@ -1,0 +1,75 @@
+{
+  "schema": "wht/tsf-host-bound-run-v1",
+  "diagnostic_only": true,
+  "note": "Stopped run; trace header reports lost events, so the standard loader rejects it. Not evidence for the verdict.",
+  "trace_header": {
+    "kind": "header",
+    "clock_type": 1,
+    "perf_frequency_hz": 10000000,
+    "events_lost": 425,
+    "buffers_lost": 0
+  },
+  "run_completed": false,
+  "screen": {
+    "request_count": 914,
+    "accepted_count": 911,
+    "rejected_count": 3,
+    "rejected_by_reason": {
+      "late_report": 3
+    },
+    "foreign_groups": 6,
+    "foreign_commands": 0,
+    "own_losses": 3,
+    "duration_s": 2618.286,
+    "expected_misattributed_exact": "120000/8727620789"
+  },
+  "analysis": {
+    "sample_count": 911,
+    "span_count": 261,
+    "infeasible_spans": [],
+    "coverage": 1.0,
+    "coverage_exact": "1",
+    "proven_half_width_us": {
+      "median": 134.965,
+      "p95": 154.285,
+      "max": 175.098,
+      "max_exact": "3826871453021919887/21855539540938238"
+    },
+    "window_width_us": {
+      "min": 207.5,
+      "median": 262.8,
+      "max": 957.6
+    },
+    "request_spacing_s": {
+      "median": 3.005,
+      "max": 7.042
+    },
+    "soc_domain": {
+      "sample_count": 911,
+      "ticks_per_unit": 10,
+      "fixed_rate_feasible": false,
+      "fixed_rate_gap_qpc_ticks": 1003581,
+      "rate_interval": {
+        "lower": {
+          "numerator": "22518793609",
+          "denominator": "2251792831"
+        },
+        "upper": {
+          "numerator": "8573711016",
+          "denominator": "857338009"
+        }
+      },
+      "rate_interval_contains_nominal": false,
+      "compatible_with_qpc_domain": false,
+      "shared_oscillator_proven": false
+    },
+    "beacon_check": {
+      "checked": 229,
+      "unchecked": 1,
+      "violations": 0,
+      "tolerance_us": 1000,
+      "worst_excess_us": "-919852391138/168110673",
+      "scope": "coarse: AP timestamp must not exceed predicted station TSF; cache age unknown"
+    }
+  }
+}
