@@ -45,6 +45,8 @@ do not supply it.
 
 ## Established findings
 
+**2026-10-08 TSF-to-host bound:** the [live bound campaign](../acquisition/tsf-host-bound-results.md) passed every predeclared criterion. Over one hour idle and one hour under CPU and network load, the station TSF was bounded at any QPC instant to a worst case of 352 us and 191 us respectively, with medians of about 135 to 140 us. Attribution used the driver's command record, and freshness, trace completeness and a coarse beacon check were screened for every sample. The link from station TSF to access point TSF remains an assumption on this equipment, and no clock provider is enabled.
+
 **2026-10-06 installation follow-up:** [QMSL 6.1.365.1 and QSPR 6.0 interfaces](../adapters/qmsl-runtime-365.md) are now present. The relevant assemblies are weak-named, so their reference-version differences alone do not require binding redirects. The new native image independently reconnects callback registration, worker delivery, listener invocation and payload ownership transfer. Getter size limits and unbounded startup/stop waits remain. Live Wi-Fi attribution and complete timing-event return are still open.
 
 Baseline snapshot: 2026-10-04, with an action-4 offline follow-up on 2026-10-05.
