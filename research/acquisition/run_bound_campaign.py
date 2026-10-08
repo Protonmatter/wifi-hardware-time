@@ -14,8 +14,10 @@ if __package__ in (None, ""):
     sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 import argparse
 import ctypes as ct
+import datetime
 import hashlib
 import json
+import os
 import subprocess
 import threading
 import time
@@ -81,6 +83,14 @@ WAIT_OBJECT_0, WAIT_ABANDONED, WAIT_TIMEOUT = 0x0, 0x80, 0x102
 class CampaignBusy(RuntimeError):
     """Another controller holds, or a crashed controller abandoned, this adapter's campaign lock."""
 
+    def __init__(self, message: str, abandoned: bool = False):
+        super().__init__(message)
+        self.abandoned = abandoned
+
+
+class CampaignQuarantined(CampaignBusy):
+    """A quarantine marker or an unfinished in-progress record blocks admission until reconciled."""
+
 
 class CampaignLock:
     """Adapter-scoped named mutex held for a whole run, through cleanup and result persistence."""
@@ -112,7 +122,8 @@ class CampaignLock:
         if status == WAIT_ABANDONED:
             k.ReleaseMutex(handle)
             k.CloseHandle(handle)
-            raise CampaignBusy('A previous bound campaign ended without releasing its adapter lock; review it before rerunning')
+            raise CampaignBusy('A previous bound campaign ended without releasing its adapter lock; review it before rerunning',
+                               abandoned=True)
         k.CloseHandle(handle)
         if status == WAIT_TIMEOUT:
             raise CampaignBusy('Another bound campaign is running on this adapter')
@@ -137,6 +148,49 @@ class CampaignLock:
     def __exit__(self, *exc) -> bool:
         self.release()
         return False
+
+
+def in_progress_path(state_dir: Path, adapter_guid: str) -> Path:
+    return state_dir / f"bound-campaign-in-progress-{adapter_guid.strip('{}').lower()}.json"
+
+
+def admit(adapter_guid: str, marker: Path, state_dir: Path, namespace: str = 'Global') -> CampaignLock:
+    """Take the adapter lock, refuse on any persistent stop, then write a durable in-progress record.
+
+    A named mutex disappears when its last holder dies, so it cannot by itself remember a crash.
+    The in-progress record does: it is removed only by complete() after a successful, persisted run.
+    """
+    lock = CampaignLock(adapter_guid, namespace)
+    try:
+        lock.acquire()
+    except CampaignBusy as busy:
+        if busy.abandoned:
+            _save(marker, dict(created_utc=_utc(), run=None, reason=str(busy)))
+        raise
+    try:
+        record = in_progress_path(state_dir, adapter_guid)
+        if marker.exists():
+            raise CampaignQuarantined(f'Quarantine marker present: {marker}; review it before any new run')
+        if record.exists():
+            raise CampaignQuarantined(f'A previous run on this adapter did not finish ({record}); reconcile it before rerunning')
+        state_dir.mkdir(parents=True, exist_ok=True)
+        _save(record, dict(adapter_guid=adapter_guid, pid=os.getpid(), started_utc=_utc()))
+        return lock
+    except BaseException:
+        lock.release()
+        raise
+
+
+def complete(lock: CampaignLock, record: Path) -> None:
+    """Clear the in-progress record after verified cleanup and persistence, then release the lock."""
+    try:
+        record.unlink(missing_ok=True)
+    finally:
+        lock.release()
+
+
+def _utc() -> str:
+    return datetime.datetime.now(datetime.timezone.utc).isoformat()
 
 
 def finalize(decoder: Path, etl: Path, output: Path, live_timing: list[dict], run_fn) -> str | None:
@@ -304,22 +358,25 @@ def campaign(args: argparse.Namespace) -> int:
     if not ct.windll.shell32.IsUserAnAdmin():
         print('Administrator rights required for --execute.', file=sys.stderr)
         return 1
+    record = in_progress_path(ROOT / 'artifacts', baseline['InterfaceGuid'])
     try:
-        lock = CampaignLock(baseline['InterfaceGuid']).acquire()
+        lock = admit(baseline['InterfaceGuid'], marker, ROOT / 'artifacts')
     except CampaignBusy as busy:
         print(f'{busy}.', file=sys.stderr)
         return 1
+    succeeded = False
     try:
-        # Re-check under the lock so no other controller can write or clear it meanwhile.
-        if marker.exists():
-            print(f'Quarantine marker present: {marker}. Review it before any new run.', file=sys.stderr)
-            return 1
-        return _execute(args, clock, baseline, plan, marker)
+        code = _execute(args, clock, baseline, plan, marker)
+        succeeded = code == 0
+        return code
     except BaseException as error:
         _save(marker, dict(created_utc=utc(), run=None, reason=f'Controller error: {type(error).__name__}: {error}'))
         raise
     finally:
-        lock.release()
+        if succeeded:
+            complete(lock, record)  # Only a successful, persisted run clears the in-progress record.
+        else:
+            lock.release()  # The marker and the in-progress record remain until reviewed.
 
 
 def _execute(args: argparse.Namespace, clock, baseline: dict, plan: dict, marker: Path) -> int:
@@ -423,6 +480,8 @@ def _execute(args: argparse.Namespace, clock, baseline: dict, plan: dict, marker
     persist_outcome(folder, marker, dict(condition=args.condition, duration_s=args.duration_s,
                                          request_count=len(receipts), own_losses_live=losses,
                                          beacon_reads=beacon_count, beacon_skips=beacon_skips,
+                                         collection_start_qpc=receipts[0]['qpc_request_before'] if receipts else None,
+                                         collection_end_qpc=receipts[-1]['qpc_request_before'] if receipts else None,
                                          qpc_frequency_hz=clock.frequency, firmware_sampling_validated=False),
                     failure, utc)
     if failure:

@@ -9,7 +9,8 @@ import unittest
 import json
 import threading
 from research.acquisition.run_bound_campaign import (DOWNLOAD_URLS, TRACE_BUFFER_OPTIONS, BoundGate, CampaignBusy,
-                                                     CampaignLock, download_stalled, finalize, loss_budget_exceeded,
+                                                     CampaignLock, CampaignQuarantined, admit, complete,
+                                                     download_stalled, finalize, in_progress_path, loss_budget_exceeded,
                                                      parse, persist_outcome, remaining_sleep)
 
 HEADER = dict(kind='header', clock_type=1, perf_frequency_hz=10_000_000, events_lost=0, buffers_lost=0)
@@ -120,15 +121,48 @@ class BoundCampaignTests(unittest.TestCase):
         self.assertEqual(outcome, dict(while_held='busy', after_release='acquired'))
 
     @unittest.skipUnless(sys.platform == 'win32', 'Named mutexes are Windows-only')
-    def test_abandoned_lock_refuses_to_run(self):
+    @unittest.skipUnless(sys.platform == 'win32', 'Named mutexes are Windows-only')
+    def test_abandoned_lock_stays_quarantined_on_every_later_attempt(self):
         guid = '{89ABCDEF-0123-4567-89AB-CDEF01234567}'
-        lock = CampaignLock(guid, namespace='Local')
-        thread = threading.Thread(target=lock.acquire)  # The owning thread exits without releasing.
-        thread.start(); thread.join()
-        with self.assertRaises(CampaignBusy):
-            with CampaignLock(guid, namespace='Local'):
-                pass
-        lock.close_handle()
+        with tempfile.TemporaryDirectory() as d:
+            marker, state = Path(d) / 'marker.json', Path(d)
+            holder = CampaignLock(guid, namespace='Local')
+            thread = threading.Thread(target=holder.acquire)  # The owning thread exits without releasing.
+            thread.start(); thread.join()
+            for attempt in (1, 2):
+                with self.subTest(attempt=attempt), self.assertRaises(CampaignBusy):
+                    admit(guid, marker, state, namespace='Local')
+            self.assertTrue(marker.exists())
+            holder.close_handle()
+
+    @unittest.skipUnless(sys.platform == 'win32', 'Named mutexes are Windows-only')
+    def test_killed_controller_blocks_admission_until_reconciled(self):
+        guid = '{13572468-0123-4567-89AB-CDEF01234567}'
+        with tempfile.TemporaryDirectory() as d:
+            marker, state = Path(d) / 'marker.json', Path(d)
+            child = ('import os, sys; from pathlib import Path; sys.path.insert(0, sys.argv[1]); '
+                     'from research.acquisition.run_bound_campaign import admit; '
+                     'admit(sys.argv[2], Path(sys.argv[3]), Path(sys.argv[4]), namespace="Local"); os._exit(3)')
+            result = subprocess.run([sys.executable, '-c', child, str(ROOT), guid, str(marker), str(state)], timeout=60)
+            self.assertEqual(result.returncode, 3)  # Exited while holding the lock, without cleanup.
+            for attempt in (1, 2):
+                with self.subTest(attempt=attempt), self.assertRaises(CampaignQuarantined):
+                    admit(guid, marker, state, namespace='Local')
+            in_progress_path(state, guid).unlink()  # Explicit reconciliation.
+            lock = admit(guid, marker, state, namespace='Local')
+            complete(lock, in_progress_path(state, guid))
+            self.assertFalse(in_progress_path(state, guid).exists())
+
+    @unittest.skipUnless(sys.platform == 'win32', 'Named mutexes are Windows-only')
+    def test_marker_blocks_admission_and_releases_the_lock(self):
+        guid = '{24681357-0123-4567-89AB-CDEF01234567}'
+        with tempfile.TemporaryDirectory() as d:
+            marker, state = Path(d) / 'marker.json', Path(d)
+            marker.write_text('{}', encoding='utf-8')
+            with self.assertRaises(CampaignQuarantined):
+                admit(guid, marker, state, namespace='Local')
+            marker.unlink()
+            complete(admit(guid, marker, state, namespace='Local'), in_progress_path(state, guid))
 
     def test_argument_limits(self):
         base = ['--if-index', '5', '--condition', 'idle']
