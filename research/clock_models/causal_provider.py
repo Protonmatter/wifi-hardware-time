@@ -13,6 +13,7 @@ import math
 from research.clock_models.rate_bound import rate_limits
 
 THRESHOLD_US = 1_000
+ROUNDING_ALLOWANCE_US = Fraction(1, 2)
 CONDITIONS = (
     'causal capture: each TSF was captured inside its window [lower_qpc, upper_qpc]',
     'bounded rate: TSF advances within the rate prior of nominal at every instant, with no unmodelled phase steps',
@@ -133,10 +134,10 @@ class CausalProvider:
         return result
 
     def stale_from_qpc(self) -> Fraction | None:
-        """First QPC at which the half-width reaches the threshold, given no further samples."""
+        """First QPC at which the returned conservative uncertainty reaches the threshold."""
         if self.count == 0 or self.invalid_reason is not None:
             return None
-        return (2 * self.threshold_us - self.c_high + self.c_low) / (self.b - self.a)
+        return (2 * (self.threshold_us - ROUNDING_ALLOWANCE_US) - self.c_high + self.c_low) / (self.b - self.a)
 
     def estimate(self, query_qpc: int) -> Estimate:
         if type(query_qpc) is not int:
@@ -153,8 +154,11 @@ class CausalProvider:
         high = self.c_high + self.b * query_qpc
         midpoint, half_width = (low + high) / 2, (high - low) / 2
         rounded = math.floor(midpoint + Fraction(1, 2))
-        uncertainty = max(rounded - low, high - rounded)
-        state = 'tracking' if half_width < self.threshold_us else 'stale'
+        # A uniform allowance covers nearest-integer rounding and keeps expiry
+        # monotone between updates. The tight radius oscillates with midpoint
+        # phase and can otherwise alternate tracking/stale near the threshold.
+        uncertainty = half_width + ROUNDING_ALLOWANCE_US
+        state = 'tracking' if uncertainty < self.threshold_us else 'stale'
         reason = 'uncertainty below threshold' if state == 'tracking' else 'uncertainty at or above threshold'
         return Estimate(query_qpc, state, self.epoch, low, high, midpoint, half_width, rounded, uncertainty,
                         self.last_available, reason)

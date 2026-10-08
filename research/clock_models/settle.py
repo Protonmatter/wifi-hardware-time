@@ -44,11 +44,15 @@ def settle(event_qpc: int, samples: list[AvailableSample], now_qpc: int, qpc_hz:
         raise ValueError('Event and settle times must be integer QPC values')
     if any(b.lower_qpc <= a.upper_qpc for a, b in zip(samples, samples[1:])):
         raise ValueError('Samples must be in capture order with non-overlapping windows')
-    earlier = next((s for s in reversed(samples) if s.lower_qpc <= event_qpc), None)
-    later = next((s for s in samples if s.lower_qpc > event_qpc), None)
-    if earlier is None:
+    # The quantized window includes its extra QPC tick; a window straddling
+    # the event cannot prove either side of the bracket.
+    available = [s for s in samples if s.available_qpc <= now_qpc]
+    before = [s for s in available if s.upper_qpc + 1 <= event_qpc]
+    if not before:
         return Settled(event_qpc, 'unbracketed')
-    if later is None or later.available_qpc > now_qpc or earlier.available_qpc > now_qpc:
+    earlier = before[-1]
+    later = next((s for s in available if s.lower_qpc > event_qpc), None)
+    if later is None:
         return Settled(event_qpc, 'pending', earlier_sequence=earlier.sequence)
     limits = rate_limits(qpc_hz, rate_prior_ppm)
     lo1, hi1 = envelope(earlier.tsf_us, earlier.lower_qpc, earlier.upper_qpc, event_qpc, limits)
@@ -56,9 +60,10 @@ def settle(event_qpc: int, samples: list[AvailableSample], now_qpc: int, qpc_hz:
     low, high = max(lo1, lo2), min(hi1, hi2)
     if low > high:
         return Settled(event_qpc, 'inconsistent', earlier_sequence=earlier.sequence, later_sequence=later.sequence)
-    estimate = _affine(event_qpc, samples, now_qpc, qpc_hz, rate_prior_ppm) if affine else (None, None, None)
+    settled_at = max(later.available_qpc, earlier.available_qpc)
+    estimate = _affine(event_qpc, samples, settled_at, qpc_hz, rate_prior_ppm) if affine else (None, None, None)
     return Settled(event_qpc, 'settled', low, high, (low + high) / 2, (high - low) / 2, *estimate,
-                   settled_at_qpc=max(later.available_qpc, earlier.available_qpc),
+                   settled_at_qpc=settled_at,
                    earlier_sequence=earlier.sequence, later_sequence=later.sequence,
                    conditions=CONDITIONS + (AFFINE_CONDITION,))
 
@@ -87,13 +92,18 @@ def _quantiles(values: list, shares=(Fraction(1, 2), Fraction(9, 10), Fraction(9
 def settle_replay(samples: list[AvailableSample], qpc_hz: int, step_qpc: int, affine: bool = True,
                   rate_prior_ppm: int = 200) -> dict:
     """Settle events on a regular grid between the first and last capture, each at its earliest settle time."""
+    if type(step_qpc) is not int or step_qpc <= 0:
+        raise ValueError('Replay step must be a positive integer')
     if not samples:
         raise ValueError('Need samples')
     states, waits, widths, affine_widths = Counter(), [], [], []
     event = samples[0].upper_qpc + 1
     while event < samples[-1].lower_qpc:
-        later = next(s for s in samples if s.lower_qpc > event)
-        now = later.available_qpc
+        # Capture order need not be arrival order. The first complete bracket
+        # exists once any true-before and any true-after sample are available.
+        earlier_at = min(s.available_qpc for s in samples if s.upper_qpc + 1 <= event)
+        later_at = min(s.available_qpc for s in samples if s.lower_qpc > event)
+        now = max(earlier_at, later_at)
         result = settle(event, samples, now, qpc_hz, rate_prior_ppm, affine)
         states[result.state] += 1
         if result.state == 'settled':
@@ -107,5 +117,7 @@ def settle_replay(samples: list[AvailableSample], qpc_hz: int, step_qpc: int, af
                 wait_s=_quantiles(waits) if waits else None,
                 half_width_us=_quantiles(widths) if widths else None,
                 affine_half_width_us=_quantiles(affine_widths) if affine_widths else None,
+                affine_estimate_count=len(affine_widths),
+                affine_estimate_share=round(len(affine_widths) / count, 6) if count else None,
                 sub_millisecond_share=round(sum(1 for w in widths if w < 1_000) / count, 6) if count else None,
                 rate_prior_ppm=rate_prior_ppm, conditions=list(CONDITIONS) + [AFFINE_CONDITION])

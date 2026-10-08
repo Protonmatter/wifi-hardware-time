@@ -49,9 +49,9 @@ class CausalProviderTests(unittest.TestCase):
         boundary = provider.stale_from_qpc()
         before, after = math.ceil(boundary) - 1, math.ceil(boundary)
         self.assertEqual(provider.estimate(before).state, 'tracking')
-        self.assertLess(provider.estimate(before).half_width_us, 1_000)
+        self.assertLess(provider.estimate(before).uncertainty_us, 1_000)
         self.assertEqual(provider.estimate(after).state, 'stale')
-        self.assertGreaterEqual(provider.estimate(after).half_width_us, 1_000)
+        self.assertGreaterEqual(provider.estimate(after).uncertainty_us, 1_000)
         provider.ingest(sample(2, after + 10))
         self.assertEqual(provider.estimate(after + 10 + 4_001).state, 'tracking')
 
@@ -106,6 +106,25 @@ class CausalProviderTests(unittest.TestCase):
         self.assertLessEqual(estimate.estimate_us - estimate.uncertainty_us, estimate.low_us)
         self.assertGreaterEqual(estimate.estimate_us + estimate.uncertainty_us, estimate.high_us)
         self.assertIn('causal capture', ' '.join(estimate.conditions))
+
+    def test_rounding_expanded_uncertainty_controls_tracking_and_expiry(self):
+        provider = CausalProvider(HZ)
+        provider.ingest(sample(1, 1_000_000))
+        # Query the final tick before half-width expiry. The old state
+        # remained tracking even when rounding made the usable radius >= 1 ms.
+        half_width_expiry = (2_000 - provider.c_high + provider.c_low) / (provider.b - provider.a)
+        query = math.ceil(half_width_expiry) - 1
+        estimate = provider.estimate(query)
+        self.assertLess(estimate.half_width_us, 1_000)
+        self.assertGreaterEqual(estimate.uncertainty_us, 1_000)
+        self.assertEqual(estimate.state, 'stale')
+        self.assertEqual(estimate.uncertainty_us, estimate.half_width_us + Fraction(1, 2))
+        expiry = provider.stale_from_qpc()
+        self.assertEqual((provider.c_high - provider.c_low + (provider.b - provider.a) * expiry) / 2
+                         + Fraction(1, 2), 1_000)
+        for qpc in (math.ceil(expiry) - 1, math.ceil(expiry), math.ceil(half_width_expiry)):
+            current = provider.estimate(qpc)
+            self.assertEqual(current.state == 'tracking', current.uncertainty_us < 1_000)
 
     def test_check_does_not_ingest(self):
         provider = CausalProvider(HZ)

@@ -20,7 +20,7 @@ import json
 import subprocess
 
 from research.clock_models.analyze_bound_run import _lines, load_run
-from research.clock_models.causal_provider import CONDITIONS, AvailableSample, CausalProvider
+from research.clock_models.causal_provider import CONDITIONS, ROUNDING_ALLOWANCE_US, AvailableSample, CausalProvider
 from research.clock_models.rate_bound import retrospective_max_half_width
 from research.clock_models.sample_screen import LISTEN_TIMEOUT_S, screen
 from research.clock_models.settle import settle_replay
@@ -64,6 +64,7 @@ def replay(events: list, qpc_hz: int, start: int, end: int, review_interval: tup
     segments, t = [], start
     incompatible, rejected_checked, ingested = [], [], 0
     worst_before_next = None
+    worst_uncertainty_before_next = None
 
     def advance(to: int) -> None:
         nonlocal t
@@ -81,8 +82,12 @@ def replay(events: list, qpc_hz: int, start: int, end: int, review_interval: tup
         advance(item.available_qpc)
         if kind == 'accepted':
             if provider.count and provider.invalid_reason is None:
-                width = provider.estimate(item.available_qpc).half_width_us
+                estimate = provider.estimate(item.available_qpc)
+                width = estimate.half_width_us
                 worst_before_next = width if worst_before_next is None else max(worst_before_next, width)
+                uncertainty = estimate.uncertainty_us
+                worst_uncertainty_before_next = (uncertainty if worst_uncertainty_before_next is None else
+                                                 max(worst_uncertainty_before_next, uncertainty))
             result = provider.ingest(item)
             if result.compatible:
                 ingested += 1
@@ -111,16 +116,30 @@ def replay(events: list, qpc_hz: int, start: int, end: int, review_interval: tup
         return totals
 
     declared = durations(start, end)
-    stale_runs = [min(s1, end) - max(s0, stale) for s0, s1, kind, stale in segments
-                  if kind == 'model' and stale < s1]
+    stale_intervals = []
+    for s0, s1, kind, stale in segments:
+        if kind != 'model' or stale >= s1:
+            continue
+        lo, hi = max(s0, stale), s1
+        if stale_intervals and stale_intervals[-1][1] == lo:
+            stale_intervals[-1] = (stale_intervals[-1][0], hi)
+        else:
+            stale_intervals.append((lo, hi))
+    stale_runs = [hi - lo for lo, hi in stale_intervals]
     out = dict(label=SCREENING_LABEL, rate_prior_ppm=rate_prior_ppm, threshold_us=threshold_us,
                quantization='window widened by 1 QPC tick; TSF value widened by 1 us',
+               uncertainty_rule='exact interval half-width plus conservative 1/2 us for integer-estimate rounding',
+               rounding_allowance_us=str(ROUNDING_ALLOWANCE_US),
                declared_interval_qpc=[start, end],
                durations_ticks={k: str(v) for k, v in declared.items()},
                coverage_declared=round(float(declared['tracking'] / (end - start)), 6),
                samples_ingested=ingested, incompatible=incompatible, rejected_checked=rejected_checked,
                max_half_width_before_next_sample_us=None if worst_before_next is None else round(float(worst_before_next), 3),
                max_half_width_before_next_sample_exact=None if worst_before_next is None else str(worst_before_next),
+               max_uncertainty_before_next_sample_us=(None if worst_uncertainty_before_next is None else
+                                                     round(float(worst_uncertainty_before_next), 3)),
+               max_uncertainty_before_next_sample_exact=(None if worst_uncertainty_before_next is None else
+                                                        str(worst_uncertainty_before_next)),
                stale_interval_count=len(stale_runs),
                longest_stale_s=round(float(max(stale_runs) / qpc_hz), 6) if stale_runs else 0.0,
                conditions=list(CONDITIONS))
@@ -182,24 +201,32 @@ def replay_run(folder: Path, mode: str) -> dict:
         retro = retrospective_max_half_width(accepted, hz)
         meta.update(label='two-phase settled timestamps conditioned on offline sample screening',
                     availability_rule=AVAILABILITY_RULES['causal-arrival'],
+                    quantization=retro['quantization'],
                     settle=settle_replay(items, hz, step_qpc=SETTLE_STEP_S * hz),
                     worst_settled_half_width_any_instant_us=round(float(retro['max_half_width_us']), 3),
-                    worst_settled_half_width_any_instant_exact=str(retro['max_half_width_us']))
+                    worst_settled_half_width_any_instant_exact=str(retro['max_half_width_us']),
+                    worst_settled_half_width_any_instant_scope=(
+                        'retrospective consecutive-sample bound; '
+                        'not a bound on earliest-available nonadjacent settlements'))
         return meta
     delay_seen = arrival_map(_lines(folder / 'live-observer.jsonl')) if mode == 'causal-arrival' else {}
     events = [('accepted', None, AvailableSample(s.sequence, s.tsf_us, s.lower_qpc, s.upper_qpc,
                                                   availability(s, mode, delay_seen, completed))) for s in accepted]
+    rejected_uncheckable = []
     for reason, s in result.rejected_samples:
         try:
             events.append(('rejected', reason, AvailableSample(s.sequence, s.tsf_us, s.lower_qpc, s.upper_qpc,
                                                                availability(s, mode, delay_seen, completed))))
-        except (ValueError, KeyError):
-            pass
+        except (ValueError, KeyError) as error:
+            rejected_uncheckable.append(dict(sequence=s.sequence, reason=reason,
+                                             error=f'{type(error).__name__}: {error}'))
     start = data['requests'][0].lower_qpc
     end = data['requests'][-1].lower_qpc + LISTEN_TIMEOUT_S * hz
     available = sorted(e[2].available_qpc for e in events if e[0] == 'accepted')
     meta['availability_rule'] = AVAILABILITY_RULES[mode]
-    meta.update(replay(events, hz, start, end, (available[0], available[-1])))
+    meta['rejected_uncheckable'] = rejected_uncheckable
+    review_interval = (available[0], available[-1]) if len(available) >= 2 and available[0] < available[-1] else None
+    meta.update(replay(events, hz, start, end, review_interval))
     return meta
 
 

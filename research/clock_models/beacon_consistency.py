@@ -23,12 +23,14 @@ def check_beacons(beacons: list[Beacon], spans: list[SpanReport]) -> dict:
     checked = unchecked = violations = 0
     worst = None
     for beacon in beacons:
-        span = next((s for s in spans if s.feasible and s.start_qpc <= beacon.qpc <= s.end_qpc), None)
-        if span is None:
+        covering = [s for s in spans if s.feasible and s.start_qpc <= beacon.qpc <= s.end_qpc]
+        if not covering:
             unchecked += 1
             continue
         checked += 1
-        excess = beacon.ap_tsf_us - span.bound.predict(beacon.qpc)[1]
+        # Every covering feasible model constrains the same beacon. Using the
+        # tightest upper bound is independent of span enumeration order.
+        excess = beacon.ap_tsf_us - min(s.bound.predict(beacon.qpc)[1] for s in covering)
         worst = excess if worst is None else max(worst, excess)
         if excess > TOLERANCE_US:
             violations += 1

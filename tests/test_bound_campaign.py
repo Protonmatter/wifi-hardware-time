@@ -52,6 +52,24 @@ class BoundCampaignTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             BoundGate().consume(dict(kind='report', raw_timestamp='x'))
 
+    def test_live_report_presence_rejects_late_foreign_and_ambiguous_records(self):
+        lower, hz = 1_000_000, 10_000_000
+        command = dict(kind='command', raw_timestamp=lower + 1, vdev=0, action=4)
+        report = dict(kind='report', raw_timestamp=lower + 20_000, vdev=0)
+        for events, accepted in (
+            ([command, report], True),
+            ([command, dict(report, raw_timestamp=lower + 20_001)], False),
+            ([report], False),
+            ([command, dict(report, vdev=1)], False),
+            ([command, report, report], False),
+            ([command, dict(command, action=3), report], False),
+        ):
+            with self.subTest(events=events):
+                gate = BoundGate()
+                for event in events:
+                    gate.consume(event)
+                self.assertEqual(gate.report_in_window(lower, hz), accepted)
+
     def test_spacing_and_loss_budget(self):
         self.assertEqual(remaining_sleep(2.0, 0.5), 1.5)
         self.assertEqual(remaining_sleep(2.0, 3.0), 0.0)

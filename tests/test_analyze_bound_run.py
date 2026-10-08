@@ -71,6 +71,15 @@ class AnalyzeTests(unittest.TestCase):
             self.assertFalse(verdict['passed'])
             self.assertFalse(verdict['load']['run_completed'])
 
+    def test_any_infeasible_span_rejects_even_with_full_feasible_coverage(self):
+        with tempfile.TemporaryDirectory() as a, tempfile.TemporaryDirectory() as b:
+            idle, load = pair(a, b)
+            idle['analysis']['infeasible_spans'] = [dict(start_qpc=1, end_qpc=2, samples=3)]
+            self.assertEqual(idle['analysis']['coverage_exact'], '1')
+            verdict = evaluate(idle, load)
+            self.assertFalse(verdict['passed'])
+            self.assertFalse(verdict['idle']['all_spans_feasible'])
+
     def test_verdict_is_always_conditional(self):
         with tempfile.TemporaryDirectory() as a, tempfile.TemporaryDirectory() as b:
             verdict = evaluate(*pair(a, b))

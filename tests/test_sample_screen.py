@@ -53,6 +53,16 @@ class ScreenTests(unittest.TestCase):
         records += group(reqs[0].lower_qpc + 1_000, tsf_at(reqs[0].lower_qpc + 1_000))
         result = screen(records, reqs, HZ)
         self.assertIn((1, 'multiple_reports_in_window'), result.rejected)
+        self.assertEqual(result.foreign_groups, 1)
+
+    def test_collided_groups_contribute_to_misattribution_with_an_own_loss(self):
+        reqs = requests(2)
+        records = ours(reqs[0].lower_qpc)
+        records += group(reqs[0].lower_qpc + 1_000, tsf_at(reqs[0].lower_qpc + 1_000))
+        records += [dict(kind='command', raw_timestamp=reqs[1].lower_qpc + 500, vdev=0, action=4)]
+        result = screen(records, reqs, HZ)
+        self.assertEqual((result.foreign_groups, result.own_losses), (1, 1))
+        self.assertEqual(result.expected_misattributed, Fraction(1, 500) / result.duration_s)
 
     def test_own_loss_late_report_and_misattribution_estimate(self):
         reqs = requests(3)

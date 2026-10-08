@@ -202,6 +202,7 @@ def evaluate(idle: dict, load: dict) -> dict:
             duration_at_least_3600s=type(identity.get('duration_s')) is int and identity['duration_s'] >= REQUIRED_DURATION_S,
             **execution_checks(identity),
             max_bound_below_1000us=widths is not None and Fraction(widths['max_exact']) < 1000,
+            all_spans_feasible=analysis.get('infeasible_spans') == [],
             coverage_at_least_90pct=Fraction(analysis['coverage_exact']) >= Fraction(9, 10),
             rejected_at_most_1pct=info['request_count'] > 0 and Fraction(info['rejected_count'], info['request_count']) <= Fraction(1, 100),
             misattribution_below_0_05=Fraction(info['expected_misattributed_exact']) < Fraction(5, 100),

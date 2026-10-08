@@ -27,7 +27,7 @@ import uuid
 
 from research.acquisition.campaign_admission import Admission, transition
 from research.acquisition.campaign_gate import ReportGate
-from research.clock_models.sample_screen import LISTEN_TIMEOUT_S, TIMING_KINDS
+from research.clock_models.sample_screen import LISTEN_TIMEOUT_S, MAX_WINDOW_US, TIMING_KINDS
 
 MARKER_NAME = 'bound-campaign-quarantine.json'
 TRACE_CAP_BYTES = 3000 * 1024 * 1024  # loaded runs measured ~26 MiB/min
@@ -64,6 +64,20 @@ class BoundGate(ReportGate):
 
     def report_after(self, qpc: int) -> bool:
         return any(e['kind'] == 'report' and e['raw_timestamp'] >= qpc for e in self.timing[-16:])
+
+    def report_in_window(self, qpc: int, frequency: int) -> bool:
+        """Live loss-budget check only; complete sample admission remains offline.
+
+        A late or structurally foreign report can end the retained report wait,
+        but cannot satisfy the request's 2-ms report-presence requirement.
+        """
+        upper = qpc + MAX_WINDOW_US * frequency // 1_000_000
+        window = [e for e in self.timing if qpc <= e['raw_timestamp'] <= upper]
+        commands = [e for e in window if e['kind'] == 'command']
+        reports = [e for e in window if e['kind'] == 'report']
+        return (len(commands) == len(reports) == 1 and commands[0].get('action') == 4
+                and reports[0]['raw_timestamp'] >= commands[0]['raw_timestamp']
+                and reports[0].get('vdev') == commands[0].get('vdev'))
 
 
 def remaining_sleep(spacing_s: float, elapsed_s: float) -> float:
@@ -397,6 +411,7 @@ def _execute(args: argparse.Namespace, clock, baseline: dict, plan: dict, marker
     sampler = None
     persistent = args.sampler == 'persistent'
     failure, receipts, beacon_count, losses, beacon_skips = None, [], 0, 0, []
+    cleanup_errors: list[str] = []
     _save(folder / 'session.json', dict(SessionName=session, StartedUtc=utc(), Plan=plan))
     try:
         _save(folder / 'adapter-before.json', baseline)
@@ -480,7 +495,7 @@ def _execute(args: argparse.Namespace, clock, baseline: dict, plan: dict, marker
                         sampler.pulse()
                     observer.pump(gate)
                     time.sleep(0.005)
-                if not gate.report_after(receipt['qpc_request_before']):
+                if not gate.report_in_window(receipt['qpc_request_before'], clock.frequency):
                     losses += 1
                 if loss_budget_exceeded(losses, number):
                     raise RuntimeError('Own-loss budget exceeded')
@@ -519,16 +534,26 @@ def _execute(args: argparse.Namespace, clock, baseline: dict, plan: dict, marker
             except BaseException as error:
                 failure = failure or f'Beacon reader cleanup: {error}'
         if worker is not None:
-            (folder / 'workload-stop').touch()
+            try:
+                (folder / 'workload-stop').touch()
+            except BaseException as error:
+                cleanup_errors.append(f'Workload stop signal: {error}')
+                failure = failure or cleanup_errors[-1]
             try:
                 worker.wait(timeout=40)
                 if worker.returncode:
                     raise RuntimeError('Workload ended without controlled stop')
             except BaseException as error:
-                failure = failure or str(error)
-                if worker.poll() is None:
-                    worker.kill()
-                    worker.wait(timeout=5)
+                cleanup_errors.append(f'Workload wait: {error}')
+                failure = failure or cleanup_errors[-1]
+                try:
+                    if worker.poll() is None:
+                        worker.kill()
+                        worker.wait(timeout=5)
+                except BaseException as cleanup_error:
+                    # Workload is our bounded CPU/network child, never a private
+                    # I/O worker. Even failed termination must not skip teardown.
+                    cleanup_errors.append(f'Workload termination: {cleanup_error}')
         try:
             trace.stop()
         except BaseException as error:
@@ -552,7 +577,8 @@ def _execute(args: argparse.Namespace, clock, baseline: dict, plan: dict, marker
                                          beacon_reads=beacon_count, beacon_skips=beacon_skips,
                                          collection_start_qpc=receipts[0]['qpc_request_before'] if receipts else None,
                                          collection_end_qpc=receipts[-1]['qpc_request_before'] if receipts else None,
-                                         qpc_frequency_hz=clock.frequency, firmware_sampling_validated=False,
+                                          qpc_frequency_hz=clock.frequency, firmware_sampling_validated=False,
+                                          cleanup_errors=cleanup_errors,
                                          sampler=args.sampler),
                     failure, utc)
     if failure:

@@ -36,7 +36,7 @@ class ControllerTests(unittest.TestCase):
                             raise RuntimeError('observer lifecycle failure')
                         if self.report_due is not None and now[0] >= self.report_due:
                             gate.consume(dict(kind='report', raw_timestamp=round(submitted[-1] * clock.frequency) + 100,
-                                              received_qpc=clock.now()))
+                                              received_qpc=clock.now(), vdev=0))
                             self.report_due = None
                     def wait(self, seconds, gate):
                         now[0] += max(0, seconds)
@@ -47,11 +47,12 @@ class ControllerTests(unittest.TestCase):
                     def read(self, qpc): raise bss.CacheEntryUnavailable(0)
                     def close(self): pass
                 class Client:
-                    def __init__(self, *args): self.observer = args[-2]
+                    def __init__(self, *args): self.observer, self.gate = args[-2:]
                     def start(self): pass
                     def pulse(self): self.observer.pump(self.gate) if hasattr(self, 'gate') else None
                     def submit(self, number):
                         submitted.append(now[0])
+                        self.gate.consume(dict(kind='command', raw_timestamp=clock.now(), action=4, vdev=0))
                         self.observer.report_due = now[0] + 1.96
                         return dict(sequence=number, qpc_request_before=clock.now(), qpc_request_completed=clock.now(),
                                     success=True, schema='wht/persistent-tsf-request-v1')

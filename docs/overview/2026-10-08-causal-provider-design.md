@@ -42,6 +42,8 @@ Under the declared capture, rate and continuity assumptions, the provider return
 
 A missed sample lets uncertainty grow into `stale`; a new compatible sample may restore `tracking`. Each estimate returns the interval endpoints, the exact midpoint and half-width, an integer-microsecond estimate with an uncertainty expanded to cover rounding, the query QPC, the last availability, the epoch, a reason and the conditions. Arithmetic is exact internally. Queries earlier than the latest availability are refused.
 
+Review reconciliation makes the returned uncertainty exactly `half_width + 1/2` microsecond. This uniform conservative rounding allowance, rather than half-width alone, governs both state and the exact expiry used by replay. Historical reports use their recorded implementation; revised results are recorded separately.
+
 **5. Separate result modes and exact coverage.**
 
 - **Reproduction modes:** the retrospective rate-only bound (consecutive samples on both sides of a gap), and the causal bound with availability at the report's ETW timestamp. Both should reproduce the earlier review's figures.

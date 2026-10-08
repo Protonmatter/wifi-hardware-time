@@ -75,7 +75,7 @@ midpoint = (lower + upper) / 2
 half_width = (upper - lower) / 2
 ```
 
-The current `tracking` state compares exact half-width against 1,000 us; equality or a larger value is `stale`. Integer estimates round with `floor(midpoint + 1/2)` and separately report `uncertainty = max(estimate - lower, upper - estimate)`. Rounding can make this latter value slightly larger than the half-width. Consumers claiming a strict error for the integer estimate must use its reported uncertainty, not infer it from the state alone. The online API contract and boundary tests must preserve this distinction.
+Integer estimates round with `floor(midpoint + 1/2)`. The returned conservative uncertainty is `half_width + 1/2` microsecond, covering every midpoint rounding phase. The `tracking` state compares this returned uncertainty against 1,000 us; equality or a larger value is `stale`. The uniform allowance keeps expiry monotone between sample updates. The exact interval and its half-width remain available separately. This corrects the earlier state test on half-width alone, which could report tracking while the integer estimate's uncertainty reached the threshold. Historical replay outputs retain their original convention; the [review reconciliation](../overview/pr-reconciliation-2026-10-08.md) records the revised comparison.
 
 With no new sample, the current half-width grows at `(b-a)/2` per QPC tick: 200 us per host second for the 200-ppm prior. This is model uncertainty growth, not measured physical drift. Actual worst gaps and report age matter; median spacing cannot establish a worst-case guarantee.
 
@@ -93,7 +93,7 @@ Arrival-aware coverage uses a declared elapsed interval, including acquiring, tr
 
 ## Settlement and retrospective bounds
 
-[settle.py](../../research/clock_models/settle.py) preserves the original event `Q`. The current policy selects the latest sample whose window starts at or before `Q` and the first whose window starts after `Q`, then requires both to be available by the settle time. If either is missing or not yet available, the result stays unbracketed or pending. Selection by window start must not be described as proof that both physical capture instants strictly straddle the event.
+[settle.py](../../research/clock_models/settle.py) preserves the original event `Q`. It first restricts candidates to samples available by the requested time. The earlier sample must have widened capture end `U_i + 1 <= Q`; the later sample must have capture start `L_i > Q`. It chooses the nearest eligible sample on each side. A window straddling the event establishes neither side. Without an eligible earlier sample the result is unbracketed; without an eligible later sample it is pending. Future unavailable samples cannot change a historical result.
 
 The settled interval is the intersection of those two general rate envelopes:
 
@@ -104,7 +104,7 @@ upper_settled = min(upper_earlier(Q), upper_later(Q))
 
 An empty intersection is inconsistent. The settled record is derived evidence; it must not overwrite raw QPC or the originally issued provisional result. Settlement adds latency to finalization, not that amount of error to the preserved event time.
 
-The retrospective rate-only checker evaluates every covered consecutive-pair interval. It checks piecewise-linear endpoints, slope-change points and crossings to find the exact maximum half-width between sampled event-grid points. Its result is limited to covered intervals, not startup, arbitrary future times or an unbounded holdover.
+The retrospective rate-only checker evaluates every covered consecutive-pair interval. It checks piecewise-linear endpoints, slope-change points and crossings to find the exact maximum half-width between sampled event-grid points. Its result is limited to covered intervals, not startup, arbitrary future times or an unbounded holdover. With out-of-order availability, earliest settlement can use nonadjacent samples; the retrospective consecutive-pair maximum does not bound every such first-available result.
 
 ## Optional affine polygon: stronger assumption
 
@@ -115,7 +115,7 @@ a <= r <= b
 y_i - r*u_i <= c <= y_i + 1 - r*l_i
 ```
 
-The current implementation enumerates candidate boundary intersections using exact fractions, retains feasible vertices, and takes prediction extrema over them. Settlement's optional affine estimate uses eligible available samples inside the surrounding 60-second span, with at least three samples and observations on both sides. The separate retrospective sliding-span analysis has its own 60-second windows and 10-second step.
+The current implementation enumerates candidate boundary intersections using exact fractions, retains feasible vertices, and takes prediction extrema over them. Settlement's optional affine estimate uses samples available by the returned `settled_at_qpc`, inside the surrounding 60-second span, with at least three samples and observations on both sides. A later query cannot use later evidence while reporting an earlier estimation time. Replay reports the affine estimate count and share separately from all settled events. The separate retrospective sliding-span analysis has its own 60-second windows and 10-second step.
 
 This narrower constant-rate result is labeled as a stronger-assumption estimate. It does not replace the rate-only result. Exact polygon clipping is a proposed optimization, not an implemented change; equivalence must be proven against this reference before replacement. Bounded-wander estimates require an explicit, independently qualified wander parameter.
 

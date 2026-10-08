@@ -126,6 +126,9 @@ def screen(records: list[dict], requests: list[Request], qpc_hz: int) -> Screen:
         later = events[split:last]
         commands = [e for e in window if e['type'] == 'command']
         reports = [e for e in window if e['type'] == 'report']
+        # A request can own at most one report. Count the guaranteed excess
+        # even when ambiguity causes this entire sample to be rejected.
+        foreign_groups += max(0, len(reports) - 1)
         later_reports = [e for e in later if e['type'] == 'report']
         foreign_commands += sum(e['type'] == 'command' for e in later)
         reason = None
