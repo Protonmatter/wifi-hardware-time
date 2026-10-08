@@ -1,0 +1,68 @@
+{
+  "schema": "wht/tsf-host-bound-run-v1",
+  "run_completed": true,
+  "screen": {
+    "request_count": 98,
+    "accepted_count": 98,
+    "rejected_count": 0,
+    "rejected_by_reason": {},
+    "foreign_groups": 0,
+    "foreign_commands": 0,
+    "own_losses": 0,
+    "duration_s": 303.184,
+    "expected_misattributed": 0.0,
+    "expected_misattributed_exact": "0"
+  },
+  "analysis": {
+    "sample_count": 98,
+    "span_count": 30,
+    "infeasible_spans": [],
+    "coverage": 1.0,
+    "coverage_exact": "1",
+    "proven_half_width_us": {
+      "median": 145.258,
+      "p95": 167.931,
+      "max": 169.206,
+      "max_exact": "68654527129226059109/405744914518459106"
+    },
+    "window_width_us": {
+      "min": 229.4,
+      "median": 348.3,
+      "max": 810.0
+    },
+    "request_spacing_s": {
+      "median": 3.035,
+      "max": 4.249
+    },
+    "soc_domain": {
+      "sample_count": 98,
+      "ticks_per_unit": 10,
+      "fixed_rate_feasible": false,
+      "fixed_rate_gap_qpc_ticks": 111772,
+      "rate_interval": {
+        "lower": {
+          "numerator": "267114670",
+          "denominator": "26710457"
+        },
+        "upper": {
+          "numerator": "2965085121",
+          "denominator": "296496802"
+        }
+      },
+      "rate_interval_contains_nominal": false,
+      "compatible_with_qpc_domain": false,
+      "shared_oscillator_proven": false
+    },
+    "beacon_check": {
+      "checked": 25,
+      "unchecked": 1,
+      "violations": 0,
+      "tolerance_us": 1000,
+      "worst_excess_us": "-2894935661763/473994254",
+      "scope": "coarse: AP timestamp must not exceed predicted station TSF; cache age unknown"
+    }
+  },
+  "shared_clock_link": "assumed from 802.11 station TSF adoption; coarse beacon check only",
+  "accuracy_vs_utc": null,
+  "clock_provider_enabled": false
+}

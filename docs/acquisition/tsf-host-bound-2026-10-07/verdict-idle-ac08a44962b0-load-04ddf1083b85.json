@@ -1,0 +1,163 @@
+{
+  "idle": {
+    "schema": "wht/tsf-host-bound-run-v1",
+    "run_completed": true,
+    "screen": {
+      "request_count": 1277,
+      "accepted_count": 1276,
+      "rejected_count": 1,
+      "rejected_by_reason": {
+        "late_report": 1
+      },
+      "foreign_groups": 6,
+      "foreign_commands": 0,
+      "own_losses": 1,
+      "duration_s": 3602.426,
+      "expected_misattributed": 0.0,
+      "expected_misattributed_exact": "60000/18012127999"
+    },
+    "analysis": {
+      "sample_count": 1276,
+      "span_count": 360,
+      "infeasible_spans": [],
+      "coverage": 1.0,
+      "coverage_exact": "1",
+      "proven_half_width_us": {
+        "median": 134.8,
+        "p95": 160.054,
+        "max": 352.205,
+        "max_exact": "40729766669/115642214"
+      },
+      "window_width_us": {
+        "min": 196.8,
+        "median": 262.7,
+        "max": 1004.6
+      },
+      "request_spacing_s": {
+        "median": 2.993,
+        "max": 6.963
+      },
+      "soc_domain": {
+        "sample_count": 1276,
+        "ticks_per_unit": 10,
+        "fixed_rate_feasible": false,
+        "fixed_rate_gap_qpc_ticks": 1382182,
+        "rate_interval": {
+          "lower": {
+            "numerator": "23357830809",
+            "denominator": "2335693219"
+          },
+          "upper": {
+            "numerator": "35787903685",
+            "denominator": "3578652289"
+          }
+        },
+        "rate_interval_contains_nominal": false,
+        "compatible_with_qpc_domain": false,
+        "shared_oscillator_proven": false
+      },
+      "beacon_check": {
+        "checked": 318,
+        "unchecked": 1,
+        "violations": 0,
+        "tolerance_us": 1000,
+        "worst_excess_us": "-1274942672706/232286857",
+        "scope": "coarse: AP timestamp must not exceed predicted station TSF; cache age unknown"
+      }
+    },
+    "shared_clock_link": "assumed from 802.11 station TSF adoption; coarse beacon check only",
+    "accuracy_vs_utc": null,
+    "clock_provider_enabled": false
+  },
+  "load": {
+    "schema": "wht/tsf-host-bound-run-v1",
+    "run_completed": true,
+    "screen": {
+      "request_count": 1212,
+      "accepted_count": 1210,
+      "rejected_count": 2,
+      "rejected_by_reason": {
+        "late_report": 2
+      },
+      "foreign_groups": 4,
+      "foreign_commands": 0,
+      "own_losses": 2,
+      "duration_s": 3601.487,
+      "expected_misattributed": 0.0,
+      "expected_misattributed_exact": "6400/1440594733"
+    },
+    "analysis": {
+      "sample_count": 1210,
+      "span_count": 360,
+      "infeasible_spans": [],
+      "coverage": 1.0,
+      "coverage_exact": "1",
+      "proven_half_width_us": {
+        "median": 139.551,
+        "p95": 165.821,
+        "max": 190.821,
+        "max_exact": "149158334147951257/781668233499888"
+      },
+      "window_width_us": {
+        "min": 211.0,
+        "median": 271.8,
+        "max": 1040.7
+      },
+      "request_spacing_s": {
+        "median": 3.02,
+        "max": 6.114
+      },
+      "soc_domain": {
+        "sample_count": 1210,
+        "ticks_per_unit": 10,
+        "fixed_rate_feasible": false,
+        "fixed_rate_gap_qpc_ticks": 1386234,
+        "rate_interval": {
+          "lower": {
+            "numerator": "34769812331",
+            "denominator": "3476847126"
+          },
+          "upper": {
+            "numerator": "15522994153",
+            "denominator": "1552239354"
+          }
+        },
+        "rate_interval_contains_nominal": false,
+        "compatible_with_qpc_domain": false,
+        "shared_oscillator_proven": false
+      },
+      "beacon_check": {
+        "checked": 310,
+        "unchecked": 1,
+        "violations": 0,
+        "tolerance_us": 1000,
+        "worst_excess_us": "-2297833424200/411389513",
+        "scope": "coarse: AP timestamp must not exceed predicted station TSF; cache age unknown"
+      }
+    },
+    "shared_clock_link": "assumed from 802.11 station TSF adoption; coarse beacon check only",
+    "accuracy_vs_utc": null,
+    "clock_provider_enabled": false
+  },
+  "verdict": {
+    "idle": {
+      "run_completed": true,
+      "max_proven_error_below_1000us": true,
+      "coverage_at_least_90pct": true,
+      "rejected_at_most_1pct": true,
+      "misattribution_below_0_05": true,
+      "beacon_checked_without_violation": true,
+      "stretch_100us": false
+    },
+    "load": {
+      "run_completed": true,
+      "max_proven_error_below_1000us": true,
+      "coverage_at_least_90pct": true,
+      "rejected_at_most_1pct": true,
+      "misattribution_below_0_05": true,
+      "beacon_checked_without_violation": true,
+      "stretch_100us": false
+    },
+    "passed": true
+  }
+}

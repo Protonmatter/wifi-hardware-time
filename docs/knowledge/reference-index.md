@@ -10,7 +10,7 @@ Find the calls, file names, terms and short strings recorded in this research. T
 
 ## Search
 
-Indexed **320 source files** and **9139 distinct terms**.
+Indexed **321 source files** and **9156 distinct terms**.
 
 The [JSON index](research-index.json) includes Python definitions/calls, C/Java/PowerShell call-shaped tokens, authored short strings and Markdown code terms. Vendor binaries, local artifacts, historical reproduction sources and generated indexes are excluded. Unresolved call-shaped tokens are explicitly labeled.
 
@@ -36,7 +36,7 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [.github/workflows/offline-checks.yml](../../.github/workflows/offline-checks.yml) | `736ac3c3badc` |
 | [README.md](../../README.md) | `0303197c46f6` |
 | [docs/README.md](../../docs/README.md) | `950681bca95a` |
-| [docs/acquisition/README.md](../../docs/acquisition/README.md) | `3a843112cc6e` |
+| [docs/acquisition/README.md](../../docs/acquisition/README.md) | `28b61c8b18d9` |
 | [docs/acquisition/acquisition-campaign-2026-10-02-results.md](../../docs/acquisition/acquisition-campaign-2026-10-02-results.md) | `9497bd3fc5f6` |
 | [docs/acquisition/experiments.md](../../docs/acquisition/experiments.md) | `757ecf58decd` |
 | [docs/acquisition/lifecycle-matrix.md](../../docs/acquisition/lifecycle-matrix.md) | `ff94ba6c1774` |
@@ -51,6 +51,7 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [docs/acquisition/scan-comparison-plan.md](../../docs/acquisition/scan-comparison-plan.md) | `5c2a312cd514` |
 | [docs/acquisition/scan-tsf-results-2026-10-03.md](../../docs/acquisition/scan-tsf-results-2026-10-03.md) | `26ea16e56034` |
 | [docs/acquisition/timing-qualification-validation-2026-10-04.md](../../docs/acquisition/timing-qualification-validation-2026-10-04.md) | `719e9a66c240` |
+| [docs/acquisition/tsf-host-bound-methodology.md](../../docs/acquisition/tsf-host-bound-methodology.md) | `1d11c2c19553` |
 | [docs/acquisition/tsf-host-bound-results.md](../../docs/acquisition/tsf-host-bound-results.md) | `d99cb6fd113c` |
 | [docs/adapters/README.md](../../docs/adapters/README.md) | `b0724c7f77df` |
 | [docs/adapters/axml.md](../../docs/adapters/axml.md) | `db1bd219145b` |
