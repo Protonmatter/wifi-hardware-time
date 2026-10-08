@@ -1,5 +1,7 @@
 # Current research findings
 
+**Review update:** [Integrated PR reconciliation](../overview/pr-reconciliation-2026-10-08.md) corrects acquisition failure paths, uncertainty expiry and settlement. Revised smoke tracking coverage is 92.862589%; original capture and analysis records remain preserved.
+
 We can acquire diagnostic TSF observations through a persistent exact-build worker and calculate conditional TSF-to-QPC intervals from screened records. The first five-minute persistent idle smoke completed cleanly. Complete original-event export, physical capture timing, AP/UTC accuracy and multi-device synchronization remain separate unqualified capabilities.
 
 **Current result, 2026-10-08:** the [persistent sampler smoke](../acquisition/persistent-tsf-smoke-2026-10-08.md) completed 139 real pending-to-success requests, accepted 138 samples offline, and closed with no outstanding I/O or trace loss. Arrival-aware tracking was 92.884% over the declared 302.999-second interval. All 297 replayed event-grid points settled with median/max conditional rate-only half-widths of 280.429/614.883 us after a median 2.341-second wait. The exact retrospective covered-interval maximum was 648.30025 us. The [math reference](../clock-models/tsf-mathematics.md) states the assumptions and the [phase 2 roadmap](../overview/persistent-tsf-next-steps.md) separates research, implementation, testing and qualification gates. No online sample admission is implemented.

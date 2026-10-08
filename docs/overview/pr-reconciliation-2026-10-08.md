@@ -41,6 +41,22 @@ Each reproduced defect has a failing regression before its correction. Existing 
 
 Retained-data comparison covers the counted idle/load hour and the persistent smoke. Inputs are hashed before and after replay, and both the preserved baseline and candidate use the same captures. Revised results are recorded separately; differences in rounding threshold, beacon upper bound, diagnostic counts, or settlement semantics must be explicit. A consecutive-pair retrospective maximum is not a general bound on first-available nonadjacent settlement when arrivals are out of order.
 
+## Retained-data comparison and verification
+
+The [machine-readable comparison](pr-reconciliation-2026-10-08.json) pins corrected source `498758f10aea78c5cdeedf86610d6029bc3e774f` and baseline `02459e7`. Both were replayed against the same hashed captures. All capture JSON/JSONL hashes remained unchanged before/after each pass. Both counted hour runs still pass the conditional verdict, with the new all-spans-feasible requirement.
+
+| Retained run | Baseline tracking | Corrected tracking | Settled event-grid points | Affine estimates available |
+|---|---:|---:|---:|---:|
+| Idle hour | 78.690368073% | 78.632051394% | 3,598 / 3,598 | 3,595 / 3,598 |
+| Loaded hour | 72.417402177% | 72.349582965% | 3,597 / 3,597 | 3,595 / 3,597 |
+| Persistent idle smoke | 92.884040848% | 92.862588662% | 297 / 297 | 295 / 297 |
+
+Tracking now includes the 0.5-us integer-rounding allowance; at the 200-ppm prior, an unclipped expiry occurs 2.5 ms earlier. Screening decisions, event counts, all retrospective exact maxima, and the smoke's settlement waits/widths remain unchanged. The loaded-hour median settled half-width changes from 324.908 to 325.406 us because capture windows overlapping the event no longer supply the earlier side. Every retained event-grid settlement remains below 1 ms in half-width. That statement concerns the declared grid, not every instant or physical accuracy.
+
+Coalescing stale periods changes the loaded-hour count from 979 to 977 and its longest stale interval from 3.215742 to 3.660715 seconds; idle's longest stale interval changes from 3.299488 to 4.896056 seconds. The beacon upper-bound diagnostic tightens in idle and smoke, with zero violations retained. New affine counts expose the denominator without changing affine quantiles for these captures. Original published JSON reports are preserved.
+
+Local Windows ARM64 Python 3.14.3: `compileall` passed; the full suite discovered 488 tests, passed 451 and skipped 37. Index/diagram checks and diff whitespace checks passed. An independent read-only reviewer repeated 103 focused research tests, reproduced baseline failures, and found no additional actionable defect in the correction diffs. Hosted results must be associated with the final PR head; local success does not substitute for them.
+
 ## Merge and rollback
 
 Use a merge commit for the integration candidate so the original source pins remain ancestors of `main`. Verify the final candidate against the current base, passing exact-head CI, and the tested source tree before merging. Earlier PRs are historical review units, not independent merge candidates after this reconciliation. Retire them only after their commits and corrected implementation are verified in `main`.

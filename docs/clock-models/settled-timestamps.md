@@ -1,5 +1,7 @@
 # Two-phase TSF timestamps: settled results
 
+> Historical report: the original source pins and JSON outputs are preserved. See the [2026-10-08 review reconciliation](../overview/pr-reconciliation-2026-10-08.md) for corrected threshold, settlement, and diagnostic results on the same retained captures.
+
 Waiting a few seconds turns the live clock's intermittent sub-millisecond status into a sub-millisecond bound for every event. An event's QPC is recorded at once; when the next sample captured after it has arrived, the event is settled from the samples on both sides. Across the two counted hour-long runs, every one of 7,195 events (one per second) settled below 1 ms, typically about 310 to 325 us, after a median wait of about 3 seconds. These are bounds computed from measured traces under stated assumptions, conditioned on offline sample screening.
 
 ## Contents

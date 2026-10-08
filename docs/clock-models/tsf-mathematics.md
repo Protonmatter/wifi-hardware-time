@@ -121,6 +121,6 @@ This narrower constant-rate result is labeled as a stronger-assumption estimate.
 
 ## What the current results mean
 
-The [persistent smoke report](../acquisition/persistent-tsf-smoke-2026-10-08.md) records 92.884041% conditional arrival-aware tracking coverage. All 297 event-grid points settled, with median/max rate-only half-widths of 280.429/614.883 us; the exact covered-interval retrospective maximum was 648.30025 us. These are conditional interval half-widths, not observed absolute errors or statistical confidence levels.
+The original [persistent smoke report](../acquisition/persistent-tsf-smoke-2026-10-08.md) records 92.884041% conditional arrival-aware coverage under its original half-width threshold. [Corrected replay](../overview/pr-reconciliation-2026-10-08.md) uses the returned rounding-expanded uncertainty and gives 92.862589%. All 297 event-grid points still settle, with unchanged median/max rate-only half-widths of 280.429/614.883 us; the exact covered-interval retrospective maximum remains 648.30025 us. These are conditional bounds, not observed absolute errors or statistical confidence levels.
 
 A stable unmodeled capture bias can remain numerically consistent. Multi-device synchronization additionally needs both devices' errors and station/AP relationships in one budget; two individually sub-millisecond estimates do not automatically imply sub-millisecond pairwise alignment. Independent source/reference validation is therefore a separate gate in the [roadmap](../overview/persistent-tsf-next-steps.md).

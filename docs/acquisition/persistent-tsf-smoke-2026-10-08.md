@@ -1,5 +1,7 @@
 # Persistent TSF sampler: first live smoke result
 
+> Historical report: the original source pins and JSON outputs are preserved. See the [2026-10-08 review reconciliation](../overview/pr-reconciliation-2026-10-08.md) for corrected threshold, settlement, and diagnostic results on the same retained captures.
+
 The persistent sampler completed one 300-second idle run on the qualified Qualcomm FastConnect 7800 Windows ARM64 profile. All 139 requests completed successfully in one recorded session; offline screening accepted 138 timing samples. Normal shutdown was clean. This supports live persistent acquisition on this exact build and a useful conditional TSF-to-QPC relationship. It does not complete phase 2 or establish calibrated physical, AP, UTC or multi-device accuracy.
 
 ## What ran

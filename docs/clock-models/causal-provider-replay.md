@@ -1,5 +1,7 @@
 # Causal TSF provider: replay results
 
+> Historical report: the original source pins and JSON outputs are preserved. See the [2026-10-08 review reconciliation](../overview/pr-reconciliation-2026-10-08.md) for corrected threshold, settlement, and diagnostic results on the same retained captures.
+
 Replaying the two counted hour-long runs through the causal provider confirms the earlier review's figures exactly, and adds the arrival-aware result a live application would face. When each sample is used only from the moment the controller actually received it, the provider kept a sub-millisecond interval for **78.7% of the idle hour and 72.4% of the loaded hour**. The rest was explicitly flagged `stale`. The cause is delivery delay: samples became available a median of about 2 seconds after capture. No sample was inconsistent with its predecessors. These are bounds computed from measured traces under stated assumptions, labelled as a causal clock-model replay conditioned on offline sample screening.
 
 ## Contents

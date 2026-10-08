@@ -10,7 +10,7 @@ Find the calls, file names, terms and short strings recorded in this research. T
 
 ## Search
 
-Indexed **349 source files** and **10150 distinct terms**.
+Indexed **349 source files** and **10153 distinct terms**.
 
 The [JSON index](research-index.json) includes Python definitions/calls, C/Java/PowerShell call-shaped tokens, authored short strings and Markdown code terms. Vendor binaries, local artifacts, historical reproduction sources and generated indexes are excluded. Unresolved call-shaped tokens are explicitly labeled.
 
@@ -34,7 +34,7 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | File | Normalized text SHA-256 prefix |
 |---|---|
 | [.github/workflows/offline-checks.yml](../../.github/workflows/offline-checks.yml) | `7255a41e5330` |
-| [README.md](../../README.md) | `633829f96abc` |
+| [README.md](../../README.md) | `cfe1590162bf` |
 | [docs/README.md](../../docs/README.md) | `c101460d8e4f` |
 | [docs/acquisition/README.md](../../docs/acquisition/README.md) | `ab17d2d62b8d` |
 | [docs/acquisition/acquisition-campaign-2026-10-02-results.md](../../docs/acquisition/acquisition-campaign-2026-10-02-results.md) | `9497bd3fc5f6` |
@@ -46,7 +46,7 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [docs/acquisition/packet-capture-and-elevation.md](../../docs/acquisition/packet-capture-and-elevation.md) | `6b65cf34ece1` |
 | [docs/acquisition/passive-and-retrieval-validation-2026-10-03.md](../../docs/acquisition/passive-and-retrieval-validation-2026-10-03.md) | `491e8b28239c` |
 | [docs/acquisition/persistent-tsf-sampler.md](../../docs/acquisition/persistent-tsf-sampler.md) | `5b25fdeb86be` |
-| [docs/acquisition/persistent-tsf-smoke-2026-10-08.md](../../docs/acquisition/persistent-tsf-smoke-2026-10-08.md) | `85fc73cbee0c` |
+| [docs/acquisition/persistent-tsf-smoke-2026-10-08.md](../../docs/acquisition/persistent-tsf-smoke-2026-10-08.md) | `c844d50c013e` |
 | [docs/acquisition/private-acquisition-latency.md](../../docs/acquisition/private-acquisition-latency.md) | `49e23fdcc97d` |
 | [docs/acquisition/private-campaign-2026-10-03-quarantine.md](../../docs/acquisition/private-campaign-2026-10-03-quarantine.md) | `a9b8c563ee32` |
 | [docs/acquisition/private-timing-acquisition-plan.md](../../docs/acquisition/private-timing-acquisition-plan.md) | `147aae2851af` |
@@ -54,7 +54,7 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [docs/acquisition/scan-tsf-results-2026-10-03.md](../../docs/acquisition/scan-tsf-results-2026-10-03.md) | `26ea16e56034` |
 | [docs/acquisition/timing-qualification-validation-2026-10-04.md](../../docs/acquisition/timing-qualification-validation-2026-10-04.md) | `719e9a66c240` |
 | [docs/acquisition/tsf-host-bound-methodology.md](../../docs/acquisition/tsf-host-bound-methodology.md) | `1b12df7b6a9f` |
-| [docs/acquisition/tsf-host-bound-results.md](../../docs/acquisition/tsf-host-bound-results.md) | `502a587ca339` |
+| [docs/acquisition/tsf-host-bound-results.md](../../docs/acquisition/tsf-host-bound-results.md) | `33fb24a8e3d1` |
 | [docs/adapters/README.md](../../docs/adapters/README.md) | `b0724c7f77df` |
 | [docs/adapters/axml.md](../../docs/adapters/axml.md) | `db1bd219145b` |
 | [docs/adapters/backend-and-reference-next-steps.md](../../docs/adapters/backend-and-reference-next-steps.md) | `9da7599bbb12` |
@@ -81,7 +81,7 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [docs/adapters/windows-bss-host-time.md](../../docs/adapters/windows-bss-host-time.md) | `c1d8d6725b1d` |
 | [docs/adapters/wlanlib-dispatch-and-completion.md](../../docs/adapters/wlanlib-dispatch-and-completion.md) | `542f96378fab` |
 | [docs/clock-models/README.md](../../docs/clock-models/README.md) | `bd94b7b68bf3` |
-| [docs/clock-models/causal-provider-replay.md](../../docs/clock-models/causal-provider-replay.md) | `48e9a239580f` |
+| [docs/clock-models/causal-provider-replay.md](../../docs/clock-models/causal-provider-replay.md) | `daf96ec640db` |
 | [docs/clock-models/clock-relationship-investigation.md](../../docs/clock-models/clock-relationship-investigation.md) | `36cdf2738990` |
 | [docs/clock-models/counter-rate-identifiability.md](../../docs/clock-models/counter-rate-identifiability.md) | `fc7ac3dc7bc5` |
 | [docs/clock-models/diagrams/ftm-reduction.mmd](../../docs/clock-models/diagrams/ftm-reduction.mmd) | `75cab435f2de` |
@@ -89,9 +89,9 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [docs/clock-models/diagrams/uncertainty-timestamp-path.mmd](../../docs/clock-models/diagrams/uncertainty-timestamp-path.mmd) | `e6e28e10885e` |
 | [docs/clock-models/packet-to-clock-map.md](../../docs/clock-models/packet-to-clock-map.md) | `4e3e4314bb78` |
 | [docs/clock-models/qualcomm-observation-matrix.md](../../docs/clock-models/qualcomm-observation-matrix.md) | `4ec14c29650d` |
-| [docs/clock-models/settled-timestamps.md](../../docs/clock-models/settled-timestamps.md) | `906e040633d9` |
+| [docs/clock-models/settled-timestamps.md](../../docs/clock-models/settled-timestamps.md) | `64afdf4135cd` |
 | [docs/clock-models/tsf-host-bound-preview.md](../../docs/clock-models/tsf-host-bound-preview.md) | `0c7cdc36f331` |
-| [docs/clock-models/tsf-mathematics.md](../../docs/clock-models/tsf-mathematics.md) | `dc4dfa35f366` |
+| [docs/clock-models/tsf-mathematics.md](../../docs/clock-models/tsf-mathematics.md) | `c56044d04435` |
 | [docs/evidence/README.md](../../docs/evidence/README.md) | `915959c23a13` |
 | [docs/evidence/api-direction.md](../../docs/evidence/api-direction.md) | `cf1792471da3` |
 | [docs/evidence/complete-event-hardware-handoff.md](../../docs/evidence/complete-event-hardware-handoff.md) | `cdd4b940d27e` |
@@ -119,7 +119,7 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [docs/ftm/ftm-result-provenance.md](../../docs/ftm/ftm-result-provenance.md) | `b92a2ddb2d94` |
 | [docs/glossary.md](../../docs/glossary.md) | `838e3c21d99f` |
 | [docs/knowledge/assumptions-and-corrections.md](../../docs/knowledge/assumptions-and-corrections.md) | `d14237bd84da` |
-| [docs/knowledge/current-findings.md](../../docs/knowledge/current-findings.md) | `1b1ee49f6408` |
+| [docs/knowledge/current-findings.md](../../docs/knowledge/current-findings.md) | `eff70dba3bd0` |
 | [docs/knowledge/interface-directory.md](../../docs/knowledge/interface-directory.md) | `d58d6c2fd787` |
 | [docs/knowledge/refresh-validation.md](../../docs/knowledge/refresh-validation.md) | `13243a024baa` |
 | [docs/knowledge/workflow-diagrams.md](../../docs/knowledge/workflow-diagrams.md) | `b8c181f3970f` |
@@ -147,7 +147,7 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [docs/overview/complete-event-2026-10-05/test-matrix.md](../../docs/overview/complete-event-2026-10-05/test-matrix.md) | `76b88fdb0da5` |
 | [docs/overview/gap-closure-ledger.md](../../docs/overview/gap-closure-ledger.md) | `19344fdc6847` |
 | [docs/overview/persistent-tsf-next-steps.md](../../docs/overview/persistent-tsf-next-steps.md) | `ecbc3a939942` |
-| [docs/overview/pr-reconciliation-2026-10-08.md](../../docs/overview/pr-reconciliation-2026-10-08.md) | `0a3aef698a71` |
+| [docs/overview/pr-reconciliation-2026-10-08.md](../../docs/overview/pr-reconciliation-2026-10-08.md) | `a46188a58f1c` |
 | [docs/overview/pr3-component-review-map-2026-10-06.md](../../docs/overview/pr3-component-review-map-2026-10-06.md) | `ca9f272db098` |
 | [docs/overview/pr3-review-2026-10-06.md](../../docs/overview/pr3-review-2026-10-06.md) | `ebcce676c2f1` |
 | [docs/overview/repository-layout.md](../../docs/overview/repository-layout.md) | `3b542e8223f3` |
