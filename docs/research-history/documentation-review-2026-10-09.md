@@ -31,8 +31,8 @@ Environment: Windows, Python 3.14.3. Commands ran from the isolated repository r
 | Check / command | Observed result |
 |---|---|
 | `python -m compileall -q research tests` | Passed |
-| `python -m unittest discover -s tests -v` | After PR #11 comment fixes: 569 discovered, **532 passed, 37 skipped**, zero failures/errors; 40.847 s. Before that follow-up: 562 discovered, 525 passed and 37 skipped; initial pre-atlas pass: 556 discovered, 519 passed and 37 skipped |
-| `python -m unittest discover -s tests -p test_documentation_archive.py -v` | 9 passed after review: direct Git-blob identity, complete inventory, missing/extra-file rejection, no-write unsafe-path fixtures, manifest hashes and Git newline preservation |
+| `python -m unittest discover -s tests -v` | Latest archive review follow-up: 577 discovered, **540 passed, 37 skipped**, zero failures/errors; 48.014 s. Earlier review pass: 569 discovered, 532 passed and 37 skipped; initial integrated documentation pass: 562 discovered, 525 passed and 37 skipped |
+| `python -m unittest discover -s tests -p test_documentation_archive.py -v` | 17 passed: pinned milestones/revisions/scopes, distinct canonical copy paths, direct Git-blob identity, complete inventory, missing/extra-file rejection, unsafe-path/alias rejection, manifest hashes and Git newline preservation |
 | `python -m unittest discover -s tests -p test_documentation_navigation.py -v` | 4 passed, including file links, opening synopsis, fences and canonical overview diagrams |
 | `python -m unittest discover -s tests -p test_knowledge_index.py -v` | 6 passed |
 | `python -m unittest discover -s tests -p test_tsf_headlines.py -v` | 3 passed |
@@ -64,6 +64,14 @@ Independent review also identified a path-escape risk in the new temporary-fixtu
 Both existing CI jobs fetch full Git history so the checks can inspect the recorded revisions in fresh hosted checkouts. Validation itself stays offline. The [archive verification instructions](../../archive/README.md#verify-committed-sources-and-completeness) explain the local prerequisite. No report contents, original bytes, result JSON or private-public boundary changed in this follow-up.
 
 A separate local-only shallow Git reproduction rejected unavailable source history, then passed the complete 145-file blob/inventory check after an unshallow fetch from the local repository. This did not contact an external service or alter the retained archive.
+
+## PR #11 milestone identity and copy-path follow-up
+
+Three later comments exposed additional contract gaps: an entire selective milestone could disappear with its catalogue row, original/readable copies could share a file, and a snapshot could be regenerated from another valid revision while retaining the old directory label. Six negative cases reproduced these gaps before correction, including replacement of the complete snapshot from a different commit with the same 145-path inventory.
+
+The archive verifier now independently pins all six snapshot directory names to full source commits. Selective milestone file sets are pinned as well; the complete snapshot still derives its full Markdown inventory from its pinned Git tree. The catalogue must contain exactly one entry for every expected snapshot. Canonical `originals/` and `pages/` paths preserve separate copies for each source; case-insensitive uniqueness and resolved-path checks reject reuse, namespace swaps and aliases. Temporary fixtures use real snapshot names and the same path-safety checks.
+
+These corrections change archive verification and documentation only. All six retained snapshot directories, their manifests, original copies and readable copies are unchanged. Adding future snapshots requires a reviewed registry entry, so manifest or catalogue edits alone cannot silently remove or replace preserved history.
 
 The review-only audit also detected three unre-based multiline links in two archive reading copies. Those derived copies and their manifest hashes were repaired; exact originals were untouched. The subsequent full archive/link/anchor audit passed. This helper belongs to the review workspace, not the repository's supported research CLI.
 
