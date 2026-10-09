@@ -2,9 +2,9 @@
 
 The known private command produces asynchronous TSF reports, not a counter tuple in its immediate reply. Saved reports can now be read through an owned diagnostic API. Fresh sampling, report ownership and a hardware-to-host bracket remain unresolved, so this decision permits offline replay but does not enable a new live client or clock provider.
 
-<!-- historical-context:2026-10-04 -->
-**Historical context (2026-10-04):** Later archive and installed-file inspection located QUTS client-owned byte returns and corrected vendor package/version assumptions; exact adapter-to-producer association remains open. See [current findings](../knowledge/current-findings.md).
-<!-- /historical-context -->
+<!-- research-history:2026-10-09 -->
+**Research context (2026-10-09):** Scoped technical reference. Build-specific findings and operational prerequisites retain their stated scope. [Current account](../research-history/README.md) · [Timeline](../research-history/timeline.md) · [Previous version](../../archive/2026-10-09-pre-refresh-e9d71b8/pages/docs__adapters__qualcomm-minimal-transport-contract.md).
+<!-- /research-history -->
 
 ## Known contract
 

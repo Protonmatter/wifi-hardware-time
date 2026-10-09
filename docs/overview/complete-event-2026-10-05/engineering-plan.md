@@ -2,6 +2,10 @@
 
 The bounded receive-shutdown audit and current QMSL callback trace are complete within their static scope. The 2026-10-06 route decision is no-go for current installed Qualcomm live integration: demonstrated supported/vendor/instrumented producer access remains missing. A real retained event is still required to qualify that connection. Diagnostic replay and host API acceptance can proceed independently; timing interpretation and host-clock correlation retain separate gates.
 
+<!-- research-history:2026-10-09 -->
+**Research context (2026-10-09):** Dated evidence or historical plan. This dated report or plan retains its original evidence and execution scope; later results and publication status are in the research account. [Current account](../../research-history/README.md) · [Timeline](../../research-history/timeline.md) · [Previous version](../../../archive/2026-10-09-pre-refresh-e9d71b8/pages/docs__overview__complete-event-2026-10-05__engineering-plan.md).
+<!-- /research-history -->
+
 **Current status:** [S0/S2 closure and the qualification ledger](../gap-closure-ledger.md),
 [exact PR component map](../pr3-component-review-map-2026-10-06.md), and
 [hardware route ruling](../../evidence/hardware-route-decision-2026-10-06.md).

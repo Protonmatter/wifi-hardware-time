@@ -1,0 +1,42 @@
+{
+  "schema": "wht/documentation-archive-v1",
+  "captured_date": "2026-10-09",
+  "timezone": "America/New_York",
+  "source_kind": "git-blob",
+  "source_revision": "1fc9bed58df4abd6fc28ae883670d05adff47cd0",
+  "files": [
+    {
+      "source_path": "README.md",
+      "source_commit": "1fc9bed58df4abd6fc28ae883670d05adff47cd0",
+      "local_base_commit": null,
+      "last_change": "1fc9bed58df4abd6fc28ae883670d05adff47cd0\t2026-10-08T18:07:36-04:00",
+      "original_sha256": "cfe1590162bf0fee2b6eedd1983339035115e92ed5912eb865d9c1d702543b7b",
+      "original_bytes": 8518,
+      "original_path": "originals/README.md.txt",
+      "reading_path": "pages/README.md",
+      "reading_sha256": "821c7c2acb7fa611020736b3ff5fd4e0152361427f9946c6d150c1960cb5d8a7"
+    },
+    {
+      "source_path": "docs/knowledge/current-findings.md",
+      "source_commit": "1fc9bed58df4abd6fc28ae883670d05adff47cd0",
+      "local_base_commit": null,
+      "last_change": "1fc9bed58df4abd6fc28ae883670d05adff47cd0\t2026-10-08T18:07:36-04:00",
+      "original_sha256": "eff70dba3bd098007dccfacacf8d703704ef31afbaf9f2495b6b08080cec1a35",
+      "original_bytes": 30981,
+      "original_path": "originals/docs__knowledge__current-findings.md.txt",
+      "reading_path": "pages/docs__knowledge__current-findings.md",
+      "reading_sha256": "665eefbe9057ee7c2ac8a0da2f0c418f3e095ece4c95dfafc33132418fd9c0e4"
+    },
+    {
+      "source_path": "docs/overview/gap-closure-ledger.md",
+      "source_commit": "1fc9bed58df4abd6fc28ae883670d05adff47cd0",
+      "local_base_commit": null,
+      "last_change": "02459e780f9912b31c2ece951cf824d941972156\t2026-10-08T14:32:47-04:00",
+      "original_sha256": "19344fdc684791f31c8768c5c6f3134a5835c6047f2e70d714c8666cdbb6f7f3",
+      "original_bytes": 19758,
+      "original_path": "originals/docs__overview__gap-closure-ledger.md.txt",
+      "reading_path": "pages/docs__overview__gap-closure-ledger.md",
+      "reading_sha256": "19f43b8852e014d622093f893eaf879593dee9f000f240d725da09e48a226f6b"
+    }
+  ]
+}

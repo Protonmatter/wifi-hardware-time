@@ -2,9 +2,9 @@
 
 This ledger separates successful operations from claims about accurate time. It records which hardware tests ran, which observations were rejected and what each result supports. Repeated counter reports and working ranging operations are useful findings, but they do not yet establish a calibrated clock or general packet timestamp interface.
 
-<!-- historical-context:2026-10-04 -->
-**Historical context (2026-10-04):** Current findings now include complete vendor package inventories, QUTS client ownership and a correction ledger. Historical acquisitions retain their original scope and limits. See [current findings](../knowledge/current-findings.md).
-<!-- /historical-context -->
+<!-- research-history:2026-10-09 -->
+**Research context (2026-10-09):** Dated evidence or historical plan. This dated report or plan retains its original evidence and execution scope; later results and publication status are in the research account. [Current account](../research-history/README.md) · [Timeline](../research-history/timeline.md) · [Previous version](../../archive/2026-10-09-pre-refresh-e9d71b8/pages/docs__overview__validation.md).
+<!-- /research-history -->
 
 **Key terms:** Qualification is a claim supported by stated evidence. Static inspection reads code; live validation exercises hardware. A trace is a record of events, not necessarily every event the device performed. See the [glossary](../glossary.md).
 
@@ -14,7 +14,7 @@ This ledger separates successful operations from claims about accurate time. It 
 
 This is a sanitized summary of observations from the 2026-10-01 through 2026-10-03 investigation. Original endpoint logs, local identifiers, absolute paths, raw disassembly, and captures are not public artifacts. These observations do not describe another machine or a later driver release.
 
-**Latest state: private acquisition remains quarantined.** The corrected observer
+**Historical strict-profile disposition: private acquisition remains quarantined.** Later diagnostic bound/persistent profiles and corrected replay are recorded separately in the [current results](../research-history/results-and-validation.md). The corrected observer
 passed two passive checks, then its private campaign stopped during the third
 capture on unmatched reports. The earlier complete campaign below is a separate
 experiment. See the [latest campaign report](../acquisition/private-campaign-2026-10-03-quarantine.md)

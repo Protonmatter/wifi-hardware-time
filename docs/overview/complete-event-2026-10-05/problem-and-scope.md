@@ -2,6 +2,10 @@
 
 The next useful hardware result is one complete, attributable event retained in application-owned storage after the producer can reuse its buffer. It may initially be diagnostic data with unknown timing semantics. This plan advances that result without treating a working byte transport, trace timestamp or successful software test as a hardware clock qualification.
 
+<!-- research-history:2026-10-09 -->
+**Research context (2026-10-09):** Dated evidence or historical plan. This dated report or plan retains its original evidence and execution scope; later results and publication status are in the research account. [Current account](../../research-history/README.md) · [Timeline](../../research-history/timeline.md) · [Previous version](../../../archive/2026-10-09-pre-refresh-e9d71b8/pages/docs__overview__complete-event-2026-10-05__problem-and-scope.md).
+<!-- /research-history -->
+
 ## Acceptance criteria
 
 - Identify exact source/driver/firmware provenance and the capture boundary.

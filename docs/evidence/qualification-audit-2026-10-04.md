@@ -7,6 +7,10 @@ and QXDM components also have valid publisher signatures. These results strength
 software and file-provenance evidence; they do not establish a live Wi-Fi timing
 record, a server snapshot contract, or calibrated clock accuracy.
 
+<!-- research-history:2026-10-09 -->
+**Research context (2026-10-09):** Dated evidence or historical plan. This dated report or plan retains its original evidence and execution scope; later results and publication status are in the research account. [Current account](../research-history/README.md) · [Timeline](../research-history/timeline.md) · [Previous version](../../archive/2026-10-09-pre-refresh-e9d71b8/pages/docs__evidence__qualification-audit-2026-10-04.md).
+<!-- /research-history -->
+
 ## Scope and revision
 
 This audit read files and existing evidence, verified signatures, compiled and ran

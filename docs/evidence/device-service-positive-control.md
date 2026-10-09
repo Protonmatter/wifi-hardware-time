@@ -2,6 +2,10 @@
 
 A bounded live test returned the expected eight bytes through the installed Qualcomm driver's test service and the Windows WLAN API. This establishes a real byte-return route beyond the user-mode broker demonstration. The bytes are a fixed test pattern, not firmware measurements. A complete TSF producer still needs to be connected to a return mechanism with its original metadata and lifetime intact.
 
+<!-- research-history:2026-10-09 -->
+**Research context (2026-10-09):** Scoped technical reference. Build-specific findings and operational prerequisites retain their stated scope. [Current account](../research-history/README.md) · [Timeline](../research-history/timeline.md) · [Previous version](../../archive/2026-10-09-pre-refresh-e9d71b8/pages/docs__evidence__device-service-positive-control.md).
+<!-- /research-history -->
+
 ## Contents
 
 - [Observed result](#observed-result)

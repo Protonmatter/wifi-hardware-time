@@ -2,6 +2,10 @@
 
 > Historical report: the original source pins and JSON outputs are preserved. See the [2026-10-08 review reconciliation](../overview/pr-reconciliation-2026-10-08.md) for corrected threshold, settlement, and diagnostic results on the same retained captures.
 
+<!-- research-history:2026-10-09 -->
+**Research context (2026-10-09):** Dated evidence or historical plan. This dated report or plan retains its original evidence and execution scope; later results and publication status are in the research account. [Current account](../research-history/README.md) · [Timeline](../research-history/timeline.md) · [Previous version](../../archive/2026-10-09-pre-refresh-e9d71b8/pages/docs__acquisition__persistent-tsf-smoke-2026-10-08.md).
+<!-- /research-history -->
+
 The persistent sampler completed one 300-second idle run on the qualified Qualcomm FastConnect 7800 Windows ARM64 profile. All 139 requests completed successfully in one recorded session; offline screening accepted 138 timing samples. Normal shutdown was clean. This supports live persistent acquisition on this exact build and a useful conditional TSF-to-QPC relationship. It does not complete phase 2 or establish calibrated physical, AP, UTC or multi-device accuracy.
 
 ## What ran

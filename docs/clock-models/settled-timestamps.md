@@ -1,72 +1,48 @@
-# Two-phase TSF timestamps: settled results
+# Two-phase TSF timestamps: current settlement policy
 
-> Historical report: the original source pins and JSON outputs are preserved. See the [2026-10-08 review reconciliation](../overview/pr-reconciliation-2026-10-08.md) for corrected threshold, settlement, and diagnostic results on the same retained captures.
+Record an event's raw QPC and provisional result immediately, then append a derived settled interval when sufficient already-available evidence brackets the event. Current retained replay settled all 7,492 points on three declared one-second grids below 1 ms in conditional rate-only half-width. This finite, offline-screened result does not establish a universal event guarantee, online admission or calibrated AP/UTC accuracy.
 
-Waiting a few seconds turns the live clock's intermittent sub-millisecond status into a sub-millisecond bound for every event. An event's QPC is recorded at once; when the next sample captured after it has arrived, the event is settled from the samples on both sides. Across the two counted hour-long runs, every one of 7,195 events (one per second) settled below 1 ms, typically about 310 to 325 us, after a median wait of about 3 seconds. These are bounds computed from measured traces under stated assumptions, conditioned on offline sample screening.
+**Updated interpretation, 2026-10-09:** [Research account](../research-history/README.md) · [Result versions](../research-history/results-and-validation.md) · [Previous page](../../archive/2026-10-09-pre-refresh-e9d71b8/pages/docs__clock-models__settled-timestamps.md). Original component JSON remains in [the historical settlement directory](settled-timestamps-2026-10-08/).
 
-## Contents
+## How current settlement works
 
-- [How settling works](#how-settling-works)
-- [Results](#results)
-- [How to use it](#how-to-use-it)
-- [What this shows and what it does not](#what-this-shows-and-what-it-does-not)
-- [Reproduce](#reproduce)
+1. Preserve the raw event QPC, clock/epoch identity and immutable provisional result. Do not overwrite the original timestamp when later information arrives.
+2. Find a complete bracket using samples available by the settlement cutoff. A true-before sample has widened capture end `upper + 1 <= event`; a true-after sample has `lower > event`. A capture overlapping the event supplies neither side.
+3. Under `wht/settlement-v2`, already-available overlapping envelopes can narrow an existing complete bracket. Record the contributing sequences. Later queries must not retroactively use evidence unavailable at the returned settlement time.
+4. Return explicit `settled`, `pending`, `unbracketed` or `inconsistent` outcomes under the settlement contract. Causal-provider stale/invalid state and acquisition epoch changes remain distinct inputs; absence of a bracket is not a fabricated result.
+5. Report the conditional rate-only interval. Any separately provided affine estimate adds constant rate over the surrounding span and uses only evidence available by the settlement cutoff. Disclose its actual count/subset.
 
-**Terms:** the **conditional rate-only bound** is the rate-only bound (TSF rate within 200 ppm of nominal at every instant). The **best estimate** additionally assumes one constant rate within the surrounding 60 seconds. See the [causal provider replay](causal-provider-replay.md), the [design contract](../overview/2026-10-08-causal-provider-design.md) and the [glossary](../glossary.md).
+The implementation is [settle.py](../../research/clock_models/settle.py); [mathematics](tsf-mathematics.md) and [post-merge corrections](../overview/postmerge-corrections-2026-10-08.md) define quantization, availability and policy. Samples here were admitted by a full-recording offline screen. This research implementation is not itself the maintained live consumer boundary.
 
-## How settling works
+## Corrected retained results
 
-1. **Stamp:** record the event's QPC. Until it settles, the [causal provider](../../research/clock_models/causal_provider.py) gives a provisional interval and state.
-2. **Settle** ([`settle.py`](../../research/clock_models/settle.py)): once the first sample captured after the event has arrived, intersect the bounds implied by that sample and the last sample before the event. Only samples available at settle time are used.
-3. **States:**
-   - `settled`: the conditional rate-only interval is available;
-   - `pending`: the bracketing sample has not arrived;
-   - `unbracketed`: no earlier sample exists in the epoch;
-   - `inconsistent`: the two sides cannot both hold under the assumptions.
-4. **Best estimate:** the [window polygon](../../research/clock_models/bracket_bound.py) over samples within ±30 s that are available at settle time, reported separately and labelled with its stronger assumption.
+Source: corrected fields of [postmerge-corrections-2026-10-08.json](../overview/postmerge-corrections-2026-10-08.json), source commit `0f41db0175e3601e899c51143b46bb8b3df02135`.
 
-Sample availability is the recorded arrival time at the controller (the reader receipt of the sample's last record, never before its request completed), as in the arrival-aware replay.
+| Measure | Idle hour | Loaded hour | Persistent smoke |
+|---|---:|---:|---:|
+| Settled / event-grid points | 3,598 / 3,598 | 3,597 / 3,597 | 297 / 297 |
+| Conditional rate-only half-width, median / max, us | 308.456 / 894.669 | 324.908 / 766.954 | 280.429 / 614.883 |
+| Wait until settlement, median / max, seconds | 3.112 / 8.029 | 3.347 / 7.823 | 2.341 / 4.989 |
+| Affine estimate available / grid points | 3,595 / 3,598 | 3,595 / 3,597 | 295 / 297 |
 
-## Results
+These are conditional interval half-widths at the sampled event grid, not measured physical errors. Integer-estimate uncertainty carries an additional conservative 0.5-us allowance. Retrospective consecutive-pair maxima are a different statistic and do not cap every nonadjacent first-available settlement. For example, the loaded-hour retrospective figure is 785.584 us, while its actual settled-grid maximum here is 766.954 us.
 
-Events were placed every second from the first capture to the last, each settled at its earliest possible time.
+The [first review](../overview/pr-reconciliation-2026-10-08.md) corrected bracket sides and availability semantics. The [subsequent version](../overview/postmerge-corrections-2026-10-08.md) permitted available overlapping envelopes to narrow an already complete bracket. Original inputs and published result files were preserved through both. Read the [version table](../research-history/results-and-validation.md#why-older-numbers-differ) before comparing old quantiles.
 
-| | Idle (`ac08a44962b0`) | Load (`04ddf1083b85`) |
-|---|---:|---:|
-| Events / settled | 3,598 / 3,598 | 3,597 / 3,597 |
-| Settled below 1,000 us | 100% | 100% |
-| Wait until settled: median / p90 / p99 / max (s) | 3.112 / 4.560 / 5.173 / 8.029 | 3.347 / 4.732 / 5.770 / 7.823 |
-| **Conditional rate-only half-width: median / p90 / p99 (us)** | **308.5 / 447.4 / 578.7** | **324.9 / 463.1 / 585.3** |
-| Retrospective consecutive-pair maximum half-width (us; different from settlement) | 894.669 | 785.584 |
-| Best-estimate half-width: median / p90 / p99 / max (us) | 126.6 / 154.0 / 193.8 / 309.7 | 130.2 / 161.7 / 204.3 / 244.0 |
+## Appropriate use and unresolved limits
 
-The worst-at-any-instant figure is the exact retrospective maximum over every instant, not only the one-second grid. Pinned outputs with input hashes and source revision `ef8adf0` are in [`settled-timestamps-2026-10-08/`](settled-timestamps-2026-10-08/).
+This design is useful for research event logs and retrospective correlation where later refinement is acceptable. An immediate decision must use the provisional state and uncertainty, including stale/unavailable outcomes. Settlement waits here end at the recorded reader boundary, not the time a real consumer completed admission and returned an API response.
 
-## How to use it
+Capture inside the host windows, the ±200-ppm prior, no unmodelled phase steps and continuous source identity remain assumptions. AP-referenced use additionally needs an independently bounded station/AP relationship. Shared-AP cross-device use requires a combined error budget. UTC needs its own reference chain. A tight interval or zero internal inconsistencies cannot establish those links.
 
-- **Event correlation, logs and measurement records:** use settled timestamps and report the conditional rate-only interval. Every event in these runs settled below 1 ms within about 8 seconds.
-- **Cross-device correlation (research hypothesis):** sharing an access point does not establish a qualified common clock. Independently bound each station-to-AP relationship and include both capture/conversion uncertainties in a combined error budget before comparing device events. This implementation supplies no calibrated cross-device capability.
-- **Decisions needed immediately:** use the provisional value with its state and uncertainty, and treat `stale` as not sub-millisecond.
+Persistent operation did not automatically remove delivery wait: the smoke achieved median 2.005-second gaps. Improved scheduling/coverage requires a supported association/lifecycle contract and new evidence; the old speculation that a one-second persistent sampler would automatically solve this is not a measured result.
 
-## What this shows and what it does not
+## Reproduce and continue
 
-**Shows:** with today's hardware and acquisition, and under the stated assumptions, every event can receive a sub-millisecond TSF bound a few seconds after it happens.
-
-**Does not show:**
-
-- **Capture timing.** Each TSF is assumed to be captured inside its window.
-- **The station-to-AP TSF link.** It is assumed, not measured.
-- **Accuracy against UTC.**
-- **Online sample admission.** Samples were screened offline over the complete recording.
-- **Settle latency inside an application.** It is measured only to the controller's reader boundary.
-
-A persistent sampler at about one-second spacing would shorten the waits and tighten the conditional bound.
-
-## Reproduce
-
-With the private run folders under `artifacts/`:
+With authorized original private inputs, the read-only command is:
 
 ```powershell
-python research/clock_models/replay_causal_provider.py artifacts/BoundCampaign-ac08a44962b0/idle --mode settle
-python research/clock_models/replay_causal_provider.py artifacts/BoundCampaign-04ddf1083b85/load --mode settle
+python research/clock_models/replay_causal_provider.py <PRIVATE_RUN_DIRECTORY> --mode settle
 ```
+
+Pin code and input hashes; use the matching historical revision when reproducing an old output. Public tests establish software behavior, not recreation of unavailable private captures. Next work is [longer persistent qualification, online admission, live failure evidence and independent timing validation](../research-history/next-steps.md).

@@ -2,6 +2,10 @@
 
 Several plausible shortcuts became incorrect when we followed the bytes or repeated acquisition. This ledger states what changed, why it changed and what the result permits. A disproven interpretation does not erase the underlying measurement. An untested connection remains open even when both endpoints have been located independently.
 
+<!-- research-history:2026-10-09 -->
+**Research context (2026-10-09):** Maintained status or roadmap. Use the linked account for goals, result versions, failed assumptions and remaining qualification gates. [Current account](../research-history/README.md) · [Timeline](../research-history/timeline.md) · [Previous version](../../archive/2026-10-09-pre-refresh-e9d71b8/pages/docs__knowledge__assumptions-and-corrections.md).
+<!-- /research-history -->
+
 ## Contents
 
 - [How to read the status](#how-to-read-the-status)
@@ -130,6 +134,18 @@ All rows below use the [2026-10-04 archive/installed-file investigation](../adap
 | A queued WLANLIB notification returns a firmware timing event | Disproved for inspected Qmux request: the completion computes and returns a one-byte state named 5G in use | Request ownership/completion is useful evidence, but the value is not a timestamp |
 | QUD USB request ownership can be adopted unchanged | Open and unsafe to assume: selected failure/teardown branches need correction or validation | Carry exactly-once completion and bounded teardown requirements into our implementation |
 | Vendor FILETIME comments saying 1600 define the Windows epoch | Disproved against Microsoft's 1601 contract | Treat the local comment as inconsistent and verify actual conversion |
+
+## Model and review corrections through October 9
+
+The [research hypothesis summary](../research-history/hypotheses-and-lessons.md) connects the detailed rows above to the decisions they changed. The following later lessons are distinct from the original-event producer question.
+
+| Earlier interpretation | Evidence and corrected policy |
+|---|---|
+| Internal freshness/affine consistency proves physical capture in the window | A constant 5-ms pre-window capture passed the screen. Keep capture semantics unverified and `physical_bound_proven: false`; [campaign assumptions](../acquisition/tsf-host-bound-results.md#assumptions-behind-the-bound) |
+| Interval half-width and error of the rounded integer estimate are interchangeable | Include the 0.5-us allowance in tracking/expiry; corrected coverage is 78.632051% idle, 72.349583% load and 92.862589% smoke; [version comparison](../research-history/results-and-validation.md) |
+| A later failure invalidates all finalized successful requests | Preserve finalized evidence; current failure does not rewrite past successful release. Unresolved I/O retains ownership; [post-merge corrections](../overview/postmerge-corrections-2026-10-08.md) |
+| Capture order always equals usable arrival order, or an overlapping sample brackets an event | Versioned arrival order and true-before/true-after rules are required. Available overlapping envelopes can narrow a complete bracket but cannot supply its side; [current settlement](../clock-models/settled-timestamps.md) |
+| A continuity violation can be ignored once the tolerance later grows | A backward structurally eligible TSF closes the screen segment; causal invalidation waits until the evidence is actually available; [screen-v2 policy](../overview/postmerge-corrections-2026-10-08.md) |
 
 ## Claims that remain open
 

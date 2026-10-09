@@ -2,9 +2,13 @@
 
 Start with the question you need answered, then follow its evidence to the relevant experiment. The project has useful Wi-Fi timing observations but no qualified synchronized hardware clock. This guide separates what was observed, what was inferred, what remains unknown and which tools belong to each question.
 
-<!-- historical-context:2026-10-04 -->
-**Historical context (2026-10-04):** Current findings now include complete vendor package inventories, QUTS client ownership and a correction ledger. Historical acquisitions retain their original scope and limits. See [current findings](knowledge/current-findings.md).
-<!-- /historical-context -->
+<!-- research-history:2026-10-09 -->
+**Research context (2026-10-09):** Maintained reading guide. Use the linked account for goals, result versions, failed assumptions and remaining qualification gates. [Current account](research-history/README.md) · [Timeline](research-history/timeline.md) · [Previous version](../archive/2026-10-09-pre-refresh-e9d71b8/pages/docs__README.md).
+<!-- /research-history -->
+
+## Follow the research over time
+
+Start with [goals and current position](research-history/README.md), then follow the [chronology](research-history/timeline.md), [results and failed attempts](research-history/results-and-validation.md), [hypotheses and corrections](research-history/hypotheses-and-lessons.md) and [next steps](research-history/next-steps.md). The [complete catalogue](research-history/source-map.md) accounts for every pre-refresh Markdown file; the [dated archive](../archive/README.md) preserves the older versions. [Publication status](research-history/publication-status.md) records merged work, open PRs and the public/private boundary.
 
 ## Contents
 

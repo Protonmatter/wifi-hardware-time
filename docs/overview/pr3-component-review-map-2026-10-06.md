@@ -2,6 +2,10 @@
 
 This map classifies all 220 files in the published PR baseline and identifies the evidence, tests and risks a reviewer needs for each component. It is a review plan and coverage ledger, not evidence that every changed line has been independently reviewed. The current documentation pass verifies publication metadata, inventory and status consistency; it does not repeat the completed binary investigation or certify production readiness.
 
+<!-- research-history:2026-10-09 -->
+**Research context (2026-10-09):** Dated evidence or historical plan. This dated report or plan retains its original evidence and execution scope; later results and publication status are in the research account. [Current account](../research-history/README.md) · [Timeline](../research-history/timeline.md) · [Previous version](../../archive/2026-10-09-pre-refresh-e9d71b8/pages/docs__overview__pr3-component-review-map-2026-10-06.md).
+<!-- /research-history -->
+
 **Subsequent review:** the [completed software review and corrections](pr3-review-2026-10-06.md)
 records source/document coverage, four reproduced and corrected findings, and
 344 passing configured tests. It supersedes the pending software-review status

@@ -2,9 +2,9 @@
 
 Use this catalog to connect a research finding with the tool that produced or analyzed it. It distinguishes maintained commands from historical source snapshots and records what actually ran. A retained script, successful process or passing software test is not automatically evidence of a qualified hardware timing capability.
 
-<!-- historical-context:2026-10-04 -->
-**Historical context (2026-10-04):** Current findings now include complete vendor package inventories, QUTS client ownership and a correction ledger. Historical acquisitions retain their original scope and limits. See [current findings](../knowledge/current-findings.md).
-<!-- /historical-context -->
+<!-- research-history:2026-10-09 -->
+**Research context (2026-10-09):** Scoped technical reference. Build-specific findings and operational prerequisites retain their stated scope. [Current account](../research-history/README.md) · [Timeline](../research-history/timeline.md) · [Previous version](../../archive/2026-10-09-pre-refresh-e9d71b8/pages/docs__overview__validation-execution-catalog.md).
+<!-- /research-history -->
 
 **Key terms:** An entry point is a command intended to be run. A snapshot preserves an older source version. Provenance records the source, inputs and conditions behind a result. See the [glossary](../glossary.md).
 

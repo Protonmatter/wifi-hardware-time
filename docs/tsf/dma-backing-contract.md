@@ -2,6 +2,10 @@
 
 The previously unnamed allocation call is now connected to Windows's common-buffer API through a framework-created DMA adapter. The inspected initializer and configuration writer favor this route, which explicitly requests cached memory and returns separate CPU and device addresses. This narrows the exporter's memory contract; it does not prove live coherency, safe teardown or a timing-event return to an application.
 
+<!-- research-history:2026-10-09 -->
+**Research context (2026-10-09):** Scoped technical reference. Build-specific findings and operational prerequisites retain their stated scope. [Current account](../research-history/README.md) · [Timeline](../research-history/timeline.md) · [Previous version](../../archive/2026-10-09-pre-refresh-e9d71b8/pages/docs__tsf__dma-backing-contract.md).
+<!-- /research-history -->
+
 ## Contents
 
 - [What the exact driver establishes](#what-the-exact-driver-establishes)

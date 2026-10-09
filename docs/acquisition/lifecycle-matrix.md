@@ -2,9 +2,9 @@
 
 This offline model defines when a collected clock observation must become unusable: after a timeout, stale data, ambiguous reports, or a connection change. It tests software decisions, not device behavior. Restart, sleep and roaming tests remain preparation only, and a new software session cannot prove old firmware reports have stopped.
 
-<!-- historical-context:2026-10-04 -->
-**Historical context (2026-10-04):** The private campaign remains quarantined. The new QUTS client ownership finding does not establish firmware drain, report association or a new live acquisition. See [current findings](../knowledge/current-findings.md).
-<!-- /historical-context -->
+<!-- research-history:2026-10-09 -->
+**Research context (2026-10-09):** Scoped technical reference. Build-specific findings and operational prerequisites retain their stated scope. [Current account](../research-history/README.md) · [Timeline](../research-history/timeline.md) · [Previous version](../../archive/2026-10-09-pre-refresh-e9d71b8/pages/docs__acquisition__lifecycle-matrix.md).
+<!-- /research-history -->
 
 An epoch is one period of assumed clock continuity. Firmware drain means all earlier requests and reports have finished. TSF is the Wi-Fi timing counter; QPC is Windows' high-resolution host counter. See the [glossary](../glossary.md) for related terms.
 

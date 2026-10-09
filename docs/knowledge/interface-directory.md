@@ -2,6 +2,10 @@
 
 This directory ranks useful starting points by what the evidence supports. Names help navigate source and binaries; they do not confer a stable API or authorize a hardware command. Use the full generated index for every authored reference, then return to the linked finding to understand its build, clock domain and qualification limit.
 
+<!-- research-history:2026-10-09 -->
+**Research context (2026-10-09):** Scoped technical reference. Build-specific findings and operational prerequisites retain their stated scope. [Current account](../research-history/README.md) · [Timeline](../research-history/timeline.md) · [Previous version](../../archive/2026-10-09-pre-refresh-e9d71b8/pages/docs__knowledge__interface-directory.md).
+<!-- /research-history -->
+
 ## Contents
 
 - [Timing producers and private paths](#timing-producers-and-private-paths)

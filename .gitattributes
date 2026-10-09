@@ -15,3 +15,5 @@ research/tsf/decode_tsf_etl.c text eol=lf
 # Preserve the standalone atlas digest in Windows checkouts.
 docs/overview/archify-studio/index.html text eol=lf
 docs/overview/archify-studio/static-export-policy.js text eol=lf
+# Archive originals retain their exact Git/source bytes on every platform.
+archive/**/originals/** -text

@@ -2,6 +2,10 @@
 
 This record accounts for the Markdown refresh without rewriting history. Existing experiment pages keep their measured results and original dates; current-context notes point readers to the new findings. Source reproductions remain byte-identical. New knowledge pages separate current interpretation, corrected assumptions, navigation and reproducible procedures.
 
+<!-- research-history:2026-10-09 -->
+**Research context (2026-10-09):** Dated evidence or historical plan. This dated report or plan retains its original evidence and execution scope; later results and publication status are in the research account. [Current account](../research-history/README.md) · [Timeline](../research-history/timeline.md) · [Previous version](../../archive/2026-10-09-pre-refresh-e9d71b8/pages/docs__knowledge__document-review.md).
+<!-- /research-history -->
+
 ## Scope
 
 | Document | Disposition |

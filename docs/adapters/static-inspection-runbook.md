@@ -2,6 +2,10 @@
 
 Use this workflow to inspect vendor files without launching their installers or contacting a device. Preview shows the intended operation. Apply writes a private evidence directory, and an unchanged repeat validates the prior receipt. The outputs support byte identity and interface analysis; they do not establish live timing acquisition or clock accuracy.
 
+<!-- research-history:2026-10-09 -->
+**Research context (2026-10-09):** Scoped technical reference. Build-specific findings and operational prerequisites retain their stated scope. [Current account](../research-history/README.md) · [Timeline](../research-history/timeline.md) · [Previous version](../../archive/2026-10-09-pre-refresh-e9d71b8/pages/docs__adapters__static-inspection-runbook.md).
+<!-- /research-history -->
+
 ## Contents
 
 - [Preconditions](#preconditions)

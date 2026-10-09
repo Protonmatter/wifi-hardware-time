@@ -2,6 +2,10 @@
 
 The persistent sampler has passed offline adversarial tests and one five-minute idle live smoke run. The immediate objective is to turn that bounded result into a qualified TSF-referenced timestamp service with explicit uncertainty and failure states. This roadmap separates research questions, implementation changes and the evidence needed to close each gate. It is not authorization for a live experiment, a lifecycle disruption or a merge.
 
+<!-- research-history:2026-10-09 -->
+**Research context (2026-10-09):** Maintained status or roadmap. Use the linked account for goals, result versions, failed assumptions and remaining qualification gates. [Current account](../research-history/README.md) · [Timeline](../research-history/timeline.md) · [Previous version](../../archive/2026-10-09-pre-refresh-e9d71b8/pages/docs__overview__persistent-tsf-next-steps.md).
+<!-- /research-history -->
+
 ## Current position
 
 <!-- tsf-headlines:smoke -->
@@ -17,7 +21,7 @@ The persistent sampler has passed offline adversarial tests and one five-minute 
 | Mathematics | Exact fraction-based bounded-rate and separately labeled affine models | Any optimized clipping, new settlement policy or qualified wander model |
 | External accuracy | Coarse beacon consistency, zero violations in checked smoke observations | Independent station/AP, multi-node and UTC/reference validation |
 
-Read the [measured results](../acquisition/persistent-tsf-smoke-2026-10-08.md), [sampler contract](../acquisition/persistent-tsf-sampler.md) and [mathematics](../clock-models/tsf-mathematics.md) before reusing the numbers. The baseline stack consists of the bound campaign, causal provider and settlement changes; publication of this branch is not a merge or a production release.
+Read the [measured results](../acquisition/persistent-tsf-smoke-2026-10-08.md), [sampler contract](../acquisition/persistent-tsf-sampler.md) and [mathematics](../clock-models/tsf-mathematics.md) before reusing the numbers. The sampler/model stack and post-merge corrections are merged through `e9d71b8`. The [October 9 publication snapshot](../research-history/publication-status.md) supersedes earlier pending-integration wording. None of those merges establishes production or physical timing qualification.
 
 ## 1. Preserve the measured baseline
 
@@ -92,6 +96,6 @@ Retain the rate-only result and separately label any constant-rate affine estima
 
 ## 8. Review, publication and merge
 
-Keep code and results reviewable on the sampler branch. Resolve substantive review findings with reproductions and tests. Recheck the dependency stack, exact remote head, visibility and hosted checks. Commit, push, PR creation/update, merge and release are distinct actions governed by the user's authorization. A green software workflow is not a hardware qualification or an instruction to merge.
+The original sampler integration and correction PRs are now merged. The corrected interactive atlas is also merged through PR #10. Keep subsequent code and results reviewable as new changes from the verified current baseline. Resolve substantive review findings with reproductions and tests. Recheck the dependency stack, exact remote head, visibility and hosted checks. Commit, push, PR creation/update, merge and release are distinct actions governed by the user's authorization. A green software workflow is not a hardware qualification or an instruction to merge.
 
 The next technical step is the unchanged-profile longer-run/load qualification, alongside the source/association research needed before decoupling. Preserve the two-phase timestamp design as the leading application path while those gates remain open.

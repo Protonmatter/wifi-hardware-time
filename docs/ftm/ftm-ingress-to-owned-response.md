@@ -2,9 +2,9 @@
 
 The driver-side path into the FTM handler is now traced through event decoding, registration and cleanup. Its temporary decoded object does not become application-owned, and its event history stores host time rather than measurement payloads. A complete export still needs a bounded copy during valid ownership, preserved identity and an explicit application return contract.
 
-<!-- historical-context:2026-10-04 -->
-**Historical context (2026-10-04):** QXDM WLAN RTT definitions are a new schema lead. They have not been matched to a complete live four-event export from this adapter. See [current findings](../knowledge/current-findings.md).
-<!-- /historical-context -->
+<!-- research-history:2026-10-09 -->
+**Research context (2026-10-09):** Scoped technical reference. Build-specific findings and operational prerequisites retain their stated scope. [Current account](../research-history/README.md) · [Timeline](../research-history/timeline.md) · [Previous version](../../archive/2026-10-09-pre-refresh-e9d71b8/pages/docs__ftm__ftm-ingress-to-owned-response.md).
+<!-- /research-history -->
 
 ## Contents
 

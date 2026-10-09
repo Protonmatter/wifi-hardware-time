@@ -2,6 +2,10 @@
 
 Reuse the existing file-only inspector and application broker. The immediate change should make shutdown evidence reproducible, not introduce another speculative device ABI. A future live adapter must have its own reviewed provenance and completion contract; the current fixture/replay interface must continue rejecting promotion to a hardware clock.
 
+<!-- research-history:2026-10-09 -->
+**Research context (2026-10-09):** Dated evidence or historical plan. This dated report or plan retains its original evidence and execution scope; later results and publication status are in the research account. [Current account](../../research-history/README.md) · [Timeline](../../research-history/timeline.md) · [Previous version](../../../archive/2026-10-09-pre-refresh-e9d71b8/pages/docs__overview__complete-event-2026-10-05__devex-review.md).
+<!-- /research-history -->
+
 ## Interface decisions
 
 - Add structured static evidence to the existing inspector without removing fields.

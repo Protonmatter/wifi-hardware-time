@@ -2,9 +2,9 @@
 
 This roadmap explains how research can become an application clock without overstating what the hardware provides. The host-only clock already exists; Wi-Fi collection, clock conversion, node synchronization and operating-system clock control have separate evidence requirements. Historical work packages and current status remain distinct so completed software does not imply calibrated timing.
 
-<!-- historical-context:2026-10-04 -->
-**Historical context (2026-10-04):** Current findings now include complete vendor package inventories, QUTS client ownership and a correction ledger. Historical acquisitions retain their original scope and limits. See [current findings](../knowledge/current-findings.md).
-<!-- /historical-context -->
+<!-- research-history:2026-10-09 -->
+**Research context (2026-10-09):** Dated evidence or historical plan. This dated report or plan retains its original evidence and execution scope; later results and publication status are in the research account. [Current account](../research-history/README.md) · [Timeline](../research-history/timeline.md) · [Previous version](../../archive/2026-10-09-pre-refresh-e9d71b8/pages/docs__overview__2026-10-02-research-to-userspace-clock.md).
+<!-- /research-history -->
 
 **Key terms:** A provider supplies observations to an API, the interface applications call. Clock conversion relates different counters. System discipline changes the operating-system clock; local event timing does not require that capability. See the [glossary](../glossary.md).
 

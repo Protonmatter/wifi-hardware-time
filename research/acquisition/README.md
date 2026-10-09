@@ -1,15 +1,18 @@
 # Acquisition and lifecycle: tools
 
-These tools collect and assess timing observations, enforce request limits and stop admission when reports are ambiguous or evidence is lost. They distinguish healthy cleanup from proof that firmware work has drained. Private acquisition remains quarantined, and lifecycle preparation does not authorize reset, suspend or roaming experiments.
+These tools collect and assess timing observations, enforce request limits and stop admission when reports are ambiguous or evidence is lost. They distinguish healthy cleanup from proof that firmware work has drained. The historical strict campaign remains quarantined; the later bound profile and optional persistent sampler have separate admission/evidence rules. Lifecycle preparation does not authorize reset, suspend or roaming experiments.
 
-<!-- historical-context:2026-10-04 -->
-**Historical context (2026-10-04):** The private campaign remains quarantined. The new QUTS client ownership finding does not establish firmware drain, report association or a new live acquisition. See [current findings](../../docs/knowledge/current-findings.md).
-<!-- /historical-context -->
+<!-- research-history:2026-10-09 -->
+**Research context (2026-10-09):** Tool guide. Use the linked account for goals, result versions, failed assumptions and remaining qualification gates. [Current account](../../docs/research-history/README.md) · [Timeline](../../docs/research-history/timeline.md) · [Previous version](../../archive/2026-10-09-pre-refresh-e9d71b8/pages/research__acquisition__README.md).
+<!-- /research-history -->
 
 ## Files
 
 | File | Role |
 |---|---|
+| [run_bound_campaign.py](run_bound_campaign.py) | Exact-build bounded idle/load controller, trace/workload acceptance, adapter-scoped lock and durable unfinished/quarantine records; optional persistent mode. See the [sampler contract](../../docs/acquisition/persistent-tsf-sampler.md) and [all campaign attempts](../../docs/acquisition/tsf-host-bound-results.md). Live execution is separate from preview/offline checks. |
+| [persistent_sampler.py](persistent_sampler.py) | Persistent worker/native-operation abstraction, receipts and explicit pending/completion/resource ownership. Normal smoke success does not qualify real cancellation or firmware drain. |
+| [bss_reader.py](bss_reader.py) | Public Windows BSS cache reader for the coarse beacon consistency check; host query timing is not radio-reception timing. |
 | [Observe-WifiDataPath.ps1](Observe-WifiDataPath.ps1), [wifi-path.wprp](wifi-path.wprp) | Bounded Npcap capture with optional paired CPU tracing, explicit privilege/cleanup receipts and exact-driver checks. See the [live baseline and elevation record](../../docs/acquisition/packet-capture-and-elevation.md). |
 | [Observe-QutsRegistry.ps1](Observe-QutsRegistry.ps1), [quts-registry.wprp](quts-registry.wprp) | Preview-first OS registry observer with 32 MiB buffers and bracketed start/end controls. See the [qualified query capture](../../docs/adapters/quts-live-gate-and-commonio.md). |
 | [export_registry_trace.c](export_registry_trace.c) | Bounded offline native ETL reader; selected process events plus global key lifecycle. Raw output remains private. |

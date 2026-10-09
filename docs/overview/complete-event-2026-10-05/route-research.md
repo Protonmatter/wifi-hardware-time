@@ -2,6 +2,10 @@
 
 The strongest native-Windows route still requires a supported event-return facility or instrumentation inside the valid producer lifetime. Packet filters and tracing can only return data their observation point actually receives. Source-accessible Linux offers a practical alternative development path, but the inspected stock ath12k trace/test interfaces do not already provide a generic original WMI-event export for this task.
 
+<!-- research-history:2026-10-09 -->
+**Research context (2026-10-09):** Dated evidence or historical plan. This dated report or plan retains its original evidence and execution scope; later results and publication status are in the research account. [Current account](../../research-history/README.md) · [Timeline](../../research-history/timeline.md) · [Previous version](../../../archive/2026-10-09-pre-refresh-e9d71b8/pages/docs__overview__complete-event-2026-10-05__route-research.md).
+<!-- /research-history -->
+
 **2026-10-06 decision:** the current installed Qualcomm/QMSL live route is
 **no-go**, evaluated against every complete-event gate in the
 [hardware route decision](../../evidence/hardware-route-decision-2026-10-06.md).

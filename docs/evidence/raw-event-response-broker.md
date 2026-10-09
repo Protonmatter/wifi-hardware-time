@@ -2,6 +2,10 @@
 
 The new native broker turns stable source bytes into bounded, independently owned application responses. It implements publication, loss accounting, read tickets, cancellation, timeouts and shutdown, with real Windows thread tests and a Python DLL consumer. This completes a useful application-side component. The Qualcomm kernel copy points remain unconnected, so accepted data is limited to fixtures or unqualified replay and cannot enable a hardware clock.
 
+<!-- research-history:2026-10-09 -->
+**Research context (2026-10-09):** Scoped technical reference. Build-specific findings and operational prerequisites retain their stated scope. [Current account](../research-history/README.md) · [Timeline](../research-history/timeline.md) · [Previous version](../../archive/2026-10-09-pre-refresh-e9d71b8/pages/docs__evidence__raw-event-response-broker.md).
+<!-- /research-history -->
+
 ## Contents
 
 - [Integration boundary](#integration-boundary)

@@ -2,9 +2,9 @@
 
 The private campaign stopped when extra clock reports could not be matched to its requests. Two captures passed, but the third was rejected and the remaining work did not run. Cleanup checks confirmed resource termination; they did not establish report ownership or firmware drain. The quarantine intentionally blocks another campaign.
 
-<!-- historical-context:2026-10-04 -->
-**Historical context (2026-10-04):** The private campaign remains quarantined. The new QUTS client ownership finding does not establish firmware drain, report association or a new live acquisition. See [current findings](../knowledge/current-findings.md).
-<!-- /historical-context -->
+<!-- research-history:2026-10-09 -->
+**Research context (2026-10-09):** Dated evidence or historical plan. This dated report or plan retains its original evidence and execution scope; later results and publication status are in the research account. [Current account](../research-history/README.md) · [Timeline](../research-history/timeline.md) · [Previous version](../../archive/2026-10-09-pre-refresh-e9d71b8/pages/docs__acquisition__private-campaign-2026-10-03-quarantine.md).
+<!-- /research-history -->
 
 TSF is the Wi-Fi timing counter; SoC denotes the reported system-on-chip counter. An IOCTL is a driver request. Quarantine means further private requests are blocked until the ambiguity is resolved through reviewed recovery. See the [glossary](../glossary.md) for related terms.
 

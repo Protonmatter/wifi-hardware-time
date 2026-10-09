@@ -2,9 +2,9 @@
 
 Three controlled Wi-Fi scans reproduced extra clock reports without private timing requests. All three failed the declared four-second completion limit; only the last retained enough evidence to show completion around six seconds. The results challenge request ownership assumptions but do not establish fresh simultaneous samples, accurate clock conversion or permission to resume acquisition.
 
-<!-- historical-context:2026-10-04 -->
-**Historical context (2026-10-04):** The private campaign remains quarantined. The new QUTS client ownership finding does not establish firmware drain, report association or a new live acquisition. See [current findings](../knowledge/current-findings.md).
-<!-- /historical-context -->
+<!-- research-history:2026-10-09 -->
+**Research context (2026-10-09):** Dated evidence or historical plan. This dated report or plan retains its original evidence and execution scope; later results and publication status are in the research account. [Current account](../research-history/README.md) · [Timeline](../research-history/timeline.md) · [Previous version](../../archive/2026-10-09-pre-refresh-e9d71b8/pages/docs__acquisition__scan-tsf-results-2026-10-03.md).
+<!-- /research-history -->
 
 TSF is the Wi-Fi timing counter; SoC denotes the reported system-on-chip counter. QPC is Windows' high-resolution host counter. A scan API bracket measures the host call interval, while a completion notification reports later scan completion. See the [glossary](../glossary.md) for related terms.
 

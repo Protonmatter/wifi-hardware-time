@@ -2,6 +2,10 @@
 
 The bound campaign can reuse one worker and one qualified device session for action-4 requests. The implementation passed offline validation and subsequently completed a separately authorized [five-minute idle live smoke](persistent-tsf-smoke-2026-10-08.md), qualified as **conditional-research**. The existing per-request sampler remains the default. The worker retains unresolved I/O resources and durable campaign quarantine until actual completion is established.
 
+<!-- research-history:2026-10-09 -->
+**Research context (2026-10-09):** Scoped technical reference. Build-specific findings and operational prerequisites retain their stated scope. [Current account](../research-history/README.md) · [Timeline](../research-history/timeline.md) · [Previous version](../../archive/2026-10-09-pre-refresh-e9d71b8/pages/docs__acquisition__persistent-tsf-sampler.md).
+<!-- /research-history -->
+
 ## Scope and provenance
 
 The implementation starts from `c620f47c94e4691347c6a905860fe435be1aa575`, the open settled-timestamps stack. `research/tsf/qualcomm_probe.py` remains the audited reference, unchanged. The persistent Win32 adapter intentionally duplicates its fixed device-open flags, action-4 payload, 128-byte input, 100-byte output capacity and overlapped layout; executable conformance tests check that contract. There is no arbitrary command interface.

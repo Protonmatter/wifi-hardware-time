@@ -2,9 +2,9 @@
 
 What did the first live trace reveal about failed timestamp queries? Four diagnostic events reported invalid-query status during the two public calls, strengthening that explanation for error 23. Interface relationships were checked afterward, and trace-health records were incomplete, so exact request attribution and the original rejecting layer remain unresolved.
 
-<!-- historical-context:2026-10-04 -->
-**Historical context (2026-10-04):** Vendor/private transport research continues alongside documented Windows APIs. No new hardware-to-QPC result is established by file inspection. See [current findings](../knowledge/current-findings.md).
-<!-- /historical-context -->
+<!-- research-history:2026-10-09 -->
+**Research context (2026-10-09):** Dated evidence or historical plan. This dated report or plan retains its original evidence and execution scope; later results and publication status are in the research account. [Current account](../research-history/README.md) · [Timeline](../research-history/timeline.md) · [Previous version](../../archive/2026-10-09-pre-refresh-e9d71b8/pages/docs__windows-timestamps__ndis-status-capture-2026-10-03.md).
+<!-- /research-history -->
 
 NDIS is the Windows network-driver framework; an OID identifies a driver query. ETW is Windows event tracing, and ETL is its saved trace format. QPC is the host counter used to time events. See the [glossary](../glossary.md).
 

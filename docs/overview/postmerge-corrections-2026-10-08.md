@@ -2,6 +2,10 @@
 
 This follow-up starts from research merge `9ddc1c3586450d3a866b5486da945e95a83417fb`. It addresses reproduced evidence, lifecycle, replay and numerical edge cases while preserving historical capture files, original analysis JSON, the audited standalone probe, the 200-ppm mathematical prior and the 0.5-us integer-rounding allowance. It performs no live adapter, trace, elevation, network workload or system-clock operation.
 
+<!-- research-history:2026-10-09 -->
+**Research context (2026-10-09):** Dated evidence or historical plan. This dated report or plan retains its original evidence and execution scope; later results and publication status are in the research account. [Current account](../research-history/README.md) · [Timeline](../research-history/timeline.md) · [Previous version](../../archive/2026-10-09-pre-refresh-e9d71b8/pages/docs__overview__postmerge-corrections-2026-10-08.md).
+<!-- /research-history -->
+
 ## Acquisition and evidence
 
 - A request is finalized only after terminal evidence processing and successful operation release. Later session failure does not rewrite that finalized request. Current-request failure still covers deadline, cancellation, terminal-evidence and resource-release errors.

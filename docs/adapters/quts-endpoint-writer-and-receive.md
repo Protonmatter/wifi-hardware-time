@@ -6,6 +6,10 @@ and registry validation; received data is divided into transport chunks before
 protocol decoding. This closes two static-analysis gaps. A live FastConnect
 endpoint, complete firmware record and bounded cancellation behavior remain unproven.
 
+<!-- research-history:2026-10-09 -->
+**Research context (2026-10-09):** Scoped technical reference. Build-specific findings and operational prerequisites retain their stated scope. [Current account](../research-history/README.md) · [Timeline](../research-history/timeline.md) · [Previous version](../../archive/2026-10-09-pre-refresh-e9d71b8/pages/docs__adapters__quts-endpoint-writer-and-receive.md).
+<!-- /research-history -->
+
 ## Contents
 
 - [Scope and evidence](#scope-and-evidence)

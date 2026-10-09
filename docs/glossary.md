@@ -2,9 +2,9 @@
 
 Wi-Fi timing crosses several clocks, software layers and evidence types. This glossary explains the terms used throughout the research so that a fast response, precise-looking number or successful command is not mistaken for accurate time. Each distinction affects what an application can safely conclude from a timestamp.
 
-<!-- historical-context:2026-10-04 -->
-**Historical context (2026-10-04):** Current findings now include complete vendor package inventories, QUTS client ownership and a correction ledger. Historical acquisitions retain their original scope and limits. See [current findings](knowledge/current-findings.md).
-<!-- /historical-context -->
+<!-- research-history:2026-10-09 -->
+**Research context (2026-10-09):** Scoped technical reference. Build-specific findings and operational prerequisites retain their stated scope. [Current account](research-history/README.md) · [Timeline](research-history/timeline.md) · [Previous version](../archive/2026-10-09-pre-refresh-e9d71b8/pages/docs__glossary.md).
+<!-- /research-history -->
 
 ## Contents
 

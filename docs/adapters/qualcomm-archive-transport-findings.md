@@ -2,6 +2,10 @@
 
 Static inspection recovered the QPST connection interfaces, QXDM's binary-buffer API and WLAN timing definitions, and a locally present QUTS client that allocates application-owned packet bytes. These are useful transport and schema findings. The missing connection is still specific: show that this laptop's Wi-Fi timing producer delivers the required event through one of those interfaces.
 
+<!-- research-history:2026-10-09 -->
+**Research context (2026-10-09):** Scoped technical reference. Build-specific findings and operational prerequisites retain their stated scope. [Current account](../research-history/README.md) · [Timeline](../research-history/timeline.md) · [Previous version](../../archive/2026-10-09-pre-refresh-e9d71b8/pages/docs__adapters__qualcomm-archive-transport-findings.md).
+<!-- /research-history -->
+
 ## Contents
 
 - [Scope and provenance](#scope-and-provenance)

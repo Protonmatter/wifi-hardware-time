@@ -8,6 +8,10 @@ firmware record has been demonstrated. The later corrected capture now binds
 Hosted checks must be tied to a published
 revision and do not establish hardware qualification.
 
+<!-- research-history:2026-10-09 -->
+**Research context (2026-10-09):** Scoped technical reference. Build-specific findings and operational prerequisites retain their stated scope. [Current account](../research-history/README.md) · [Timeline](../research-history/timeline.md) · [Previous version](../../archive/2026-10-09-pre-refresh-e9d71b8/pages/docs__adapters__quts-mhi-route-validation.md).
+<!-- /research-history -->
+
 The [live query and CommonIo follow-up](quts-live-gate-and-commonio.md) is the
 current result. Earlier attempts below retain their original dispositions.
 

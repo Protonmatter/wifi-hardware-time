@@ -1,0 +1,20 @@
+{
+  "schema": "wht/documentation-archive-v1",
+  "captured_date": "2026-10-09",
+  "timezone": "America/New_York",
+  "source_kind": "git-blob",
+  "source_revision": "fdcc22f80ad173a2f4f2844c0f6b666794fda54a",
+  "files": [
+    {
+      "source_path": "README.md",
+      "source_commit": "fdcc22f80ad173a2f4f2844c0f6b666794fda54a",
+      "local_base_commit": null,
+      "last_change": "fdcc22f80ad173a2f4f2844c0f6b666794fda54a\t2026-10-03T07:54:31-04:00",
+      "original_sha256": "1071adb4d9848062dc15eb9f71a2237b678f42fbe634b48d9c2e6bad39aafba2",
+      "original_bytes": 6913,
+      "original_path": "originals/README.md.txt",
+      "reading_path": "pages/README.md",
+      "reading_sha256": "f2a282c03c960ae206a135597f865d783b75e290203299579e8d72446f53488e"
+    }
+  ]
+}

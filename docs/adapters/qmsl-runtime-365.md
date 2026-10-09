@@ -2,6 +2,10 @@
 
 The completed installation supplies a current x86 QMSL runtime and QSPR 6.0 interfaces. File-only inspection narrows the earlier version concern: the relevant assemblies and references are not strong-named, so their different version numbers alone do not require binding redirects. The new native callback path is located, while log getters retain important size and blocking limitations. No vendor library was executed or connected to the Wi-Fi adapter.
 
+<!-- research-history:2026-10-09 -->
+**Research context (2026-10-09):** Scoped technical reference. Build-specific findings and operational prerequisites retain their stated scope. [Current account](../research-history/README.md) · [Timeline](../research-history/timeline.md) · [Previous version](../../archive/2026-10-09-pre-refresh-e9d71b8/pages/docs__adapters__qmsl-runtime-365.md).
+<!-- /research-history -->
+
 ## Scope and provenance
 
 Inspection date: 2026-10-06, America/New_York. These findings apply to the exact files below. Native addresses are RVAs relative to image base `0x10000000`; they are not live pointers or supported invocation recipes.

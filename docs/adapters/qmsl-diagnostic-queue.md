@@ -2,6 +2,10 @@
 
 **Later installed build:** [QMSL 6.1.365.1](qmsl-runtime-365.md) is now installed and independently traced. That report covers weak-name assembly binding, current callback/worker delivery and shutdown waits. Addresses and findings below retain their original 6.1.48.1 scope.
 
+<!-- research-history:2026-10-09 -->
+**Research context (2026-10-09):** Scoped technical reference. Build-specific findings and operational prerequisites retain their stated scope. [Current account](../research-history/README.md) · [Timeline](../research-history/timeline.md) · [Previous version](../../archive/2026-10-09-pre-refresh-e9d71b8/pages/docs__adapters__qmsl-diagnostic-queue.md).
+<!-- /research-history -->
+
 The supplied QDART installer contains an older, inspectable QMSL runtime. Its log getter copies queued bytes to caller storage, but the selected API does not accept a destination capacity, its timeout is not used by that implementation, and the managed wrapper has a smaller fixed buffer. These findings help define a future adapter; they do not establish a connection to this Surface's timing producer.
 
 ## Contents

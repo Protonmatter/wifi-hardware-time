@@ -2,44 +2,21 @@
 
 **Review update:** [Post-merge corrections](../overview/postmerge-corrections-2026-10-08.md) preserve finalized evidence, improve recovery and make continuity, quantization and settlement policies explicit. Original capture and analysis records remain preserved.
 
+<!-- research-history:2026-10-09 -->
+**Research context (2026-10-09):** Maintained status or roadmap. Use the linked account for goals, result versions, failed assumptions and remaining qualification gates. [Current account](../research-history/README.md) · [Timeline](../research-history/timeline.md) · [Previous version](../../archive/2026-10-09-pre-refresh-e9d71b8/pages/docs__knowledge__current-findings.md).
+<!-- /research-history -->
+
 We can acquire diagnostic TSF observations through a persistent exact-build worker and calculate conditional TSF-to-QPC intervals from screened records. The first five-minute persistent idle smoke completed cleanly. Complete original-event export, physical capture timing, AP/UTC accuracy and multi-device synchronization remain separate unqualified capabilities.
 
 <!-- tsf-headlines:smoke -->
 **Current retained smoke analysis:** 139 recorded requests, 138 offline-screened samples; **92.862589%** tracking coverage under the conditional integer-estimate uncertainty threshold. **297/297** event-grid points settled, with median/max rate-only half-widths of 280.429/614.883 us and median wait 2.341 s. [Versioned results and source pins](../overview/postmerge-corrections-2026-10-08.json). This is offline-screened replay of the retained capture, not online admission or calibrated AP/UTC accuracy.
 <!-- /tsf-headlines:smoke -->
 
-**Separate complete-event decision, 2026-10-06:** the installed Qualcomm original-event export route is
-[no-go pending demonstrated supported/vendor/instrumented producer access](../evidence/hardware-route-decision-2026-10-06.md).
-The current QMSL callback trace is complete for its static scope; repeating it
-does not supply an attributable endpoint or bounded vendor lifecycle. Retain
-the nested IHV map as deferred exploratory research and the private campaign as
-quarantined. Linux remains a conditional alternate requiring a physical target
-and explicit selection. Independently, the coordinator reports S8's local host
-profile passed and S9's local patch was preserved/verified without publication;
-S3 now has a reviewed five-profile replay provider, CLI, immutable observations
-and 15 passing focused tests. The downstream suite passed 64 tests after
-acceptance-verifier corrections; unchanged original measurements still pass.
-Four calls exceeded 1 ms, so the p99 result is not a worst-case latency bound.
-These local results enable no radio clock capability and are not yet published.
+**Complete-event track:** the [2026-10-06 route decision](../evidence/hardware-route-decision-2026-10-06.md) remains no-go pending demonstrated supported/vendor/instrumented original-event producer access. The completed QMSL static trace and eight-byte positive control do not close that gate. This does not negate the separately qualified diagnostic acquisition above.
 
-The [PR #3 software review](../overview/pr3-review-2026-10-06.md) subsequently
-corrected four reproduced source defects and passed 344 configured repository
-tests. Source review, saved-evidence reanalysis and offline subprocess/native
-tests leave the hardware gates unchanged. Subsequent publication, fresh hosted
-CI and merge state are tracked on [PR #3](https://github.com/Protonmatter/wifi-hardware-time/pull/3).
+**Research and publication update, 2026-10-09:** PRs #3, #4, #7, #8 and #9 are merged in reviewed main `e9d71b8`; component PRs #5/#6 are closed and their work is integrated. The corrected interactive atlas in PR #10 is now merged at `da4f55e`, after Linux/Windows exact-head checks and independent review. See the [exact publication snapshot](../research-history/publication-status.md). Earlier downstream S3/S8/S9 test and preservation statements are dated reports, not a fresh downstream audit.
 
-The installed [WPP External 2.3.1.1 assessment](../evidence/wpp-external-2311-file-assessment.md)
-adds concrete ETL collection/configuration leads. Its scripts can change logging
-and restart the Wi-Fi device; their presence does not demonstrate a complete
-original timing-event return. No vendor tool was executed and the no-go remains.
-
-The [complete-event implementation plan](../overview/complete-event-2026-10-05/engineering-plan.md)
-records the completed route comparison and bounded receive-lifetime audit. The
-[qualification ledger](../overview/gap-closure-ledger.md) and
-[component review map](../overview/pr3-component-review-map-2026-10-06.md) now pin
-current work and exact PR base/head. The remaining native implementation needs a supported or
-instrumented producer integration; packet filters and existing trace names alone
-do not supply it.
+The [linked research account](../research-history/README.md) now covers the goals, chronology, successful work, failed attempts, rejected interpretations and remaining gates. The [publication boundary](../research-history/publication-boundary.md) excludes private unpublished findings from this public account.
 
 ## Contents
 
@@ -64,13 +41,11 @@ do not supply it.
 [Versioned corrected results](../overview/postmerge-corrections-2026-10-08.json); conditional replay with offline screening.
 <!-- /tsf-headlines:hours -->
 
-**Historical affine-bound campaign, 2026-10-08:** the [live bound campaign](../acquisition/tsf-host-bound-results.md) passed every predeclared criterion. Over one hour idle and one hour under CPU and network load, the station TSF was bounded at any QPC instant to a conditional worst case of 352 us and 191 us respectively, with medians of about 135 to 140 us. The bound assumes causal capture inside each window and a constant rate within each 60-second span; with only a 200 ppm rate limit the retrospective bound is 895 us and 786 us, while a causal (live) bound reported by review reaches about 1.7 ms and 1.3 ms in the longest gaps, so a live provider must expire its sub-millisecond guarantee during long gaps. Attribution used the driver's command record, and freshness, trace completeness and a coarse beacon check were screened for every sample. The link from station TSF to access point TSF remains an assumption on this equipment, and no clock provider is enabled.
+**Historical affine-bound campaign, 2026-10-08:** the [live bound campaign](../acquisition/tsf-host-bound-results.md) passed its required conditional criteria; the optional 100-us stretch target was missed. Within the analyzed hour-long recordings, the affine model's maximum half-widths were 352.2 us idle and 190.8 us loaded, with medians 134.8/139.6 us. It assumes capture inside each host window and constant rate within each 60-second span. Under the weaker ±200-ppm rate-only model, retrospective consecutive-pair maxima were 894.669/785.584 us. Reader-arrival-aware uncertainty and finite settled-grid results are different measures; use the [current result comparison](../research-history/results-and-validation.md) rather than the early log-time-only causal estimates. Station-to-AP alignment and physical capture remain unverified. Research models exist; no qualified live radio-clock capability is established by the campaign.
 
 **2026-10-06 installation follow-up:** [QMSL 6.1.365.1 and QSPR 6.0 interfaces](../adapters/qmsl-runtime-365.md) are now present. The relevant assemblies are weak-named, so their reference-version differences alone do not require binding redirects. The new native image independently reconnects callback registration, worker delivery, listener invocation and payload ownership transfer. Getter size limits and unbounded startup/stop waits remain. Live Wi-Fi attribution and complete timing-event return are still open.
 
-Baseline snapshot: 2026-10-04, with an action-4 offline follow-up on 2026-10-05.
-This page is the current interpretation; dated experiment reports preserve what
-was observed in their original runs.
+The detailed static table below originated in the October 4–6 investigation. Its build-specific findings remain scoped to those inputs. Current diagnostic acquisition and corrected numerical policies are summarized above; dated reports preserve original run evidence.
 
 | Area | Established result | Practical use |
 |---|---|---|

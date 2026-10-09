@@ -2,6 +2,10 @@
 
 This design tests whether the current Qualcomm laptop can state, at any Windows QPC instant, the value of its Wi-Fi TSF clock with a **proven** error below 1,000 microseconds. It reuses the private action-4 TSF request that earlier campaigns already exercised, collects far more samples, and turns each sample's host timing window into a hard constraint. The result is a worst-case bound derived from logic, not a fitted residual. It does not claim UTC accuracy or a measured agreement with a second device.
 
+<!-- research-history:2026-10-09 -->
+**Research context (2026-10-09):** Dated evidence or historical plan. This dated report or plan retains its original evidence and execution scope; later results and publication status are in the research account. [Current account](../research-history/README.md) · [Timeline](../research-history/timeline.md) · [Previous version](../../archive/2026-10-09-pre-refresh-e9d71b8/pages/docs__overview__2026-10-07-tsf-host-bound-design.md).
+<!-- /research-history -->
+
 **Status:** design only, 2026-10-07. Nothing in this document has been executed. Base revision: `d1055a1` (main after PR #3). Driver: ARM64 `qcwlanhmt8380.sys` 1.0.4374.1300, SHA-256 `ca884ce1a22113194f3c467f36abc39afb0c137e5a7a8e2697420438b21e4115`, adapter `PCI\VEN_17CB&DEV_1107` (WCN7850, FastConnect 7800).
 
 ## Contents

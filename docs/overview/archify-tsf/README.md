@@ -2,6 +2,10 @@
 
 These seven rendered Archify views explain the sampler layers, acquisition workflow, request lifecycle, time sources, timestamp sequence, clock algorithm and live/offline adapter boundary. The layers describe the sampler implementation tested in the 2026-10-08 smoke. The algorithm view additionally reflects the reviewed rounding-inclusive uncertainty and settlement-v2 overlap policy. They do not establish physical timing accuracy or online admission.
 
+<!-- research-history:2026-10-09 -->
+**Research context (2026-10-09):** Maintained reading guide. Use the linked account for goals, result versions, failed assumptions and remaining qualification gates. [Current account](../../research-history/README.md) · [Timeline](../../research-history/timeline.md) · [Previous version](../../../archive/2026-10-09-pre-refresh-e9d71b8/pages/docs__overview__archify-tsf__README.md).
+<!-- /research-history -->
+
 | View | Rendered preview | Editable specification |
 |---|---|---|
 | System layers | [SVG](previews/layers.svg) | [layers.json](layers.json) |

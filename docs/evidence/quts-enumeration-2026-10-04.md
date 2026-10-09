@@ -6,6 +6,10 @@ the missing transport connection without proving absent hardware support. Wi-Fi
 remained Up on driver 1.0.4374.1300. Running-process image identity and all hardware
 timing claims retain explicit limitations.
 
+<!-- research-history:2026-10-09 -->
+**Research context (2026-10-09):** Dated evidence or historical plan. This dated report or plan retains its original evidence and execution scope; later results and publication status are in the research account. [Current account](../research-history/README.md) · [Timeline](../research-history/timeline.md) · [Previous version](../../archive/2026-10-09-pre-refresh-e9d71b8/pages/docs__evidence__quts-enumeration-2026-10-04.md).
+<!-- /research-history -->
+
 ## Contents
 
 - [What ran](#what-ran)

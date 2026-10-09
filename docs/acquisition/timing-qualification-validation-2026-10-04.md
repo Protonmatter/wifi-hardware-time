@@ -2,9 +2,9 @@
 
 A fresh, bounded Windows query run returned no timestamp capabilities or hardware-to-host sample. Wi-Fi remained Up on the same exact driver. All 206 offline tests passed, but firmware sampling, live buffer publication and synchronization accuracy remain unqualified. At this report's initial validation checkpoint, hosted CI covered the preceding committed revision. Current publication and review status are tracked in the [gap ledger](../overview/gap-closure-ledger.md).
 
-<!-- historical-context:2026-10-04 -->
-**Historical context (2026-10-04):** The private campaign remains quarantined. The new QUTS client ownership finding does not establish firmware drain, report association or a new live acquisition. See [current findings](../knowledge/current-findings.md).
-<!-- /historical-context -->
+<!-- research-history:2026-10-09 -->
+**Research context (2026-10-09):** Dated evidence or historical plan. This dated report or plan retains its original evidence and execution scope; later results and publication status are in the research account. [Current account](../research-history/README.md) · [Timeline](../research-history/timeline.md) · [Previous version](../../archive/2026-10-09-pre-refresh-e9d71b8/pages/docs__acquisition__timing-qualification-validation-2026-10-04.md).
+<!-- /research-history -->
 
 ## Contents
 

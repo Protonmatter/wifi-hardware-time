@@ -2,6 +2,10 @@
 
 The current implementation computes exact conditional intervals relating a station TSF counter to Windows QPC. It preserves event QPC, distinguishes capture time from sample availability, and reports both immediate provisional and later settled results. Interval width is meaningful only when the declared source, capture, rate and continuity assumptions hold; consistency is not independent accuracy calibration.
 
+<!-- research-history:2026-10-09 -->
+**Research context (2026-10-09):** Current model interpretation. Use the linked account for goals, result versions, failed assumptions and remaining qualification gates. [Current account](../research-history/README.md) · [Timeline](../research-history/timeline.md) · [Previous version](../../archive/2026-10-09-pre-refresh-e9d71b8/pages/docs__clock-models__tsf-mathematics.md).
+<!-- /research-history -->
+
 ## Quantities and assumptions
 
 | Symbol | Meaning and unit |
