@@ -1,0 +1,247 @@
+{
+  "schema": "wht/archify-studio-atlas-v1",
+  "research_repository": "https://github.com/Protonmatter/wifi-hardware-time",
+  "research_revision": "e9d71b84365122ff2640e240b20fc1dbb834388a",
+  "studio_repository": "https://github.com/Protonmatter/archify-studio-redesign",
+  "studio_revision": "59225b55d66a922f26b5d57fa49eae5415be6b22",
+  "model_sha256": "cd837f8605708bd42a03ca147c70a0ae7394dc2ecd37e02bcbf5166e7504fdf4",
+  "provenance": "Snapshot packet; all selected source bytes compared to the pinned research Git blobs. Measurement claims retain original source pins.",
+  "routes": [
+    {
+      "id": "overview",
+      "title": "From Wi-Fi observations to conditional time",
+      "nodes": 6,
+      "edges": 5
+    },
+    {
+      "id": "acquisition",
+      "title": "Guarded acquisition and durable evidence",
+      "nodes": 7,
+      "edges": 6
+    },
+    {
+      "id": "lifecycle",
+      "title": "Completion controls resource release",
+      "nodes": 6,
+      "edges": 7
+    },
+    {
+      "id": "adapters",
+      "title": "Live and injected adapters share one core",
+      "nodes": 6,
+      "edges": 6
+    },
+    {
+      "id": "time-domains",
+      "title": "Station TSF, host QPC and external clocks",
+      "nodes": 6,
+      "edges": 5
+    },
+    {
+      "id": "availability",
+      "title": "Capture, completion and availability",
+      "nodes": 6,
+      "edges": 6
+    },
+    {
+      "id": "causal",
+      "title": "Screen first, check the frozen model, then update",
+      "nodes": 6,
+      "edges": 6
+    },
+    {
+      "id": "settlement",
+      "title": "Preserve the event and append a settled result",
+      "nodes": 6,
+      "edges": 5
+    },
+    {
+      "id": "producer-routes",
+      "title": "Diagnostic observations and missing original events",
+      "nodes": 7,
+      "edges": 6
+    },
+    {
+      "id": "qualification",
+      "title": "What the retained evidence supports",
+      "nodes": 6,
+      "edges": 5
+    }
+  ],
+  "sources": [
+    {
+      "id": "readme",
+      "path": "README.md",
+      "sha256": "5f3c0db88ffb5db1b470d141fbdb452e6b05c3159d061839f32dd01f2e690c99"
+    },
+    {
+      "id": "findings",
+      "path": "docs/knowledge/current-findings.md",
+      "sha256": "e7482f56acf9cec030b8b86c5b00b448110ac3ced2b65753801670d3f077349c"
+    },
+    {
+      "id": "sampler",
+      "path": "docs/acquisition/persistent-tsf-sampler.md",
+      "sha256": "5b25fdeb86be65938a0a23229b8c3cec5e4765f30f8624a4b856efcca3bd34ea"
+    },
+    {
+      "id": "smoke",
+      "path": "docs/acquisition/persistent-tsf-smoke-2026-10-08.md",
+      "sha256": "c844d50c013e1e5b5d17d85d229b5ceac51aca44cf8f77c8e8aedaf94f957bca"
+    },
+    {
+      "id": "math",
+      "path": "docs/clock-models/tsf-mathematics.md",
+      "sha256": "24f802e86bf7cc869789daa368f8ae2ac207844f3d292793f97ba6e58592ef57"
+    },
+    {
+      "id": "settled",
+      "path": "docs/clock-models/settled-timestamps.md",
+      "sha256": "f9f921bb2041a6f9a0c6d099b813dc17022782c3fd7957ac9db8707c61f50a28"
+    },
+    {
+      "id": "corrections",
+      "path": "docs/overview/postmerge-corrections-2026-10-08.md",
+      "sha256": "c6075ba2daf8287f3252ed57a79983f7d923fddb434e138619621ffa584a8c07"
+    },
+    {
+      "id": "roadmap",
+      "path": "docs/overview/persistent-tsf-next-steps.md",
+      "sha256": "91eb711bc739a8d1d39075fb29039888a189ab99b9ec29700ecd2aeeec852988"
+    },
+    {
+      "id": "vendor",
+      "path": "docs/adapters/diagrams/vendor-return-paths.mmd",
+      "sha256": "060abaf8a5685455dbc106f2b10d4421f9ebba2fe26989fe98f9a1c548c5b1be"
+    },
+    {
+      "id": "ftm",
+      "path": "docs/ftm/diagrams/ftm-timestamp-path.mmd",
+      "sha256": "f2e1ac10e568bd41399c080c36810da0b9f5b8304659ae9359029487e8572dd1"
+    },
+    {
+      "id": "ring",
+      "path": "docs/memory-ring/diagrams/report-vs-ring.mmd",
+      "sha256": "6c655d36bf666b870e5b1a1393317649b2e3cd5101f76179e5356723a5124eef"
+    },
+    {
+      "id": "sampler-code",
+      "path": "research/tsf/tsf_sampler.py",
+      "sha256": "60ced325aa3883f58f2082514bd0a0636629bacc39c72a60c50f5a83126447bd"
+    },
+    {
+      "id": "win32-code",
+      "path": "research/tsf/sampler_win32.py",
+      "sha256": "e1c36a52535d97683e6c07a29d7a7326f836ddeffe00f313e68716bef4b78bfd"
+    },
+    {
+      "id": "causal-code",
+      "path": "research/clock_models/causal_provider.py",
+      "sha256": "472b4fcc2b4664b52ad14199d782955c82a77eb18e86ea4afb274669a88d70bb"
+    },
+    {
+      "id": "settle-code",
+      "path": "research/clock_models/settle.py",
+      "sha256": "ddec0f38776468287a1015bf2fbc9bc49c6e5cd8daafa69a6a1305ce672f81ec"
+    },
+    {
+      "id": "results",
+      "path": "docs/overview/postmerge-corrections-2026-10-08.json",
+      "sha256": "613ec9eb33512d422f31e6a646296e41196d3271257ebd2a927ce897bd97fabc"
+    }
+  ],
+  "previews": [
+    {
+      "path": "previews/overview.svg",
+      "sha256": "63f29e5c232440fc78da8a36ec88ad43e26b7d085e63ba13974a201ea07e357f",
+      "nodes": 6,
+      "edges": 5,
+      "xml": true,
+      "complete_topology": true
+    },
+    {
+      "path": "previews/acquisition.svg",
+      "sha256": "7069be06e6b00a7b782d5a65662536b84c2859c9eb7b9940052c68ad5dd1f584",
+      "nodes": 7,
+      "edges": 6,
+      "xml": true,
+      "complete_topology": true
+    },
+    {
+      "path": "previews/lifecycle.svg",
+      "sha256": "a1fcdffd680e2d15a6ed99bc610af2b720e1fc0e7083a441b396824c03e550b5",
+      "nodes": 6,
+      "edges": 7,
+      "xml": true,
+      "complete_topology": true
+    },
+    {
+      "path": "previews/adapters.svg",
+      "sha256": "b02df23b468f0abbaf81adbd6f4371dfeb863a61d7d4e3dae85604416bfabef0",
+      "nodes": 6,
+      "edges": 6,
+      "xml": true,
+      "complete_topology": true
+    },
+    {
+      "path": "previews/time-domains.svg",
+      "sha256": "bb45f35694862ef8ac0d06d534e00c8cef177d2a4c573c34193d3a32cf93a2da",
+      "nodes": 6,
+      "edges": 5,
+      "xml": true,
+      "complete_topology": true
+    },
+    {
+      "path": "previews/availability.svg",
+      "sha256": "9c72ec7307f16e18ce3342470539d00d0a8ddd8aa1dc6cfef0c39163accffac1",
+      "nodes": 6,
+      "edges": 6,
+      "xml": true,
+      "complete_topology": true
+    },
+    {
+      "path": "previews/causal.svg",
+      "sha256": "8b2b58469cf304f54a2f16953d6c9f2813a8a6e685ed25eb2312b8445c820681",
+      "nodes": 6,
+      "edges": 6,
+      "xml": true,
+      "complete_topology": true
+    },
+    {
+      "path": "previews/settlement.svg",
+      "sha256": "f34d536d65c4fdf3d5659cbecf5b349bafd2a01192ed1cd7ea6defe456fefd2d",
+      "nodes": 6,
+      "edges": 5,
+      "xml": true,
+      "complete_topology": true
+    },
+    {
+      "path": "previews/producer-routes.svg",
+      "sha256": "91e6dd40559e16b605b20c72378d8e24d2d833c4cc3152c6c22ba00f38cd8b7b",
+      "nodes": 7,
+      "edges": 6,
+      "xml": true,
+      "complete_topology": true
+    },
+    {
+      "path": "previews/qualification.svg",
+      "sha256": "4d160794177cbab01ca8a3ab459fcd4a22497b174e88501e2abed03a152029a1",
+      "nodes": 6,
+      "edges": 5,
+      "xml": true,
+      "complete_topology": true
+    }
+  ],
+  "html": {
+    "path": "index.html",
+    "sha256": "ad92f844c44c33bbaf772a569e3eff05d0136b82f2cc8643c88245b6b032f24c",
+    "bytes": 401341,
+    "self_contained": true,
+    "renderer_license": "Embedded MIT notice"
+  },
+  "static_export_policy": {
+    "path": "static-export-policy.js",
+    "sha256": "d3815a85d0a43b66a52a78b15c502c768775cccaccc756f873f07420f7e49d44",
+    "scope": "Local packaging correction to pinned Studio renderer; exported SVG only, interactive UI unchanged"
+  }
+}

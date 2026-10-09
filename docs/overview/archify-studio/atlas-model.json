@@ -1,0 +1,2861 @@
+{
+  "schemaVersion": 1,
+  "title": "Wi-Fi Hardware Time",
+  "subtitle": "Persistent TSF · acquisition, conditional clocks and evidence gaps · 2026-10-08",
+  "demonstration": false,
+  "sources": [
+    {
+      "id": "readme",
+      "repo": "Protonmatter/wifi-hardware-time",
+      "path": "README.md"
+    },
+    {
+      "id": "findings",
+      "repo": "Protonmatter/wifi-hardware-time",
+      "path": "docs/knowledge/current-findings.md"
+    },
+    {
+      "id": "sampler",
+      "repo": "Protonmatter/wifi-hardware-time",
+      "path": "docs/acquisition/persistent-tsf-sampler.md"
+    },
+    {
+      "id": "smoke",
+      "repo": "Protonmatter/wifi-hardware-time",
+      "path": "docs/acquisition/persistent-tsf-smoke-2026-10-08.md"
+    },
+    {
+      "id": "math",
+      "repo": "Protonmatter/wifi-hardware-time",
+      "path": "docs/clock-models/tsf-mathematics.md"
+    },
+    {
+      "id": "settled",
+      "repo": "Protonmatter/wifi-hardware-time",
+      "path": "docs/clock-models/settled-timestamps.md"
+    },
+    {
+      "id": "corrections",
+      "repo": "Protonmatter/wifi-hardware-time",
+      "path": "docs/overview/postmerge-corrections-2026-10-08.md"
+    },
+    {
+      "id": "roadmap",
+      "repo": "Protonmatter/wifi-hardware-time",
+      "path": "docs/overview/persistent-tsf-next-steps.md"
+    },
+    {
+      "id": "vendor",
+      "repo": "Protonmatter/wifi-hardware-time",
+      "path": "docs/adapters/diagrams/vendor-return-paths.mmd"
+    },
+    {
+      "id": "ftm",
+      "repo": "Protonmatter/wifi-hardware-time",
+      "path": "docs/ftm/diagrams/ftm-timestamp-path.mmd"
+    },
+    {
+      "id": "ring",
+      "repo": "Protonmatter/wifi-hardware-time",
+      "path": "docs/memory-ring/diagrams/report-vs-ring.mmd"
+    },
+    {
+      "id": "sampler-code",
+      "repo": "Protonmatter/wifi-hardware-time",
+      "path": "research/tsf/tsf_sampler.py"
+    },
+    {
+      "id": "win32-code",
+      "repo": "Protonmatter/wifi-hardware-time",
+      "path": "research/tsf/sampler_win32.py"
+    },
+    {
+      "id": "causal-code",
+      "repo": "Protonmatter/wifi-hardware-time",
+      "path": "research/clock_models/causal_provider.py"
+    },
+    {
+      "id": "settle-code",
+      "repo": "Protonmatter/wifi-hardware-time",
+      "path": "research/clock_models/settle.py"
+    },
+    {
+      "id": "results",
+      "repo": "Protonmatter/wifi-hardware-time",
+      "path": "docs/overview/postmerge-corrections-2026-10-08.json"
+    }
+  ],
+  "terms": [
+    {
+      "term": "QPC / TSF / capture window",
+      "references": [
+        {
+          "source": "math",
+          "line": 5,
+          "end_line": 21
+        }
+      ]
+    },
+    {
+      "term": "availability / available_qpc",
+      "references": [
+        {
+          "source": "math",
+          "line": 82,
+          "end_line": 94
+        }
+      ]
+    },
+    {
+      "term": "CancelIoEx / terminal completion",
+      "references": [
+        {
+          "source": "sampler",
+          "line": 24,
+          "end_line": 37
+        }
+      ]
+    },
+    {
+      "term": "quarantine / unfinished run",
+      "references": [
+        {
+          "source": "sampler",
+          "line": 11,
+          "end_line": 26
+        },
+        {
+          "source": "corrections",
+          "line": 5,
+          "end_line": 17
+        }
+      ]
+    },
+    {
+      "term": "CausalProvider / frozen-model check",
+      "references": [
+        {
+          "source": "math",
+          "line": 50,
+          "end_line": 80
+        }
+      ]
+    },
+    {
+      "term": "tracking / stale / 1000 us",
+      "references": [
+        {
+          "source": "math",
+          "line": 78,
+          "end_line": 80
+        }
+      ]
+    },
+    {
+      "term": "settlement-v2 / overlapping envelopes",
+      "references": [
+        {
+          "source": "corrections",
+          "line": 16,
+          "end_line": 31
+        }
+      ]
+    },
+    {
+      "term": "station AP / UTC accuracy",
+      "references": [
+        {
+          "source": "roadmap",
+          "line": 83,
+          "end_line": 91
+        }
+      ]
+    },
+    {
+      "term": "QUTS / DIAG / byte ownership",
+      "references": [
+        {
+          "source": "vendor",
+          "line": 1,
+          "end_line": 18
+        }
+      ]
+    },
+    {
+      "term": "139 / 138 / 92.862589",
+      "references": [
+        {
+          "source": "findings",
+          "line": 8,
+          "end_line": 9
+        }
+      ]
+    },
+    {
+      "term": "FTM / t1 t2 t3 t4",
+      "references": [
+        {
+          "source": "ftm",
+          "line": 1,
+          "end_line": 18
+        }
+      ]
+    },
+    {
+      "term": "online admission",
+      "references": [
+        {
+          "source": "roadmap",
+          "line": 60,
+          "end_line": 70
+        }
+      ]
+    }
+  ],
+  "routes": [
+    {
+      "id": "overview",
+      "title": "From Wi-Fi observations to conditional time",
+      "shortTitle": "System overview",
+      "group": "START HERE",
+      "summary": "One persistent idle smoke and retained offline replay support different claims. Follow the observed diagnostic path into the tested model; the live admission and physical accuracy gates remain open.",
+      "nodes": [
+        {
+          "id": "controller",
+          "label": "Campaign controller",
+          "sublabel": "guard + fresh permits",
+          "kind": "component",
+          "status": "software-tested",
+          "detail": "Owns the adapter-scoped campaign lock and durable unfinished-run record. Fixed slots skip missed requests; report wait remains in the achieved cadence.",
+          "sources": [
+            {
+              "source": "sampler",
+              "line": 11,
+              "end_line": 26
+            },
+            {
+              "source": "sampler",
+              "line": 48,
+              "end_line": 56
+            }
+          ],
+          "symbols": [],
+          "x": 60,
+          "y": 80,
+          "width": 260,
+          "height": 112
+        },
+        {
+          "id": "worker",
+          "label": "Persistent sampler",
+          "sublabel": "one session; one active I/O",
+          "kind": "component",
+          "status": "observed",
+          "detail": "A single 300-second idle smoke recorded 139 pending-to-success requests with normal closed-session evidence. This observation does not qualify cancellation, failure recovery or long-run load behavior.",
+          "sources": [
+            {
+              "source": "smoke",
+              "line": 18,
+              "end_line": 35
+            },
+            {
+              "source": "sampler",
+              "line": 11,
+              "end_line": 26
+            }
+          ],
+          "symbols": [
+            "Sampler",
+            "Win32Kernel"
+          ],
+          "x": 490,
+          "y": 80,
+          "width": 260,
+          "height": 112
+        },
+        {
+          "id": "driver",
+          "label": "Qualcomm + observer",
+          "sublabel": "reported TSF and host QPC",
+          "kind": "component",
+          "status": "observed",
+          "detail": "The exact-build diagnostic path records the TSF report and original ETW timestamp separately from reader receipt. Completion is not a sampling fence and this is not complete original-event export.",
+          "sources": [
+            {
+              "source": "math",
+              "line": 5,
+              "end_line": 21
+            },
+            {
+              "source": "findings",
+              "line": 54,
+              "end_line": 55
+            }
+          ],
+          "symbols": [],
+          "x": 920,
+          "y": 80,
+          "width": 260,
+          "height": 112
+        },
+        {
+          "id": "screen",
+          "label": "Offline screening",
+          "sublabel": "offline evidence checks",
+          "kind": "component",
+          "status": "software-tested",
+          "detail": "Whole-recording screening accepts or rejects recorded candidates. Sample-screen-v2 closes a segment on suspected backward TSF; numerical ingestion alone does not establish causal online admission.",
+          "sources": [
+            {
+              "source": "math",
+              "line": 22,
+              "end_line": 28
+            },
+            {
+              "source": "corrections",
+              "line": 16,
+              "end_line": 31
+            }
+          ],
+          "symbols": [
+            "sample_screen.py",
+            "wht/sample-screen-v2"
+          ],
+          "x": 920,
+          "y": 330,
+          "width": 260,
+          "height": 112
+        },
+        {
+          "id": "model",
+          "label": "Conditional clock",
+          "sublabel": "provisional + settled",
+          "kind": "component",
+          "status": "software-tested",
+          "detail": "Exact bounded-rate arithmetic estimates station TSF at preserved event QPC. Smoke replay: 138 screened samples, 92.862589% tracking, 297/297 event-grid points settled. These are retained offline results.",
+          "sources": [
+            {
+              "source": "findings",
+              "line": 8,
+              "end_line": 9
+            },
+            {
+              "source": "math",
+              "line": 50,
+              "end_line": 80
+            }
+          ],
+          "symbols": [
+            "CausalProvider",
+            "settle"
+          ],
+          "x": 490,
+          "y": 330,
+          "width": 260,
+          "height": 112
+        },
+        {
+          "id": "consumer",
+          "label": "Live consumer gate",
+          "sublabel": "online admission open",
+          "kind": "component",
+          "status": "unresolved",
+          "detail": "A future online admission state machine must establish complete, attributable, timely observations before the maintained consumer accepts them. AP/UTC and multi-device accuracy need independent evidence.",
+          "sources": [
+            {
+              "source": "roadmap",
+              "line": 60,
+              "end_line": 70
+            },
+            {
+              "source": "roadmap",
+              "line": 83,
+              "end_line": 91
+            }
+          ],
+          "symbols": [
+            "userspace-clock"
+          ],
+          "x": 60,
+          "y": 330,
+          "width": 260,
+          "height": 112
+        }
+      ],
+      "edges": [
+        {
+          "id": "controller--worker",
+          "from": "controller",
+          "to": "worker",
+          "label": "fresh permit",
+          "status": "software-tested",
+          "sources": [
+            {
+              "source": "sampler",
+              "line": 11,
+              "end_line": 26
+            }
+          ],
+          "detail": "A fresh sequential permit and owner recheck authorize one submission.",
+          "transport": {
+            "mechanism": "local IPC",
+            "call": "sequential request permit"
+          }
+        },
+        {
+          "id": "worker--driver",
+          "from": "worker",
+          "to": "driver",
+          "label": "action 4",
+          "status": "observed",
+          "sources": [
+            {
+              "source": "sampler",
+              "line": 11,
+              "end_line": 26
+            },
+            {
+              "source": "math",
+              "line": 5,
+              "end_line": 21
+            }
+          ],
+          "detail": "Live smoke used the fixed action-4 request on the exact qualified build. Observed success is scoped to that capture.",
+          "transport": {
+            "mechanism": "IOCTL",
+            "call": "DeviceIoControl"
+          }
+        },
+        {
+          "id": "driver--screen",
+          "from": "driver",
+          "to": "screen",
+          "label": "saved records",
+          "status": "documented",
+          "sources": [
+            {
+              "source": "math",
+              "line": 22,
+              "end_line": 28
+            },
+            {
+              "source": "sampler",
+              "line": 11,
+              "end_line": 26
+            }
+          ],
+          "detail": "Raw receipts and trace records are retained before offline screening.",
+          "transport": {
+            "mechanism": "ETW + files"
+          }
+        },
+        {
+          "id": "screen--model",
+          "from": "screen",
+          "to": "model",
+          "label": "screened replay",
+          "status": "software-tested",
+          "sources": [
+            {
+              "source": "math",
+              "line": 22,
+              "end_line": 28
+            },
+            {
+              "source": "math",
+              "line": 50,
+              "end_line": 80
+            }
+          ],
+          "detail": "Replay is conditional on screening, association, capture-window and continuity assumptions.",
+          "transport": {
+            "mechanism": "Python"
+          }
+        },
+        {
+          "id": "model--consumer",
+          "from": "model",
+          "to": "consumer",
+          "label": "integration gate",
+          "status": "unresolved",
+          "sources": [
+            {
+              "source": "roadmap",
+              "line": 60,
+              "end_line": 70
+            }
+          ],
+          "detail": "An offline-screened sample stream is not an implemented online acquisition-admission contract.",
+          "transport": {
+            "mechanism": "provider API",
+            "call": "WifiTsfClock.ingest"
+          }
+        }
+      ],
+      "unknowns": [
+        "Establish causal online admission and application-observed availability.",
+        "Independently bound station/AP error before claiming AP-referenced accuracy."
+      ],
+      "provenance": "Authored from public repository snapshots pinned in manifest.json. Evidence states describe the cited scope; arrows do not prove execution."
+    },
+    {
+      "id": "acquisition",
+      "title": "Guarded acquisition and durable evidence",
+      "shortTitle": "Acquisition",
+      "group": "WINDOWS INTERFACES",
+      "summary": "Software controls around one request. Measured spacing includes report waits, identity checks and processing; a requested interval is not the achieved interval.",
+      "nodes": [
+        {
+          "id": "guard",
+          "label": "Campaign admission",
+          "sublabel": "lock + unfinished run",
+          "kind": "component",
+          "status": "software-tested",
+          "detail": "Create durable unfinished-run evidence before launching the worker. Quarantine is not automatically cleared by a restart or a new output directory.",
+          "sources": [
+            {
+              "source": "sampler",
+              "line": 11,
+              "end_line": 26
+            },
+            {
+              "source": "corrections",
+              "line": 5,
+              "end_line": 17
+            }
+          ],
+          "symbols": [],
+          "x": 60,
+          "y": 80,
+          "width": 260,
+          "height": 112
+        },
+        {
+          "id": "identity",
+          "label": "Identity and readiness",
+          "sublabel": "profile + owner lifetime",
+          "kind": "component",
+          "status": "software-tested",
+          "detail": "Validate startup identity, open the qualified handle and pin controller process creation time. A same-user local protocol is not an authentication boundary.",
+          "sources": [
+            {
+              "source": "sampler",
+              "line": 11,
+              "end_line": 26
+            }
+          ],
+          "symbols": [],
+          "x": 490,
+          "y": 80,
+          "width": 260,
+          "height": 112
+        },
+        {
+          "id": "slot",
+          "label": "Monotonic schedule",
+          "sublabel": "skip slots; never catch up",
+          "kind": "component",
+          "status": "software-tested",
+          "detail": "Persistent requested default is 1 second, minimum 0.5 seconds. Identity checks occur on a 30-second monotonic timer; heartbeat and observer pumping continue while waiting.",
+          "sources": [
+            {
+              "source": "sampler",
+              "line": 48,
+              "end_line": 56
+            }
+          ],
+          "symbols": [],
+          "x": 920,
+          "y": 80,
+          "width": 260,
+          "height": 112
+        },
+        {
+          "id": "request",
+          "label": "Submit one request",
+          "sublabel": "one fresh permit",
+          "kind": "component",
+          "status": "software-tested",
+          "detail": "The worker rechecks liveness immediately before submission under the admission mutex. At most one outstanding operation; preserve report wait.",
+          "sources": [
+            {
+              "source": "sampler",
+              "line": 11,
+              "end_line": 26
+            },
+            {
+              "source": "sampler",
+              "line": 24,
+              "end_line": 37
+            }
+          ],
+          "symbols": [],
+          "x": 920,
+          "y": 330,
+          "width": 260,
+          "height": 112
+        },
+        {
+          "id": "records",
+          "label": "Retain raw evidence",
+          "sublabel": "journal + trace records",
+          "kind": "component",
+          "status": "software-tested",
+          "detail": "Append raw snapshots and retain original request/session records. Flush/fsync and atomic replacement protect snapshots. Unknown schemas and contradictory lifecycle evidence reject.",
+          "sources": [
+            {
+              "source": "sampler",
+              "line": 38,
+              "end_line": 50
+            }
+          ],
+          "symbols": [],
+          "x": 490,
+          "y": 330,
+          "width": 260,
+          "height": 112
+        },
+        {
+          "id": "finish",
+          "label": "Finalize campaign",
+          "sublabel": "final evidence checks",
+          "kind": "component",
+          "status": "software-tested",
+          "detail": "Final success requires persisted outcome, verified session closure, no outstanding I/O and final own-loss ratio at most 1%. A successful earlier request survives later session failure.",
+          "sources": [
+            {
+              "source": "corrections",
+              "line": 5,
+              "end_line": 17
+            },
+            {
+              "source": "sampler",
+              "line": 44,
+              "end_line": 45
+            }
+          ],
+          "symbols": [],
+          "x": 60,
+          "y": 330,
+          "width": 260,
+          "height": 112
+        },
+        {
+          "id": "quarantine",
+          "label": "Stop and quarantine",
+          "sublabel": "no automatic re-admission",
+          "kind": "component",
+          "status": "software-tested",
+          "detail": "Any unresolved operation retains resources. Disk failure stops submissions. A collector restart does not establish firmware drain; reconciliation remains explicit.",
+          "sources": [
+            {
+              "source": "sampler",
+              "line": 24,
+              "end_line": 37
+            },
+            {
+              "source": "corrections",
+              "line": 5,
+              "end_line": 17
+            }
+          ],
+          "symbols": [],
+          "x": 60,
+          "y": 580,
+          "width": 260,
+          "height": 112
+        }
+      ],
+      "edges": [
+        {
+          "id": "guard--identity",
+          "from": "guard",
+          "to": "identity",
+          "label": "admit",
+          "status": "software-tested",
+          "sources": [
+            {
+              "source": "sampler",
+              "line": 11,
+              "end_line": 26
+            }
+          ],
+          "detail": "Admission blocks unfinished or quarantined work."
+        },
+        {
+          "id": "identity--slot",
+          "from": "identity",
+          "to": "slot",
+          "label": "ready",
+          "status": "software-tested",
+          "sources": [
+            {
+              "source": "sampler",
+              "line": 11,
+              "end_line": 26
+            }
+          ],
+          "detail": "Readiness follows validation and device opening."
+        },
+        {
+          "id": "slot--request",
+          "from": "slot",
+          "to": "request",
+          "label": "permit",
+          "status": "software-tested",
+          "sources": [
+            {
+              "source": "sampler",
+              "line": 11,
+              "end_line": 26
+            }
+          ],
+          "detail": "Permit applies to one sequence only.",
+          "transport": {
+            "mechanism": "local IPC"
+          }
+        },
+        {
+          "id": "request--records",
+          "from": "request",
+          "to": "records",
+          "label": "retain",
+          "status": "software-tested",
+          "sources": [
+            {
+              "source": "sampler",
+              "line": 11,
+              "end_line": 26
+            }
+          ],
+          "detail": "Record completion and report evidence without rewriting original timestamps.",
+          "transport": {
+            "mechanism": "JSONL + ETW"
+          }
+        },
+        {
+          "id": "records--finish",
+          "from": "records",
+          "to": "finish",
+          "label": "verify run",
+          "status": "software-tested",
+          "sources": [
+            {
+              "source": "corrections",
+              "line": 5,
+              "end_line": 17
+            }
+          ],
+          "detail": "Final evidence and cleanup determine campaign outcome."
+        },
+        {
+          "id": "finish--quarantine",
+          "from": "finish",
+          "to": "quarantine",
+          "label": "on failure",
+          "status": "software-tested",
+          "sources": [
+            {
+              "source": "corrections",
+              "line": 5,
+              "end_line": 17
+            },
+            {
+              "source": "sampler",
+              "line": 24,
+              "end_line": 37
+            }
+          ],
+          "detail": "Failure does not clear the unfinished-run or quarantine protection."
+        }
+      ],
+      "unknowns": [
+        "Normal smoke shutdown does not qualify interruption, sleep, roam, reset or firmware drain."
+      ],
+      "provenance": "Authored from public repository snapshots pinned in manifest.json. Evidence states describe the cited scope; arrows do not prove execution."
+    },
+    {
+      "id": "lifecycle",
+      "title": "Completion controls resource release",
+      "shortTitle": "I/O lifetime",
+      "group": "WINDOWS INTERFACES",
+      "summary": "An architecture view of the implemented request states. A finite poll does not bound the lifetime of pending I/O. Cancellation and deadlines remain sticky failures.",
+      "nodes": [
+        {
+          "id": "ready",
+          "label": "READY",
+          "sublabel": "handle open; no operation",
+          "kind": "component",
+          "status": "software-tested",
+          "detail": "Session readiness follows identity validation. A new request uses fresh buffers, event and OVERLAPPED storage.",
+          "sources": [
+            {
+              "source": "sampler",
+              "line": 24,
+              "end_line": 37
+            },
+            {
+              "source": "win32-code",
+              "line": 64,
+              "end_line": 79
+            }
+          ],
+          "symbols": [
+            "READY"
+          ],
+          "x": 60,
+          "y": 80,
+          "width": 260,
+          "height": 112
+        },
+        {
+          "id": "flight",
+          "label": "IN_FLIGHT",
+          "sublabel": "retain owned resources",
+          "kind": "component",
+          "status": "software-tested",
+          "detail": "Hold all operation resources until terminal completion is established. Poll waits are finite (at most 50 ms); the operation can remain pending indefinitely.",
+          "sources": [
+            {
+              "source": "sampler",
+              "line": 24,
+              "end_line": 37
+            },
+            {
+              "source": "sampler-code",
+              "line": 211,
+              "end_line": 236
+            }
+          ],
+          "symbols": [
+            "IN_FLIGHT"
+          ],
+          "x": 490,
+          "y": 80,
+          "width": 260,
+          "height": 112
+        },
+        {
+          "id": "complete",
+          "label": "Terminal result",
+          "sublabel": "success or terminal error",
+          "kind": "component",
+          "status": "software-tested",
+          "detail": "A successful request is finalized only after terminal evidence processing and successful operation release. Earlier finalized requests survive later session failure.",
+          "sources": [
+            {
+              "source": "corrections",
+              "line": 5,
+              "end_line": 17
+            },
+            {
+              "source": "sampler-code",
+              "line": 153,
+              "end_line": 188
+            }
+          ],
+          "symbols": [
+            "COMPLETED_SUCCESS",
+            "COMPLETED_ERROR"
+          ],
+          "x": 920,
+          "y": 80,
+          "width": 260,
+          "height": 112
+        },
+        {
+          "id": "stopped",
+          "label": "STOPPED / close",
+          "sublabel": "zero outstanding operations",
+          "kind": "component",
+          "status": "software-tested",
+          "detail": "Verified operation release and handle-close bookkeeping gate closure. Never retry an ambiguous native close by numeric handle.",
+          "sources": [
+            {
+              "source": "corrections",
+              "line": 5,
+              "end_line": 17
+            },
+            {
+              "source": "sampler-code",
+              "line": 63,
+              "end_line": 81
+            }
+          ],
+          "symbols": [
+            "STOPPED",
+            "CLOSED"
+          ],
+          "x": 920,
+          "y": 330,
+          "width": 260,
+          "height": 112
+        },
+        {
+          "id": "drain",
+          "label": "Retain and drain",
+          "sublabel": "unresolved completion",
+          "kind": "component",
+          "status": "software-tested",
+          "detail": "close() refuses release while unresolved. Worker owner loss or ordinary exceptions do not permit killing the worker or freeing its buffers.",
+          "sources": [
+            {
+              "source": "sampler",
+              "line": 24,
+              "end_line": 37
+            }
+          ],
+          "symbols": [
+            "QUARANTINED_DRAIN_PENDING"
+          ],
+          "x": 490,
+          "y": 330,
+          "width": 260,
+          "height": 112
+        },
+        {
+          "id": "cancel",
+          "label": "Deadline / cancel",
+          "sublabel": "sticky failure",
+          "kind": "component",
+          "status": "software-tested",
+          "detail": "A two-second deadline or any cancellation attempt fails the run even if later completion succeeds. ERROR_NOT_FOUND, WAIT_TIMEOUT and ERROR_IO_INCOMPLETE are not terminal proof.",
+          "sources": [
+            {
+              "source": "sampler",
+              "line": 24,
+              "end_line": 37
+            },
+            {
+              "source": "corrections",
+              "line": 5,
+              "end_line": 17
+            }
+          ],
+          "symbols": [
+            "CANCEL_REQUESTED",
+            "CancelIoEx"
+          ],
+          "x": 60,
+          "y": 330,
+          "width": 260,
+          "height": 112
+        }
+      ],
+      "edges": [
+        {
+          "id": "ready--flight",
+          "from": "ready",
+          "to": "flight",
+          "label": "submit",
+          "status": "software-tested",
+          "sources": [
+            {
+              "source": "sampler",
+              "line": 24,
+              "end_line": 37
+            }
+          ],
+          "detail": "Only one outstanding operation.",
+          "transport": {
+            "mechanism": "IOCTL",
+            "call": "DeviceIoControl"
+          }
+        },
+        {
+          "id": "flight--complete",
+          "from": "flight",
+          "to": "complete",
+          "label": "terminal proof",
+          "status": "software-tested",
+          "sources": [
+            {
+              "source": "sampler",
+              "line": 24,
+              "end_line": 37
+            }
+          ],
+          "detail": "Result query establishes a terminal result, unlike a timeout.",
+          "transport": {
+            "mechanism": "Win32",
+            "call": "GetOverlappedResult"
+          }
+        },
+        {
+          "id": "complete--stopped",
+          "from": "complete",
+          "to": "stopped",
+          "label": "stop / error",
+          "status": "software-tested",
+          "sources": [
+            {
+              "source": "corrections",
+              "line": 5,
+              "end_line": 17
+            }
+          ],
+          "detail": "After verified release, stop path can close only with no outstanding I/O."
+        },
+        {
+          "id": "complete--ready",
+          "from": "complete",
+          "to": "ready",
+          "label": "clean success",
+          "status": "software-tested",
+          "sources": [
+            {
+              "source": "sampler",
+              "line": 24,
+              "end_line": 37
+            }
+          ],
+          "detail": "Successful completion and release allow the next separately permitted request."
+        },
+        {
+          "id": "flight--cancel",
+          "from": "flight",
+          "to": "cancel",
+          "label": "deadline / stop",
+          "status": "software-tested",
+          "sources": [
+            {
+              "source": "sampler",
+              "line": 24,
+              "end_line": 37
+            }
+          ],
+          "detail": "Deadline, owner loss or stop request enters a sticky failure path.",
+          "transport": {
+            "mechanism": "Win32",
+            "call": "CancelIoEx"
+          }
+        },
+        {
+          "id": "cancel--drain",
+          "from": "cancel",
+          "to": "drain",
+          "label": "not terminal",
+          "status": "software-tested",
+          "sources": [
+            {
+              "source": "sampler",
+              "line": 24,
+              "end_line": 37
+            }
+          ],
+          "detail": "Cancellation request is not cancellation completion."
+        },
+        {
+          "id": "drain--stopped",
+          "from": "drain",
+          "to": "stopped",
+          "label": "terminal proof",
+          "status": "software-tested",
+          "sources": [
+            {
+              "source": "sampler",
+              "line": 24,
+              "end_line": 37
+            },
+            {
+              "source": "corrections",
+              "line": 5,
+              "end_line": 17
+            }
+          ],
+          "detail": "Retain resources until terminal evidence and successful release; never reclassify the failed run as successful."
+        }
+      ],
+      "unknowns": [
+        "Real cancellation, communication loss and recovery remain separately unqualified on hardware."
+      ],
+      "provenance": "Authored from public repository snapshots pinned in manifest.json. Evidence states describe the cited scope; arrows do not prove execution."
+    },
+    {
+      "id": "adapters",
+      "title": "Live and injected adapters share one core",
+      "shortTitle": "Adapter boundary",
+      "group": "WINDOWS INTERFACES",
+      "summary": "The shared state machine can be exercised without hardware. Test results establish software decisions; the retained live smoke establishes only its actual successful path.",
+      "nodes": [
+        {
+          "id": "controller",
+          "label": "Controller + owner",
+          "sublabel": "injected boundaries",
+          "kind": "component",
+          "status": "software-tested",
+          "detail": "The sampler receives explicit kernel, clock, owner, validator and sink dependencies.",
+          "sources": [
+            {
+              "source": "sampler",
+              "line": 11,
+              "end_line": 26
+            },
+            {
+              "source": "sampler-code",
+              "line": 66,
+              "end_line": 88
+            }
+          ],
+          "symbols": [
+            "Sampler"
+          ],
+          "x": 60,
+          "y": 80,
+          "width": 260,
+          "height": 112
+        },
+        {
+          "id": "core",
+          "label": "Sampler core",
+          "sublabel": "explicit lifecycle states",
+          "kind": "component",
+          "status": "software-tested",
+          "detail": "Pure control decisions coordinate submission, polling, sticky failure, retention and closure. Public interfaces remain unchanged.",
+          "sources": [
+            {
+              "source": "sampler-code",
+              "line": 22,
+              "end_line": 35
+            },
+            {
+              "source": "sampler",
+              "line": 24,
+              "end_line": 37
+            }
+          ],
+          "symbols": [],
+          "x": 490,
+          "y": 80,
+          "width": 260,
+          "height": 112
+        },
+        {
+          "id": "live",
+          "label": "Win32Kernel",
+          "sublabel": "explicit live selection",
+          "kind": "component",
+          "status": "software-tested",
+          "detail": "No device library is loaded at import. The live adapter preserves the audited fixed request, input/output capacities and overlapped layout.",
+          "sources": [
+            {
+              "source": "sampler",
+              "line": 5,
+              "end_line": 9
+            },
+            {
+              "source": "win32-code",
+              "line": 32,
+              "end_line": 55
+            }
+          ],
+          "symbols": [
+            "Win32Kernel"
+          ],
+          "x": 920,
+          "y": 80,
+          "width": 260,
+          "height": 112
+        },
+        {
+          "id": "device",
+          "label": "Exact-build device",
+          "sublabel": "one idle smoke observed",
+          "kind": "component",
+          "status": "observed",
+          "detail": "139 pending-to-success requests in one persistent idle capture; no forced termination or trace loss reported. This is not proof of all error paths.",
+          "sources": [
+            {
+              "source": "smoke",
+              "line": 18,
+              "end_line": 35
+            }
+          ],
+          "symbols": [],
+          "x": 920,
+          "y": 330,
+          "width": 260,
+          "height": 112
+        },
+        {
+          "id": "fake",
+          "label": "Injected kernel",
+          "sublabel": "injected failure cases",
+          "kind": "component",
+          "status": "software-tested",
+          "detail": "Fake kernel, identity, clock and controller test timeouts, pending completion, resource ownership and schema behavior without opening the adapter.",
+          "sources": [
+            {
+              "source": "sampler",
+              "line": 77,
+              "end_line": 100
+            }
+          ],
+          "symbols": [],
+          "x": 490,
+          "y": 330,
+          "width": 260,
+          "height": 112
+        },
+        {
+          "id": "limits",
+          "label": "Hardware qualification",
+          "sublabel": "hardware gates open",
+          "kind": "component",
+          "status": "unresolved",
+          "detail": "Offline tests do not qualify live firmware drain, AP accuracy, power transitions, interruption recovery or long-run load behavior.",
+          "sources": [
+            {
+              "source": "roadmap",
+              "line": 83,
+              "end_line": 91
+            },
+            {
+              "source": "roadmap",
+              "line": 40,
+              "end_line": 48
+            }
+          ],
+          "symbols": [],
+          "x": 60,
+          "y": 330,
+          "width": 260,
+          "height": 112
+        }
+      ],
+      "edges": [
+        {
+          "id": "controller--core",
+          "from": "controller",
+          "to": "core",
+          "label": "dependencies",
+          "status": "software-tested",
+          "sources": [
+            {
+              "source": "sampler",
+              "line": 11,
+              "end_line": 26
+            }
+          ],
+          "detail": "Explicitly injected boundaries.",
+          "transport": {
+            "mechanism": "Python"
+          }
+        },
+        {
+          "id": "core--live",
+          "from": "core",
+          "to": "live",
+          "label": "live backend",
+          "status": "software-tested",
+          "sources": [
+            {
+              "source": "sampler",
+              "line": 11,
+              "end_line": 26
+            }
+          ],
+          "detail": "Only explicit live selection opens the native boundary."
+        },
+        {
+          "id": "live--device",
+          "from": "live",
+          "to": "device",
+          "label": "bounded smoke",
+          "status": "observed",
+          "sources": [
+            {
+              "source": "smoke",
+              "line": 7,
+              "end_line": 16
+            }
+          ],
+          "detail": "Observation refers to the retained exact-build capture.",
+          "transport": {
+            "mechanism": "IOCTL"
+          }
+        },
+        {
+          "id": "core--fake",
+          "from": "core",
+          "to": "fake",
+          "label": "offline backend",
+          "status": "software-tested",
+          "sources": [
+            {
+              "source": "sampler",
+              "line": 77,
+              "end_line": 100
+            }
+          ],
+          "detail": "Exercises the same core without device calls."
+        },
+        {
+          "id": "fake--limits",
+          "from": "fake",
+          "to": "limits",
+          "label": "scope limit",
+          "status": "documented",
+          "sources": [
+            {
+              "source": "roadmap",
+              "line": 83,
+              "end_line": 91
+            }
+          ],
+          "detail": "Software evidence cannot independently validate physical timing."
+        },
+        {
+          "id": "device--limits",
+          "from": "device",
+          "to": "limits",
+          "label": "later gates",
+          "status": "unresolved",
+          "sources": [
+            {
+              "source": "roadmap",
+              "line": 83,
+              "end_line": 91
+            }
+          ],
+          "detail": "Live success does not close failure-path or physical reference gates."
+        }
+      ],
+      "unknowns": [
+        "Retain the original live source hashes; a newer model snapshot does not retroactively qualify those bytes."
+      ],
+      "provenance": "Authored from public repository snapshots pinned in manifest.json. Evidence states describe the cited scope; arrows do not prove execution."
+    },
+    {
+      "id": "time-domains",
+      "title": "Station TSF, host QPC and external clocks",
+      "shortTitle": "Time domains",
+      "group": "FIRMWARE & TRANSPORT",
+      "summary": "Keep values, event placement and clock relationships distinct. The useful current result is conditional station-TSF estimation at an event QPC.",
+      "nodes": [
+        {
+          "id": "ap",
+          "label": "Associated AP TSF",
+          "sublabel": "station/AP relation assumed",
+          "kind": "component",
+          "status": "unresolved",
+          "detail": "AP-referenced labeling additionally requires a station/AP equality or bounded-offset assumption. No independently measured station/AP error bound is established.",
+          "sources": [
+            {
+              "source": "math",
+              "line": 5,
+              "end_line": 21
+            },
+            {
+              "source": "roadmap",
+              "line": 83,
+              "end_line": 91
+            }
+          ],
+          "symbols": [],
+          "x": 60,
+          "y": 80,
+          "width": 260,
+          "height": 112
+        },
+        {
+          "id": "station",
+          "label": "Station TSF value",
+          "sublabel": "integer microsecond counter",
+          "kind": "component",
+          "status": "observed",
+          "detail": "Diagnostic records supply a TSF value. Its interpreted quantization bin is [T, T+1] us; a true capture inside the host window remains an assumption.",
+          "sources": [
+            {
+              "source": "math",
+              "line": 5,
+              "end_line": 21
+            }
+          ],
+          "symbols": [],
+          "x": 490,
+          "y": 80,
+          "width": 260,
+          "height": 112
+        },
+        {
+          "id": "host",
+          "label": "Windows QPC",
+          "sublabel": "host ticks and frequency F",
+          "kind": "component",
+          "status": "documented",
+          "detail": "QPC is the host interval coordinate. Preserve event QPC, request L, report U, completion C and reader receipt D as separate events.",
+          "sources": [
+            {
+              "source": "math",
+              "line": 5,
+              "end_line": 21
+            }
+          ],
+          "symbols": [],
+          "x": 920,
+          "y": 80,
+          "width": 260,
+          "height": 112
+        },
+        {
+          "id": "interval",
+          "label": "Conditional interval",
+          "sublabel": "rate prior: +/-200 ppm",
+          "kind": "component",
+          "status": "software-tested",
+          "detail": "Nominal rate is 1,000,000/F us per tick. Rate-only envelopes allow bounded instantaneous variation; a narrow interval is not calibrated absolute accuracy.",
+          "sources": [
+            {
+              "source": "math",
+              "line": 28,
+              "end_line": 51
+            }
+          ],
+          "symbols": [],
+          "x": 920,
+          "y": 330,
+          "width": 260,
+          "height": 112
+        },
+        {
+          "id": "event",
+          "label": "Application event",
+          "sublabel": "raw QPC + immutable result",
+          "kind": "component",
+          "status": "documented",
+          "detail": "Preserve the event coordinate and provisional result; append derived settlement later. Settlement wait affects finalization latency, not the raw event time.",
+          "sources": [
+            {
+              "source": "math",
+              "line": 105,
+              "end_line": 105
+            },
+            {
+              "source": "roadmap",
+              "line": 60,
+              "end_line": 70
+            }
+          ],
+          "symbols": [],
+          "x": 490,
+          "y": 330,
+          "width": 260,
+          "height": 112
+        },
+        {
+          "id": "external",
+          "label": "UTC / multiple nodes",
+          "sublabel": "needs reference evidence",
+          "kind": "component",
+          "status": "unresolved",
+          "detail": "Two individually narrow intervals do not imply the same pairwise accuracy. UTC requires an external reference chain and combined uncertainty budget.",
+          "sources": [
+            {
+              "source": "roadmap",
+              "line": 83,
+              "end_line": 91
+            },
+            {
+              "source": "math",
+              "line": 128,
+              "end_line": 128
+            }
+          ],
+          "symbols": [],
+          "x": 60,
+          "y": 330,
+          "width": 260,
+          "height": 112
+        }
+      ],
+      "edges": [
+        {
+          "id": "ap--station",
+          "from": "ap",
+          "to": "station",
+          "label": "unproven offset",
+          "status": "unresolved",
+          "sources": [
+            {
+              "source": "math",
+              "line": 5,
+              "end_line": 21
+            },
+            {
+              "source": "roadmap",
+              "line": 83,
+              "end_line": 91
+            }
+          ],
+          "detail": "The station-to-AP clock relationship is a separate qualification gate."
+        },
+        {
+          "id": "station--host",
+          "from": "station",
+          "to": "host",
+          "label": "capture window",
+          "status": "unresolved",
+          "sources": [
+            {
+              "source": "math",
+              "line": 5,
+              "end_line": 21
+            }
+          ],
+          "detail": "Capture inside [L,U+1] and association are assumptions; no simultaneous latch is proven."
+        },
+        {
+          "id": "host--interval",
+          "from": "host",
+          "to": "interval",
+          "label": "host coordinate",
+          "status": "software-tested",
+          "sources": [
+            {
+              "source": "math",
+              "line": 50,
+              "end_line": 80
+            }
+          ],
+          "detail": "Exact envelope calculation relates accepted observations to QPC.",
+          "transport": {
+            "mechanism": "Fraction"
+          }
+        },
+        {
+          "id": "interval--event",
+          "from": "interval",
+          "to": "event",
+          "label": "query at Q",
+          "status": "software-tested",
+          "sources": [
+            {
+              "source": "math",
+              "line": 50,
+              "end_line": 80
+            }
+          ],
+          "detail": "Integer estimate uncertainty includes the 0.5-us rounding allowance."
+        },
+        {
+          "id": "event--external",
+          "from": "event",
+          "to": "external",
+          "label": "accuracy gate",
+          "status": "unresolved",
+          "sources": [
+            {
+              "source": "roadmap",
+              "line": 83,
+              "end_line": 91
+            }
+          ],
+          "detail": "Physical reference evidence remains required."
+        }
+      ],
+      "unknowns": [
+        "Capture timing and station/AP offset can have systematic bias despite numerical consistency."
+      ],
+      "provenance": "Authored from public repository snapshots pinned in manifest.json. Evidence states describe the cited scope; arrows do not prove execution."
+    },
+    {
+      "id": "availability",
+      "title": "Capture, completion and availability",
+      "shortTitle": "Availability",
+      "group": "FIRMWARE & TRANSPORT",
+      "summary": "Dependency view, not a measured timeline: terminal I/O and report delivery may occur in either order. Availability is an analytical replay boundary.",
+      "nodes": [
+        {
+          "id": "request",
+          "label": "L · request start",
+          "sublabel": "QPC before submission",
+          "kind": "component",
+          "status": "documented",
+          "detail": "L is recorded immediately before actual action-4 submission. Do not substitute the controller planned slot.",
+          "sources": [
+            {
+              "source": "math",
+              "line": 5,
+              "end_line": 21
+            }
+          ],
+          "symbols": [],
+          "x": 60,
+          "y": 80,
+          "width": 260,
+          "height": 112
+        },
+        {
+          "id": "report",
+          "label": "U · original report",
+          "sublabel": "driver timestamp, QPC ticks",
+          "kind": "component",
+          "status": "observed",
+          "detail": "U is the original driver report timestamp. It is not reader delivery time; true firmware capture within the widened [L,U+1] interval remains conditional.",
+          "sources": [
+            {
+              "source": "math",
+              "line": 5,
+              "end_line": 21
+            },
+            {
+              "source": "math",
+              "line": 82,
+              "end_line": 94
+            }
+          ],
+          "symbols": [],
+          "x": 490,
+          "y": 80,
+          "width": 260,
+          "height": 112
+        },
+        {
+          "id": "delivery",
+          "label": "D · group available",
+          "sublabel": "last required record",
+          "kind": "component",
+          "status": "documented",
+          "detail": "D is receipt of the delay record completing the required report group, not merely the first partial record.",
+          "sources": [
+            {
+              "source": "math",
+              "line": 5,
+              "end_line": 21
+            },
+            {
+              "source": "math",
+              "line": 82,
+              "end_line": 94
+            }
+          ],
+          "symbols": [],
+          "x": 920,
+          "y": 80,
+          "width": 260,
+          "height": 112
+        },
+        {
+          "id": "available",
+          "label": "A · replay boundary",
+          "sublabel": "max(D, C, U + one tick)",
+          "kind": "component",
+          "status": "software-tested",
+          "detail": "A_i=max(D_i,C_i,U_i+1). Arrival-order-v2 orders availability first and capture order for ties; skipped late historical captures are explicit.",
+          "sources": [
+            {
+              "source": "math",
+              "line": 82,
+              "end_line": 94
+            },
+            {
+              "source": "corrections",
+              "line": 16,
+              "end_line": 31
+            }
+          ],
+          "symbols": [
+            "available_qpc",
+            "wht/arrival-order-v2"
+          ],
+          "x": 920,
+          "y": 330,
+          "width": 260,
+          "height": 112
+        },
+        {
+          "id": "completion",
+          "label": "C · terminal I/O",
+          "sublabel": "completion observed by host",
+          "kind": "component",
+          "status": "documented",
+          "detail": "C records actual terminal completion observation. An IOCTL return or cancellation request is not a firmware sampling fence.",
+          "sources": [
+            {
+              "source": "math",
+              "line": 5,
+              "end_line": 21
+            },
+            {
+              "source": "sampler",
+              "line": 24,
+              "end_line": 37
+            }
+          ],
+          "symbols": [],
+          "x": 490,
+          "y": 330,
+          "width": 260,
+          "height": 112
+        },
+        {
+          "id": "api",
+          "label": "Application availability",
+          "sublabel": "later latency excluded",
+          "kind": "component",
+          "status": "unresolved",
+          "detail": "The existing replay formula excludes later queueing, IPC and ingestion latency. A future live API must measure its actual exposed boundary and version changed semantics.",
+          "sources": [
+            {
+              "source": "math",
+              "line": 82,
+              "end_line": 94
+            },
+            {
+              "source": "roadmap",
+              "line": 60,
+              "end_line": 70
+            }
+          ],
+          "symbols": [],
+          "x": 60,
+          "y": 330,
+          "width": 260,
+          "height": 112
+        }
+      ],
+      "edges": [
+        {
+          "id": "request--report",
+          "from": "request",
+          "to": "report",
+          "label": "host window",
+          "status": "documented",
+          "sources": [
+            {
+              "source": "math",
+              "line": 5,
+              "end_line": 21
+            }
+          ],
+          "detail": "L and U form a conditional capture window, not a verified hardware sampling instant."
+        },
+        {
+          "id": "report--delivery",
+          "from": "report",
+          "to": "delivery",
+          "label": "async delivery",
+          "status": "observed",
+          "sources": [
+            {
+              "source": "smoke",
+              "line": 37,
+              "end_line": 50
+            }
+          ],
+          "detail": "Delivery delay stays distinct from original logging time.",
+          "transport": {
+            "mechanism": "ETW"
+          }
+        },
+        {
+          "id": "delivery--available",
+          "from": "delivery",
+          "to": "available",
+          "label": "required tail",
+          "status": "software-tested",
+          "sources": [
+            {
+              "source": "math",
+              "line": 82,
+              "end_line": 94
+            }
+          ],
+          "detail": "Full required group receipt contributes to availability."
+        },
+        {
+          "id": "completion--available",
+          "from": "completion",
+          "to": "available",
+          "label": "terminal C",
+          "status": "software-tested",
+          "sources": [
+            {
+              "source": "math",
+              "line": 82,
+              "end_line": 94
+            }
+          ],
+          "detail": "Completion can be before or after report receipt."
+        },
+        {
+          "id": "report--available",
+          "from": "report",
+          "to": "available",
+          "label": "widened U",
+          "status": "software-tested",
+          "sources": [
+            {
+              "source": "math",
+              "line": 82,
+              "end_line": 94
+            }
+          ],
+          "detail": "Availability is at least one tick after the widened report endpoint."
+        },
+        {
+          "id": "available--api",
+          "from": "available",
+          "to": "api",
+          "label": "later boundary",
+          "status": "unresolved",
+          "sources": [
+            {
+              "source": "math",
+              "line": 82,
+              "end_line": 94
+            },
+            {
+              "source": "roadmap",
+              "line": 60,
+              "end_line": 70
+            }
+          ],
+          "detail": "No application-observed live latency claim follows from replay A."
+        }
+      ],
+      "unknowns": [
+        "Causal online admission still needs a justified delivery watermark or bound."
+      ],
+      "provenance": "Authored from public repository snapshots pinned in manifest.json. Evidence states describe the cited scope; arrows do not prove execution."
+    },
+    {
+      "id": "causal",
+      "title": "Screen first, check the frozen model, then update",
+      "shortTitle": "Causal estimate",
+      "group": "APPLICATION INTEGRATION",
+      "summary": "Conditional offline replay with exact arithmetic. Acquisition evidence and numerical feasibility are different gates; the uncertainty threshold includes integer rounding.",
+      "nodes": [
+        {
+          "id": "screen",
+          "label": "Screen recording",
+          "sublabel": "association + continuity",
+          "kind": "component",
+          "status": "software-tested",
+          "detail": "Offline screen uses action/order/vdev/delay arithmetic, a 2,000-us window and a separate 100-ppm freshness test. A suspected backward TSF closes the segment.",
+          "sources": [
+            {
+              "source": "math",
+              "line": 22,
+              "end_line": 28
+            },
+            {
+              "source": "corrections",
+              "line": 16,
+              "end_line": 31
+            }
+          ],
+          "symbols": [],
+          "x": 60,
+          "y": 80,
+          "width": 260,
+          "height": 112
+        },
+        {
+          "id": "arrival",
+          "label": "Order by availability",
+          "sublabel": "capture-order tie breaking",
+          "kind": "component",
+          "status": "software-tested",
+          "detail": "Replay orders available samples causally and records skipped late historical captures. Provider ordering guards remain.",
+          "sources": [
+            {
+              "source": "corrections",
+              "line": 16,
+              "end_line": 31
+            },
+            {
+              "source": "math",
+              "line": 82,
+              "end_line": 94
+            }
+          ],
+          "symbols": [
+            "wht/arrival-order-v2"
+          ],
+          "x": 490,
+          "y": 80,
+          "width": 260,
+          "height": 112
+        },
+        {
+          "id": "prior",
+          "label": "Frozen-model check",
+          "sublabel": "test before incorporation",
+          "kind": "component",
+          "status": "software-tested",
+          "detail": "Compute feasible capture extent against the prior c_low/c_high. A contradictory sample must not validate itself by first changing the model.",
+          "sources": [
+            {
+              "source": "math",
+              "line": 50,
+              "end_line": 80
+            },
+            {
+              "source": "causal-code",
+              "line": 106,
+              "end_line": 120
+            }
+          ],
+          "symbols": [
+            "CausalProvider.check"
+          ],
+          "x": 920,
+          "y": 80,
+          "width": 260,
+          "height": 112
+        },
+        {
+          "id": "update",
+          "label": "Intersect bounds",
+          "sublabel": "exact Fraction arithmetic",
+          "kind": "component",
+          "status": "software-tested",
+          "detail": "c_low=max(T-a*(U+1)); c_high=min(T+1-b*L). Quantization widens both TSF and QPC intervals. Retain the +/-200-ppm rate prior.",
+          "sources": [
+            {
+              "source": "math",
+              "line": 50,
+              "end_line": 80
+            },
+            {
+              "source": "math",
+              "line": 5,
+              "end_line": 21
+            },
+            {
+              "source": "causal-code",
+              "line": 121,
+              "end_line": 135
+            }
+          ],
+          "symbols": [
+            "CausalProvider.ingest"
+          ],
+          "x": 920,
+          "y": 330,
+          "width": 260,
+          "height": 112
+        },
+        {
+          "id": "estimate",
+          "label": "Query event QPC",
+          "sublabel": "state + exact uncertainty",
+          "kind": "component",
+          "status": "software-tested",
+          "detail": "Returned uncertainty = exact half-width + 0.5 us. tracking requires strictly less than 1,000 us; equality is stale. With no usable sample, acquiring. Holdover grows at 200 us per host second under this prior.",
+          "sources": [
+            {
+              "source": "math",
+              "line": 71,
+              "end_line": 87
+            },
+            {
+              "source": "causal-code",
+              "line": 142,
+              "end_line": 164
+            }
+          ],
+          "symbols": [
+            "CausalProvider.estimate"
+          ],
+          "x": 490,
+          "y": 330,
+          "width": 260,
+          "height": 112
+        },
+        {
+          "id": "invalid",
+          "label": "Latched invalid",
+          "sublabel": "explicit epoch reset",
+          "kind": "component",
+          "status": "software-tested",
+          "detail": "Incompatibility invalidates the current epoch. A later wider tolerance cannot reopen a screen-v2 continuity break. Causal invalidation waits until both compared observations are available.",
+          "sources": [
+            {
+              "source": "corrections",
+              "line": 16,
+              "end_line": 31
+            },
+            {
+              "source": "causal-code",
+              "line": 95,
+              "end_line": 105
+            }
+          ],
+          "symbols": [],
+          "x": 60,
+          "y": 330,
+          "width": 260,
+          "height": 112
+        }
+      ],
+      "edges": [
+        {
+          "id": "screen--arrival",
+          "from": "screen",
+          "to": "arrival",
+          "label": "accepted data",
+          "status": "software-tested",
+          "sources": [
+            {
+              "source": "math",
+              "line": 22,
+              "end_line": 28
+            },
+            {
+              "source": "corrections",
+              "line": 16,
+              "end_line": 31
+            }
+          ],
+          "detail": "Offline acceptance is not online acquisition admission."
+        },
+        {
+          "id": "arrival--prior",
+          "from": "arrival",
+          "to": "prior",
+          "label": "next sample",
+          "status": "software-tested",
+          "sources": [
+            {
+              "source": "math",
+              "line": 50,
+              "end_line": 80
+            }
+          ],
+          "detail": "Respect arrival and capture ordering guards."
+        },
+        {
+          "id": "prior--update",
+          "from": "prior",
+          "to": "update",
+          "label": "compatible",
+          "status": "software-tested",
+          "sources": [
+            {
+              "source": "math",
+              "line": 50,
+              "end_line": 80
+            }
+          ],
+          "detail": "Update only after frozen-model feasibility passes.",
+          "transport": {
+            "mechanism": "Fraction"
+          }
+        },
+        {
+          "id": "update--estimate",
+          "from": "update",
+          "to": "estimate",
+          "label": "query",
+          "status": "software-tested",
+          "sources": [
+            {
+              "source": "math",
+              "line": 50,
+              "end_line": 80
+            }
+          ],
+          "detail": "Queries use only incorporated evidence available at the query boundary.",
+          "transport": {
+            "mechanism": "Fraction"
+          }
+        },
+        {
+          "id": "prior--invalid",
+          "from": "prior",
+          "to": "invalid",
+          "label": "contradiction",
+          "status": "software-tested",
+          "sources": [
+            {
+              "source": "math",
+              "line": 50,
+              "end_line": 80
+            },
+            {
+              "source": "corrections",
+              "line": 16,
+              "end_line": 31
+            }
+          ],
+          "detail": "Latch invalid; explicit epoch handling required."
+        },
+        {
+          "id": "estimate--invalid",
+          "from": "estimate",
+          "to": "invalid",
+          "label": "epoch failure",
+          "status": "software-tested",
+          "sources": [
+            {
+              "source": "corrections",
+              "line": 16,
+              "end_line": 31
+            }
+          ],
+          "detail": "Continuity loss is propagated at justified causal availability."
+        }
+      ],
+      "unknowns": [
+        "Numerical compatibility does not prove physical capture time or report identity."
+      ],
+      "provenance": "Authored from public repository snapshots pinned in manifest.json. Evidence states describe the cited scope; arrows do not prove execution."
+    },
+    {
+      "id": "settlement",
+      "title": "Preserve the event and append a settled result",
+      "shortTitle": "Two-phase time",
+      "group": "APPLICATION INTEGRATION",
+      "summary": "The immutable event survives both phases. Settlement-v2 requires a real before/after bracket and may narrow it with eligible overlapping envelopes.",
+      "nodes": [
+        {
+          "id": "raw",
+          "label": "Raw event record",
+          "sublabel": "event QPC + source epoch",
+          "kind": "component",
+          "status": "documented",
+          "detail": "Capture and preserve raw event QPC. Never rewrite it to the time when analysis finishes.",
+          "sources": [
+            {
+              "source": "roadmap",
+              "line": 60,
+              "end_line": 70
+            },
+            {
+              "source": "settled",
+              "line": 17,
+              "end_line": 28
+            }
+          ],
+          "symbols": [],
+          "x": 60,
+          "y": 80,
+          "width": 260,
+          "height": 112
+        },
+        {
+          "id": "provisional",
+          "label": "Provisional result",
+          "sublabel": "immutable first result",
+          "kind": "component",
+          "status": "software-tested",
+          "detail": "Return the then-available conditional interval and state. Preserve stale, acquiring or invalid outcomes honestly; settlement never edits the original response.",
+          "sources": [
+            {
+              "source": "roadmap",
+              "line": 60,
+              "end_line": 70
+            },
+            {
+              "source": "settled",
+              "line": 17,
+              "end_line": 28
+            }
+          ],
+          "symbols": [],
+          "x": 490,
+          "y": 80,
+          "width": 260,
+          "height": 112
+        },
+        {
+          "id": "bracket",
+          "label": "Wait for a bracket",
+          "sublabel": "true-before + true-after",
+          "kind": "component",
+          "status": "software-tested",
+          "detail": "A complete bracket needs windows wholly before and after the preserved event. Overlapping capture windows cannot supply either bracket side.",
+          "sources": [
+            {
+              "source": "corrections",
+              "line": 16,
+              "end_line": 31
+            },
+            {
+              "source": "settled",
+              "line": 17,
+              "end_line": 28
+            }
+          ],
+          "symbols": [
+            "wht/settlement-v2"
+          ],
+          "x": 920,
+          "y": 80,
+          "width": 260,
+          "height": 112
+        },
+        {
+          "id": "intersect",
+          "label": "Intersect envelopes",
+          "sublabel": "only available by cutoff",
+          "kind": "component",
+          "status": "software-tested",
+          "detail": "Intersect the bracket and any eligible event-overlapping envelopes already available by settled_at_qpc. Record contributing sequences; do not use future evidence.",
+          "sources": [
+            {
+              "source": "corrections",
+              "line": 16,
+              "end_line": 31
+            },
+            {
+              "source": "math",
+              "line": 107,
+              "end_line": 107
+            },
+            {
+              "source": "settle-code",
+              "line": 44,
+              "end_line": 79
+            }
+          ],
+          "symbols": [],
+          "x": 920,
+          "y": 330,
+          "width": 260,
+          "height": 112
+        },
+        {
+          "id": "settled",
+          "label": "Derived settled record",
+          "sublabel": "interval + provenance",
+          "kind": "component",
+          "status": "software-tested",
+          "detail": "Append a separate result. Actual settled-grid maximum differs from retrospective adjacent-pair maximum. Smoke retained replay: 297/297 settled; max half-width 614.883 us; median wait 2.341 seconds.",
+          "sources": [
+            {
+              "source": "findings",
+              "line": 8,
+              "end_line": 9
+            },
+            {
+              "source": "corrections",
+              "line": 16,
+              "end_line": 31
+            },
+            {
+              "source": "settled",
+              "line": 17,
+              "end_line": 28
+            }
+          ],
+          "symbols": [],
+          "x": 490,
+          "y": 330,
+          "width": 260,
+          "height": 112
+        },
+        {
+          "id": "affine",
+          "label": "Optional affine result",
+          "sublabel": "constant rate assumed",
+          "kind": "component",
+          "status": "software-tested",
+          "detail": "Separate optional estimate assumes one constant rate in a span. Requires at least three available samples and observations on both sides; it does not replace the rate-only interval.",
+          "sources": [
+            {
+              "source": "math",
+              "line": 109,
+              "end_line": 122
+            }
+          ],
+          "symbols": [],
+          "x": 60,
+          "y": 330,
+          "width": 260,
+          "height": 112
+        }
+      ],
+      "edges": [
+        {
+          "id": "raw--provisional",
+          "from": "raw",
+          "to": "provisional",
+          "label": "preserve Q",
+          "status": "documented",
+          "sources": [
+            {
+              "source": "roadmap",
+              "line": 60,
+              "end_line": 70
+            },
+            {
+              "source": "settled",
+              "line": 17,
+              "end_line": 28
+            }
+          ],
+          "detail": "Raw event and immediate provisional record remain immutable."
+        },
+        {
+          "id": "provisional--bracket",
+          "from": "provisional",
+          "to": "bracket",
+          "label": "pending",
+          "status": "software-tested",
+          "sources": [
+            {
+              "source": "settled",
+              "line": 17,
+              "end_line": 28
+            }
+          ],
+          "detail": "Wait for evidence without changing event time."
+        },
+        {
+          "id": "bracket--intersect",
+          "from": "bracket",
+          "to": "intersect",
+          "label": "complete pair",
+          "status": "software-tested",
+          "sources": [
+            {
+              "source": "corrections",
+              "line": 16,
+              "end_line": 31
+            }
+          ],
+          "detail": "Overlap cannot substitute for a true bracket side."
+        },
+        {
+          "id": "intersect--settled",
+          "from": "intersect",
+          "to": "settled",
+          "label": "append result",
+          "status": "software-tested",
+          "sources": [
+            {
+              "source": "corrections",
+              "line": 16,
+              "end_line": 31
+            },
+            {
+              "source": "settled",
+              "line": 17,
+              "end_line": 28
+            }
+          ],
+          "detail": "Record cutoff and contributors at actual settlement.",
+          "transport": {
+            "mechanism": "derived record"
+          }
+        },
+        {
+          "id": "settled--affine",
+          "from": "settled",
+          "to": "affine",
+          "label": "optional estimate",
+          "status": "software-tested",
+          "sources": [
+            {
+              "source": "math",
+              "line": 109,
+              "end_line": 122
+            }
+          ],
+          "detail": "Stronger assumption is separately identified."
+        }
+      ],
+      "unknowns": [
+        "Settled-grid counts do not establish continuous online service or independent AP accuracy."
+      ],
+      "provenance": "Authored from public repository snapshots pinned in manifest.json. Evidence states describe the cited scope; arrows do not prove execution."
+    },
+    {
+      "id": "producer-routes",
+      "title": "Diagnostic observations and missing original events",
+      "shortTitle": "Producer gaps",
+      "group": "FIRMWARE & TRANSPORT",
+      "summary": "Static ownership evidence is useful, but an owned byte array is not yet an attributable complete timing event. These are separate routes and qualification boundaries.",
+      "nodes": [
+        {
+          "id": "producer",
+          "label": "Wi-Fi timing producer",
+          "sublabel": "original timing event",
+          "kind": "component",
+          "status": "unresolved",
+          "detail": "A live complete original-event export from the exact Wi-Fi timing producer is not demonstrated by the current path.",
+          "sources": [
+            {
+              "source": "vendor",
+              "line": 1,
+              "end_line": 18
+            },
+            {
+              "source": "findings",
+              "line": 11,
+              "end_line": 18
+            }
+          ],
+          "symbols": [],
+          "x": 60,
+          "y": 80,
+          "width": 260,
+          "height": 112
+        },
+        {
+          "id": "binding",
+          "label": "Adapter / protocol link",
+          "sublabel": "live attribution open",
+          "kind": "component",
+          "status": "unresolved",
+          "detail": "Tie the active adapter and exact producer to the diagnostic endpoint, framing, lifecycle, original extent, loss and clock identity.",
+          "sources": [
+            {
+              "source": "vendor",
+              "line": 1,
+              "end_line": 18
+            }
+          ],
+          "symbols": [],
+          "x": 490,
+          "y": 80,
+          "width": 260,
+          "height": 112
+        },
+        {
+          "id": "owned",
+          "label": "QUTS owned bytes",
+          "sublabel": "static allocation found",
+          "kind": "component",
+          "status": "static",
+          "detail": "Client deserialization allocates a byte array. This proves a software ownership mechanism in the inspected code, not a live connection to this Wi-Fi producer.",
+          "sources": [
+            {
+              "source": "vendor",
+              "line": 1,
+              "end_line": 18
+            },
+            {
+              "source": "findings",
+              "line": 102,
+              "end_line": 103
+            }
+          ],
+          "symbols": [],
+          "x": 920,
+          "y": 80,
+          "width": 260,
+          "height": 112
+        },
+        {
+          "id": "contract",
+          "label": "Complete-event contract",
+          "sublabel": "fresh, valid, attributable",
+          "kind": "component",
+          "status": "unresolved",
+          "detail": "Validate original bytes, source identity, validity, lifecycle and sampling semantics before using a diagnostic record as a clock input.",
+          "sources": [
+            {
+              "source": "vendor",
+              "line": 1,
+              "end_line": 18
+            }
+          ],
+          "symbols": [],
+          "x": 920,
+          "y": 330,
+          "width": 260,
+          "height": 112
+        },
+        {
+          "id": "ftm",
+          "label": "FTM aggregate result",
+          "sublabel": "no four-time offset input",
+          "kind": "component",
+          "status": "observed",
+          "detail": "Ranging APIs return aggregate results. The full exchange needs local t2/t3 and matched peer t1/t4; aggregate RTT cannot supply clock offset.",
+          "sources": [
+            {
+              "source": "ftm",
+              "line": 1,
+              "end_line": 18
+            }
+          ],
+          "symbols": [],
+          "x": 490,
+          "y": 330,
+          "width": 260,
+          "height": 112
+        },
+        {
+          "id": "ring",
+          "label": "Packet-log candidate",
+          "sublabel": "publication / lifetime gap",
+          "kind": "component",
+          "status": "static",
+          "detail": "A cursor can precede payload publication. Copying pointer-bearing wrappers or polling equal cursors does not establish owned coherent event bytes.",
+          "sources": [
+            {
+              "source": "findings",
+              "line": 93,
+              "end_line": 94
+            },
+            {
+              "source": "ring",
+              "line": 1,
+              "end_line": 9
+            }
+          ],
+          "symbols": [],
+          "x": 60,
+          "y": 330,
+          "width": 260,
+          "height": 112
+        },
+        {
+          "id": "diagnostic",
+          "label": "Retain diagnostics",
+          "sublabel": "not qualified clock input",
+          "kind": "component",
+          "status": "documented",
+          "detail": "Keep useful evidence while the complete-event or timing contract is missing. Host logging time, API completion and hardware sampling are distinct.",
+          "sources": [
+            {
+              "source": "vendor",
+              "line": 1,
+              "end_line": 18
+            }
+          ],
+          "symbols": [],
+          "x": 60,
+          "y": 580,
+          "width": 260,
+          "height": 112
+        }
+      ],
+      "edges": [
+        {
+          "id": "producer--binding",
+          "from": "producer",
+          "to": "binding",
+          "label": "missing link",
+          "status": "unresolved",
+          "sources": [
+            {
+              "source": "vendor",
+              "line": 1,
+              "end_line": 18
+            }
+          ],
+          "detail": "No demonstrated adapter-to-protocol connection."
+        },
+        {
+          "id": "binding--owned",
+          "from": "binding",
+          "to": "owned",
+          "label": "candidate path",
+          "status": "unresolved",
+          "sources": [
+            {
+              "source": "vendor",
+              "line": 1,
+              "end_line": 18
+            }
+          ],
+          "detail": "A static client return path does not close producer binding.",
+          "transport": {
+            "mechanism": "QUTS / DIAG"
+          }
+        },
+        {
+          "id": "owned--contract",
+          "from": "owned",
+          "to": "contract",
+          "label": "validate meaning",
+          "status": "unresolved",
+          "sources": [
+            {
+              "source": "vendor",
+              "line": 1,
+              "end_line": 18
+            }
+          ],
+          "detail": "Byte ownership alone does not establish complete timing meaning."
+        },
+        {
+          "id": "ftm--contract",
+          "from": "ftm",
+          "to": "contract",
+          "label": "needs four times",
+          "status": "unresolved",
+          "sources": [
+            {
+              "source": "ftm",
+              "line": 13,
+              "end_line": 18
+            }
+          ],
+          "detail": "Aggregate ranging remains insufficient for clock offset."
+        },
+        {
+          "id": "ring--contract",
+          "from": "ring",
+          "to": "contract",
+          "label": "copy / publication",
+          "status": "unresolved",
+          "sources": [
+            {
+              "source": "findings",
+              "line": 93,
+              "end_line": 94
+            }
+          ],
+          "detail": "Live coherence, ownership and original metadata remain separate requirements."
+        },
+        {
+          "id": "contract--diagnostic",
+          "from": "contract",
+          "to": "diagnostic",
+          "label": "missing evidence",
+          "status": "documented",
+          "sources": [
+            {
+              "source": "vendor",
+              "line": 1,
+              "end_line": 18
+            }
+          ],
+          "detail": "Reject unqualified clock input while retaining diagnostic evidence."
+        }
+      ],
+      "unknowns": [
+        "Original-event producer integration remains no-go pending supported/vendor/instrumented access.",
+        "Nested IHV controls remain deferred exploratory work; this atlas does not reopen them."
+      ],
+      "provenance": "Authored from public repository snapshots pinned in manifest.json. Evidence states describe the cited scope; arrows do not prove execution."
+    },
+    {
+      "id": "qualification",
+      "title": "What the retained evidence supports",
+      "shortTitle": "Evidence and next gates",
+      "group": "START HERE",
+      "summary": "Read these as distinct evidence levels, not an automatic promotion pipeline. Current snapshot: e9d71b8. Original measurements retain their original source pins.",
+      "nodes": [
+        {
+          "id": "software",
+          "label": "Offline software",
+          "sublabel": "ownership and math behavior",
+          "kind": "component",
+          "status": "software-tested",
+          "detail": "Existing deterministic tests establish specific software decisions and exact arithmetic. This atlas build adds model/source and browser checks, not new radio evidence.",
+          "sources": [
+            {
+              "source": "sampler",
+              "line": 77,
+              "end_line": 100
+            },
+            {
+              "source": "corrections",
+              "line": 43,
+              "end_line": 61
+            }
+          ],
+          "symbols": [],
+          "x": 60,
+          "y": 80,
+          "width": 260,
+          "height": 112
+        },
+        {
+          "id": "smoke",
+          "label": "One live idle smoke",
+          "sublabel": "139 requests; 138 screened",
+          "kind": "component",
+          "status": "observed",
+          "detail": "The retained 300-second persistent capture has 139 recorded requests and 138 offline-screened samples. Actual gaps: 2.005-second median and 4.009-second maximum.",
+          "sources": [
+            {
+              "source": "findings",
+              "line": 8,
+              "end_line": 9
+            },
+            {
+              "source": "smoke",
+              "line": 37,
+              "end_line": 50
+            }
+          ],
+          "symbols": [],
+          "x": 490,
+          "y": 80,
+          "width": 260,
+          "height": 112
+        },
+        {
+          "id": "replay",
+          "label": "Conditional replay",
+          "sublabel": "92.862589% tracking",
+          "kind": "component",
+          "status": "software-tested",
+          "detail": "Retained smoke replay: 297/297 event-grid settlements; median/max rate-only half-width 280.429/614.883 us; median wait 2.341 seconds. Bounds and coverage are conditional, not physical error measurements.",
+          "sources": [
+            {
+              "source": "findings",
+              "line": 8,
+              "end_line": 9
+            },
+            {
+              "source": "corrections",
+              "line": 51,
+              "end_line": 53
+            }
+          ],
+          "symbols": [],
+          "x": 920,
+          "y": 80,
+          "width": 260,
+          "height": 112
+        },
+        {
+          "id": "online",
+          "label": "Online admission",
+          "sublabel": "causal admission + delay",
+          "kind": "component",
+          "status": "unresolved",
+          "detail": "Implement association, completeness, duplicate/foreign/loss handling, continuity and delivery boundaries without future-information leakage.",
+          "sources": [
+            {
+              "source": "roadmap",
+              "line": 60,
+              "end_line": 70
+            }
+          ],
+          "symbols": [],
+          "x": 920,
+          "y": 330,
+          "width": 260,
+          "height": 112
+        },
+        {
+          "id": "physical",
+          "label": "Physical qualification",
+          "sublabel": "AP / node / UTC reference",
+          "kind": "component",
+          "status": "unresolved",
+          "detail": "Independently establish capture semantics and station/AP uncertainty. Combined multi-node errors and UTC require separate budgets and reference chains.",
+          "sources": [
+            {
+              "source": "roadmap",
+              "line": 83,
+              "end_line": 91
+            }
+          ],
+          "symbols": [],
+          "x": 490,
+          "y": 330,
+          "width": 260,
+          "height": 112
+        },
+        {
+          "id": "repos",
+          "label": "Repository ownership",
+          "sublabel": "research, SDK, evidence",
+          "kind": "component",
+          "status": "documented",
+          "detail": "wifi-hardware-time owns research and qualification; userspace-clock owns maintained APIs/providers. Proprietary captures, binaries and endpoint identifiers remain outside public Git. This atlas embeds only selected public authored files.",
+          "sources": [
+            {
+              "source": "readme",
+              "line": 75,
+              "end_line": 82
+            }
+          ],
+          "symbols": [],
+          "x": 60,
+          "y": 330,
+          "width": 260,
+          "height": 112
+        }
+      ],
+      "edges": [
+        {
+          "id": "software--smoke",
+          "from": "software",
+          "to": "smoke",
+          "label": "separate evidence",
+          "status": "documented",
+          "sources": [
+            {
+              "source": "sampler",
+              "line": 108,
+              "end_line": 108
+            }
+          ],
+          "detail": "Offline tests cannot substitute for observed hardware behavior."
+        },
+        {
+          "id": "smoke--replay",
+          "from": "smoke",
+          "to": "replay",
+          "label": "saved capture",
+          "status": "software-tested",
+          "sources": [
+            {
+              "source": "findings",
+              "line": 8,
+              "end_line": 9
+            }
+          ],
+          "detail": "Reanalyze retained measurements while preserving input/source hashes.",
+          "transport": {
+            "mechanism": "offline replay"
+          }
+        },
+        {
+          "id": "replay--online",
+          "from": "replay",
+          "to": "online",
+          "label": "next contract",
+          "status": "unresolved",
+          "sources": [
+            {
+              "source": "roadmap",
+              "line": 60,
+              "end_line": 70
+            }
+          ],
+          "detail": "Offline whole-recording screens are not online admission."
+        },
+        {
+          "id": "online--physical",
+          "from": "online",
+          "to": "physical",
+          "label": "separate gate",
+          "status": "unresolved",
+          "sources": [
+            {
+              "source": "roadmap",
+              "line": 83,
+              "end_line": 91
+            }
+          ],
+          "detail": "Live delivery alone cannot calibrate capture/AP accuracy."
+        },
+        {
+          "id": "physical--repos",
+          "from": "physical",
+          "to": "repos",
+          "label": "scoped handoff",
+          "status": "documented",
+          "sources": [
+            {
+              "source": "readme",
+              "line": 75,
+              "end_line": 82
+            }
+          ],
+          "detail": "Keep maintained API work and private evidence within their repository boundaries."
+        }
+      ],
+      "unknowns": [
+        "Long-run/load and real failure-path recovery need separately scoped experiments.",
+        "No commits, pushes, publication, new capture or clock discipline are performed by this documentation task."
+      ],
+      "provenance": "Authored from public repository snapshots pinned in manifest.json. Evidence states describe the cited scope; arrows do not prove execution."
+    }
+  ]
+}

@@ -4,6 +4,7 @@ These diagrams show where timing values originate, where software copies them an
 
 ## Contents
 
+- [Interactive Archify Studio HTML](../overview/archify-studio/index.html) and [SVG gallery/guide](../overview/archify-studio/README.md): ten source-linked views covering acquisition, I/O ownership, clock models, evidence and open hardware gates. Download the HTML and open it locally for interactive use.
 - [Persistent TSF Archify views](../overview/archify-tsf/README.md): system layers, workflow, lifecycle, time sources, timestamp sequence, algorithms and live/offline adapters.
 - [Packet path](#packet-path)
 - [Private TSF reports](#private-tsf-reports)

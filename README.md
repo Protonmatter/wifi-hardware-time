@@ -11,6 +11,7 @@ See the [post-merge corrections](docs/overview/postmerge-corrections-2026-10-08.
 ## Contents
 
 - [Start here](#start-here)
+- [Interactive diagrams](#interactive-diagrams)
 - [Research areas](#research-areas)
 - [What works and what remains open](#what-works-and-what-remains-open)
 - [Run offline checks](#run-offline-checks)
@@ -24,12 +25,23 @@ See the [post-merge corrections](docs/overview/postmerge-corrections-2026-10-08.
 - Find a call or string: [reference index](docs/knowledge/reference-index.md) and [interface directory](docs/knowledge/interface-directory.md).
 - Repeat static research: [inspection runbook](docs/adapters/static-inspection-runbook.md), [script catalog](catalog/scripts.json) and [research skill](skills/qualcomm-timing-research/SKILL.md).
 - View every current workflow: [diagram gallery](docs/knowledge/workflow-diagrams.md).
+- Explore source-linked diagrams: [interactive Archify Studio atlas](docs/overview/archify-studio/index.html) and [diagram guide](docs/overview/archify-studio/README.md), with ten views and portable SVG previews.
 - New to the subject: [reading guide](docs/README.md) and [glossary](docs/glossary.md).
 - Want the outcome: [qualification ledger](docs/overview/gap-closure-ledger.md). *Qualification* means evidence supports a particular claim under stated conditions.
 - Reviewing the accumulated change: [PR #3 software review and corrections](docs/overview/pr3-review-2026-10-06.md), with scope, reproduced findings and publication limits.
 - Want the workflow: [packet-to-clock diagrams](docs/clock-models/packet-to-clock-map.md).
 - Want to reproduce work: [operations](docs/overview/OPERATIONS.md) and [script/execution catalog](docs/overview/validation-execution-catalog.md).
 - Using older commands: [file-location guide](docs/overview/repository-layout.md). Paths changed; old live-launch manifests must not be reused.
+
+## Interactive diagrams
+
+**[Download/open the interactive Archify Studio atlas](docs/overview/archify-studio/index.html)** — ten diagrams covering acquisition, I/O lifetime, timing availability, conditional clock models and unresolved hardware gates. Search components and symbols, follow relationships, inspect exact source excerpts, and export SVGs.
+
+On GitHub, open the HTML link, select **Download raw file**, and open the saved `index.html` in a browser. The atlas is a single self-contained offline file; no install or server is required. GitHub's README/file viewer does not run the interactive page. The [diagram guide and SVG gallery](docs/overview/archify-studio/README.md) render directly in the repository.
+
+[![Wi-Fi hardware-time system overview](docs/overview/archify-studio/previews/overview.svg)](docs/overview/archify-studio/index.html)
+
+The atlas preserves separate observed, software-tested, static and unresolved evidence states. Its source snapshot and renderer are pinned in the [manifest](docs/overview/archify-studio/manifest.json); viewing a diagram does not qualify physical timing accuracy.
 
 ## Research areas
 
