@@ -6,6 +6,10 @@ not a radio clock export. The administrator launch for a paired kernel trace was
 canceled before execution. Its outcome is recorded separately, and the repeatable
 collector now records privilege context and command cleanup explicitly.
 
+<!-- research-history:2026-10-09 -->
+**Research context (2026-10-09):** Scoped technical reference. Build-specific findings and operational prerequisites retain their stated scope. [Current account](../research-history/README.md) · [Timeline](../research-history/timeline.md) · [Previous version](../../archive/2026-10-09-pre-refresh-e9d71b8/pages/docs__acquisition__packet-capture-and-elevation.md).
+<!-- /research-history -->
+
 ## Contents
 
 - [What ran and what it established](#what-ran-and-what-it-established)

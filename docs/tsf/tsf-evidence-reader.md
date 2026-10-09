@@ -2,9 +2,9 @@
 
 The new reader retrieves raw TSF values from saved evidence and returns independent application-owned records. It validates the whole capture before selecting a sample and preserves unknown timing semantics. This is useful for replay and integration testing; it does not read the live adapter, establish sample freshness or enable a hardware clock.
 
-<!-- historical-context:2026-10-04 -->
-**Historical context (2026-10-04):** The TSF sampling and response-association contract remains open. New diagnostic return interfaces do not automatically qualify a fresh TSF getter. See [current findings](../knowledge/current-findings.md).
-<!-- /historical-context -->
+<!-- research-history:2026-10-09 -->
+**Research context (2026-10-09):** Scoped technical reference. Build-specific findings and operational prerequisites retain their stated scope. [Current account](../research-history/README.md) · [Timeline](../research-history/timeline.md) · [Previous version](../../archive/2026-10-09-pre-refresh-e9d71b8/pages/docs__tsf__tsf-evidence-reader.md).
+<!-- /research-history -->
 
 ## Contents
 

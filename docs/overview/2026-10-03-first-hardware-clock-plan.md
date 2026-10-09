@@ -2,9 +2,9 @@
 
 Build toward sub-millisecond relative synchronization by first qualifying TSF readout and obtaining a fresh, identifiable hardware observation with a bounded relationship to host time. Start with Qualcomm, keep NTP as a sanity check, and use a source-accessible backend if needed. Reading a counter, converting its time and synchronizing nodes require separate evidence.
 
-<!-- historical-context:2026-10-04 -->
-**Historical context (2026-10-04):** Current findings now include complete vendor package inventories, QUTS client ownership and a correction ledger. Historical acquisitions retain their original scope and limits. See [current findings](../knowledge/current-findings.md).
-<!-- /historical-context -->
+<!-- research-history:2026-10-09 -->
+**Research context (2026-10-09):** Dated evidence or historical plan. This dated report or plan retains its original evidence and execution scope; later results and publication status are in the research account. [Current account](../research-history/README.md) · [Timeline](../research-history/timeline.md) · [Previous version](../../archive/2026-10-09-pre-refresh-e9d71b8/pages/docs__overview__2026-10-03-first-hardware-clock-plan.md).
+<!-- /research-history -->
 
 **Status:** proposed mini plan, 2026-10-03. No new hardware operation is authorized
 or executed by this document. Existing quarantine and lifecycle restrictions remain.

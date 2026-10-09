@@ -2,9 +2,9 @@
 
 Driver inspection narrowed memory-log access to diagnostic and recovery paths and located receive timestamp fields. An offline model showed that two equal buffer copies can still contain unfinished records. No live corruption was measured, no safe getter was qualified, and restart, sleep and roaming remain preparation only.
 
-<!-- historical-context:2026-10-04 -->
-**Historical context (2026-10-04):** The QUTS client is a separate owned-byte return candidate. It does not repair the existing ring publication or temporary-buffer lifetime gaps. See [current findings](../knowledge/current-findings.md).
-<!-- /historical-context -->
+<!-- research-history:2026-10-09 -->
+**Research context (2026-10-09):** Dated evidence or historical plan. This dated report or plan retains its original evidence and execution scope; later results and publication status are in the research account. [Current account](../research-history/README.md) · [Timeline](../research-history/timeline.md) · [Previous version](../../archive/2026-10-09-pre-refresh-e9d71b8/pages/docs__memory-ring__timing-boundary-investigation-2026-10-03.md).
+<!-- /research-history -->
 
 A ring is a circular buffer that overwrites old entries; publication means a writer has finished making a record readable. A getter reads data through a defined interface. RVA is an offset within the driver image. RX means receive, TX means transmit, and PPDU is a physical-layer transmission unit. See the [glossary](../glossary.md) for related terms.
 

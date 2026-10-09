@@ -2,6 +2,10 @@
 
 > Archived implementation plan: code excerpts describe the original design. Use the [current operations guide](OPERATIONS.md), [sampler contract](../acquisition/persistent-tsf-sampler.md) and [correction report](postmerge-corrections-2026-10-08.md) for maintained behavior.
 
+<!-- research-history:2026-10-09 -->
+**Research context (2026-10-09):** Dated evidence or historical plan. This dated report or plan retains its original evidence and execution scope; later results and publication status are in the research account. [Current account](../research-history/README.md) · [Timeline](../research-history/timeline.md) · [Previous version](../../archive/2026-10-09-pre-refresh-e9d71b8/pages/docs__overview__2026-10-07-tsf-host-bound-plan.md).
+<!-- /research-history -->
+
 This plan turns the [TSF-to-host bound design](2026-10-07-tsf-host-bound-design.md) into tested code, a preview on already saved samples, and a gated live campaign. Offline analysis comes first so the method is checked against existing evidence before any new private request. Live runs happen only after every module passes its tests and the user approves the first run.
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.

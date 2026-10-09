@@ -2,6 +2,10 @@
 
 The remaining generic vendor-response path does not turn every “query” into a passive read. Exact-build tracing connects selected queries to scan initiation, channel control, GPIO-output commands and host-state clearing. Other branches return channel/BSS information or PCI configuration data. This narrows the producer search and prevents unsafe probing; it does not establish a complete timing-event return or rule out every other route.
 
+<!-- research-history:2026-10-09 -->
+**Research context (2026-10-09):** Scoped technical reference. Build-specific findings and operational prerequisites retain their stated scope. [Current account](../research-history/README.md) · [Timeline](../research-history/timeline.md) · [Previous version](../../archive/2026-10-09-pre-refresh-e9d71b8/pages/docs__adapters__ihv-query-producer-map.md).
+<!-- /research-history -->
+
 **Disposition, 2026-10-05:** deferred exploratory avenue at the user's request.
 Retain this evidence for later; it is not the active clock implementation path
 or a proposal for live selector testing. Revisit it when the research scope is

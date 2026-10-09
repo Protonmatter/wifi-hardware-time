@@ -2,6 +2,10 @@
 
 We have connected the posted receive buffer, copy-engine completion, HIF queue and HTC callback in the exact driver. The selected pooled-buffer path resets fragment metadata and queues one buffer per completion; it does not join payload fragments in HIF. Two copy points retain the transport header. A live exporter still needs capacity, synchronization, lifetime and publication checks before returning independently owned application bytes.
 
+<!-- research-history:2026-10-09 -->
+**Research context (2026-10-09):** Scoped technical reference. Build-specific findings and operational prerequisites retain their stated scope. [Current account](../research-history/README.md) · [Timeline](../research-history/timeline.md) · [Previous version](../../archive/2026-10-09-pre-refresh-e9d71b8/pages/docs__tsf__hif-receive-buffer-producer.md).
+<!-- /research-history -->
+
 ## Contents
 
 - [Scope and terms](#scope-and-terms)

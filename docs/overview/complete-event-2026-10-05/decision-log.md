@@ -2,6 +2,10 @@
 
 The bounded receive-lifetime audit and current QMSL callback trace have finished within their static scope. The 2026-10-06 hardware ruling is no-go for current installed Qualcomm live integration because a supported/vendor/instrumented producer connection has not been demonstrated. The WPP installation adds trace tooling without closing that gap. Linux remains a conditional alternate requiring a physical target and explicit selection. Independent software, host-profile and preservation results enable no hardware clock capability.
 
+<!-- research-history:2026-10-09 -->
+**Research context (2026-10-09):** Dated evidence or historical plan. This dated report or plan retains its original evidence and execution scope; later results and publication status are in the research account. [Current account](../../research-history/README.md) · [Timeline](../../research-history/timeline.md) · [Previous version](../../../archive/2026-10-09-pre-refresh-e9d71b8/pages/docs__overview__complete-event-2026-10-05__decision-log.md).
+<!-- /research-history -->
+
 ## 2026-10-06 S0/S2 closure
 
 - S0 pins PR #3 at base `0e866ed6b2409231c100af75a6aef97c6bdd2fa3` and head

@@ -2,6 +2,10 @@
 
 The application broker already returns independently owned replay bytes. The next component must copy a real receive event inside the driver and deliver it through a separately defined interface. We have now traced the existing notification queue's creation, success completion and shutdown drain. That is a useful implementation reference, but it still carries one state byte and is not connected to the TSF producer.
 
+<!-- research-history:2026-10-09 -->
+**Research context (2026-10-09):** Scoped technical reference. Build-specific findings and operational prerequisites retain their stated scope. [Current account](../research-history/README.md) · [Timeline](../research-history/timeline.md) · [Previous version](../../archive/2026-10-09-pre-refresh-e9d71b8/pages/docs__evidence__driver-event-return-integration.md).
+<!-- /research-history -->
+
 The subsequent [live device-service control](device-service-positive-control.md)
 now demonstrates a separate eight-byte return through the installed driver. Its
 source is a fixed test pattern; the source-copy and timing requirements below remain.

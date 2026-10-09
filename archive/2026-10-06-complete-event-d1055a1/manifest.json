@@ -1,0 +1,42 @@
+{
+  "schema": "wht/documentation-archive-v1",
+  "captured_date": "2026-10-09",
+  "timezone": "America/New_York",
+  "source_kind": "git-blob",
+  "source_revision": "d1055a1078456a5ef9e98fcee476d68ac6db38fb",
+  "files": [
+    {
+      "source_path": "README.md",
+      "source_commit": "d1055a1078456a5ef9e98fcee476d68ac6db38fb",
+      "local_base_commit": null,
+      "last_change": "a86ef4b76240398b47c245fb0a24fdcfd5e5fe61\t2026-10-06T23:42:37-04:00",
+      "original_sha256": "0303197c46f633f4085238dd50540c87744ff9d13a7b5a01f1abcc4d730f74c9",
+      "original_bytes": 7350,
+      "original_path": "originals/README.md.txt",
+      "reading_path": "pages/README.md",
+      "reading_sha256": "5be695c9e19ac6c3be60ecd652bd1fa933838f86f502f7dc08d11f4f8742022b"
+    },
+    {
+      "source_path": "docs/knowledge/current-findings.md",
+      "source_commit": "d1055a1078456a5ef9e98fcee476d68ac6db38fb",
+      "local_base_commit": null,
+      "last_change": "a86ef4b76240398b47c245fb0a24fdcfd5e5fe61\t2026-10-06T23:42:37-04:00",
+      "original_sha256": "6092b2b8a56f8df0b0dd10aae076f0b16f5112aef7c0a7cdec7961801bf49ccd",
+      "original_bytes": 27697,
+      "original_path": "originals/docs__knowledge__current-findings.md.txt",
+      "reading_path": "pages/docs__knowledge__current-findings.md",
+      "reading_sha256": "7c86ddd5c6561bd12b6d7080622c0b7c94ad1f2698737dedbe02c3c8b57915ee"
+    },
+    {
+      "source_path": "docs/overview/gap-closure-ledger.md",
+      "source_commit": "d1055a1078456a5ef9e98fcee476d68ac6db38fb",
+      "local_base_commit": null,
+      "last_change": "a86ef4b76240398b47c245fb0a24fdcfd5e5fe61\t2026-10-06T23:42:37-04:00",
+      "original_sha256": "0952136c5ee6679930fb3bc58cf906603d73a5521f147c554424be638929d21c",
+      "original_bytes": 18496,
+      "original_path": "originals/docs__overview__gap-closure-ledger.md.txt",
+      "reading_path": "pages/docs__overview__gap-closure-ledger.md",
+      "reading_sha256": "d23129097f7f2929c238e3ebb30d0dca180aadf000fc8567ae439416d991db61"
+    }
+  ]
+}

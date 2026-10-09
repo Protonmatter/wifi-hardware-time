@@ -1,15 +1,16 @@
 # Wi-Fi timer reports and private driver paths
 
-Can the Wi-Fi timer become a usable clock source? The inspected private path delivers counter reports through Windows diagnostics and feeds transmit-delay statistics. It has not established simultaneous sampling, a calibrated host-clock conversion, or a safe fast getter. Later acquisition findings keep private collection quarantined pending further qualification.
+The inspected private path delivers diagnostic counter reports, and later bound/persistent profiles support conditional station-TSF/QPC models. They have not established simultaneous sampling, a calibrated host-clock conversion, or complete original firmware-event export. The historical strict campaign remains quarantined; later diagnostic profiles do not clear that disposition.
 
-<!-- historical-context:2026-10-04 -->
-**Historical context (2026-10-04):** The TSF sampling and response-association contract remains open. New diagnostic return interfaces do not automatically qualify a fresh TSF getter. See [current findings](../knowledge/current-findings.md).
-<!-- /historical-context -->
+<!-- research-history:2026-10-09 -->
+**Research context (2026-10-09):** Maintained reading guide. Use the linked account for goals, result versions, failed assumptions and remaining qualification gates. [Current account](../research-history/README.md) · [Timeline](../research-history/timeline.md) · [Previous version](../../archive/2026-10-09-pre-refresh-e9d71b8/pages/docs__tsf__README.md).
+<!-- /research-history -->
 
 TSF (Timing Synchronization Function) is the Wi-Fi timer. SoC means system on chip; QPC is the Windows host counter. ETW is Windows event tracing, whose log time differs from the hardware sampling time. See the [glossary](../glossary.md).
 
 ## Report and related evidence
 
+- [Current conditional results and policies](../research-history/results-and-validation.md): counted hours, persistent smoke, arrival-aware replay and settlement, with versioned evidence limits.
 - [Firmware trace return candidates](firmware-trace-return-candidates.md): exact-build CAPTUREH cache, QDSS firmware-to-file routes, DMA control and installed trace configurations; no timing-event content or live operation qualified.
 - [Saved trace byte audit](saved-trace-byte-audit.md): 88 selected historical ETW payloads contain numeric text and a terminator, with no unparsed binary tail; raw-event acquisition remains separate.
 - [Receive shutdown contract](receive-shutdown-contract.md): resolved PCI disable, ignored drain status, completion timeout, conditional thread waits and remaining exporter lifetime requirements.

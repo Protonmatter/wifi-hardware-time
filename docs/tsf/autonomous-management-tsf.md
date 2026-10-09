@@ -2,9 +2,9 @@
 
 A saved beacon or probe response can expose the peer's advertised TSF without matching a private host request. The new decoder preserves frame identity separately from clock identity and never invents local receive time or request association. It provides an offline diagnostic building block; live capture, clock mapping and freshness remain separate qualification tasks.
 
-<!-- historical-context:2026-10-04 -->
-**Historical context (2026-10-04):** The TSF sampling and response-association contract remains open. New diagnostic return interfaces do not automatically qualify a fresh TSF getter. See [current findings](../knowledge/current-findings.md).
-<!-- /historical-context -->
+<!-- research-history:2026-10-09 -->
+**Research context (2026-10-09):** Scoped technical reference. Build-specific findings and operational prerequisites retain their stated scope. [Current account](../research-history/README.md) · [Timeline](../research-history/timeline.md) · [Previous version](../../archive/2026-10-09-pre-refresh-e9d71b8/pages/docs__tsf__autonomous-management-tsf.md).
+<!-- /research-history -->
 
 ## Contents
 

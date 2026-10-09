@@ -2,9 +2,9 @@
 
 These documents explain how clock reports are collected, checked and rejected when their source is uncertain. The persistent bound-campaign profile completed a five-minute idle smoke; its timing conclusions remain conditional and screened offline. The historical strict campaign remains quarantined. Passive or normal-completion success does not qualify physical accuracy or authorize another private run.
 
-<!-- current-context:2026-10-08 -->
-**Current context (2026-10-08):** [Persistent sampling](persistent-tsf-smoke-2026-10-08.md) completed 139 requests with clean shutdown; offline screening accepted 138. Report wait remains enabled and the historical strict-campaign quarantine is unchanged. See the [next research and testing gates](../overview/persistent-tsf-next-steps.md).
-<!-- /current-context -->
+<!-- research-history:2026-10-09 -->
+**Research context (2026-10-09):** Maintained reading guide. Use the linked account for goals, result versions, failed assumptions and remaining qualification gates. [Current account](../research-history/README.md) · [Timeline](../research-history/timeline.md) · [Previous version](../../archive/2026-10-09-pre-refresh-e9d71b8/pages/docs__acquisition__README.md).
+<!-- /research-history -->
 
 Start with the current results, then use the plans and historical reports for context. TSF is the Wi-Fi timing counter; quarantine means further private requests are blocked. See the [glossary](../glossary.md) for other terms.
 

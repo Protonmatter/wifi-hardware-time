@@ -2,6 +2,10 @@
 
 The package's firmware message catalog defines a TSF report containing TSF, QTIMER, TQM and clock identifiers. The driver has a matching version-gated diagnostic decoder and copies incoming diagnostic bytes into a queue before formatting. This is a stronger producer lead, but no such live record or owned application return has been obtained. Separate QDSS file and DMA paths are also mapped; none yet establishes the original `0x5005` event or hardware-to-QPC sampling.
 
+<!-- research-history:2026-10-09 -->
+**Research context (2026-10-09):** Scoped technical reference. Build-specific findings and operational prerequisites retain their stated scope. [Current account](../research-history/README.md) · [Timeline](../research-history/timeline.md) · [Previous version](../../archive/2026-10-09-pre-refresh-e9d71b8/pages/docs__tsf__firmware-trace-return-candidates.md).
+<!-- /research-history -->
+
 ## Contents
 
 - [What changed](#what-changed)

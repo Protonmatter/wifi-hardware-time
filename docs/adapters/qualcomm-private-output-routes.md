@@ -2,14 +2,14 @@
 
 The inspected Qualcomm return paths carry radio statistics, fixed test bytes or interface information. A real allocated-buffer response path exists, but no complete hardware timestamp producer has been connected to it. A new caller inventory makes the remaining search reproducible without treating a successful return mechanism as a working clock source.
 
+<!-- research-history:2026-10-09 -->
+**Research context (2026-10-09):** Scoped technical reference. Build-specific findings and operational prerequisites retain their stated scope. [Current account](../research-history/README.md) · [Timeline](../research-history/timeline.md) · [Previous version](../../archive/2026-10-09-pre-refresh-e9d71b8/pages/docs__adapters__qualcomm-private-output-routes.md).
+<!-- /research-history -->
+
 **2026-10-05 follow-up:** the [live device-service positive control](../evidence/device-service-positive-control.md)
 returned the fixed eight-byte test payload through the installed driver. It also
 classifies all 70 identified direct completion calls: 59 null-payload calls and
 11 possible-payload calls. Timing-event delivery remains unqualified.
-
-<!-- historical-context:2026-10-04 -->
-**Historical context (2026-10-04):** Later archive and installed-file inspection located QUTS client-owned byte returns and corrected vendor package/version assumptions; exact adapter-to-producer association remains open. See [current findings](../knowledge/current-findings.md).
-<!-- /historical-context -->
 
 ## Contents
 

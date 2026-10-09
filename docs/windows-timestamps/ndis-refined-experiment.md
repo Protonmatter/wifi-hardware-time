@@ -2,9 +2,9 @@
 
 Does a more carefully bounded trace identify the failing timestamp path? The refined run matched interface snapshots and validated trace health around three failed public queries. Its events remain associated by timing and adapter relationships rather than unique request identity, so the original rejection source and hardware timing capability remain unqualified.
 
-<!-- historical-context:2026-10-04 -->
-**Historical context (2026-10-04):** Vendor/private transport research continues alongside documented Windows APIs. No new hardware-to-QPC result is established by file inspection. See [current findings](../knowledge/current-findings.md).
-<!-- /historical-context -->
+<!-- research-history:2026-10-09 -->
+**Research context (2026-10-09):** Scoped technical reference. Build-specific findings and operational prerequisites retain their stated scope. [Current account](../research-history/README.md) · [Timeline](../research-history/timeline.md) · [Previous version](../../archive/2026-10-09-pre-refresh-e9d71b8/pages/docs__windows-timestamps__ndis-refined-experiment.md).
+<!-- /research-history -->
 
 NDIS is the Windows network-driver framework; an OID identifies a driver query. ETW is Windows event tracing. QPC is the Windows host counter; a cross timestamp pairs hardware and host observations. Topology means the adapter and filter relationships. See the [glossary](../glossary.md).
 

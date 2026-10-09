@@ -2,6 +2,10 @@
 
 Applying the new window-bound analysis to six already saved campaign runs gives a proven worst-case TSF error of 143 to 296 microseconds over each run, both idle and under CPU load. Every one of the 18 action-4 windows is below 1 ms on its own. The SoC counter fails the shared-QPC-domain test in every run. This is a preview: the saved runs predate the new attribution screening, so the result is conditional until the live campaign repeats it with that screening in place.
 
+<!-- research-history:2026-10-09 -->
+**Research context (2026-10-09):** Dated evidence or historical plan. This dated report or plan retains its original evidence and execution scope; later results and publication status are in the research account. [Current account](../research-history/README.md) · [Timeline](../research-history/timeline.md) · [Previous version](../../archive/2026-10-09-pre-refresh-e9d71b8/pages/docs__clock-models__tsf-host-bound-preview.md).
+<!-- /research-history -->
+
 ## Contents
 
 - [Scope](#scope)

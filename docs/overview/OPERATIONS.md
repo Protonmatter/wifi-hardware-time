@@ -2,9 +2,9 @@
 
 This guide explains how to run the maintained research tools and interpret their output. Start with offline checks, then read the prerequisites for the exact hardware profile. The historical strict campaign remains quarantined; later diagnostic-window campaigns have separate recorded outcomes. Old launch manifests must not be reused after source or layout changes or treated as fresh qualification.
 
-<!-- historical-context:2026-10-04 -->
-**Historical context (2026-10-04):** Current findings now include complete vendor package inventories, QUTS client ownership and a correction ledger. Historical acquisitions retain their original scope and limits. See [current findings](../knowledge/current-findings.md).
-<!-- /historical-context -->
+<!-- research-history:2026-10-09 -->
+**Research context (2026-10-09):** Scoped technical reference. Build-specific findings and operational prerequisites retain their stated scope. [Current account](../research-history/README.md) · [Timeline](../research-history/timeline.md) · [Previous version](../../archive/2026-10-09-pre-refresh-e9d71b8/pages/docs__overview__OPERATIONS.md).
+<!-- /research-history -->
 
 **Key terms:** Offline means file analysis or synthetic tests without device access. A manifest lists the exact inputs and hashes required for a run. Quarantine blocks admission after unresolved ambiguity or failure. See the [glossary](../glossary.md).
 

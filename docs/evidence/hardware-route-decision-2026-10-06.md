@@ -2,6 +2,10 @@
 
 The current installed Qualcomm route is **no-go for live complete-event integration**. A supported vendor interface or instrumented producer with demonstrated access has not been established. The installed QMSL 6.1.365.1 callback chain is useful completed static evidence, but it does not supply the missing Wi-Fi endpoint, timing producer or bounded shutdown contract. This closes the S2 decision slice with a specific external prerequisite; it does not close the hardware acquisition gate.
 
+<!-- research-history:2026-10-09 -->
+**Research context (2026-10-09):** Dated evidence or historical plan. This dated report or plan retains its original evidence and execution scope; later results and publication status are in the research account. [Current account](../research-history/README.md) · [Timeline](../research-history/timeline.md) · [Previous version](../../archive/2026-10-09-pre-refresh-e9d71b8/pages/docs__evidence__hardware-route-decision-2026-10-06.md).
+<!-- /research-history -->
+
 Decision date: 2026-10-06, America/New_York. Evidence baseline: research commit
 `aca5b7ca7c96ca8731f15202361c34faf003f350`. See the
 [current PR component map](../overview/pr3-component-review-map-2026-10-06.md)

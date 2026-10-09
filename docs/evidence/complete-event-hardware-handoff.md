@@ -2,6 +2,10 @@
 
 The application can retain and validate owned bytes, and a live driver control has returned a fixed test pattern. We still need a demonstrated operation that copies a real timing event before its source storage is released. The current installed Qualcomm route is no-go until supported/vendor/instrumented producer access is demonstrated. QMSL 6.1.365.1 now supplies completed static callback evidence, but no attributable live timing endpoint or bounded lifecycle.
 
+<!-- research-history:2026-10-09 -->
+**Research context (2026-10-09):** Scoped technical reference. Build-specific findings and operational prerequisites retain their stated scope. [Current account](../research-history/README.md) · [Timeline](../research-history/timeline.md) · [Previous version](../../archive/2026-10-09-pre-refresh-e9d71b8/pages/docs__evidence__complete-event-hardware-handoff.md).
+<!-- /research-history -->
+
 **Current decision, 2026-10-06:** read the
 [complete-event gate evaluation and reopening criteria](hardware-route-decision-2026-10-06.md).
 The [current QMSL installation and trace](../adapters/qmsl-runtime-365.md) supersede

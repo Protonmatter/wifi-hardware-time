@@ -2,6 +2,10 @@
 
 Action 4 remains the useful refresh lead, but its request return cannot certify that firmware has sampled a clock. The exact driver can accept a command into a queue and return success before issuing it. We have mapped that boundary and added a diagnostic decoder that preserves complete report bytes under explicit reference layouts. Fresh sampling and hardware-to-host conversion remain open.
 
+<!-- research-history:2026-10-09 -->
+**Research context (2026-10-09):** Scoped technical reference. Build-specific findings and operational prerequisites retain their stated scope. [Current account](../research-history/README.md) · [Timeline](../research-history/timeline.md) · [Previous version](../../archive/2026-10-09-pre-refresh-e9d71b8/pages/docs__tsf__action4-completion-and-report-contract.md).
+<!-- /research-history -->
+
 ## Contents
 
 - [Scope and terminology](#scope-and-terminology)

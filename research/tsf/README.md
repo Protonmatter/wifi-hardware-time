@@ -1,10 +1,10 @@
 # Wi-Fi counter access: tools
 
-These tools inspect, request and decode the Wi-Fi timing counter, called TSF. They distinguish a successful request from the later firmware report and retain action-dependent cache behavior. Private acquisition remains quarantined; offline analysis and preview are separate from explicit hardware execution and do not qualify sampling accuracy.
+These tools inspect, request and decode the Wi-Fi timing counter, called TSF. They distinguish a successful request from the later firmware report and retain action-dependent cache behavior. The historical strict campaign remains quarantined; the later bound/persistent profiles are separate. Offline analysis and preview do not authorize hardware execution or qualify physical sampling accuracy.
 
-<!-- historical-context:2026-10-04 -->
-**Historical context (2026-10-04):** The TSF sampling and response-association contract remains open. New diagnostic return interfaces do not automatically qualify a fresh TSF getter. See [current findings](../../docs/knowledge/current-findings.md).
-<!-- /historical-context -->
+<!-- research-history:2026-10-09 -->
+**Research context (2026-10-09):** Tool guide. Use the linked account for goals, result versions, failed assumptions and remaining qualification gates. [Current account](../../docs/research-history/README.md) · [Timeline](../../docs/research-history/timeline.md) · [Previous version](../../archive/2026-10-09-pre-refresh-e9d71b8/pages/research__tsf__README.md).
+<!-- /research-history -->
 
 ## Files
 

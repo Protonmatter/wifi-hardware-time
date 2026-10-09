@@ -2,9 +2,9 @@
 
 This contract defines how experimental observations are packaged and rejected when incomplete or inconsistent. It preserves raw values, source identity and acquisition limits so downstream software can inspect evidence without assuming accuracy. Passing validation confirms the document follows this format; it does not authenticate the experiment or qualify a clock conversion.
 
-<!-- historical-context:2026-10-04 -->
-**Historical context (2026-10-04):** A QUTS client-owned byte return is now located statically. Keep client ownership, server publication, firmware identity and timing accuracy as separate qualification states. See [current findings](../knowledge/current-findings.md).
-<!-- /historical-context -->
+<!-- research-history:2026-10-09 -->
+**Research context (2026-10-09):** Scoped technical reference. Build-specific findings and operational prerequisites retain their stated scope. [Current account](../research-history/README.md) · [Timeline](../research-history/timeline.md) · [Previous version](../../archive/2026-10-09-pre-refresh-e9d71b8/pages/docs__evidence__evidence-contract.md).
+<!-- /research-history -->
 
 **Key terms:** A schema defines allowed fields and types. Canonical encoding produces consistent bytes for hashing. A hash is a content fingerprint; matching it does not prove that a measurement is accurate. See the [glossary](../glossary.md).
 

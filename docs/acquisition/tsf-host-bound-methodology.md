@@ -2,6 +2,10 @@
 
 This is the full record of how the sub-millisecond TSF bound was designed, built, tested and measured on 2026-10-07 and 2026-10-08. It lists every analysis, every live attempt with its measurements, every defect found and how each was diagnosed and fixed. The [results document](tsf-host-bound-results.md) gives the verdict; this page explains how it was reached so that another engineer can audit or repeat it.
 
+<!-- research-history:2026-10-09 -->
+**Research context (2026-10-09):** Dated evidence or historical plan. This dated report or plan retains its original evidence and execution scope; later results and publication status are in the research account. [Current account](../research-history/README.md) · [Timeline](../research-history/timeline.md) · [Previous version](../../archive/2026-10-09-pre-refresh-e9d71b8/pages/docs__acquisition__tsf-host-bound-methodology.md).
+<!-- /research-history -->
+
 ## Contents
 
 - [1. Objective and constraints](#1-objective-and-constraints)

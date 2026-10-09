@@ -2,6 +2,10 @@
 
 The application-side byte broker works for fixtures and replay, but the installed Qualcomm driver has no demonstrated complete timing-event return connected to it. The current research can refine the producer's lifetime and acquisition contract. A live exporter additionally needs a supported integration point or an instrumented driver; more consumer code cannot supply that access.
 
+<!-- research-history:2026-10-09 -->
+**Research context (2026-10-09):** Dated evidence or historical plan. This dated report or plan retains its original evidence and execution scope; later results and publication status are in the research account. [Current account](../../research-history/README.md) · [Timeline](../../research-history/timeline.md) · [Previous version](../../../archive/2026-10-09-pre-refresh-e9d71b8/pages/docs__overview__complete-event-2026-10-05__context-map.md).
+<!-- /research-history -->
+
 ## Scope and owners
 
 - Repository: `wifi-hardware-time`, branch `investigate-packet-export`; existing

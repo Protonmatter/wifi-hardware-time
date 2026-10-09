@@ -2,13 +2,13 @@
 
 This page tracks which research questions have useful answers and which clock capabilities still lack evidence. Scans can introduce extra counter reports, and software tests can reject unsafe assumptions. Safe hardware sampling, complete record retrieval and calibrated synchronization remain open, so downstream applications must keep those capabilities disabled or experimental.
 
-<!-- current-context:2026-10-08 -->
-**Current context (2026-10-08):** The persistent diagnostic-TSF profile has a clean five-minute live smoke and conditional offline timing results. Complete original-event export, firmware-drain qualification, online admission and physical/shared-clock accuracy remain separate open gates. The older [hardware route decision](../evidence/hardware-route-decision-2026-10-06.md) remains relevant to complete-event producer access; it does not erase the later diagnostic-window result.
-<!-- /current-context -->
+<!-- research-history:2026-10-09 -->
+**Research context (2026-10-09):** Maintained status or roadmap. Use the linked account for goals, result versions, failed assumptions and remaining qualification gates. [Current account](../research-history/README.md) · [Timeline](../research-history/timeline.md) · [Previous version](../../archive/2026-10-09-pre-refresh-e9d71b8/pages/docs__overview__gap-closure-ledger.md).
+<!-- /research-history -->
 
 **Key terms:** A gate is an explicit requirement before a capability may be enabled. Calibration compares results against an independently characterized reference. A model is a mathematical or software explanation, not a measurement by itself. See the [glossary](../glossary.md).
 
-Updated 2026-10-08, America/New_York. This ledger distinguishes an answered
+Updated 2026-10-09, America/New_York. [Research history and result versions](../research-history/README.md) now provide the chronological account. This ledger distinguishes an answered
 research question from a passing acquisition profile or enabled clock capability.
 The private campaign remains quarantined.
 
@@ -25,9 +25,11 @@ The private campaign remains quarantined.
 | Conditional TSF/QPC results | Useful with explicit assumptions | [Mathematics](../clock-models/tsf-mathematics.md); versioned numerical summary above, with offline screening and capture assumptions |
 | Report-wait decoupling / online admission | Not implemented | Need supported report lifecycle/association and causal admission contracts before consumer ingestion |
 | Physical/AP/UTC/multi-node accuracy | Unqualified | Need independent reference and combined error budget; `physical_bound_proven` remains false |
-| Publication / merge | Separate from qualification | [Sequenced roadmap](persistent-tsf-next-steps.md); verify exact-head CI and dependency stack, then obtain the relevant user authorization |
+| Publication / merge | Research stack/corrections and atlas #10 merged through `da4f55e` | [Verified dated publication snapshot](../research-history/publication-status.md); this documentation refresh is a separate PR, and merge status does not enable a live clock |
 
-## Complete-event track snapshot, 2026-10-06
+## Historical complete-event track snapshot, 2026-10-06
+
+The table and downstream counts in this section preserve the October 6 report. Current research-repository publication status is in the [October 9 snapshot](../research-history/publication-status.md); this pass did not requalify downstream software or change the original-event no-go. Later diagnostic TSF work is a separate profile.
 
 | Slice / gate | Current disposition | Evidence / next dependency |
 |---|---|---|

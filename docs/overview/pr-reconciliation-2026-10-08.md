@@ -2,6 +2,10 @@
 
 This review preserves persistent sampler baseline `02459e780f9912b31c2ece951cf824d941972156` and reconciles research PRs #4, #5 and #6 against that complete tree. Their original heads are ancestors of the baseline. Corrections are new commits; original capture files, published analysis JSON, and the audited private request protocol remain unchanged. One integration PR is the merge candidate. The earlier PRs retain their historical component reviews.
 
+<!-- research-history:2026-10-09 -->
+**Research context (2026-10-09):** Dated evidence or historical plan. This dated report or plan retains its original evidence and execution scope; later results and publication status are in the research account. [Current account](../research-history/README.md) · [Timeline](../research-history/timeline.md) · [Previous version](../../archive/2026-10-09-pre-refresh-e9d71b8/pages/docs__overview__pr-reconciliation-2026-10-08.md).
+<!-- /research-history -->
+
 The changes are software corrections and offline reanalysis. They do not qualify firmware sampling, AP/UTC accuracy, online admission, live cancellation/drain, or report-wait decoupling. The original live smoke remains evidence for its original pinned build.
 
 ## Review disposition

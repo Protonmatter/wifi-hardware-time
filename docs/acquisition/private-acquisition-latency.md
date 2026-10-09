@@ -2,9 +2,9 @@
 
 This audit separates fast driver-request completion from much slower report delivery in an existing capture. It also identifies a trace-health check that was later corrected. The measurements are historical, and the proposed delivery experiment was not executed here. Faster collection alone would not establish when hardware sampled a counter or its accuracy.
 
-<!-- historical-context:2026-10-04 -->
-**Historical context (2026-10-04):** The private campaign remains quarantined. The new QUTS client ownership finding does not establish firmware drain, report association or a new live acquisition. See [current findings](../knowledge/current-findings.md).
-<!-- /historical-context -->
+<!-- research-history:2026-10-09 -->
+**Research context (2026-10-09):** Scoped technical reference. Build-specific findings and operational prerequisites retain their stated scope. [Current account](../research-history/README.md) · [Timeline](../research-history/timeline.md) · [Previous version](../../archive/2026-10-09-pre-refresh-e9d71b8/pages/docs__acquisition__private-acquisition-latency.md).
+<!-- /research-history -->
 
 Latency means elapsed delivery time. An IOCTL is a request sent to a driver. ETW is Windows event tracing, and QPC is Windows' high-resolution host counter. A bracket is the interval between host readings immediately before and after an operation. See the [glossary](../glossary.md) for related terms.
 

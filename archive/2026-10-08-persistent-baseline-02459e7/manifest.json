@@ -1,0 +1,42 @@
+{
+  "schema": "wht/documentation-archive-v1",
+  "captured_date": "2026-10-09",
+  "timezone": "America/New_York",
+  "source_kind": "git-blob",
+  "source_revision": "02459e780f9912b31c2ece951cf824d941972156",
+  "files": [
+    {
+      "source_path": "README.md",
+      "source_commit": "02459e780f9912b31c2ece951cf824d941972156",
+      "local_base_commit": null,
+      "last_change": "02459e780f9912b31c2ece951cf824d941972156\t2026-10-08T14:32:47-04:00",
+      "original_sha256": "633829f96abc8efbe52b8c83b1c8a73f6313c7fa94c986d2e8858f4ae60ed96d",
+      "original_bytes": 8382,
+      "original_path": "originals/README.md.txt",
+      "reading_path": "pages/README.md",
+      "reading_sha256": "206d4ea0698ea0fb503412c5ea8c2856cf03ff82377812a149d78366bb9f7dcb"
+    },
+    {
+      "source_path": "docs/knowledge/current-findings.md",
+      "source_commit": "02459e780f9912b31c2ece951cf824d941972156",
+      "local_base_commit": null,
+      "last_change": "02459e780f9912b31c2ece951cf824d941972156\t2026-10-08T14:32:47-04:00",
+      "original_sha256": "1b1ee49f640898df5567548eed78dadc0162c04097180c8cca1ab0d8a0b4c80f",
+      "original_bytes": 30711,
+      "original_path": "originals/docs__knowledge__current-findings.md.txt",
+      "reading_path": "pages/docs__knowledge__current-findings.md",
+      "reading_sha256": "e4dec371c5bb318c7415a7b5f2e53f96373835bc27358f4f30a8638d4c35f2e0"
+    },
+    {
+      "source_path": "docs/overview/gap-closure-ledger.md",
+      "source_commit": "02459e780f9912b31c2ece951cf824d941972156",
+      "local_base_commit": null,
+      "last_change": "02459e780f9912b31c2ece951cf824d941972156\t2026-10-08T14:32:47-04:00",
+      "original_sha256": "19344fdc684791f31c8768c5c6f3134a5835c6047f2e70d714c8666cdbb6f7f3",
+      "original_bytes": 19758,
+      "original_path": "originals/docs__overview__gap-closure-ledger.md.txt",
+      "reading_path": "pages/docs__overview__gap-closure-ledger.md",
+      "reading_sha256": "55ef9b1b01ad1e3415ea97705278ab64d48e2ea6ea1e9886556de94f0c9f0dc3"
+    }
+  ]
+}

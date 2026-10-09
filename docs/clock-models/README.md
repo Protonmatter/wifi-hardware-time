@@ -2,9 +2,9 @@
 
 A counter value becomes useful time only when its clock, event and conversion are understood. These reports map timestamp locations and test models against saved observations. They explain why a good fit or small residual cannot establish calibrated accuracy, especially when sampling instants and independent references are missing.
 
-<!-- historical-context:2026-10-04 -->
-**Historical context (2026-10-04):** QUTS and QXDM expose distinct hardware-origin, interpolated and host-delivery times. Owned bytes do not establish fresh hardware-to-QPC sampling or an accuracy bound. See [current findings](../knowledge/current-findings.md).
-<!-- /historical-context -->
+<!-- research-history:2026-10-09 -->
+**Research context (2026-10-09):** Maintained reading guide. Use the linked account for goals, result versions, failed assumptions and remaining qualification gates. [Current account](../research-history/README.md) · [Timeline](../research-history/timeline.md) · [Previous version](../../archive/2026-10-09-pre-refresh-e9d71b8/pages/docs__clock-models__README.md).
+<!-- /research-history -->
 
 ## Documents
 

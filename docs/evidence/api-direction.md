@@ -2,9 +2,9 @@
 
 Applications need timestamps with clear clock identity, sampling meaning and limits, not just a raw number. This proposed boundary separates hardware observations from validated conversions and optional synchronization. The host-only implementation can serve local event timing now; the Wi-Fi backend still needs a trustworthy way to return complete, attributable samples.
 
-<!-- historical-context:2026-10-04 -->
-**Historical context (2026-10-04):** A QUTS client-owned byte return is now located statically. Keep client ownership, server publication, firmware identity and timing accuracy as separate qualification states. See [current findings](../knowledge/current-findings.md).
-<!-- /historical-context -->
+<!-- research-history:2026-10-09 -->
+**Research context (2026-10-09):** Scoped technical reference. Build-specific findings and operational prerequisites retain their stated scope. [Current account](../research-history/README.md) · [Timeline](../research-history/timeline.md) · [Previous version](../../archive/2026-10-09-pre-refresh-e9d71b8/pages/docs__evidence__api-direction.md).
+<!-- /research-history -->
 
 **Key terms:** An API is an interface used by software. A backend implements it for a specific source. Epoch identifies a period of continuity; changing sources or losing continuity may require a new epoch. See the [glossary](../glossary.md).
 

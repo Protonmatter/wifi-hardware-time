@@ -6,6 +6,10 @@ missing control-endpoint value at the code location identified in Ghidra. All
 Windows endpoint-opening path beneath `CommonIo`. This advances discovery and
 transport attribution; a Wi-Fi firmware timing record remains unavailable.
 
+<!-- research-history:2026-10-09 -->
+**Research context (2026-10-09):** Scoped technical reference. Build-specific findings and operational prerequisites retain their stated scope. [Current account](../research-history/README.md) · [Timeline](../research-history/timeline.md) · [Previous version](../../archive/2026-10-09-pre-refresh-e9d71b8/pages/docs__adapters__quts-live-gate-and-commonio.md).
+<!-- /research-history -->
+
 ## Contents
 
 - [Scope and provenance](#scope-and-provenance)

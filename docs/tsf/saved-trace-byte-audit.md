@@ -2,6 +2,10 @@
 
 Two saved captures contain 88 selected timing-log records. Every selected payload is numeric text followed by one NUL terminator; none has hidden bytes afterward or ETW extended-data items. Inspecting the whole payload therefore does not recover the original firmware event from these records. The new offline tool preserves those bytes and detects trailing, malformed or incomplete data without starting a capture or changing acquisition quarantine.
 
+<!-- research-history:2026-10-09 -->
+**Research context (2026-10-09):** Scoped technical reference. Build-specific findings and operational prerequisites retain their stated scope. [Current account](../research-history/README.md) · [Timeline](../research-history/timeline.md) · [Previous version](../../archive/2026-10-09-pre-refresh-e9d71b8/pages/docs__tsf__saved-trace-byte-audit.md).
+<!-- /research-history -->
+
 ## Contents
 
 - [Observed result](#observed-result)

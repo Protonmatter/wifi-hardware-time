@@ -2,6 +2,10 @@
 
 The exact driver retains a logical TSF payload length but can replace its pointer with a padded copy before the handler runs. Its upstream transport also has a separate declared length and can count fragmented buffers. We have traced these distinctions and callback cleanup. The offline decoder preserves supplied transport/event bytes; a live owned export and sampling-to-QPC correlation remain open.
 
+<!-- research-history:2026-10-09 -->
+**Research context (2026-10-09):** Scoped technical reference. Build-specific findings and operational prerequisites retain their stated scope. [Current account](../research-history/README.md) · [Timeline](../research-history/timeline.md) · [Previous version](../../archive/2026-10-09-pre-refresh-e9d71b8/pages/docs__tsf__tsf-event-ingress-and-owned-copy.md).
+<!-- /research-history -->
+
 ## Contents
 
 - [Scope and terms](#scope-and-terms)

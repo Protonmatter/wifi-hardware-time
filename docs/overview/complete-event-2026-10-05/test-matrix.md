@@ -2,6 +2,10 @@
 
 Each test establishes a specific claim. Exact-image checks validate the repeatable static investigation; native replay tests validate software ownership. A real producer integration needs its own live source, publication and lifecycle evidence before downstream software can accept hardware records. Accuracy is a later, independent measurement.
 
+<!-- research-history:2026-10-09 -->
+**Research context (2026-10-09):** Dated evidence or historical plan. This dated report or plan retains its original evidence and execution scope; later results and publication status are in the research account. [Current account](../../research-history/README.md) · [Timeline](../../research-history/timeline.md) · [Previous version](../../../archive/2026-10-09-pre-refresh-e9d71b8/pages/docs__overview__complete-event-2026-10-05__test-matrix.md).
+<!-- /research-history -->
+
 | Scenario | Level / setup | Expected result and gate |
 |---|---|---|
 | Unknown or modified driver image | Offline inspector | Reject before offset interpretation; no success receipt |

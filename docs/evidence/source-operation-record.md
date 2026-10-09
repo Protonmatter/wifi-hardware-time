@@ -2,6 +2,10 @@
 
 The broker can now carry an operation description together with the original returned bytes. The consumer checks operation, software identities, provenance and format before exposing diagnostic counter values. Unknown clock and loss information stays unknown. This is a tested software integration layer for fixtures and saved captures; a live timing producer and a qualified clock conversion remain separate dependencies.
 
+<!-- research-history:2026-10-09 -->
+**Research context (2026-10-09):** Scoped technical reference. Build-specific findings and operational prerequisites retain their stated scope. [Current account](../research-history/README.md) · [Timeline](../research-history/timeline.md) · [Previous version](../../archive/2026-10-09-pre-refresh-e9d71b8/pages/docs__evidence__source-operation-record.md).
+<!-- /research-history -->
+
 ## Contents
 
 - [Implemented boundary](#implemented-boundary)

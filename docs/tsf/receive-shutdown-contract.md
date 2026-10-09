@@ -2,6 +2,10 @@
 
 The selected shutdown path now connects PCI disable, receive cleanup, completion-reference polling, thread-stop helpers and later pool release. Several operations have weaker completion guarantees than their names suggest: a drain status is ignored, another timeout returns without a success result, and an interrupt-unregister helper clears a software flag. These static findings constrain an exporter; they do not demonstrate a live race or qualify safe teardown.
 
+<!-- research-history:2026-10-09 -->
+**Research context (2026-10-09):** Scoped technical reference. Build-specific findings and operational prerequisites retain their stated scope. [Current account](../research-history/README.md) · [Timeline](../research-history/timeline.md) · [Previous version](../../archive/2026-10-09-pre-refresh-e9d71b8/pages/docs__tsf__receive-shutdown-contract.md).
+<!-- /research-history -->
+
 ## Contents
 
 - [Scope and connected paths](#scope-and-connected-paths)

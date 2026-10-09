@@ -2,6 +2,10 @@
 
 The supplied WPP installation adds concrete WLAN ETL collection and diagnostic-bridge configuration tooling. File inspection does not establish that its loggers emit a complete original timing event from the selected Wi-Fi adapter. The current Qualcomm hardware route therefore remains no-go. The useful new evidence is the available package, its exact scripts and their state effects, rather than a demonstrated live producer connection.
 
+<!-- research-history:2026-10-09 -->
+**Research context (2026-10-09):** Scoped technical reference. Build-specific findings and operational prerequisites retain their stated scope. [Current account](../research-history/README.md) · [Timeline](../research-history/timeline.md) · [Previous version](../../archive/2026-10-09-pre-refresh-e9d71b8/pages/docs__evidence__wpp-external-2311-file-assessment.md).
+<!-- /research-history -->
+
 ## Scope and exact files
 
 Inspected on 2026-10-06, America/New_York, after the separate host acceptance

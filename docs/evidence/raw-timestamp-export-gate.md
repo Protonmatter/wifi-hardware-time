@@ -2,9 +2,9 @@
 
 The next milestone requires one real hardware acquisition that returns a complete, attributable timestamp record. Internal buffer locations, successful requests and structurally valid synthetic data do not meet it. This gate lists the required fields and rejection cases, and records which prerequisites remain missing before downstream collection or latency work proceeds.
 
-<!-- historical-context:2026-10-04 -->
-**Historical context (2026-10-04):** A QUTS client-owned byte return is now located statically. Keep client ownership, server publication, firmware identity and timing accuracy as separate qualification states. See [current findings](../knowledge/current-findings.md).
-<!-- /historical-context -->
+<!-- research-history:2026-10-09 -->
+**Research context (2026-10-09):** Scoped technical reference. Build-specific findings and operational prerequisites retain their stated scope. [Current account](../research-history/README.md) · [Timeline](../research-history/timeline.md) · [Previous version](../../archive/2026-10-09-pre-refresh-e9d71b8/pages/docs__evidence__raw-timestamp-export-gate.md).
+<!-- /research-history -->
 
 **Terms:** ABI means the calling and buffer-layout contract. Attribution connects
 a record to its actual event or request. An epoch marks a period of continuity.

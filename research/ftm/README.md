@@ -2,9 +2,9 @@
 
 These tools investigate Fine Timing Measurement, the Wi-Fi ranging procedure, and the aggregate results returned by the inspected driver. They check completeness and reproduce arithmetic from saved data. They do not expose four qualified absolute exchange times or turn ranging success into a synchronized application clock.
 
-<!-- historical-context:2026-10-04 -->
-**Historical context (2026-10-04):** QXDM WLAN RTT definitions are a new schema lead. They have not been matched to a complete live four-event export from this adapter. See [current findings](../../docs/knowledge/current-findings.md).
-<!-- /historical-context -->
+<!-- research-history:2026-10-09 -->
+**Research context (2026-10-09):** Tool guide. Use the linked account for goals, result versions, failed assumptions and remaining qualification gates. [Current account](../../docs/research-history/README.md) · [Timeline](../../docs/research-history/timeline.md) · [Previous version](../../archive/2026-10-09-pre-refresh-e9d71b8/pages/research__ftm__README.md).
+<!-- /research-history -->
 
 ## Files
 

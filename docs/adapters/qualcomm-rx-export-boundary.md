@@ -2,9 +2,9 @@
 
 The normal receive path retains the descriptor containing candidate radio timestamps, then moves the packet view past that prefix before handing data toward Windows. This investigation traces that handoff and its metadata. It establishes a capture location to investigate, but no existing userspace export with complete timing and packet identity.
 
-<!-- historical-context:2026-10-04 -->
-**Historical context (2026-10-04):** Later archive and installed-file inspection located QUTS client-owned byte returns and corrected vendor package/version assumptions; exact adapter-to-producer association remains open. See [current findings](../knowledge/current-findings.md).
-<!-- /historical-context -->
+<!-- research-history:2026-10-09 -->
+**Research context (2026-10-09):** Scoped technical reference. Build-specific findings and operational prerequisites retain their stated scope. [Current account](../research-history/README.md) · [Timeline](../research-history/timeline.md) · [Previous version](../../archive/2026-10-09-pre-refresh-e9d71b8/pages/docs__adapters__qualcomm-rx-export-boundary.md).
+<!-- /research-history -->
 
 **Terms:** RX means receive. A descriptor is device/driver metadata beside packet
 data. PPDU identifies a physical radio transmission; an MSDU is a smaller data

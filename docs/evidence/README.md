@@ -2,12 +2,13 @@
 
 This area defines how research observations can be passed to application software without silently becoming accuracy guarantees. It separates raw records, structural validation, clock conversion and synchronization. The format and replay tools exist, but hardware capabilities remain subject to their own sampling, identity, lifecycle and independent-reference requirements.
 
-<!-- historical-context:2026-10-04 -->
-**Historical context (2026-10-04):** A QUTS client-owned byte return is now located statically. Keep client ownership, server publication, firmware identity and timing accuracy as separate qualification states. See [current findings](../knowledge/current-findings.md).
-<!-- /historical-context -->
+<!-- research-history:2026-10-09 -->
+**Research context (2026-10-09):** Maintained reading guide. Use the linked account for goals, result versions, failed assumptions and remaining qualification gates. [Current account](../research-history/README.md) · [Timeline](../research-history/timeline.md) · [Previous version](../../archive/2026-10-09-pre-refresh-e9d71b8/pages/docs__evidence__README.md).
+<!-- /research-history -->
 
 ## Documents
 
+- [Research results and related downstream work](../research-history/results-and-validation.md): separate acquisitions, conditional models, software qualification and current gaps.
 - [Complete-event hardware handoff](complete-event-hardware-handoff.md): refreshed installed-file evidence, RawService's existing-protocol requirement and the concrete producer integration deliverable.
 - [Source-operation records](source-operation-record.md): tested metadata-and-original-byte packaging through the native broker, with strict consumer expectations and no clock capability promotion.
 - [Live device-service positive control](device-service-positive-control.md): one exact-driver GET returned eight fixed test bytes; a live transport result, separate from firmware timing.

@@ -2,9 +2,9 @@
 
 One passive observation completed without clock reports or cleanup failures. Offline inspection also linked memory-log saving to device lifecycle paths and found a scan near earlier unmatched reports. Neither finding established a safe live log getter or accurate clock conversion, and the private campaign quarantine remained unchanged.
 
-<!-- historical-context:2026-10-04 -->
-**Historical context (2026-10-04):** The private campaign remains quarantined. The new QUTS client ownership finding does not establish firmware drain, report association or a new live acquisition. See [current findings](../knowledge/current-findings.md).
-<!-- /historical-context -->
+<!-- research-history:2026-10-09 -->
+**Research context (2026-10-09):** Dated evidence or historical plan. This dated report or plan retains its original evidence and execution scope; later results and publication status are in the research account. [Current account](../research-history/README.md) · [Timeline](../research-history/timeline.md) · [Previous version](../../archive/2026-10-09-pre-refresh-e9d71b8/pages/docs__acquisition__passive-and-retrieval-validation-2026-10-03.md).
+<!-- /research-history -->
 
 TSF is the Wi-Fi timing counter; SoC denotes the reported system-on-chip counter. A ring is a circular memory buffer that overwrites old entries. A getter is an interface for reading it. RVA means an address offset within the inspected driver image. See the [glossary](../glossary.md) for related terms.
 

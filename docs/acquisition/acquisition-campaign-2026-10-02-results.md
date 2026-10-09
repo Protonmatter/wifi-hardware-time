@@ -2,9 +2,9 @@
 
 This historical campaign collected all planned clock reports and shut down cleanly, but reports often reached the reader more than a second after logging. It established collection behavior for one driver build, not clock accuracy. A later campaign was quarantined; this earlier success does not permit restarting it.
 
-<!-- historical-context:2026-10-04 -->
-**Historical context (2026-10-04):** The private campaign remains quarantined. The new QUTS client ownership finding does not establish firmware drain, report association or a new live acquisition. See [current findings](../knowledge/current-findings.md).
-<!-- /historical-context -->
+<!-- research-history:2026-10-09 -->
+**Research context (2026-10-09):** Dated evidence or historical plan. This dated report or plan retains its original evidence and execution scope; later results and publication status are in the research account. [Current account](../research-history/README.md) · [Timeline](../research-history/timeline.md) · [Previous version](../../archive/2026-10-09-pre-refresh-e9d71b8/pages/docs__acquisition__acquisition-campaign-2026-10-02-results.md).
+<!-- /research-history -->
 
 TSF is the Wi-Fi timing counter; SoC denotes the reported system-on-chip counter. QPC is Windows' high-resolution host counter. ETW is Windows event tracing; ETL is its saved trace format. See the [glossary](../glossary.md) for related terms.
 

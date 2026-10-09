@@ -2,6 +2,10 @@
 
 This refresh publishes the latest findings, corrected assumptions, repeatable offline tools and workflow diagrams together. Validation checks software behavior and evidence boundaries, including failures found by independent review. No hardware capability is enabled. Hosted checks belong to the exact PR head; dated investigation results remain separate historical evidence.
 
+<!-- research-history:2026-10-09 -->
+**Research context (2026-10-09):** Dated evidence or historical plan. This dated report or plan retains its original evidence and execution scope; later results and publication status are in the research account. [Current account](../research-history/README.md) · [Timeline](../research-history/timeline.md) · [Previous version](../../archive/2026-10-09-pre-refresh-e9d71b8/pages/docs__knowledge__refresh-validation.md).
+<!-- /research-history -->
+
 ## Contents
 
 - [What changed](#what-changed)

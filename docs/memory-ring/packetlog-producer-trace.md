@@ -2,9 +2,9 @@
 
 The selected packet-log writer receives a firmware HTT packet-log message through Qualcomm's internal event dispatcher. We can now follow its payload, callback registration and return path in the exact Windows driver. We still cannot identify that payload as a complete management frame plus its timing metadata. The next missing evidence is the firmware log-record schema and a safe publication contract, not another generic buffer copier.
 
-<!-- historical-context:2026-10-04 -->
-**Historical context (2026-10-04):** The QUTS client is a separate owned-byte return candidate. It does not repair the existing ring publication or temporary-buffer lifetime gaps. See [current findings](../knowledge/current-findings.md).
-<!-- /historical-context -->
+<!-- research-history:2026-10-09 -->
+**Research context (2026-10-09):** Scoped technical reference. Build-specific findings and operational prerequisites retain their stated scope. [Current account](../research-history/README.md) · [Timeline](../research-history/timeline.md) · [Previous version](../../archive/2026-10-09-pre-refresh-e9d71b8/pages/docs__memory-ring__packetlog-producer-trace.md).
+<!-- /research-history -->
 
 ## Contents
 

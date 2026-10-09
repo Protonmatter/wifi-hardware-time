@@ -2,9 +2,9 @@
 
 The existing C exporter now has a separate interface for owning MLO messages and management-frame evidence. Tests establish useful software behavior: source buffers can be reused after publication, reference fields decode correctly, malformed records are rejected, and losses and generations are tracked. The implementation remains an offline prototype because no running-driver producer is connected. Software results and hardware qualification are recorded separately.
 
-<!-- historical-context:2026-10-04 -->
-**Historical context (2026-10-04):** A QUTS client-owned byte return is now located statically. Keep client ownership, server publication, firmware identity and timing accuracy as separate qualification states. See [current findings](../knowledge/current-findings.md).
-<!-- /historical-context -->
+<!-- research-history:2026-10-09 -->
+**Research context (2026-10-09):** Scoped technical reference. Build-specific findings and operational prerequisites retain their stated scope. [Current account](../research-history/README.md) · [Timeline](../research-history/timeline.md) · [Previous version](../../archive/2026-10-09-pre-refresh-e9d71b8/pages/docs__evidence__owned-event-extension.md).
+<!-- /research-history -->
 
 ## Contents
 

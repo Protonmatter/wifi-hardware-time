@@ -2,6 +2,10 @@
 
 This follow-up turns the rate-only TSF bound into tested code and builds a causal provider: given samples as they become available, it returns a TSF interval for any later QPC instant, using only information available by then, and withdraws its sub-millisecond status when that interval becomes too wide. It is offline research code replayed against the two counted runs of the [bound campaign](../acquisition/tsf-host-bound-results.md); application integration in `userspace-clock` is a later step.
 
+<!-- research-history:2026-10-09 -->
+**Research context (2026-10-09):** Dated evidence or historical plan. This dated report or plan retains its original evidence and execution scope; later results and publication status are in the research account. [Current account](../research-history/README.md) · [Timeline](../research-history/timeline.md) · [Previous version](../../archive/2026-10-09-pre-refresh-e9d71b8/pages/docs__overview__2026-10-08-causal-provider-design.md).
+<!-- /research-history -->
+
 **Status:** design approved with five contract tightenings from review, 2026-10-08. Stacked on PR #4 at `64da8f2`.
 
 ## Contents
