@@ -15,6 +15,8 @@ The date/commit column is the last committed change to that document at the pinn
 
 The [interactive atlas guide](../overview/archify-studio/README.md) arrived through PR #10, merged as `da4f55e` after export corrections and independent review. Its public model, source snapshots, static previews and reproducible export policy remain intact. This is the additional Markdown guide beyond the 145-file pre-refresh baseline archived below.
 
+The [publication-parent supplement](../../archive/2026-10-09-publication-parent-da4f55e/README.md) preserves that guide and the three parent versions changed by the atlas merge. Overlay it on the complete initial snapshot to recover all 146 Markdown files at `da4f55e`; the archive tests compare every restored file with that Git tree. The detailed table below remains the explicitly labelled initial-baseline inventory.
+
 ## Baseline corpus
 
 ### Repository root

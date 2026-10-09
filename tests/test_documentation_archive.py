@@ -8,9 +8,12 @@ import subprocess
 import tempfile
 import unittest
 from unittest.mock import patch
+from research.evidence.render_documentation_archive import render_reading_copy
 
 ROOT = Path(__file__).resolve().parents[1]
 COMPLETE_SNAPSHOT = '2026-10-09-pre-refresh-e9d71b8'
+PUBLICATION_PARENT = 'da4f55e48a368f59ed68ee4427013a83b5c06070'
+PARENT_SNAPSHOT = '2026-10-09-publication-parent-da4f55e'
 ENTRY_POINTS = frozenset({'README.md', 'docs/knowledge/current-findings.md',
                           'docs/overview/gap-closure-ledger.md'})
 # Independent of archive manifests/catalogue: changing preserved scope requires review.
@@ -22,6 +25,9 @@ EXPECTED_SNAPSHOTS: dict[str, tuple[str, frozenset[str] | None]] = {
     '2026-10-08-persistent-baseline-02459e7': ('02459e780f9912b31c2ece951cf824d941972156', ENTRY_POINTS),
     '2026-10-08-integrated-review-1fc9bed': ('1fc9bed58df4abd6fc28ae883670d05adff47cd0', ENTRY_POINTS),
     COMPLETE_SNAPSHOT: ('e9d71b84365122ff2640e240b20fc1dbb834388a', None),
+    PARENT_SNAPSHOT: (PUBLICATION_PARENT, frozenset({
+        'README.md', 'docs/knowledge/reference-index.md',
+        'docs/knowledge/workflow-diagrams.md', 'docs/overview/archify-studio/README.md'})),
 }
 FIXTURE_SNAPSHOT = '2026-10-06-complete-event-d1055a1'
 
@@ -44,6 +50,11 @@ class DocumentationArchiveTests(unittest.TestCase):
                          '(CI fetch-depth: 0); no network fetch is performed by this test. '
                          + result.stderr.decode('utf-8', errors='replace'))
         return result.stdout
+
+    def git_objects(self, revision: str) -> dict[str, str]:
+        entries = self.git_source('ls-tree', '-r', '-t', '-z', revision).split(b'\0')
+        return {entry.split(b'\t', 1)[1].decode('utf-8'): entry.split(b' ', 2)[1].decode('ascii')
+                for entry in entries if entry}
 
     def verify_snapshot(self, manifest: Path) -> None:
         name = manifest.parent.name
@@ -76,9 +87,11 @@ class DocumentationArchiveTests(unittest.TestCase):
         self.assertEqual(len(storage_paths), len({path.casefold() for path in storage_paths}),
                          'Duplicate archive storage paths')
         expected_files = {'manifest.json', 'README.md'}
+        objects = self.git_objects(revision)
         for row in data['files']:
             self.assertEqual(row['source_commit'], data['source_revision'])
             self.assertIsNone(row.get('local_base_commit'))
+            expected = self.git_source('show', f'{revision}:{row["source_path"]}')
             for field, digest in [('original_path', 'original_sha256'), ('reading_path', 'reading_sha256')]:
                 expected_files.add(row[field])
                 path = self.archive_file(manifest.parent, row[field])
@@ -86,8 +99,10 @@ class DocumentationArchiveTests(unittest.TestCase):
                 self.assertEqual(hashlib.sha256(raw).hexdigest(), row[digest])
                 if field == 'original_path':
                     self.assertEqual(len(raw), row['original_bytes'])
-                    expected = self.git_source('show', f'{revision}:{row["source_path"]}')
                     self.assertEqual(raw, expected, f'Archived original differs from Git blob: {row["source_path"]}')
+                else:
+                    self.assertEqual(raw, render_reading_copy(row['source_path'], revision, expected, objects),
+                                     f'Readable copy differs from Git-source transformation: {row["source_path"]}')
         actual_files = {path.relative_to(manifest.parent).as_posix()
                         for path in manifest.parent.rglob('*') if path.is_file()}
         self.assertEqual(actual_files, expected_files, 'Unmanifested or missing archive files')
@@ -295,6 +310,58 @@ class DocumentationArchiveTests(unittest.TestCase):
             manifest.write_text(json.dumps(data), encoding='utf-8')
             with self.assertRaisesRegex(AssertionError, 'recorded revision'):
                 self.verify_snapshot(manifest)
+
+    def test_changed_reading_copy_with_recomputed_hash_is_rejected(self):
+        for change in ('warning', 'link'):
+            with self.subTest(change=change), tempfile.TemporaryDirectory() as directory:
+                manifest = self.fixture(Path(directory))
+                data = json.loads(manifest.read_text(encoding='utf-8'))
+                row = data['files'][0]
+                path = self.archive_file(manifest.parent, row['reading_path'])
+                original = path.read_text(encoding='utf-8')
+                if change == 'warning':
+                    changed = original.replace('**Archive — not current operating instructions.**', 'Current instructions', 1)
+                else:
+                    changed = original.replace(f'/blob/{data["source_revision"]}/', '/blob/'+'0'*40+'/', 1)
+                self.assertNotEqual(changed, original)
+                raw = changed.encode('utf-8')
+                path.write_bytes(raw)
+                row['reading_sha256'] = hashlib.sha256(raw).hexdigest()
+                manifest.write_text(json.dumps(data), encoding='utf-8')
+                with self.assertRaisesRegex(AssertionError, 'Readable copy differs'):
+                    self.verify_snapshot(manifest)
+
+    def test_actual_publication_parent_markdown_can_be_restored(self):
+        archive = ROOT/'archive'
+        overlay = {}
+        for name in (COMPLETE_SNAPSHOT, PARENT_SNAPSHOT):
+            manifest = archive/name/'manifest.json'
+            if manifest.exists():
+                data = json.loads(manifest.read_text(encoding='utf-8'))
+                overlay.update({row['source_path']: self.archive_file(manifest.parent, row['original_path'])
+                                for row in data['files']})
+        inventory = self.git_source('ls-tree', '-r', '-z', '--name-only', PUBLICATION_PARENT).decode('utf-8')
+        markdown = {path for path in inventory.split('\0') if path.endswith('.md')}
+        self.assertEqual(set(overlay), markdown, 'Publication-parent Markdown inventory is incomplete')
+        for source_path, original in overlay.items():
+            self.assertEqual(original.read_bytes(), self.git_source('show', f'{PUBLICATION_PARENT}:{source_path}'),
+                             f'Publication-parent original differs: {source_path}')
+
+    def test_reading_transform_handles_multiline_links_images_and_directories(self):
+        revision = EXPECTED_SNAPSHOTS[COMPLETE_SNAPSHOT][0]
+        original = (b'# Guide\r\n\r\n[Two\r\nlines](../README.md#part)\r\n'
+                    b'[![Preview](images/pic.svg)](../research/)\r\n'
+                    b'[Local](#part) [External](https://example.test/reference)\r\n')
+        objects = {'docs/guide.md':'blob', 'README.md':'blob', 'docs/images/pic.svg':'blob', 'research':'tree'}
+        rendered = render_reading_copy('docs/guide.md', revision, original, objects).decode('utf-8')
+        self.assertIn('Archive — not current operating instructions.', rendered)
+        self.assertIn(f'/blob/{revision}/README.md#part)', rendered)
+        self.assertIn(f'/blob/{revision}/docs/images/pic.svg)', rendered)
+        self.assertIn(f'/tree/{revision}/research)', rendered)
+        self.assertIn('[Local](#part) [External](https://example.test/reference)', rendered)
+        self.assertNotIn('\r', rendered)
+        with self.assertRaisesRegex(ValueError, 'absent from pinned Git tree'):
+            render_reading_copy('docs/guide.md', revision, b'# Guide\n\n[Missing](missing.md)\n', objects)
 
     def test_fixture_rejects_unsafe_paths_before_any_writes(self):
         original = json.loads((ROOT/'archive'/COMPLETE_SNAPSHOT/'manifest.json').read_text(encoding='utf-8'))

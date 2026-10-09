@@ -2,19 +2,11 @@
 
 This project asks whether Wi-Fi hardware can provide trustworthy timestamps for applications and synchronized clocks. We have recovered useful diagnostic data, but have not demonstrated calibrated synchronization. The research is organized by the question each experiment answers, with its scripts, evidence limits and diagrams linked together.
 
-<!-- research-history:2026-10-09 -->
-**Research context (2026-10-09):** Maintained reading guide. Use the linked account for goals, result versions, failed assumptions and remaining qualification gates. [Current account](docs/research-history/README.md) · [Timeline](docs/research-history/timeline.md) · [Previous version](archive/2026-10-09-publication-parent-da4f55e/pages/README.md).
-<!-- /research-history -->
-
 <!-- tsf-headlines:smoke -->
 **Current retained smoke analysis:** 139 recorded requests, 138 offline-screened samples; **92.862589%** tracking coverage under the conditional integer-estimate uncertainty threshold. **297/297** event-grid points settled, with median/max rate-only half-widths of 280.429/614.883 us and median wait 2.341 s. [Versioned results and source pins](docs/overview/postmerge-corrections-2026-10-08.json). This is offline-screened replay of the retained capture, not online admission or calibrated AP/UTC accuracy.
 <!-- /tsf-headlines:smoke -->
 
 See the [post-merge corrections](docs/overview/postmerge-corrections-2026-10-08.md), [original capture](docs/acquisition/persistent-tsf-smoke-2026-10-08.md) and [research roadmap](docs/overview/persistent-tsf-next-steps.md).
-
-## Follow the research over time
-
-Start with [goals and current position](docs/research-history/README.md), then follow the [chronology](docs/research-history/timeline.md), [results and failed attempts](docs/research-history/results-and-validation.md), [hypotheses and corrections](docs/research-history/hypotheses-and-lessons.md) and [next steps](docs/research-history/next-steps.md). The [complete catalogue](docs/research-history/source-map.md) accounts for every pre-refresh Markdown file; the [dated archive](archive/README.md) preserves the older versions. [Publication status](docs/research-history/publication-status.md) records merged work, open PRs and the public/private boundary.
 
 ## Contents
 
@@ -29,7 +21,7 @@ Start with [goals and current position](docs/research-history/README.md), then f
 
 - Current interpretation: [latest findings](docs/knowledge/current-findings.md) and [assumptions corrected by evidence](docs/knowledge/assumptions-and-corrections.md).
 - Persistent sampler: [contract and tests](docs/acquisition/persistent-tsf-sampler.md), [live smoke results](docs/acquisition/persistent-tsf-smoke-2026-10-08.md), [math reference](docs/clock-models/tsf-mathematics.md), [roadmap](docs/overview/persistent-tsf-next-steps.md) and [seven Archify views](docs/overview/archify-tsf/README.md).
-- Next work: [sequenced qualification and implementation](docs/research-history/next-steps.md); the separate [complete-event plan](docs/overview/complete-event-2026-10-05/engineering-plan.md) remains gated on producer access.
+- Next integration: [complete-event implementation plan](docs/overview/complete-event-2026-10-05/engineering-plan.md), including primary-source route research and the executed receive-lifetime audit.
 - Find a call or string: [reference index](docs/knowledge/reference-index.md) and [interface directory](docs/knowledge/interface-directory.md).
 - Repeat static research: [inspection runbook](docs/adapters/static-inspection-runbook.md), [script catalog](catalog/scripts.json) and [research skill](skills/qualcomm-timing-research/SKILL.md).
 - View every current workflow: [diagram gallery](docs/knowledge/workflow-diagrams.md).

@@ -2,10 +2,6 @@
 
 These diagrams show where timing values originate, where software copies them and which connections still need evidence. Follow the labeled arrows and legends: modeled radio behavior, observed historical paths and statically inspected client code are different kinds of evidence. The vendor-return diagram makes the unresolved adapter-to-QUTS connection explicit.
 
-<!-- research-history:2026-10-09 -->
-**Research context (2026-10-09):** Scoped technical reference. Build-specific findings and operational prerequisites retain their stated scope. [Current account](../research-history/README.md) · [Timeline](../research-history/timeline.md) · [Previous version](../../archive/2026-10-09-publication-parent-da4f55e/pages/docs__knowledge__workflow-diagrams.md).
-<!-- /research-history -->
-
 ## Contents
 
 - [Interactive Archify Studio HTML](../overview/archify-studio/index.html) and [SVG gallery/guide](../overview/archify-studio/README.md): ten source-linked views covering acquisition, I/O ownership, clock models, evidence and open hardware gates. Download the HTML and open it locally for interactive use.

@@ -1,15 +1,13 @@
 # Research workflow diagrams
 
-These diagrams show where timing values originate, where software copies them and which connections still need evidence. Follow the labeled arrows and legends: modeled radio behavior, observed historical paths and statically inspected client code are different kinds of evidence. The vendor-return diagram makes the unresolved adapter-to-QUTS connection explicit.
+> **Archive — not current operating instructions.** Historical documentation at [da4f55e48a36](https://github.com/Protonmatter/wifi-hardware-time/commit/da4f55e48a368f59ed68ee4427013a83b5c06070). Relative links are rebased for reading. [Exact original bytes](../originals/docs__knowledge__workflow-diagrams.md.txt) · [Archive index](../README.md) · [Current research](../../../docs/research-history/README.md).
 
-<!-- research-history:2026-10-09 -->
-**Research context (2026-10-09):** Scoped technical reference. Build-specific findings and operational prerequisites retain their stated scope. [Current account](../research-history/README.md) · [Timeline](../research-history/timeline.md) · [Previous version](../../archive/2026-10-09-publication-parent-da4f55e/pages/docs__knowledge__workflow-diagrams.md).
-<!-- /research-history -->
+These diagrams show where timing values originate, where software copies them and which connections still need evidence. Follow the labeled arrows and legends: modeled radio behavior, observed historical paths and statically inspected client code are different kinds of evidence. The vendor-return diagram makes the unresolved adapter-to-QUTS connection explicit.
 
 ## Contents
 
-- [Interactive Archify Studio HTML](../overview/archify-studio/index.html) and [SVG gallery/guide](../overview/archify-studio/README.md): ten source-linked views covering acquisition, I/O ownership, clock models, evidence and open hardware gates. Download the HTML and open it locally for interactive use.
-- [Persistent TSF Archify views](../overview/archify-tsf/README.md): system layers, workflow, lifecycle, time sources, timestamp sequence, algorithms and live/offline adapters.
+- [Interactive Archify Studio HTML](https://github.com/Protonmatter/wifi-hardware-time/blob/da4f55e48a368f59ed68ee4427013a83b5c06070/docs/overview/archify-studio/index.html) and [SVG gallery/guide](https://github.com/Protonmatter/wifi-hardware-time/blob/da4f55e48a368f59ed68ee4427013a83b5c06070/docs/overview/archify-studio/README.md): ten source-linked views covering acquisition, I/O ownership, clock models, evidence and open hardware gates. Download the HTML and open it locally for interactive use.
+- [Persistent TSF Archify views](https://github.com/Protonmatter/wifi-hardware-time/blob/da4f55e48a368f59ed68ee4427013a83b5c06070/docs/overview/archify-tsf/README.md): system layers, workflow, lifecycle, time sources, timestamp sequence, algorithms and live/offline adapters.
 - [Packet path](#packet-path)
 - [Private TSF reports](#private-tsf-reports)
 - [Four-event FTM model](#four-event-ftm-model)
@@ -22,7 +20,7 @@ These diagrams show where timing values originate, where software copies them an
 
 ## Packet path
 
-Source: [packets-timestamp-path.mmd](../../docs/clock-models/diagrams/packets-timestamp-path.mmd).
+Source: [packets-timestamp-path.mmd](https://github.com/Protonmatter/wifi-hardware-time/blob/da4f55e48a368f59ed68ee4427013a83b5c06070/docs/clock-models/diagrams/packets-timestamp-path.mmd).
 
 ```mermaid
 flowchart TB
@@ -66,7 +64,7 @@ flowchart TB
 
 ## Private TSF reports
 
-Source: [qualcomm-timestamp-path.mmd](../../docs/tsf/diagrams/qualcomm-timestamp-path.mmd).
+Source: [qualcomm-timestamp-path.mmd](https://github.com/Protonmatter/wifi-hardware-time/blob/da4f55e48a368f59ed68ee4427013a83b5c06070/docs/tsf/diagrams/qualcomm-timestamp-path.mmd).
 
 ```mermaid
 flowchart TB
@@ -106,7 +104,7 @@ flowchart TB
 
 ## Four-event FTM model
 
-Source: [ftm-timestamp-path.mmd](../../docs/ftm/diagrams/ftm-timestamp-path.mmd).
+Source: [ftm-timestamp-path.mmd](https://github.com/Protonmatter/wifi-hardware-time/blob/da4f55e48a368f59ed68ee4427013a83b5c06070/docs/ftm/diagrams/ftm-timestamp-path.mmd).
 
 ```mermaid
 sequenceDiagram
@@ -131,7 +129,7 @@ sequenceDiagram
 
 ## Uncertainty and rejection
 
-Source: [uncertainty-timestamp-path.mmd](../../docs/clock-models/diagrams/uncertainty-timestamp-path.mmd).
+Source: [uncertainty-timestamp-path.mmd](https://github.com/Protonmatter/wifi-hardware-time/blob/da4f55e48a368f59ed68ee4427013a83b5c06070/docs/clock-models/diagrams/uncertainty-timestamp-path.mmd).
 
 ```mermaid
 flowchart TB
@@ -156,7 +154,7 @@ and within the stated target?"}
 
 ## Application adoption
 
-Source: [adoption-timestamp-path.mmd](../../docs/evidence/diagrams/adoption-timestamp-path.mmd).
+Source: [adoption-timestamp-path.mmd](https://github.com/Protonmatter/wifi-hardware-time/blob/da4f55e48a368f59ed68ee4427013a83b5c06070/docs/evidence/diagrams/adoption-timestamp-path.mmd).
 
 ```mermaid
 flowchart TB
@@ -192,7 +190,7 @@ flowchart TB
 
 ## Reports versus memory ring
 
-Source: [report-vs-ring.mmd](../../docs/memory-ring/diagrams/report-vs-ring.mmd).
+Source: [report-vs-ring.mmd](https://github.com/Protonmatter/wifi-hardware-time/blob/da4f55e48a368f59ed68ee4427013a83b5c06070/docs/memory-ring/diagrams/report-vs-ring.mmd).
 
 ```mermaid
 flowchart TD
@@ -208,7 +206,7 @@ flowchart TD
 
 ## FTM notification routing
 
-Source: [notification-routing.mmd](../../docs/ftm/diagrams/notification-routing.mmd).
+Source: [notification-routing.mmd](https://github.com/Protonmatter/wifi-hardware-time/blob/da4f55e48a368f59ed68ee4427013a83b5c06070/docs/ftm/diagrams/notification-routing.mmd).
 
 ```mermaid
 flowchart LR
@@ -226,7 +224,7 @@ flowchart LR
 
 ## FTM reduction
 
-Source: [ftm-reduction.mmd](../../docs/clock-models/diagrams/ftm-reduction.mmd).
+Source: [ftm-reduction.mmd](https://github.com/Protonmatter/wifi-hardware-time/blob/da4f55e48a368f59ed68ee4427013a83b5c06070/docs/clock-models/diagrams/ftm-reduction.mmd).
 
 ```mermaid
 flowchart LR
@@ -244,7 +242,7 @@ flowchart LR
 
 ## Vendor return candidates
 
-Source: [vendor-return-paths.mmd](../../docs/adapters/diagrams/vendor-return-paths.mmd).
+Source: [vendor-return-paths.mmd](https://github.com/Protonmatter/wifi-hardware-time/blob/da4f55e48a368f59ed68ee4427013a83b5c06070/docs/adapters/diagrams/vendor-return-paths.mmd).
 
 ```mermaid
 flowchart TB

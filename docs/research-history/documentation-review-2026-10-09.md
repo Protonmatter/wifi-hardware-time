@@ -6,9 +6,9 @@ This review reconstructs the research account from the current merged repository
 
 ## Source and change scope
 
-The baseline is public main `e9d71b84365122ff2640e240b20fc1dbb834388a`. All 145 tracked Markdown files are accounted for in the catalogue and preserved in the complete pre-refresh archive. Key evidence was traced through the acquisition/qualification reports, current findings and assumption ledger, source-pinned result JSON, integrated/post-merge reviews and live GitHub PR state. Static technical references retain their exact-build scope; dated experiment reports retain original observations and execution status. The catalogue does not claim each binary path or test was independently reproduced.
+The initial review baseline is public main `e9d71b84365122ff2640e240b20fc1dbb834388a`. All 145 tracked Markdown files are accounted for in the catalogue and preserved in its complete snapshot. A separate four-file supplement preserves the changed/added Markdown at the actual publication parent `da4f55e`; the combined archive restores its 146-file Markdown tree exactly. Key evidence was traced through acquisition/qualification reports, findings and assumption ledgers, source-pinned results, reviews and live GitHub state. Static references retain their exact-build scope; dated reports retain original observations. The catalogue does not claim every binary path or experiment was independently reproduced.
 
-The isolated branch `docs/research-history-2026-10-09` is based on the subsequent atlas merge `da4f55e`. Relative to that base, changes are Markdown, documentation archive manifests, the generated knowledge index, an exact-byte archive Git attribute and two archive regression tests. Research executable source, catalog pins, diagram sources/previews, measurement JSON, capture data and the research skill remain unchanged. The originating dirty checkout is preserved.
+The isolated branch `docs/research-history-2026-10-09` is based on the subsequent atlas merge `da4f55e`. Relative to that base, changes are Markdown, documentation archive manifests, the generated knowledge index, exact-byte archive Git attributes, full-history CI checkout, archive regression tests and a pure documentation reading-copy renderer. Acquisition/driver/clock-model source, catalog pins, diagram sources/previews, measurement JSON, capture data and the research skill remain unchanged. The originating dirty checkout is preserved.
 
 New pages cover goals, chronology, successes, failed attempts, hypotheses, unsupported claims, open work, source mapping and publication state. Current causal/settlement explanations now use corrected policies; earlier versions are archived rather than erased. Older plan and status pages link to the current account. The original reproduction corpus remains unchanged.
 
@@ -31,20 +31,20 @@ Environment: Windows, Python 3.14.3. Commands ran from the isolated repository r
 | Check / command | Observed result |
 |---|---|
 | `python -m compileall -q research tests` | Passed |
-| `python -m unittest discover -s tests -v` | Latest archive review follow-up: 577 discovered, **540 passed, 37 skipped**, zero failures/errors; 48.014 s. Earlier review pass: 569 discovered, 532 passed and 37 skipped; initial integrated documentation pass: 562 discovered, 525 passed and 37 skipped |
-| `python -m unittest discover -s tests -p test_documentation_archive.py -v` | 17 passed: pinned milestones/revisions/scopes, distinct canonical copy paths, direct Git-blob identity, complete inventory, missing/extra-file rejection, unsafe-path/alias rejection, manifest hashes and Git newline preservation |
+| `python -m unittest discover -s tests -v` | Latest readable-copy/parent follow-up: 580 discovered, **543 passed, 37 skipped**, zero failures/errors; 57.807 s. Earlier milestone pass: 577 discovered, 540 passed and 37 skipped; initial integrated documentation pass: 562 discovered, 525 passed and 37 skipped |
+| `python -m unittest discover -s tests -p test_documentation_archive.py -v` | 20 passed: independent reading-copy transformation, full publication-parent restoration, pinned milestones/revisions/scopes, canonical copy paths, Git-blob identity, complete inventory, missing/extra-file and unsafe-path/alias rejection, hashes and newline preservation |
 | `python -m unittest discover -s tests -p test_documentation_navigation.py -v` | 4 passed, including file links, opening synopsis, fences and canonical overview diagrams |
 | `python -m unittest discover -s tests -p test_knowledge_index.py -v` | 6 passed |
 | `python -m unittest discover -s tests -p test_tsf_headlines.py -v` | 3 passed |
 | `./research/evidence/Update-ResearchKnowledge.ps1 -Apply` | Regenerated the two existing index files; immediate repeat returned `Unchanged` |
-| `python research/evidence/build_knowledge_index.py --check` | Passed; 368 authored sources indexed; archive contents remain outside the current-source index |
+| `python research/evidence/build_knowledge_index.py --check` | Passed; 369 authored sources indexed; archive contents remain outside the current-source index |
 | `python research/evidence/sync_tsf_headlines.py --check` | No changed blocks; current generated numerical summaries still match their versioned source |
 | `python research/evidence/sync_workflow_diagrams.py --check` | No changed diagram embeds |
 | `python research/evidence/publish_archify_previews.py --check` | Seven existing diagram previews verified; none regenerated |
 | `python research/evidence/apply_studio_export_policy.py --html docs/overview/archify-studio/index.html` | `Unchanged`; the merged atlas exporter and all atlas artifacts are untouched by this documentation PR |
-| Review-only archive/navigation/numerical audit | Six public snapshots / 156 preserved records; exact original hashes and committed Git blobs matched; all 145 baseline Markdown files covered; the final public Markdown corpus and local links checked, with zero unresolved paths/anchors; 11 numerical rows checked against the preserved corrected JSON |
-| Archive target check against local Git trees | 670 unique commit-pinned file/directory targets resolved; five reading copies received folder-URL corrections, with their manifest hashes updated and original bytes preserved |
-| Original-data and change-scope comparison | 29 existing JSON files other than the derived knowledge index remained unchanged; the final documentation diff additionally includes exact-byte archive attributes and two regression tests |
+| Archive/navigation/numerical verification | Seven public snapshots / 160 records; every original and readable copy independently verified against Git/derived output; complete 145-file initial baseline and 146-file publication-parent restoration verified; local navigation and 11 numerical summary rows checked |
+| Archive target check against local Git trees | 1,046 unique commit-pinned file/directory targets resolved after the parent supplement; 322 Markdown pages and 4,815 local links passed path/anchor checks. Earlier folder-URL corrections are preserved; deterministic rendering now verifies those reading copies independently |
+| Original-data and change-scope comparison | Existing result JSON and the original six archive snapshots remain unchanged; additional changes are the four-file parent supplement, pure documentation renderer, exact-byte attributes, full-history CI and archive regressions |
 | `git diff --check` | Passed |
 | `git merge-base --is-ancestor ebae8cc 02459e7` and `git merge-base --is-ancestor c620f47 02459e7` | Both exited 0; historical causal/settlement heads are contained in the persistent baseline |
 | `git ls-remote origin refs/heads/main refs/heads/docs/interactive-archify-atlas` | Reconfirmed `e9d71b8` main and `1364017` atlas branch at final source-state check |
@@ -71,7 +71,15 @@ Three later comments exposed additional contract gaps: an entire selective miles
 
 The archive verifier now independently pins all six snapshot directory names to full source commits. Selective milestone file sets are pinned as well; the complete snapshot still derives its full Markdown inventory from its pinned Git tree. The catalogue must contain exactly one entry for every expected snapshot. Canonical `originals/` and `pages/` paths preserve separate copies for each source; case-insensitive uniqueness and resolved-path checks reject reuse, namespace swaps and aliases. Temporary fixtures use real snapshot names and the same path-safety checks.
 
-These corrections change archive verification and documentation only. All six retained snapshot directories, their manifests, original copies and readable copies are unchanged. Adding future snapshots requires a reviewed registry entry, so manifest or catalogue edits alone cannot silently remove or replace preserved history.
+These corrections change archive verification and documentation only. The original six snapshot directories, their manifests, original copies and readable copies remain unchanged. Adding future snapshots requires a reviewed registry entry, so manifest or catalogue edits alone cannot silently remove or replace preserved history.
+
+## PR #11 readable-copy and publication-parent follow-up
+
+The follow-up review identified that recomputing a readable-copy digest could hide a removed warning or bad link, and that the initial snapshot did not include the versions changed or added by the atlas merge. Both corrupt-readable scenarios and the missing 146th parent document were reproduced before correction.
+
+Readable copies now must equal the deterministic output of `render_documentation_archive.py` applied to independently retrieved Git source bytes and that revision's file/directory inventory. This validates the notice and inline-link transformation independently of manifest hashes, including multiline labels and linked images. All existing 156 readable copies match that transformation without changes.
+
+The new `2026-10-09-publication-parent-da4f55e` supplement adds the exact parent versions of `README.md`, the generated reference index, the diagram gallery, and the atlas guide. Its four records bring the public archive to seven snapshots and 160 document versions. Overlaying it on the complete initial snapshot reconstructs every one of the publication parent's 146 Markdown files byte-for-byte; a dedicated test compares that result with Git. Rollback instructions now use `da4f55e` so merged atlas additions are retained.
 
 The review-only audit also detected three unre-based multiline links in two archive reading copies. Those derived copies and their manifest hashes were repaired; exact originals were untouched. The subsequent full archive/link/anchor audit passed. This helper belongs to the review workspace, not the repository's supported research CLI.
 
@@ -111,4 +119,4 @@ AP/source semantics, physical capture timing, firmware drain, online admission a
 
 Archive reading copies intentionally rebase links to immutable GitHub sources; exact-original `.md.txt` bytes preserve original relative-link context. Historical non-Markdown attachments are linked, not duplicated, so offline browsing of every old attachment is not provided. Private evidence stays private.
 
-Rollback is limited to the documentation paths in this review: restore changed tracked Markdown and the generated index from the pinned baseline, then remove only newly added history/archive files after reviewing the path list. Do not reset unrelated checkouts or acquisition state. The archive manifest and Git baseline make old text recoverable without changing runtime behavior.
+Rollback is limited to the paths introduced or modified by this PR: use the actual publication parent `da4f55e48a368f59ed68ee4427013a83b5c06070`, restore its modified tracked files, and remove only this PR's added documentation/archive/renderer/test files after reviewing the path list. Do not restore the earlier `e9d71b8` state over the atlas additions, reset unrelated checkouts, or change acquisition state. The complete initial snapshot plus parent supplement provides the Markdown recovery copies; other files remain recoverable from Git.

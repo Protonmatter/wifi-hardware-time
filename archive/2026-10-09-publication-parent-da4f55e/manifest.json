@@ -1,0 +1,53 @@
+{
+  "schema": "wht/documentation-archive-v1",
+  "captured_date": "2026-10-09",
+  "timezone": "America/New_York",
+  "source_kind": "git-blob",
+  "source_revision": "da4f55e48a368f59ed68ee4427013a83b5c06070",
+  "files": [
+    {
+      "source_path": "README.md",
+      "source_commit": "da4f55e48a368f59ed68ee4427013a83b5c06070",
+      "local_base_commit": null,
+      "last_change": "1364017cf1383bc6b77fb5899898aab13baeaa41\t2026-10-08T23:50:28-04:00",
+      "original_sha256": "68e61812ad56df7786dc7f39a60461e9cd2a7cda846c051ed395c3d4811b6e20",
+      "original_bytes": 9734,
+      "original_path": "originals/README.md.txt",
+      "reading_path": "pages/README.md",
+      "reading_sha256": "bb6066e7cdf45f47c5c4e12f95bbb25e770806de22730bd79deba6c611603280"
+    },
+    {
+      "source_path": "docs/knowledge/reference-index.md",
+      "source_commit": "da4f55e48a368f59ed68ee4427013a83b5c06070",
+      "local_base_commit": null,
+      "last_change": "71ccc1d4e3b0a98839b8bddbb089a1687527a332\t2026-10-09T01:17:49-04:00",
+      "original_sha256": "d443fad80229bce1f76f9398b5c570bb6f82fa8901d5ba2e4a35871d429b1245",
+      "original_bytes": 40839,
+      "original_path": "originals/docs__knowledge__reference-index.md.txt",
+      "reading_path": "pages/docs__knowledge__reference-index.md",
+      "reading_sha256": "bfb2721627e467b09ee5ca25e4677307f7e6e065663d28ebacb0a025b7c23b7c"
+    },
+    {
+      "source_path": "docs/knowledge/workflow-diagrams.md",
+      "source_commit": "da4f55e48a368f59ed68ee4427013a83b5c06070",
+      "local_base_commit": null,
+      "last_change": "1364017cf1383bc6b77fb5899898aab13baeaa41\t2026-10-08T23:50:28-04:00",
+      "original_sha256": "1d5bc6602432257be458848c6bc34f2b4fa1e9a8352661937558840f2a3e4e18",
+      "original_bytes": 14753,
+      "original_path": "originals/docs__knowledge__workflow-diagrams.md.txt",
+      "reading_path": "pages/docs__knowledge__workflow-diagrams.md",
+      "reading_sha256": "69580bfaf932e0cf5251f495e37deeca09b67d970622d7062fc34a8a02158c56"
+    },
+    {
+      "source_path": "docs/overview/archify-studio/README.md",
+      "source_commit": "da4f55e48a368f59ed68ee4427013a83b5c06070",
+      "local_base_commit": null,
+      "last_change": "71ccc1d4e3b0a98839b8bddbb089a1687527a332\t2026-10-09T01:17:49-04:00",
+      "original_sha256": "b83ac4b4cb07807ef412bc960c553e48ca92e6669e2e133c6793ed46674becd2",
+      "original_bytes": 10274,
+      "original_path": "originals/docs__overview__archify-studio__README.md.txt",
+      "reading_path": "pages/docs__overview__archify-studio__README.md",
+      "reading_sha256": "031cacd2e071d3552eeac86f5db0950fc34420958b5e5724c3bfdc4d60301d79"
+    }
+  ]
+}
