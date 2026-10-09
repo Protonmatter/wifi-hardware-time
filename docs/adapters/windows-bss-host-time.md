@@ -2,9 +2,9 @@
 
 On the inspected Windows builds, WiFiCx can supply system time when it incorporates a BSS list, or use the driver's age field when a configuration flag requires it. That value reaches the WLAN API's host-timestamp field. A separate link-quality update can refresh the stored time without replacing the frame, so a cached host timestamp is not automatically the receive instant of its peer TSF.
 
-<!-- current-context:2026-10-04 -->
-**Current context (2026-10-04):** Later archive and installed-file inspection located QUTS client-owned byte returns and corrected vendor package/version assumptions; exact adapter-to-producer association remains open. See [current findings](../knowledge/current-findings.md).
-<!-- /current-context -->
+<!-- historical-context:2026-10-04 -->
+**Historical context (2026-10-04):** Later archive and installed-file inspection located QUTS client-owned byte returns and corrected vendor package/version assumptions; exact adapter-to-producer association remains open. See [current findings](../knowledge/current-findings.md).
+<!-- /historical-context -->
 
 ## Contents
 

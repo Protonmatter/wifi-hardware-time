@@ -7,9 +7,9 @@ returned the fixed eight-byte test payload through the installed driver. It also
 classifies all 70 identified direct completion calls: 59 null-payload calls and
 11 possible-payload calls. Timing-event delivery remains unqualified.
 
-<!-- current-context:2026-10-04 -->
-**Current context (2026-10-04):** Later archive and installed-file inspection located QUTS client-owned byte returns and corrected vendor package/version assumptions; exact adapter-to-producer association remains open. See [current findings](../knowledge/current-findings.md).
-<!-- /current-context -->
+<!-- historical-context:2026-10-04 -->
+**Historical context (2026-10-04):** Later archive and installed-file inspection located QUTS client-owned byte returns and corrected vendor package/version assumptions; exact adapter-to-producer association remains open. See [current findings](../knowledge/current-findings.md).
+<!-- /historical-context -->
 
 ## Contents
 

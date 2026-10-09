@@ -2,9 +2,9 @@
 
 Which experiment would resolve the remaining timing gaps? Windows needs a matched comparison with a known-capable adapter; the ALFA path needs a dedicated Linux host and live validation. Neither source inspection nor a generic equipment label establishes timing accuracy, safe register access, or a suitable reference.
 
-<!-- current-context:2026-10-04 -->
-**Current context (2026-10-04):** Later archive and installed-file inspection located QUTS client-owned byte returns and corrected vendor package/version assumptions; exact adapter-to-producer association remains open. See [current findings](../knowledge/current-findings.md).
-<!-- /current-context -->
+<!-- historical-context:2026-10-04 -->
+**Historical context (2026-10-04):** Later archive and installed-file inspection located QUTS client-owned byte returns and corrected vendor package/version assumptions; exact adapter-to-producer association remains open. See [current findings](../knowledge/current-findings.md).
+<!-- /historical-context -->
 
 A cross timestamp pairs hardware-clock and host-clock observations. QPC (QueryPerformanceCounter) is the Windows host counter; an independent reference supplies a separately characterized timing measurement. See the [glossary](../glossary.md).
 

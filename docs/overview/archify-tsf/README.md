@@ -1,6 +1,6 @@
 # Persistent TSF Archify specifications
 
-These seven editable Archify specifications explain the sampler layers, acquisition workflow, request lifecycle, time sources, timestamp sequence, clock algorithm and live/offline adapter boundary. The diagrams describe the sampler implementation tested in the 2026-10-08 smoke. They do not establish physical timing accuracy or online admission.
+These seven editable Archify specifications explain the sampler layers, acquisition workflow, request lifecycle, time sources, timestamp sequence, clock algorithm and live/offline adapter boundary. The layers describe the sampler implementation tested in the 2026-10-08 smoke. The algorithm view additionally reflects the reviewed rounding-inclusive uncertainty and settlement-v2 overlap policy. They do not establish physical timing accuracy or online admission.
 
 | View | Editable specification |
 |---|---|

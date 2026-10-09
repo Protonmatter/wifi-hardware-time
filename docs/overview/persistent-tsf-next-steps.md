@@ -4,12 +4,16 @@ The persistent sampler has passed offline adversarial tests and one five-minute 
 
 ## Current position
 
+<!-- tsf-headlines:smoke -->
+**Current retained smoke analysis:** 139 recorded requests, 138 offline-screened samples; **92.862589%** tracking coverage under the conditional integer-estimate uncertainty threshold. **297/297** event-grid points settled, with median/max rate-only half-widths of 280.429/614.883 us and median wait 2.341 s. [Versioned results and source pins](postmerge-corrections-2026-10-08.json). This is offline-screened replay of the retained capture, not online admission or calibrated AP/UTC accuracy.
+<!-- /tsf-headlines:smoke -->
+
 | Area | Established | Still open |
 |---|---|---|
 | Persistent acquisition | 139 real pending-to-success requests, one closed session, no trace loss or forced termination | Long-run/load behavior and real failure-path recovery |
 | Screening | 138 accepted samples, one late report, foreign groups retained | Causal online admission and stronger physical attribution |
-| Immediate time | 92.884041% conditional tracking coverage in arrival-aware replay | Continuous availability and application-observed end-to-end latency |
-| Settled time | All 297 replayed event-grid points settled below a conditional +/-1-ms bound | Live API integration, longer-gap behavior and physical validation |
+| Immediate time | Versioned conditional tracking coverage in the generated summary above | Continuous availability and application-observed end-to-end latency |
+| Settled time | Versioned settled-grid counts and half-widths in the generated summary above | Live API integration, longer-gap behavior and physical validation |
 | Mathematics | Exact fraction-based bounded-rate and separately labeled affine models | Any optimized clipping, new settlement policy or qualified wander model |
 | External accuracy | Coarse beacon consistency, zero violations in checked smoke observations | Independent station/AP, multi-node and UTC/reference validation |
 
@@ -59,7 +63,7 @@ Read the [measured results](../acquisition/persistent-tsf-smoke-2026-10-08.md), 
 
 **Implementation:** a distinct online admission state machine owns association, event completeness, deadlines, duplicates, foreign traffic, freshness and epoch changes. The numerical provider checks feasibility but cannot establish acquisition provenance. Feed accepted samples to the maintained `userspace-clock` API only through this gate; the sampler itself must not call `WifiTsfClock.ingest()` directly.
 
-The application contract preserves raw event QPC and its epoch, an immutable provisional result and a separately derived settled record. Report `pending`, `stale`, `invalid` or unavailable honestly. Consumers of rounded integer estimates must check the returned uncertainty, not assume the half-width-based `tracking` state alone guarantees their integer estimate is below 1 ms.
+The application contract preserves raw event QPC and its epoch, an immutable provisional result and a separately derived settled record. Report `pending`, `stale`, `invalid` or unavailable honestly. The `tracking` state uses exact half-width plus the conservative 0.5-us rounding allowance. Consumers must distinguish that exact quantity from outward-rounded whole-microsecond display values; downstream records expose `uncertainty_exact_us`.
 
 **Testing:** feed event prefixes and assert decisions never inspect future suffixes. Test out-of-order delivery, missing group tails, duplicate sequence/session IDs, queue overflow, incompatible samples, initial acquisition, exact threshold equality, integer rounding, stale holdover and epoch changes. Differential replay may compare policies, but offline hindsight is not the oracle for an earlier online decision.
 

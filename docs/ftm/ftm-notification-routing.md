@@ -2,9 +2,9 @@
 
 Can driver notifications expose the raw ranging measurements? The inspected notification callers send synthetic test data or a radio-exposure request, while the ranging completion sends an aggregate result. These bounded code searches found no raw-measurement handoff; they do not rule out every export route or establish how the underlying clocks relate.
 
-<!-- current-context:2026-10-04 -->
-**Current context (2026-10-04):** QXDM WLAN RTT definitions are a new schema lead. They have not been matched to a complete live four-event export from this adapter. See [current findings](../knowledge/current-findings.md).
-<!-- /current-context -->
+<!-- historical-context:2026-10-04 -->
+**Historical context (2026-10-04):** QXDM WLAN RTT definitions are a new schema lead. They have not been matched to a complete live four-event export from this adapter. See [current findings](../knowledge/current-findings.md).
+<!-- /historical-context -->
 
 FTM (Fine Timing Measurement) is Wi-Fi ranging; RTT is round-trip time. TSF is the Wi-Fi timer. SAR refers to specific absorption rate, a radio-exposure measure. WDI is a Windows wireless-driver interface; RVA locates code within a binary. See the [glossary](../glossary.md).
 

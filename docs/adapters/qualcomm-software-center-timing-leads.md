@@ -2,9 +2,9 @@
 
 The installed WLAN test assembly contains inherited WCN7850 RTT methods and concrete QMSL response-field names. That helps identify the next interface to inspect. It does not yet supply a usable clock: required runtime assemblies are missing from the searched locations, returned buffer semantics remain incomplete, and no vendor method or hardware command was executed.
 
-<!-- current-context:2026-10-04 -->
-**Current context (2026-10-04):** Later archive and installed-file inspection located QUTS client-owned byte returns and corrected vendor package/version assumptions; exact adapter-to-producer association remains open. See [current findings](../knowledge/current-findings.md).
-<!-- /current-context -->
+<!-- historical-context:2026-10-04 -->
+**Historical context (2026-10-04):** Later archive and installed-file inspection located QUTS client-owned byte returns and corrected vendor package/version assumptions; exact adapter-to-producer association remains open. See [current findings](../knowledge/current-findings.md).
+<!-- /historical-context -->
 
 **Snapshot update, 2026-10-04:** this page preserves the earlier 2.0.81.1 assembly
 inspection. A fresh check found installed WLAN assembly 2.0.79.1 referencing

@@ -2,9 +2,9 @@
 
 This guide explains the bounded tools used to request clock reports and Wi-Fi ranging results on one exact Qualcomm driver build. Historical tests showed counter refresh behavior and successful ranging responses, but did not establish accurate clock synchronization. Private acquisition remains quarantined, and these examples do not authorize another run.
 
-<!-- current-context:2026-10-04 -->
-**Current context (2026-10-04):** The private campaign remains quarantined. The new QUTS client ownership finding does not establish firmware drain, report association or a new live acquisition. See [current findings](../knowledge/current-findings.md).
-<!-- /current-context -->
+<!-- historical-context:2026-10-04 -->
+**Historical context (2026-10-04):** The private campaign remains quarantined. The new QUTS client ownership finding does not establish firmware drain, report association or a new live acquisition. See [current findings](../knowledge/current-findings.md).
+<!-- /historical-context -->
 
 A latch captures a counter value. TSF is the Wi-Fi timing counter, while SoC denotes the reported system-on-chip counter. FTM means Fine Timing Measurement, a Wi-Fi ranging exchange; RTT is its round-trip time. AP means access point; BSSID identifies its radio. See the [glossary](../glossary.md) for related terms.
 

@@ -18,10 +18,14 @@ Several plausible shortcuts became incorrect when we followed the bytes or repea
 
 ## Acquisition and hardware interpretation
 
+<!-- tsf-headlines:smoke -->
+**Current retained smoke analysis:** 139 recorded requests, 138 offline-screened samples; **92.862589%** tracking coverage under the conditional integer-estimate uncertainty threshold. **297/297** event-grid points settled, with median/max rate-only half-widths of 280.429/614.883 us and median wait 2.341 s. [Versioned results and source pins](../overview/postmerge-corrections-2026-10-08.json). This is offline-screened replay of the retained capture, not online admission or calibrated AP/UTC accuracy.
+<!-- /tsf-headlines:smoke -->
+
 | Earlier interpretation or hypothesis | Status and correction | Evidence / consequence |
 |---|---|---|
 | Reusing a probe process removes the report-delivery wait and establishes one-second cadence | Corrected: persistent mode retains the wait. The first live smoke achieved 2.005-second median and 4.009-second maximum gaps | [Persistent smoke](../acquisition/persistent-tsf-smoke-2026-10-08.md); measure actual accepted gaps and availability rather than infer cadence from IOCTL duration |
-| A sub-millisecond settled interval proves continuous immediate or physical accuracy | Unsupported: this run's causal replay tracked for 92.884% of its declared interval; settlement used later available samples and remains conditional | [Math and scope](../clock-models/tsf-mathematics.md); independently qualify capture, clock continuity and external reference |
+| A sub-millisecond settled interval proves continuous immediate or physical accuracy | Unsupported: generated coverage above is conditional offline-screened replay; settlement used later available samples and does not establish continuous immediate or physical accuracy | [Math and scope](../clock-models/tsf-mathematics.md); independently qualify capture, clock continuity and external reference |
 | Previously asserted synthetic-test counts or the median-derived 740-us figure establish a worst-case guarantee | Withdrawn: those synthetic counts lacked reproducible execution evidence, and typical timing cannot prove a worst-case bound | [Phase 2 verification gates](../overview/persistent-tsf-next-steps.md); retain exact commands, outputs, conditions and elapsed denominators |
 | A successful five-minute session qualifies cancellation and firmware drain | Unsupported: all 139 I/Os completed normally, with no cancellation or deadline path exercised | [Lifecycle coverage](../acquisition/persistent-tsf-smoke-2026-10-08.md); explicit failure-path qualification remains separate |
 | A pcapng file with nanosecond resolution supplies radio timestamps | Disproved for the inspected capture path: it advertises only host timestamp types and returned Ethernet packets | [Live capture](../acquisition/packet-capture-and-elevation.md); resolution is not accuracy, and packet files do not trace kernel calls |

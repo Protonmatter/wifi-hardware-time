@@ -2,9 +2,9 @@
 
 Can this Windows build expose individual absolute ranging timestamps? Inspection confirms an internal measurement buffer, but the established caller and logging paths return aggregates or time differences. No supported raw-timestamp export was found in the inspected paths; unknown record fields, clock meaning, and exchange identity still need qualification.
 
-<!-- current-context:2026-10-04 -->
-**Current context (2026-10-04):** QXDM WLAN RTT definitions are a new schema lead. They have not been matched to a complete live four-event export from this adapter. See [current findings](../knowledge/current-findings.md).
-<!-- /current-context -->
+<!-- historical-context:2026-10-04 -->
+**Historical context (2026-10-04):** QXDM WLAN RTT definitions are a new schema lead. They have not been matched to a complete live four-event export from this adapter. See [current findings](../knowledge/current-findings.md).
+<!-- /historical-context -->
 
 FTM (Fine Timing Measurement) is Wi-Fi ranging; RTT is round-trip time. An ETL is a saved Windows event trace. An ABI defines how binary components exchange arguments and data; an RVA locates evidence within one binary. See the [glossary](../glossary.md).
 

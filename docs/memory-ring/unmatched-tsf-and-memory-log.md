@@ -2,9 +2,9 @@
 
 Extra clock reports changed the previously cached counter value, which weakens the duplicate-print explanation but does not identify their source. Driver inspection also found a memory log before Windows tracing. That is a research lead: no safe live getter, complete-copy guarantee or timing improvement was established, and private acquisition remains quarantined.
 
-<!-- current-context:2026-10-04 -->
-**Current context (2026-10-04):** The QUTS client is a separate owned-byte return candidate. It does not repair the existing ring publication or temporary-buffer lifetime gaps. See [current findings](../knowledge/current-findings.md).
-<!-- /current-context -->
+<!-- historical-context:2026-10-04 -->
+**Historical context (2026-10-04):** The QUTS client is a separate owned-byte return candidate. It does not repair the existing ring publication or temporary-buffer lifetime gaps. See [current findings](../knowledge/current-findings.md).
+<!-- /historical-context -->
 
 TSF is the Wi-Fi timing counter; SoC denotes the reported system-on-chip counter. ETW is Windows event tracing. A ring is a circular buffer that overwrites old entries. RVA is an offset within the inspected driver image, not a callable runtime address. See the [glossary](../glossary.md) for related terms.
 

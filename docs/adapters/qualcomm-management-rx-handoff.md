@@ -2,9 +2,9 @@
 
 The selected Qualcomm management-frame handler copies received frame bytes into a packet and queues radio metadata separately. It does not read the header positions that a vendor reference labels as local RX TSF. This locates a concrete export boundary, but no application interface returning the frame and its local hardware timestamp together has been established.
 
-<!-- current-context:2026-10-04 -->
-**Current context (2026-10-04):** Later archive and installed-file inspection located QUTS client-owned byte returns and corrected vendor package/version assumptions; exact adapter-to-producer association remains open. See [current findings](../knowledge/current-findings.md).
-<!-- /current-context -->
+<!-- historical-context:2026-10-04 -->
+**Historical context (2026-10-04):** Later archive and installed-file inspection located QUTS client-owned byte returns and corrected vendor package/version assumptions; exact adapter-to-producer association remains open. See [current findings](../knowledge/current-findings.md).
+<!-- /historical-context -->
 
 ## Contents
 

@@ -1,0 +1,699 @@
+{
+  "schema": "wht/review-reconciliation-v1",
+  "baseline_commit": "9ddc1c3586450d3a866b5486da945e95a83417fb",
+  "corrected_source_commit": "0f41db0175e3601e899c51143b46bb8b3df02135",
+  "qualification": "conditional-research",
+  "physical_bound_proven": false,
+  "live_collection_performed": false,
+  "input_hashes_unchanged": true,
+  "policy_versions": [
+    "wht/sample-screen-v2",
+    "wht/arrival-order-v2",
+    "wht/settlement-v2",
+    "wht/clock-pairing-quantized-v2"
+  ],
+  "runs": {
+    "hour_idle": {
+      "baseline": {
+        "tracking_percent": 78.632051394,
+        "tracking_percent_exact": "1416330574525/18012127999",
+        "durations_ticks": {
+          "acquiring": "13516196",
+          "tracking": "56653222981/2",
+          "stale": "15368256623/2",
+          "invalid": "0"
+        },
+        "stale_intervals": 841,
+        "longest_stale_s": 4.896056,
+        "max_half_width_before_next_sample_us": 1978.711,
+        "max_uncertainty_before_next_sample_us": 1979.211,
+        "screen": {
+          "request_count": 1277,
+          "accepted_count": 1276,
+          "rejected_count": 1,
+          "rejected_by_reason": {
+            "late_report": 1
+          },
+          "foreign_groups": 6,
+          "foreign_commands": 0,
+          "own_losses": 1,
+          "duration_s": 3602.426,
+          "expected_misattributed": 0.0,
+          "expected_misattributed_exact": "60000/18012127999",
+          "continuity_break_count": 0
+        },
+        "settlement": {
+          "events": 3598,
+          "step_s": 1.0,
+          "states": {
+            "settled": 3598
+          },
+          "wait_s": {
+            "median": 3.112,
+            "p90": 4.56,
+            "p99": 5.173,
+            "max": 8.029
+          },
+          "half_width_us": {
+            "median": 308.456,
+            "p90": 447.391,
+            "p99": 578.707,
+            "max": 894.669
+          },
+          "affine_half_width_us": {
+            "median": 126.632,
+            "p90": 153.956,
+            "p99": 193.813,
+            "max": 309.651
+          },
+          "affine_estimate_count": 3595,
+          "affine_estimate_share": 0.999166,
+          "sub_millisecond_share": 1.0,
+          "rate_prior_ppm": 200,
+          "conditions": [
+            "causal capture: each TSF was captured inside its window [lower_qpc, upper_qpc]",
+            "bounded rate: TSF advances within the rate prior of nominal at every instant, with no unmodelled phase steps",
+            "continuity: one continuous TSF within the epoch",
+            "station TSF equals access point TSF (802.11 synchronization; not checked here)",
+            "best estimate only: assumes one constant rate within the surrounding 60-second span"
+          ]
+        },
+        "retrospective": "89466911/100000",
+        "soc_domain": {
+          "sample_count": 1276,
+          "ticks_per_unit": 10,
+          "fixed_rate_feasible": false,
+          "fixed_rate_gap_qpc_ticks": 1382182,
+          "rate_interval": {
+            "lower": {
+              "numerator": "23357830809",
+              "denominator": "2335693219"
+            },
+            "upper": {
+              "numerator": "35787903685",
+              "denominator": "3578652289"
+            }
+          },
+          "rate_interval_contains_nominal": false,
+          "compatible_with_qpc_domain": false,
+          "shared_oscillator_proven": false
+        },
+        "beacon": {
+          "checked": 318,
+          "unchecked": 1,
+          "violations": 0,
+          "tolerance_us": 1000,
+          "worst_excess_us": "-2869520893583/524155468",
+          "scope": "coarse: AP timestamp must not exceed predicted station TSF; cache age unknown"
+        }
+      },
+      "corrected": {
+        "tracking_percent": 78.632051394,
+        "tracking_percent_exact": "1416330574525/18012127999",
+        "durations_ticks": {
+          "acquiring": "13516196",
+          "tracking": "56653222981/2",
+          "stale": "15368256623/2",
+          "invalid": "0"
+        },
+        "stale_intervals": 841,
+        "longest_stale_s": 4.896056,
+        "max_half_width_before_next_sample_us": 1978.711,
+        "max_uncertainty_before_next_sample_us": 1979.211,
+        "screen": {
+          "request_count": 1277,
+          "accepted_count": 1276,
+          "policy_version": "wht/sample-screen-v2",
+          "continuity_closed": false,
+          "rejected_count": 1,
+          "rejected_by_reason": {
+            "late_report": 1
+          },
+          "foreign_groups": 6,
+          "foreign_commands": 0,
+          "own_losses": 1,
+          "duration_s": 3602.426,
+          "expected_misattributed": 0.0,
+          "expected_misattributed_exact": "60000/18012127999",
+          "continuity_break_count": 0
+        },
+        "settlement": {
+          "events": 3598,
+          "step_s": 1.0,
+          "states": {
+            "settled": 3598
+          },
+          "settlement_policy_version": "wht/settlement-v2",
+          "actual_settled_grid_max_half_width_us": 894.669,
+          "actual_settled_grid_max_half_width_exact": "89466911/100000",
+          "wait_s": {
+            "median": 3.112,
+            "p90": 4.56,
+            "p99": 5.173,
+            "max": 8.029
+          },
+          "half_width_us": {
+            "median": 308.456,
+            "p90": 447.391,
+            "p99": 578.707,
+            "max": 894.669
+          },
+          "affine_half_width_us": {
+            "median": 126.632,
+            "p90": 153.956,
+            "p99": 193.813,
+            "max": 309.651
+          },
+          "affine_estimate_count": 3595,
+          "affine_estimate_share": 0.999166,
+          "sub_millisecond_share": 1.0,
+          "rate_prior_ppm": 200,
+          "conditions": [
+            "causal capture: each TSF was captured inside its window [lower_qpc, upper_qpc]",
+            "bounded rate: TSF advances within the rate prior of nominal at every instant, with no unmodelled phase steps",
+            "continuity: one continuous TSF within the epoch",
+            "station TSF equals access point TSF (802.11 synchronization; not checked here)",
+            "best estimate only: assumes one constant rate within the surrounding 60-second span"
+          ]
+        },
+        "retrospective": "89466911/100000",
+        "soc_domain": {
+          "sample_count": 1276,
+          "ticks_per_unit": 10,
+          "model_version": "wht/clock-pairing-quantized-v2",
+          "quantization": {
+            "counter_interval": "[raw, raw+1]",
+            "qpc_interval": "[lower, upper+1]",
+            "endpoint_policy": "closed conservative hull of integer bins"
+          },
+          "fixed_rate_feasible": false,
+          "fixed_rate_gap_qpc_ticks": 1382171,
+          "fixed_rate_offset_interval_qpc_ticks": null,
+          "rate_interval": {
+            "lower": {
+              "numerator": "5839457702",
+              "denominator": "583923305"
+            },
+            "upper": {
+              "numerator": "17893951843",
+              "denominator": "1789326144"
+            }
+          },
+          "rate_interval_contains_nominal": false,
+          "compatible_with_qpc_domain": false,
+          "shared_oscillator_proven": false
+        },
+        "beacon": {
+          "checked": 318,
+          "unchecked": 1,
+          "violations": 0,
+          "tolerance_us": 1000,
+          "worst_excess_us": "-2869520893583/524155468",
+          "scope": "coarse: AP timestamp must not exceed predicted station TSF; cache age unknown"
+        }
+      },
+      "replay_input_sha256": {
+        "raw-timing.jsonl": "c573e8b52dbf98524124e66c8ff0630f5cad09d01cb5706948f07debfe5f26d3",
+        "requests.jsonl": "9f1939a670669889ec2cfeee6bbbbc40ce3b1085840e1e4d03e3688cfab2ae4e",
+        "live-observer.jsonl": "9948f25dfc7e5fff2a5c51da3a2705a2bbd1036097142797e9c24d1d9f59456b",
+        "run-result.json": "f4b141aa0cf415afb2bb6b1a823a971179e04dad408c4ebaf817c5f25561ad84"
+      },
+      "screening_counts_unchanged": true,
+      "tracking_unchanged": true,
+      "retrospective_maximum_unchanged": true,
+      "late_history_skipped_count": 0,
+      "continuity_invalidation_count": 0
+    },
+    "hour_load": {
+      "baseline": {
+        "tracking_percent": 72.349582965,
+        "tracking_percent_exact": "104226428154/1440594733",
+        "durations_ticks": {
+          "acquiring": "3632894",
+          "tracking": "52113214077/2",
+          "stale": "19909256785/2",
+          "invalid": "0"
+        },
+        "stale_intervals": 977,
+        "longest_stale_s": 3.660715,
+        "max_half_width_before_next_sample_us": 1731.643,
+        "max_uncertainty_before_next_sample_us": 1732.143,
+        "screen": {
+          "request_count": 1212,
+          "accepted_count": 1210,
+          "rejected_count": 2,
+          "rejected_by_reason": {
+            "late_report": 2
+          },
+          "foreign_groups": 4,
+          "foreign_commands": 0,
+          "own_losses": 2,
+          "duration_s": 3601.487,
+          "expected_misattributed": 0.0,
+          "expected_misattributed_exact": "6400/1440594733",
+          "continuity_break_count": 0
+        },
+        "settlement": {
+          "events": 3597,
+          "step_s": 1.0,
+          "states": {
+            "settled": 3597
+          },
+          "wait_s": {
+            "median": 3.347,
+            "p90": 4.732,
+            "p99": 5.77,
+            "max": 7.823
+          },
+          "half_width_us": {
+            "median": 325.406,
+            "p90": 463.915,
+            "p99": 585.591,
+            "max": 766.954
+          },
+          "affine_half_width_us": {
+            "median": 130.236,
+            "p90": 161.713,
+            "p99": 204.297,
+            "max": 244.018
+          },
+          "affine_estimate_count": 3595,
+          "affine_estimate_share": 0.999444,
+          "sub_millisecond_share": 1.0,
+          "rate_prior_ppm": 200,
+          "conditions": [
+            "causal capture: each TSF was captured inside its window [lower_qpc, upper_qpc]",
+            "bounded rate: TSF advances within the rate prior of nominal at every instant, with no unmodelled phase steps",
+            "continuity: one continuous TSF within the epoch",
+            "station TSF equals access point TSF (802.11 synchronization; not checked here)",
+            "best estimate only: assumes one constant rate within the surrounding 60-second span"
+          ]
+        },
+        "retrospective": "15711681/20000",
+        "soc_domain": {
+          "sample_count": 1210,
+          "ticks_per_unit": 10,
+          "fixed_rate_feasible": false,
+          "fixed_rate_gap_qpc_ticks": 1386234,
+          "rate_interval": {
+            "lower": {
+              "numerator": "34769812331",
+              "denominator": "3476847126"
+            },
+            "upper": {
+              "numerator": "15522994153",
+              "denominator": "1552239354"
+            }
+          },
+          "rate_interval_contains_nominal": false,
+          "compatible_with_qpc_domain": false,
+          "shared_oscillator_proven": false
+        },
+        "beacon": {
+          "checked": 310,
+          "unchecked": 1,
+          "violations": 0,
+          "tolerance_us": 1000,
+          "worst_excess_us": "-2297833424200/411389513",
+          "scope": "coarse: AP timestamp must not exceed predicted station TSF; cache age unknown"
+        }
+      },
+      "corrected": {
+        "tracking_percent": 72.349582965,
+        "tracking_percent_exact": "104226428154/1440594733",
+        "durations_ticks": {
+          "acquiring": "3632894",
+          "tracking": "52113214077/2",
+          "stale": "19909256785/2",
+          "invalid": "0"
+        },
+        "stale_intervals": 977,
+        "longest_stale_s": 3.660715,
+        "max_half_width_before_next_sample_us": 1731.643,
+        "max_uncertainty_before_next_sample_us": 1732.143,
+        "screen": {
+          "request_count": 1212,
+          "accepted_count": 1210,
+          "policy_version": "wht/sample-screen-v2",
+          "continuity_closed": false,
+          "rejected_count": 2,
+          "rejected_by_reason": {
+            "late_report": 2
+          },
+          "foreign_groups": 4,
+          "foreign_commands": 0,
+          "own_losses": 2,
+          "duration_s": 3601.487,
+          "expected_misattributed": 0.0,
+          "expected_misattributed_exact": "6400/1440594733",
+          "continuity_break_count": 0
+        },
+        "settlement": {
+          "events": 3597,
+          "step_s": 1.0,
+          "states": {
+            "settled": 3597
+          },
+          "settlement_policy_version": "wht/settlement-v2",
+          "actual_settled_grid_max_half_width_us": 766.954,
+          "actual_settled_grid_max_half_width_exact": "9586927/12500",
+          "wait_s": {
+            "median": 3.347,
+            "p90": 4.732,
+            "p99": 5.77,
+            "max": 7.823
+          },
+          "half_width_us": {
+            "median": 324.908,
+            "p90": 463.139,
+            "p99": 585.34,
+            "max": 766.954
+          },
+          "affine_half_width_us": {
+            "median": 130.236,
+            "p90": 161.713,
+            "p99": 204.297,
+            "max": 244.018
+          },
+          "affine_estimate_count": 3595,
+          "affine_estimate_share": 0.999444,
+          "sub_millisecond_share": 1.0,
+          "rate_prior_ppm": 200,
+          "conditions": [
+            "causal capture: each TSF was captured inside its window [lower_qpc, upper_qpc]",
+            "bounded rate: TSF advances within the rate prior of nominal at every instant, with no unmodelled phase steps",
+            "continuity: one continuous TSF within the epoch",
+            "station TSF equals access point TSF (802.11 synchronization; not checked here)",
+            "best estimate only: assumes one constant rate within the surrounding 60-second span"
+          ]
+        },
+        "retrospective": "15711681/20000",
+        "soc_domain": {
+          "sample_count": 1210,
+          "ticks_per_unit": 10,
+          "model_version": "wht/clock-pairing-quantized-v2",
+          "quantization": {
+            "counter_interval": "[raw, raw+1]",
+            "qpc_interval": "[lower, upper+1]",
+            "endpoint_policy": "closed conservative hull of integer bins"
+          },
+          "fixed_rate_feasible": false,
+          "fixed_rate_gap_qpc_ticks": 1386223,
+          "fixed_rate_offset_interval_qpc_ticks": null,
+          "rate_interval": {
+            "lower": {
+              "numerator": "34769812330",
+              "denominator": "3476847127"
+            },
+            "upper": {
+              "numerator": "31045988307",
+              "denominator": "3104478707"
+            }
+          },
+          "rate_interval_contains_nominal": false,
+          "compatible_with_qpc_domain": false,
+          "shared_oscillator_proven": false
+        },
+        "beacon": {
+          "checked": 310,
+          "unchecked": 1,
+          "violations": 0,
+          "tolerance_us": 1000,
+          "worst_excess_us": "-2297833424200/411389513",
+          "scope": "coarse: AP timestamp must not exceed predicted station TSF; cache age unknown"
+        }
+      },
+      "replay_input_sha256": {
+        "raw-timing.jsonl": "4619b227bc78c1fc982cb2c9dba41e8ac4f42f8be1047558a9cd5ac37aa2740d",
+        "requests.jsonl": "d35daf4f3bfe381553123ce3b849594e1b668473e26d5f7308ab53ae880922fc",
+        "live-observer.jsonl": "b50c73bd8693ce25bcd1a1599c156739ad935a478e2db864a9dfbdd3a700fce1",
+        "run-result.json": "7dc3d95a64c4e338eb8176cedff18201832408b5e2d11cac084c2cc3a66e45f3"
+      },
+      "screening_counts_unchanged": true,
+      "tracking_unchanged": true,
+      "retrospective_maximum_unchanged": true,
+      "late_history_skipped_count": 0,
+      "continuity_invalidation_count": 0
+    },
+    "persistent_smoke": {
+      "baseline": {
+        "tracking_percent": 92.862588662,
+        "tracking_percent_exact": "140686552800/1514997103",
+        "durations_ticks": {
+          "acquiring": "33178549",
+          "tracking": "2813731056",
+          "stale": "183084601",
+          "invalid": "0"
+        },
+        "stale_intervals": 26,
+        "longest_stale_s": 1.746544,
+        "max_half_width_before_next_sample_us": 1348.809,
+        "max_uncertainty_before_next_sample_us": 1349.309,
+        "screen": {
+          "request_count": 139,
+          "accepted_count": 138,
+          "rejected_count": 1,
+          "rejected_by_reason": {
+            "late_report": 1
+          },
+          "foreign_groups": 2,
+          "foreign_commands": 0,
+          "own_losses": 1,
+          "duration_s": 302.999,
+          "expected_misattributed": 0.0,
+          "expected_misattributed_exact": "20000/1514997103",
+          "continuity_break_count": 0
+        },
+        "settlement": {
+          "events": 297,
+          "step_s": 1.0,
+          "states": {
+            "settled": 297
+          },
+          "wait_s": {
+            "median": 2.341,
+            "p90": 3.432,
+            "p99": 4.981,
+            "max": 4.989
+          },
+          "half_width_us": {
+            "median": 280.429,
+            "p90": 344.634,
+            "p99": 524.761,
+            "max": 614.883
+          },
+          "affine_half_width_us": {
+            "median": 123.744,
+            "p90": 142.774,
+            "p99": 227.965,
+            "max": 256.073
+          },
+          "affine_estimate_count": 295,
+          "affine_estimate_share": 0.993266,
+          "sub_millisecond_share": 1.0,
+          "rate_prior_ppm": 200,
+          "conditions": [
+            "causal capture: each TSF was captured inside its window [lower_qpc, upper_qpc]",
+            "bounded rate: TSF advances within the rate prior of nominal at every instant, with no unmodelled phase steps",
+            "continuity: one continuous TSF within the epoch",
+            "station TSF equals access point TSF (802.11 synchronization; not checked here)",
+            "best estimate only: assumes one constant rate within the surrounding 60-second span"
+          ]
+        },
+        "retrospective": "2593201/4000",
+        "soc_domain": {
+          "sample_count": 138,
+          "ticks_per_unit": 10,
+          "fixed_rate_feasible": false,
+          "fixed_rate_gap_qpc_ticks": 111039,
+          "rate_interval": {
+            "lower": {
+              "numerator": "2740110060",
+              "denominator": "274000717"
+            },
+            "upper": {
+              "numerator": "2960110161",
+              "denominator": "295999399"
+            }
+          },
+          "rate_interval_contains_nominal": false,
+          "compatible_with_qpc_domain": false,
+          "shared_oscillator_proven": false
+        },
+        "beacon": {
+          "checked": 27,
+          "unchecked": 1,
+          "violations": 0,
+          "tolerance_us": 1000,
+          "worst_excess_us": "-1584686142446/230205275",
+          "scope": "coarse: AP timestamp must not exceed predicted station TSF; cache age unknown"
+        }
+      },
+      "corrected": {
+        "tracking_percent": 92.862588662,
+        "tracking_percent_exact": "140686552800/1514997103",
+        "durations_ticks": {
+          "acquiring": "33178549",
+          "tracking": "2813731056",
+          "stale": "183084601",
+          "invalid": "0"
+        },
+        "stale_intervals": 26,
+        "longest_stale_s": 1.746544,
+        "max_half_width_before_next_sample_us": 1348.809,
+        "max_uncertainty_before_next_sample_us": 1349.309,
+        "screen": {
+          "request_count": 139,
+          "accepted_count": 138,
+          "policy_version": "wht/sample-screen-v2",
+          "continuity_closed": false,
+          "rejected_count": 1,
+          "rejected_by_reason": {
+            "late_report": 1
+          },
+          "foreign_groups": 2,
+          "foreign_commands": 0,
+          "own_losses": 1,
+          "duration_s": 302.999,
+          "expected_misattributed": 0.0,
+          "expected_misattributed_exact": "20000/1514997103",
+          "continuity_break_count": 0
+        },
+        "settlement": {
+          "events": 297,
+          "step_s": 1.0,
+          "states": {
+            "settled": 297
+          },
+          "settlement_policy_version": "wht/settlement-v2",
+          "actual_settled_grid_max_half_width_us": 614.883,
+          "actual_settled_grid_max_half_width_exact": "7686039/12500",
+          "wait_s": {
+            "median": 2.341,
+            "p90": 3.432,
+            "p99": 4.981,
+            "max": 4.989
+          },
+          "half_width_us": {
+            "median": 280.429,
+            "p90": 344.634,
+            "p99": 524.761,
+            "max": 614.883
+          },
+          "affine_half_width_us": {
+            "median": 123.744,
+            "p90": 142.774,
+            "p99": 227.965,
+            "max": 256.073
+          },
+          "affine_estimate_count": 295,
+          "affine_estimate_share": 0.993266,
+          "sub_millisecond_share": 1.0,
+          "rate_prior_ppm": 200,
+          "conditions": [
+            "causal capture: each TSF was captured inside its window [lower_qpc, upper_qpc]",
+            "bounded rate: TSF advances within the rate prior of nominal at every instant, with no unmodelled phase steps",
+            "continuity: one continuous TSF within the epoch",
+            "station TSF equals access point TSF (802.11 synchronization; not checked here)",
+            "best estimate only: assumes one constant rate within the surrounding 60-second span"
+          ]
+        },
+        "retrospective": "2593201/4000",
+        "soc_domain": {
+          "sample_count": 138,
+          "ticks_per_unit": 10,
+          "model_version": "wht/clock-pairing-quantized-v2",
+          "quantization": {
+            "counter_interval": "[raw, raw+1]",
+            "qpc_interval": "[lower, upper+1]",
+            "endpoint_policy": "closed conservative hull of integer bins"
+          },
+          "fixed_rate_feasible": false,
+          "fixed_rate_gap_qpc_ticks": 111028,
+          "fixed_rate_offset_interval_qpc_ticks": null,
+          "rate_interval": {
+            "lower": {
+              "numerator": "2740110059",
+              "denominator": "274000718"
+            },
+            "upper": {
+              "numerator": "1480055081",
+              "denominator": "147999699"
+            }
+          },
+          "rate_interval_contains_nominal": false,
+          "compatible_with_qpc_domain": false,
+          "shared_oscillator_proven": false
+        },
+        "beacon": {
+          "checked": 27,
+          "unchecked": 1,
+          "violations": 0,
+          "tolerance_us": 1000,
+          "worst_excess_us": "-1584686142446/230205275",
+          "scope": "coarse: AP timestamp must not exceed predicted station TSF; cache age unknown"
+        }
+      },
+      "replay_input_sha256": {
+        "raw-timing.jsonl": "e92f503f81c914aaf7bf17dbd4ed0d2b2e588150d6a4b7b78fff169a26e36b17",
+        "requests.jsonl": "5033e5b308dc3e29dfa8f1c7d3c9a64208b6cc0d2076da87085f3c731b72b95c",
+        "live-observer.jsonl": "0052885fb24af8fcc92b1c6f2f735fe585705f79d5bc003d46911383f7c3f764",
+        "run-result.json": "2455a4307c578bdc1949da6a7c0cfcdc5e490294089230aab159fb5959e10798",
+        "sampler-session-start.json": "a6807f85fd32b6313afc84eb26c245333dba538bd44a5f0db4f501da534f250d",
+        "sampler-session.json": "3d04b6a731b8a18391afe3136f62fae47d50bf5a00edb480c231f12826cf1ecf",
+        "sampler-schedule.jsonl": "a6028452fe7a2d4f1f4107f0265d88adcc1b128344e470d77f3331d98e001a4b"
+      },
+      "screening_counts_unchanged": true,
+      "tracking_unchanged": true,
+      "retrospective_maximum_unchanged": true,
+      "late_history_skipped_count": 0,
+      "continuity_invalidation_count": 0
+    }
+  },
+  "hour_verdict": {
+    "baseline_passed": true,
+    "corrected": {
+      "idle": {
+        "run_completed": true,
+        "continuity_clear": true,
+        "condition_recorded": true,
+        "duration_at_least_3600s": true,
+        "collection_span_at_least_3540s": true,
+        "trace_covers_collection": true,
+        "recorded_interval_consistent": true,
+        "max_bound_below_1000us": true,
+        "all_spans_feasible": true,
+        "coverage_at_least_90pct": true,
+        "rejected_at_most_1pct": true,
+        "misattribution_below_0_05": true,
+        "beacon_checked_without_violation": true,
+        "stretch_100us": false
+      },
+      "load": {
+        "run_completed": true,
+        "continuity_clear": true,
+        "condition_recorded": true,
+        "duration_at_least_3600s": true,
+        "collection_span_at_least_3540s": true,
+        "trace_covers_collection": true,
+        "recorded_interval_consistent": true,
+        "max_bound_below_1000us": true,
+        "all_spans_feasible": true,
+        "coverage_at_least_90pct": true,
+        "rejected_at_most_1pct": true,
+        "misattribution_below_0_05": true,
+        "beacon_checked_without_violation": true,
+        "workload_completed": true,
+        "stretch_100us": false
+      },
+      "distinct_runs": true,
+      "passed": true,
+      "conditional_on": [
+        "causal capture: each TSF was sampled after its request left the host and before its report was logged (a constant capture delay is invisible to the freshness screen)",
+        "affine clock within each 60-second span: TSF follows one constant rate between samples",
+        "station TSF equals access point TSF (802.11 synchronization; coarse beacon check only)"
+      ],
+      "physical_bound_proven": false
+    }
+  }
+}

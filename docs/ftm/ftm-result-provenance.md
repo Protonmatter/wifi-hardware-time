@@ -2,9 +2,9 @@
 
 Why can a successful ranging result contain no measurements, and what does its variance field mean? Saved-record replay matches the driver’s sample selection and aggregation, including empty results. The field named variance is not qualified as statistical variance, and the separate counter-report path supplies no absolute clock mapping.
 
-<!-- current-context:2026-10-04 -->
-**Current context (2026-10-04):** QXDM WLAN RTT definitions are a new schema lead. They have not been matched to a complete live four-event export from this adapter. See [current findings](../knowledge/current-findings.md).
-<!-- /current-context -->
+<!-- historical-context:2026-10-04 -->
+**Historical context (2026-10-04):** QXDM WLAN RTT definitions are a new schema lead. They have not been matched to a complete live four-event export from this adapter. See [current findings](../knowledge/current-findings.md).
+<!-- /historical-context -->
 
 FTM (Fine Timing Measurement) is Wi-Fi ranging; RTT is round-trip time. TSF is the Wi-Fi timer, and QPC is the Windows host counter. An RVA locates instructions within the exact binary. See the [glossary](../glossary.md).
 

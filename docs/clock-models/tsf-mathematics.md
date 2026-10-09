@@ -104,7 +104,7 @@ upper_settled = min(upper_earlier(Q), upper_later(Q))
 
 An empty intersection is inconsistent. The settled record is derived evidence; it must not overwrite raw QPC or the originally issued provisional result. Settlement adds latency to finalization, not that amount of error to the preserved event time.
 
-The retrospective rate-only checker evaluates every covered consecutive-pair interval. It checks piecewise-linear endpoints, slope-change points and crossings to find the exact maximum half-width between sampled event-grid points. Its result is limited to covered intervals, not startup, arbitrary future times or an unbounded holdover. With out-of-order availability, earliest settlement can use nonadjacent samples; the retrospective consecutive-pair maximum does not bound every such first-available result.
+The retrospective rate-only checker evaluates every covered consecutive-pair interval. It checks piecewise-linear endpoints, slope-change points and crossings to find the exact maximum half-width between sampled event-grid points. Its result is limited to covered intervals, not startup, arbitrary future times or an unbounded holdover. Capture windows overlapping an event, or out-of-order availability, can require nonadjacent bracket samples. Settlement now intersects an overlapping sample only when it was already available by the reported settlement cutoff; it never supplies a bracket side. The retrospective consecutive-pair maximum remains distinct from the actual settled-grid maximum and does not bound every first-available result.
 
 ## Optional affine polygon: stronger assumption
 
@@ -121,6 +121,8 @@ This narrower constant-rate result is labeled as a stronger-assumption estimate.
 
 ## What the current results mean
 
-The original [persistent smoke report](../acquisition/persistent-tsf-smoke-2026-10-08.md) records 92.884041% conditional arrival-aware coverage under its original half-width threshold. [Corrected replay](../overview/pr-reconciliation-2026-10-08.md) uses the returned rounding-expanded uncertainty and gives 92.862589%. All 297 event-grid points still settle, with unchanged median/max rate-only half-widths of 280.429/614.883 us; the exact covered-interval retrospective maximum remains 648.30025 us. These are conditional bounds, not observed absolute errors or statistical confidence levels.
+<!-- tsf-headlines:smoke -->
+**Current retained smoke analysis:** 139 recorded requests, 138 offline-screened samples; **92.862589%** tracking coverage under the conditional integer-estimate uncertainty threshold. **297/297** event-grid points settled, with median/max rate-only half-widths of 280.429/614.883 us and median wait 2.341 s. [Versioned results and source pins](../overview/postmerge-corrections-2026-10-08.json). This is offline-screened replay of the retained capture, not online admission or calibrated AP/UTC accuracy.
+<!-- /tsf-headlines:smoke -->
 
 A stable unmodeled capture bias can remain numerically consistent. Multi-device synchronization additionally needs both devices' errors and station/AP relationships in one budget; two individually sub-millisecond estimates do not automatically imply sub-millisecond pairwise alignment. Independent source/reference validation is therefore a separate gate in the [roadmap](../overview/persistent-tsf-next-steps.md).

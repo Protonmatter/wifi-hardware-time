@@ -2,9 +2,9 @@
 
 The MLO timing message now has a strong public-schema match, including microsecond fields and sub-microsecond clock counts. Its Windows handler updates a device cache, but this pass found no independent reader or application export in the inspected paths. The native symbol search found an identical public driver package, not its PDB. These findings improve the exporter design without qualifying a live clock source.
 
-<!-- current-context:2026-10-04 -->
-**Current context (2026-10-04):** The QUTS client is a separate owned-byte return candidate. It does not repair the existing ring publication or temporary-buffer lifetime gaps. See [current findings](../knowledge/current-findings.md).
-<!-- /current-context -->
+<!-- historical-context:2026-10-04 -->
+**Historical context (2026-10-04):** The QUTS client is a separate owned-byte return candidate. It does not repair the existing ring publication or temporary-buffer lifetime gaps. See [current findings](../knowledge/current-findings.md).
+<!-- /historical-context -->
 
 ## Contents
 

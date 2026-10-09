@@ -37,7 +37,7 @@
       "slug": "algorithm",
       "type": "workflow",
       "title": "Clock algorithm: preserve event, bound now, settle later",
-      "specification_sha256": "9346b45b6fcf92ad7108f526de18ddaf2730b5f0c96722bfdbec955dd492d9d1"
+      "specification_sha256": "f4426673e91a740eb3833368ec168f8fb84878a850d1f4b140a4f188344fdd7d"
     },
     {
       "slug": "adapters",
@@ -45,5 +45,6 @@
       "title": "Live and offline adapters: shared contract, different evidence",
       "specification_sha256": "f0552b0cb4f8931f165a7c4a8b5930a1e65f6528ced8afc0ac15de743614d8a0"
     }
-  ]
+  ],
+  "algorithm_policy_update": "wht/settlement-v2 and rounding-inclusive uncertainty; research source 0f41db0175e3601e899c51143b46bb8b3df02135"
 }

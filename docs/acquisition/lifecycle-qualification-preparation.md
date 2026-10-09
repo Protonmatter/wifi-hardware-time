@@ -2,9 +2,9 @@
 
 These test cases describe the evidence needed before clock observations can survive collection, connection or power changes. They are preparation only: no adapter restart, sleep or roaming is authorized. The current collector cannot yet record every required transition, and the private acquisition quarantine must remain in place.
 
-<!-- current-context:2026-10-04 -->
-**Current context (2026-10-04):** The private campaign remains quarantined. The new QUTS client ownership finding does not establish firmware drain, report association or a new live acquisition. See [current findings](../knowledge/current-findings.md).
-<!-- /current-context -->
+<!-- historical-context:2026-10-04 -->
+**Historical context (2026-10-04):** The private campaign remains quarantined. The new QUTS client ownership finding does not establish firmware drain, report association or a new live acquisition. See [current findings](../knowledge/current-findings.md).
+<!-- /historical-context -->
 
 QPC is Windows' high-resolution host counter. An epoch is a period of assumed clock continuity. Reassociation reconnects to an access point; roaming changes access-point radios. BSSID identifies a radio, while GUID and PnP identity identify the selected Windows interface and device. See the [glossary](../glossary.md) for related terms.
 
