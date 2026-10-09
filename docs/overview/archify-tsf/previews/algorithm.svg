@@ -40,7 +40,7 @@
   <path data-edge-from="receipts" data-edge-to="associate" data-edge-key="7" data-edge-id="receipts-associate" data-composition-routing="workflow-v2-auto" data-edge-role="" data-composition-points="202,119;230,119" d="M 202 119 L 230 119" class="a-default" stroke-width="1.4" marker-end="url(#arrowhead)" stroke="#94a3b8" fill="none" />
   <path data-edge-from="update" data-edge-to="bracket" data-edge-label="samples" data-edge-key="8" data-edge-id="update-bracket" data-composition-routing="workflow-v2-auto" data-edge-role="" data-composition-points="891,269;891,341" d="M 891 269 L 891 341" class="a-dashed" stroke-width="1.4" marker-end="url(#arrowhead-dashed)" stroke="#7c3aed" fill="none" stroke-dasharray="4,4" />
   <path data-edge-from="update" data-edge-to="query" data-edge-key="9" data-edge-id="update-query" data-composition-routing="workflow-v2-auto" data-edge-role="" data-composition-points="968,243;1029.2,243" d="M 968 243 L 1029.2 243" class="a-default" stroke-width="1.4" marker-end="url(#arrowhead)" stroke="#94a3b8" fill="none" />
-  <g id="node-receipts" data-node-id="receipts" data-node-label="Normalize receipts" tabindex="0" role="button" aria-label="Focus Normalize receipts, verify session lifecycle, Recorded evidence and offline screening" aria-pressed="false" data-node-kind="security" data-node-sublabel="verify session lifecycle" data-node-context="Recorded evidence and offline screening">
+  <g id="node-receipts" data-node-id="receipts" data-node-label="Normalize receipts" data-node-kind="security" data-node-sublabel="verify session lifecycle" data-node-context="Recorded evidence and offline screening">
     <title>Normalize receipts · verify session lifecycle · Recorded evidence and offline screening</title>
     <rect x="48" y="93" width="154" height="52" rx="6" class="c-mask" fill="#ffffff" stroke="none" />
     <rect x="48" y="93" width="154" height="52" rx="6" class="c-security" stroke-width="1.5" fill="rgba(251, 113, 133, 0.15)" stroke="#e11d48" />
@@ -51,7 +51,7 @@
     <text data-node-label="" data-detail-anchor="" x="126.4" y="114" class="t-primary" font-size="11" font-weight="600" text-anchor="middle" fill="#111827">Normalize receipts</text>
     <text data-detail="context" x="125" y="131" class="t-muted" font-size="8" text-anchor="middle" fill="#5b6474">verify session lifecycle</text>
   </g>
-  <g id="node-associate" data-node-id="associate" data-node-label="Associate report" tabindex="0" role="button" aria-label="Focus Associate report, one action-4 command, Recorded evidence and offline screening" aria-pressed="false" data-node-kind="backend" data-node-sublabel="one action-4 command" data-node-context="Recorded evidence and offline screening">
+  <g id="node-associate" data-node-id="associate" data-node-label="Associate report" data-node-kind="backend" data-node-sublabel="one action-4 command" data-node-context="Recorded evidence and offline screening">
     <title>Associate report · one action-4 command · Recorded evidence and offline screening</title>
     <rect x="230" y="93" width="154" height="52" rx="6" class="c-mask" fill="#ffffff" stroke="none" />
     <rect x="230" y="93" width="154" height="52" rx="6" class="c-backend" stroke-width="1.5" fill="rgba(52, 211, 153, 0.18)" stroke="#059669" />
@@ -61,7 +61,7 @@
     <text data-node-label="" data-detail-anchor="" x="307" y="114" class="t-primary" font-size="11" font-weight="600" text-anchor="middle" fill="#111827">Associate report</text>
     <text data-detail="context" x="307" y="131" class="t-muted" font-size="8" text-anchor="middle" fill="#5b6474">one action-4 command</text>
   </g>
-  <g id="node-fresh" data-node-id="fresh" data-node-label="Screen sample" tabindex="0" role="button" aria-label="Focus Screen sample, window + freshness, Recorded evidence and offline screening" aria-pressed="false" data-node-kind="backend" data-node-sublabel="window + freshness" data-node-context="Recorded evidence and offline screening">
+  <g id="node-fresh" data-node-id="fresh" data-node-label="Screen sample" data-node-kind="backend" data-node-sublabel="window + freshness" data-node-context="Recorded evidence and offline screening">
     <title>Screen sample · window + freshness · Recorded evidence and offline screening</title>
     <rect x="412" y="93" width="154" height="52" rx="6" class="c-mask" fill="#ffffff" stroke="none" />
     <rect x="412" y="93" width="154" height="52" rx="6" class="c-backend" stroke-width="1.5" fill="rgba(52, 211, 153, 0.18)" stroke="#059669" />
@@ -71,7 +71,7 @@
     <text data-node-label="" data-detail-anchor="" x="489" y="114" class="t-primary" font-size="11" font-weight="600" text-anchor="middle" fill="#111827">Screen sample</text>
     <text data-detail="context" x="489" y="131" class="t-muted" font-size="8" text-anchor="middle" fill="#5b6474">window + freshness</text>
   </g>
-  <g id="node-available" data-node-id="available" data-node-label="Availability A" tabindex="0" role="button" aria-label="Focus Availability A, last record + completion, Recorded evidence and offline screening" aria-pressed="false" data-node-kind="backend" data-node-sublabel="last record + completion" data-node-context="Recorded evidence and offline screening">
+  <g id="node-available" data-node-id="available" data-node-label="Availability A" data-node-kind="backend" data-node-sublabel="last record + completion" data-node-context="Recorded evidence and offline screening">
     <title>Availability A · last record + completion · Recorded evidence and offline screening</title>
     <rect x="594" y="93" width="154" height="52" rx="6" class="c-mask" fill="#ffffff" stroke="none" />
     <rect x="594" y="93" width="154" height="52" rx="6" class="c-backend" stroke-width="1.5" fill="rgba(52, 211, 153, 0.18)" stroke="#059669" />
@@ -81,7 +81,7 @@
     <text data-node-label="" data-detail-anchor="" x="671" y="114" class="t-primary" font-size="11" font-weight="600" text-anchor="middle" fill="#111827">Availability A</text>
     <text data-detail="context" x="671" y="131" class="t-muted" font-size="8" text-anchor="middle" fill="#5b6474">last record + completion</text>
   </g>
-  <g id="node-check" data-node-id="check" data-node-label="Frozen-model check" tabindex="0" role="button" aria-label="Focus Frozen-model check, before adding sample, Causal bounded-rate model" aria-pressed="false" data-node-kind="security" data-node-sublabel="before adding sample" data-node-context="Causal bounded-rate model">
+  <g id="node-check" data-node-id="check" data-node-label="Frozen-model check" data-node-kind="security" data-node-sublabel="before adding sample" data-node-context="Causal bounded-rate model">
     <title>Frozen-model check · before adding sample · Causal bounded-rate model</title>
     <rect x="594" y="217" width="154" height="52" rx="6" class="c-mask" fill="#ffffff" stroke="none" />
     <rect x="594" y="217" width="154" height="52" rx="6" class="c-security" stroke-width="1.5" fill="rgba(251, 113, 133, 0.15)" stroke="#e11d48" />
@@ -92,7 +92,7 @@
     <text data-node-label="" data-detail-anchor="" x="672.4" y="238" class="t-primary" font-size="11" font-weight="600" text-anchor="middle" fill="#111827">Frozen-model check</text>
     <text data-detail="context" x="671" y="255" class="t-muted" font-size="8" text-anchor="middle" fill="#5b6474">before adding sample</text>
   </g>
-  <g id="node-update" data-node-id="update" data-node-label="Intersect envelopes" tabindex="0" role="button" aria-label="Focus Intersect envelopes, exact Fraction bounds, Causal bounded-rate model" aria-pressed="false" data-node-kind="backend" data-node-sublabel="exact Fraction bounds" data-node-context="Causal bounded-rate model">
+  <g id="node-update" data-node-id="update" data-node-label="Intersect envelopes" data-node-kind="backend" data-node-sublabel="exact Fraction bounds" data-node-context="Causal bounded-rate model">
     <title>Intersect envelopes · exact Fraction bounds · Causal bounded-rate model</title>
     <rect x="814" y="217" width="154" height="52" rx="6" class="c-mask" fill="#ffffff" stroke="none" />
     <rect x="814" y="217" width="154" height="52" rx="6" class="c-backend" stroke-width="1.5" fill="rgba(52, 211, 153, 0.18)" stroke="#059669" />
@@ -102,7 +102,7 @@
     <text data-node-label="" data-detail-anchor="" x="895.7" y="238" class="t-primary" font-size="11" font-weight="600" text-anchor="middle" fill="#111827">Intersect envelopes</text>
     <text data-detail="context" x="891" y="255" class="t-muted" font-size="8" text-anchor="middle" fill="#5b6474">exact Fraction bounds</text>
   </g>
-  <g id="node-query" data-node-id="query" data-node-label="Provisional interval" tabindex="0" role="button" aria-label="Focus Provisional interval, tracking or stale, Causal bounded-rate model" aria-pressed="false" data-node-kind="backend" data-node-sublabel="tracking or stale" data-node-context="Causal bounded-rate model">
+  <g id="node-query" data-node-id="query" data-node-label="Provisional interval" data-node-kind="backend" data-node-sublabel="tracking or stale" data-node-context="Causal bounded-rate model">
     <title>Provisional interval · tracking or stale · Causal bounded-rate model</title>
     <rect x="1029.2" y="217" width="154" height="52" rx="6" class="c-mask" fill="#ffffff" stroke="none" />
     <rect x="1029.2" y="217" width="154" height="52" rx="6" class="c-backend" stroke-width="1.5" fill="rgba(52, 211, 153, 0.18)" stroke="#059669" />
@@ -112,7 +112,7 @@
     <text data-node-label="" data-detail-anchor="" x="1106.2" y="249.2" class="t-primary" font-size="11" font-weight="600" text-anchor="middle" fill="#111827">Provisional interval</text>
     <text data-detail="context" x="1106.2" y="264.1" class="t-muted" font-size="8" text-anchor="middle" fill="#5b6474">tracking or stale</text>
   </g>
-  <g id="node-event" data-node-id="event" data-node-label="Keep raw event Q" tabindex="0" role="button" aria-label="Focus Keep raw event Q, immutable original QPC, Two-phase event result" aria-pressed="false" data-node-kind="backend" data-node-sublabel="immutable original QPC" data-node-context="Two-phase event result">
+  <g id="node-event" data-node-id="event" data-node-label="Keep raw event Q" data-node-kind="backend" data-node-sublabel="immutable original QPC" data-node-context="Two-phase event result">
     <title>Keep raw event Q · immutable original QPC · Two-phase event result</title>
     <rect x="594" y="341" width="154" height="52" rx="6" class="c-mask" fill="#ffffff" stroke="none" />
     <rect x="594" y="341" width="154" height="52" rx="6" class="c-backend" stroke-width="1.5" fill="rgba(52, 211, 153, 0.18)" stroke="#059669" />
@@ -122,7 +122,7 @@
     <text data-node-label="" data-detail-anchor="" x="671" y="362" class="t-primary" font-size="11" font-weight="600" text-anchor="middle" fill="#111827">Keep raw event Q</text>
     <text data-detail="context" x="671" y="379" class="t-muted" font-size="8" text-anchor="middle" fill="#5b6474">immutable original QPC</text>
   </g>
-  <g id="node-bracket" data-node-id="bracket" data-node-label="Wait for later sample" tabindex="0" role="button" aria-label="Focus Wait for later sample, must be available, Two-phase event result" aria-pressed="false" data-node-kind="backend" data-node-sublabel="must be available" data-node-context="Two-phase event result">
+  <g id="node-bracket" data-node-id="bracket" data-node-label="Wait for later sample" data-node-kind="backend" data-node-sublabel="must be available" data-node-context="Two-phase event result">
     <title>Wait for later sample · must be available · Two-phase event result</title>
     <rect x="814" y="341" width="154" height="52" rx="6" class="c-mask" fill="#ffffff" stroke="none" />
     <rect x="814" y="341" width="154" height="52" rx="6" class="c-backend" stroke-width="1.5" fill="rgba(52, 211, 153, 0.18)" stroke="#059669" />
@@ -132,7 +132,7 @@
     <text data-node-label="" data-detail-anchor="" x="891" y="373.2" class="t-primary" font-size="11" font-weight="600" text-anchor="middle" fill="#111827">Wait for later sample</text>
     <text data-detail="context" x="891" y="388.1" class="t-muted" font-size="8" text-anchor="middle" fill="#5b6474">must be available</text>
   </g>
-  <g id="node-settled" data-node-id="settled" data-node-label="Derived settled result" tabindex="0" role="button" aria-label="Focus Derived settled result, pairwise rate bound, Two-phase event result" aria-pressed="false" data-node-kind="backend" data-node-sublabel="pairwise rate bound" data-node-context="Two-phase event result">
+  <g id="node-settled" data-node-id="settled" data-node-label="Derived settled result" data-node-kind="backend" data-node-sublabel="pairwise rate bound" data-node-context="Two-phase event result">
     <title>Derived settled result · pairwise rate bound · Two-phase event result</title>
     <rect x="1029.2" y="341" width="154" height="52" rx="6" class="c-mask" fill="#ffffff" stroke="none" />
     <rect x="1029.2" y="341" width="154" height="52" rx="6" class="c-backend" stroke-width="1.5" fill="rgba(52, 211, 153, 0.18)" stroke="#059669" />
@@ -142,7 +142,7 @@
     <text data-node-label="" data-detail-anchor="" x="1106.2" y="373.2" class="t-primary" font-size="11" font-weight="600" text-anchor="middle" fill="#111827">Derived settled result</text>
     <text data-detail="context" x="1106.2" y="388.1" class="t-muted" font-size="8" text-anchor="middle" fill="#5b6474">pairwise rate bound</text>
   </g>
-  <g id="node-invalid" data-node-id="invalid" data-node-label="Invalid / rejected" tabindex="0" role="button" aria-label="Focus Invalid / rejected, latch model conflict, Fail closed" aria-pressed="false" data-node-kind="security" data-node-sublabel="latch model conflict" data-node-context="Fail closed">
+  <g id="node-invalid" data-node-id="invalid" data-node-label="Invalid / rejected" data-node-kind="security" data-node-sublabel="latch model conflict" data-node-context="Fail closed">
     <title>Invalid / rejected · latch model conflict · Fail closed</title>
     <rect x="594" y="465" width="154" height="52" rx="6" class="c-mask" fill="#ffffff" stroke="none" />
     <rect x="594" y="465" width="154" height="52" rx="6" class="c-security" stroke-width="1.5" fill="rgba(251, 113, 133, 0.15)" stroke="#e11d48" />

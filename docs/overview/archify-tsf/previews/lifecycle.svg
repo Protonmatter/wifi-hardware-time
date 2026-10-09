@@ -69,7 +69,7 @@
     <path data-graph-role="automatic-crossover-underlay" d="M 145 120 L 145 538 Q 145 548 155 548 L 738 548 Q 748 548 748 558 L 748 608" fill="none" stroke="#ffffff" stroke-width="5.1" stroke-linecap="round" stroke-linejoin="round" pointer-events="none" />
     <path data-edge-from="ready" data-edge-to="closed" data-edge-label="clean stop" data-edge-key="10" data-edge-id="ready-closed" data-composition-points="145,120;145,548;748,548;748,608" data-composition-crossover="halo" d="M 145 120 L 145 538 Q 145 548 155 548 L 738 548 Q 748 548 748 558 L 748 608" class="a-default" stroke-width="1.1" marker-end="url(#arrowhead)" stroke="#94a3b8" fill="none" />
   </g>
-  <g id="node-ready" data-node-id="ready" data-node-label="READY" tabindex="0" role="button" aria-label="Focus READY, fresh permit required, One request at a time" aria-pressed="false" data-node-kind="start" data-node-sublabel="fresh permit required" data-node-context="One request at a time">
+  <g id="node-ready" data-node-id="ready" data-node-label="READY" data-node-kind="start" data-node-sublabel="fresh permit required" data-node-context="One request at a time">
     <title>READY · fresh permit required · One request at a time</title>
     <rect x="60" y="56" width="140" height="64" rx="7" class="c-mask" fill="#ffffff" stroke="none" />
     <rect x="60" y="56" width="140" height="64" rx="7" class="c-frontend" stroke-width="1.5" fill="rgba(34, 211, 238, 0.15)" stroke="#0891b2" />
@@ -85,7 +85,7 @@
     <text data-node-label="" data-detail-anchor="" x="130" y="79" class="t-primary" font-size="11" font-weight="600" text-anchor="middle" fill="#111827">READY</text>
     <text data-detail="context" x="130" y="96" class="t-muted" font-size="8" text-anchor="middle" fill="#5b6474">fresh permit required</text>
   </g>
-  <g id="node-flight" data-node-id="flight" data-node-label="IN_FLIGHT" tabindex="0" role="button" aria-label="Focus IN_FLIGHT, one kernel request, One request at a time" aria-pressed="false" data-node-kind="active" data-node-sublabel="one kernel request" data-node-context="One request at a time">
+  <g id="node-flight" data-node-id="flight" data-node-label="IN_FLIGHT" data-node-kind="active" data-node-sublabel="one kernel request" data-node-context="One request at a time">
     <title>IN_FLIGHT · one kernel request · One request at a time</title>
     <rect x="266" y="56" width="140" height="64" rx="7" class="c-mask" fill="#ffffff" stroke="none" />
     <rect x="266" y="56" width="140" height="64" rx="7" class="c-frontend" stroke-width="1.5" fill="rgba(34, 211, 238, 0.15)" stroke="#0891b2" />
@@ -95,7 +95,7 @@
     <text data-node-label="" data-detail-anchor="" x="336" y="79" class="t-primary" font-size="11" font-weight="600" text-anchor="middle" fill="#111827">IN_FLIGHT</text>
     <text data-detail="context" x="336" y="96" class="t-muted" font-size="8" text-anchor="middle" fill="#5b6474">one kernel request</text>
   </g>
-  <g id="node-success" data-node-id="success" data-node-label="Completed success" tabindex="0" role="button" aria-label="Focus Completed success, request terminal, One request at a time" aria-pressed="false" data-node-kind="success" data-node-sublabel="request terminal" data-node-context="One request at a time">
+  <g id="node-success" data-node-id="success" data-node-label="Completed success" data-node-kind="success" data-node-sublabel="request terminal" data-node-context="One request at a time">
     <title>Completed success · request terminal · One request at a time</title>
     <rect x="477" y="56" width="140" height="64" rx="7" class="c-mask" fill="#ffffff" stroke="none" />
     <rect x="477" y="56" width="140" height="64" rx="7" class="c-backend" stroke-width="1.5" fill="rgba(52, 211, 153, 0.18)" stroke="#059669" />
@@ -106,7 +106,7 @@
     <text data-node-label="" data-detail-anchor="" x="552.1" y="79" class="t-primary" font-size="11" font-weight="600" text-anchor="middle" fill="#111827">Completed success</text>
     <text data-detail="context" x="547" y="96" class="t-muted" font-size="8" text-anchor="middle" fill="#5b6474">request terminal</text>
   </g>
-  <g id="node-deadline" data-node-id="deadline" data-node-label="Deadline exceeded" tabindex="0" role="button" aria-label="Focus Deadline exceeded, 2 seconds; sticky, Failure and cancellation" aria-pressed="false" data-node-kind="failure" data-node-sublabel="2 seconds; sticky" data-node-context="Failure and cancellation">
+  <g id="node-deadline" data-node-id="deadline" data-node-label="Deadline exceeded" data-node-kind="failure" data-node-sublabel="2 seconds; sticky" data-node-context="Failure and cancellation">
     <title>Deadline exceeded · 2 seconds; sticky · Failure and cancellation</title>
     <rect x="266" y="240" width="140" height="64" rx="7" class="c-mask" fill="#ffffff" stroke="none" />
     <rect x="266" y="240" width="140" height="64" rx="7" class="c-security" stroke-width="1.5" fill="rgba(251, 113, 133, 0.15)" stroke="#e11d48" />
@@ -117,7 +117,7 @@
     <text data-node-label="" data-detail-anchor="" x="341.1" y="263" class="t-primary" font-size="11" font-weight="600" text-anchor="middle" fill="#111827">Deadline exceeded</text>
     <text data-detail="context" x="336" y="280" class="t-muted" font-size="8" text-anchor="middle" fill="#5b6474">2 seconds; sticky</text>
   </g>
-  <g id="node-cancel" data-node-id="cancel" data-node-label="Cancel requested" tabindex="0" role="button" aria-label="Focus Cancel requested, not proof of drain, Failure and cancellation" aria-pressed="false" data-node-kind="active" data-node-sublabel="not proof of drain" data-node-context="Failure and cancellation">
+  <g id="node-cancel" data-node-id="cancel" data-node-label="Cancel requested" data-node-kind="active" data-node-sublabel="not proof of drain" data-node-context="Failure and cancellation">
     <title>Cancel requested · not proof of drain · Failure and cancellation</title>
     <rect x="477" y="240" width="140" height="64" rx="7" class="c-mask" fill="#ffffff" stroke="none" />
     <rect x="477" y="240" width="140" height="64" rx="7" class="c-frontend" stroke-width="1.5" fill="rgba(34, 211, 238, 0.15)" stroke="#0891b2" />
@@ -127,7 +127,7 @@
     <text data-node-label="" data-detail-anchor="" x="548.8" y="263" class="t-primary" font-size="11" font-weight="600" text-anchor="middle" fill="#111827">Cancel requested</text>
     <text data-detail="context" x="547" y="280" class="t-muted" font-size="8" text-anchor="middle" fill="#5b6474">not proof of drain</text>
   </g>
-  <g id="node-pending" data-node-id="pending" data-node-label="Drain pending" tabindex="0" role="button" aria-label="Focus Drain pending, retain all resources, Retained ownership" aria-pressed="false" data-node-kind="waiting" data-node-sublabel="retain all resources" data-node-context="Retained ownership">
+  <g id="node-pending" data-node-id="pending" data-node-label="Drain pending" data-node-kind="waiting" data-node-sublabel="retain all resources" data-node-context="Retained ownership">
     <title>Drain pending · retain all resources · Retained ownership</title>
     <rect x="477" y="424" width="140" height="64" rx="7" class="c-mask" fill="#ffffff" stroke="none" />
     <rect x="477" y="424" width="140" height="64" rx="7" class="c-cloud" stroke-width="1.5" fill="rgba(251, 191, 36, 0.18)" stroke="#d97706" />
@@ -137,7 +137,7 @@
     <text data-node-label="" data-detail-anchor="" x="547" y="447" class="t-primary" font-size="11" font-weight="600" text-anchor="middle" fill="#111827">Drain pending</text>
     <text data-detail="context" x="547" y="464" class="t-muted" font-size="8" text-anchor="middle" fill="#5b6474">retain all resources</text>
   </g>
-  <g id="node-stopped" data-node-id="stopped" data-node-label="STOPPED" tabindex="0" role="button" aria-label="Focus STOPPED, terminal; run failed, Retained ownership" aria-pressed="false" data-node-kind="failure" data-node-sublabel="terminal; run failed" data-node-context="Retained ownership">
+  <g id="node-stopped" data-node-id="stopped" data-node-label="STOPPED" data-node-kind="failure" data-node-sublabel="terminal; run failed" data-node-context="Retained ownership">
     <title>STOPPED · terminal; run failed · Retained ownership</title>
     <rect x="693" y="424" width="140" height="64" rx="7" class="c-mask" fill="#ffffff" stroke="none" />
     <rect x="693" y="424" width="140" height="64" rx="7" class="c-security" stroke-width="1.5" fill="rgba(251, 113, 133, 0.15)" stroke="#e11d48" />
@@ -148,7 +148,7 @@
     <text data-node-label="" data-detail-anchor="" x="763" y="447" class="t-primary" font-size="11" font-weight="600" text-anchor="middle" fill="#111827">STOPPED</text>
     <text data-detail="context" x="763" y="464" class="t-muted" font-size="8" text-anchor="middle" fill="#5b6474">terminal; run failed</text>
   </g>
-  <g id="node-closed" data-node-id="closed" data-node-label="CLOSED" tabindex="0" role="button" aria-label="Focus CLOSED, actual handle closure, Session closure" aria-pressed="false" data-node-kind="neutral" data-node-sublabel="actual handle closure" data-node-context="Session closure">
+  <g id="node-closed" data-node-id="closed" data-node-label="CLOSED" data-node-kind="neutral" data-node-sublabel="actual handle closure" data-node-context="Session closure">
     <title>CLOSED · actual handle closure · Session closure</title>
     <rect x="693" y="608" width="140" height="64" rx="7" class="c-mask" fill="#ffffff" stroke="none" />
     <rect x="693" y="608" width="140" height="64" rx="7" class="c-external" stroke-width="1.5" fill="rgba(148, 163, 184, 0.18)" stroke="#64748b" />

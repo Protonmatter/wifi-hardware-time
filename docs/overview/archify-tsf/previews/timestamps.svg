@@ -75,7 +75,7 @@
       <text x="471" y="540" class="t-muted" font-size="11" text-anchor="middle" fill="#5b6474">persist; offline screen</text>
     </g>
   </g>
-  <g id="node-controller" data-node-id="controller" data-node-label="Controller" tabindex="0" role="button" aria-label="Focus Controller, scheduling, Sequence participant" aria-pressed="false" data-node-kind="security" data-node-sublabel="scheduling" data-node-context="Sequence participant">
+  <g id="node-controller" data-node-id="controller" data-node-label="Controller" data-node-kind="security" data-node-sublabel="scheduling" data-node-context="Sequence participant">
     <title>Controller · scheduling · Sequence participant</title>
     <rect x="62" y="72" width="135" height="60" rx="6" class="c-mask" fill="#ffffff" stroke="none" />
     <rect x="62" y="72" width="135" height="60" rx="6" class="c-security" stroke-width="1.5" fill="rgba(251, 113, 133, 0.15)" stroke="#e11d48" />
@@ -86,7 +86,7 @@
     <text data-node-label="" data-detail-anchor="" x="129.5" y="108" class="t-primary" font-size="11" font-weight="600" text-anchor="middle" fill="#111827">Controller</text>
     <text data-detail="context" x="129.5" y="122" class="t-muted" font-size="7" text-anchor="middle" fill="#5b6474">scheduling</text>
   </g>
-  <g id="node-worker" data-node-id="worker" data-node-label="Worker" tabindex="0" role="button" aria-label="Focus Worker, I/O owner, Sequence participant" aria-pressed="false" data-node-kind="backend" data-node-sublabel="I/O owner" data-node-context="Sequence participant">
+  <g id="node-worker" data-node-id="worker" data-node-label="Worker" data-node-kind="backend" data-node-sublabel="I/O owner" data-node-context="Sequence participant">
     <title>Worker · I/O owner · Sequence participant</title>
     <rect x="232.75" y="72" width="135" height="60" rx="6" class="c-mask" fill="#ffffff" stroke="none" />
     <rect x="232.75" y="72" width="135" height="60" rx="6" class="c-backend" stroke-width="1.5" fill="rgba(52, 211, 153, 0.18)" stroke="#059669" />
@@ -96,7 +96,7 @@
     <text data-node-label="" data-detail-anchor="" x="300.25" y="108" class="t-primary" font-size="11" font-weight="600" text-anchor="middle" fill="#111827">Worker</text>
     <text data-detail="context" x="300.25" y="122" class="t-muted" font-size="7" text-anchor="middle" fill="#5b6474">I/O owner</text>
   </g>
-  <g id="node-driver" data-node-id="driver" data-node-label="Driver" tabindex="0" role="button" aria-label="Focus Driver, Qualcomm, Sequence participant" aria-pressed="false" data-node-kind="external" data-node-sublabel="Qualcomm" data-node-context="Sequence participant">
+  <g id="node-driver" data-node-id="driver" data-node-label="Driver" data-node-kind="external" data-node-sublabel="Qualcomm" data-node-context="Sequence participant">
     <title>Driver · Qualcomm · Sequence participant</title>
     <rect x="403.5" y="72" width="135" height="60" rx="6" class="c-mask" fill="#ffffff" stroke="none" />
     <rect x="403.5" y="72" width="135" height="60" rx="6" class="c-external" stroke-width="1.5" fill="rgba(148, 163, 184, 0.18)" stroke="#64748b" />
@@ -107,7 +107,7 @@
     <text data-node-label="" data-detail-anchor="" x="471" y="108" class="t-primary" font-size="11" font-weight="600" text-anchor="middle" fill="#111827">Driver</text>
     <text data-detail="context" x="471" y="122" class="t-muted" font-size="7" text-anchor="middle" fill="#5b6474">Qualcomm</text>
   </g>
-  <g id="node-observer" data-node-id="observer" data-node-label="Observer" tabindex="0" role="button" aria-label="Focus Observer, reader thread, Sequence participant" aria-pressed="false" data-node-kind="messagebus" data-node-sublabel="reader thread" data-node-context="Sequence participant">
+  <g id="node-observer" data-node-id="observer" data-node-label="Observer" data-node-kind="messagebus" data-node-sublabel="reader thread" data-node-context="Sequence participant">
     <title>Observer · reader thread · Sequence participant</title>
     <rect x="574.25" y="72" width="135" height="60" rx="6" class="c-mask" fill="#ffffff" stroke="none" />
     <rect x="574.25" y="72" width="135" height="60" rx="6" class="c-messagebus" stroke-width="1.5" fill="rgba(251, 146, 60, 0.15)" stroke="#ea580c" />
@@ -120,7 +120,7 @@
     <text data-node-label="" data-detail-anchor="" x="641.75" y="108" class="t-primary" font-size="11" font-weight="600" text-anchor="middle" fill="#111827">Observer</text>
     <text data-detail="context" x="641.75" y="122" class="t-muted" font-size="7" text-anchor="middle" fill="#5b6474">reader thread</text>
   </g>
-  <g id="node-replay" data-node-id="replay" data-node-label="Replay" tabindex="0" role="button" aria-label="Focus Replay, offline, Sequence participant" aria-pressed="false" data-node-kind="backend" data-node-sublabel="offline" data-node-context="Sequence participant">
+  <g id="node-replay" data-node-id="replay" data-node-label="Replay" data-node-kind="backend" data-node-sublabel="offline" data-node-context="Sequence participant">
     <title>Replay · offline · Sequence participant</title>
     <rect x="745" y="72" width="135" height="60" rx="6" class="c-mask" fill="#ffffff" stroke="none" />
     <rect x="745" y="72" width="135" height="60" rx="6" class="c-backend" stroke-width="1.5" fill="rgba(52, 211, 153, 0.18)" stroke="#059669" />

@@ -1,8 +1,12 @@
 """Published Archify views must be visible without executing HTML or JSON."""
 import hashlib
+import io
 import json
 from pathlib import Path
+import subprocess
+import tempfile
 import unittest
+from unittest.mock import patch
 import xml.etree.ElementTree as ET
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -10,6 +14,52 @@ FOLDER = ROOT / 'docs/overview/archify-tsf'
 
 
 class ArchifyPreviewTests(unittest.TestCase):
+    def test_static_export_has_no_dead_keyboard_controls(self):
+        from research.evidence.publish_archify_previews import portable_svg
+        svg = ET.fromstring(portable_svg('<svg viewBox="0 0 400 200" role="img">'
+            '<g role="button" tabindex="0" aria-pressed="false" aria-label="Focus node">'
+            '<text>Readable label</text></g></svg>', 'a'*64))
+        group = svg.find('{http://www.w3.org/2000/svg}g')
+        self.assertNotIn('tabindex', group.attrib)
+        self.assertNotIn('role', group.attrib)
+        self.assertNotIn('aria-pressed', group.attrib)
+        self.assertNotIn('aria-label', group.attrib)
+        self.assertEqual(svg.attrib['role'], 'img')
+        self.assertIn('Readable label', ''.join(svg.itertext()))
+
+    def test_failed_artifact_check_preserves_published_files(self):
+        from research.evidence import publish_archify_previews as publisher
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            folder = root/'docs/overview/archify-tsf'
+            (folder/'previews').mkdir(parents=True)
+            cli = root/'tool/archify/bin/archify.mjs'
+            cli.parent.mkdir(parents=True)
+            cli.write_text('// test CLI boundary')
+            spec = folder/'layers.json'
+            spec.write_bytes(b'{}')
+            manifest = folder/'manifest.json'
+            manifest.write_text(json.dumps({'archify_revision':'b'*40,'diagrams':[{
+                'slug':'layers','type':'architecture',
+                'specification_sha256':hashlib.sha256(b'{}').hexdigest()}]}))
+            preview = folder/'previews/layers.svg'
+            preview.write_bytes(b'previous published image')
+            before = (manifest.read_bytes(), preview.read_bytes())
+            def run(command, **kwargs):
+                if 'render' in command:
+                    Path(command[5]).write_text('<svg viewBox="0 0 400 200"><text>Test</text></svg>')
+                if 'check' in command:
+                    raise subprocess.CalledProcessError(1, command)
+                return subprocess.CompletedProcess(command, 0)
+            with patch.object(publisher,'ROOT',root), patch.object(publisher,'FOLDER',folder), \
+                 patch('sys.argv',['publisher','--write','--archify-cli',str(cli)]), \
+                 patch.object(publisher.subprocess,'check_output',return_value='b'*40), \
+                 patch.object(publisher.subprocess,'run',side_effect=run), \
+                 patch('sys.stdout',new_callable=io.StringIO):
+                result = publisher.main()
+            self.assertEqual(result, 1)
+            self.assertEqual((manifest.read_bytes(), preview.read_bytes()), before)
+
     def test_export_materializes_theme_and_keeps_labels_without_runtime(self):
         from research.evidence.publish_archify_previews import portable_svg
         source = '''<style>:root,[data-theme="dark"] {--text:white; --arrow:gray;}
@@ -61,6 +111,8 @@ class ArchifyPreviewTests(unittest.TestCase):
                     self.assertNotIn(element.tag.rsplit('}', 1)[-1], ('script', 'foreignObject', 'iframe', 'animate'))
                     for name, value in element.attrib.items():
                         self.assertFalse(name.lower().startswith('on'))
+                        self.assertNotIn(name, ('tabindex', 'aria-pressed', 'aria-expanded', 'aria-controls'))
+                        self.assertFalse(name == 'role' and value == 'button')
                         self.assertNotIn('var(', value)
                         if name.rsplit('}', 1)[-1] in ('href', 'src'):
                             self.assertTrue(value.startswith('#'))

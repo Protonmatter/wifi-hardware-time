@@ -53,7 +53,7 @@
     <path data-graph-role="automatic-crossover-underlay" d="M 590 546 L 760 546" fill="none" stroke="#ffffff" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none" />
     <path data-edge-from="bound" data-edge-to="limits" data-edge-label="conditional" data-edge-key="7" data-edge-id="bound-limits" data-composition-points="590,546;760,546" data-composition-crossover="halo" data-composition-independent="true" d="M 590 546 L 760 546" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)" stroke="#94a3b8" fill="none" />
   </g>
-  <g id="node-ap" data-node-id="ap" data-node-label="Access-point TSF" tabindex="0" role="button" aria-label="Focus Access-point TSF, 802.11 timing reference, Architecture component" aria-pressed="false" data-node-kind="external" data-node-sublabel="802.11 timing reference" data-node-context="Architecture component">
+  <g id="node-ap" data-node-id="ap" data-node-label="Access-point TSF" data-node-kind="external" data-node-sublabel="802.11 timing reference" data-node-context="Architecture component">
     <title>Access-point TSF · 802.11 timing reference · Architecture component</title>
     <rect x="40" y="60" width="190" height="72" rx="6" class="c-mask" fill="#ffffff" stroke="none" />
     <rect x="40" y="60" width="190" height="72" rx="6" class="c-external" stroke-width="1.5" fill="rgba(148, 163, 184, 0.18)" stroke="#64748b" />
@@ -64,7 +64,7 @@
     <text data-node-label="" data-detail-anchor="" x="135" y="94" class="t-primary" font-size="11" font-weight="600" text-anchor="middle" fill="#111827">Access-point TSF</text>
     <text data-detail="context" x="135" y="110" class="t-muted" font-size="9" text-anchor="middle" fill="#5b6474">802.11 timing reference</text>
   </g>
-  <g id="node-station" data-node-id="station" data-node-label="Station TSF counter" tabindex="0" role="button" aria-label="Focus Station TSF counter, associated Wi-Fi station, Architecture component" aria-pressed="false" data-node-kind="external" data-node-sublabel="associated Wi-Fi station" data-node-context="Architecture component">
+  <g id="node-station" data-node-id="station" data-node-label="Station TSF counter" data-node-kind="external" data-node-sublabel="associated Wi-Fi station" data-node-context="Architecture component">
     <title>Station TSF counter · associated Wi-Fi station · Architecture component</title>
     <rect x="400" y="60" width="190" height="72" rx="6" class="c-mask" fill="#ffffff" stroke="none" />
     <rect x="400" y="60" width="190" height="72" rx="6" class="c-external" stroke-width="1.5" fill="rgba(148, 163, 184, 0.18)" stroke="#64748b" />
@@ -75,7 +75,7 @@
     <text data-node-label="" data-detail-anchor="" x="495" y="94" class="t-primary" font-size="11" font-weight="600" text-anchor="middle" fill="#111827">Station TSF counter</text>
     <text data-detail="context" x="495" y="110" class="t-muted" font-size="9" text-anchor="middle" fill="#5b6474">associated Wi-Fi station</text>
   </g>
-  <g id="node-capture" data-node-id="capture" data-node-label="Action-4 capture" tabindex="0" role="button" aria-label="Focus Action-4 capture, firmware timing report, Architecture component" aria-pressed="false" data-node-kind="backend" data-node-sublabel="firmware timing report" data-node-context="Architecture component">
+  <g id="node-capture" data-node-id="capture" data-node-label="Action-4 capture" data-node-kind="backend" data-node-sublabel="firmware timing report" data-node-context="Architecture component">
     <title>Action-4 capture · firmware timing report · Architecture component</title>
     <rect x="760" y="60" width="190" height="72" rx="6" class="c-mask" fill="#ffffff" stroke="none" />
     <rect x="760" y="60" width="190" height="72" rx="6" class="c-backend" stroke-width="1.5" fill="rgba(52, 211, 153, 0.18)" stroke="#059669" />
@@ -85,7 +85,7 @@
     <text data-node-label="" data-detail-anchor="" x="855" y="94" class="t-primary" font-size="11" font-weight="600" text-anchor="middle" fill="#111827">Action-4 capture</text>
     <text data-detail="context" x="855" y="110" class="t-muted" font-size="9" text-anchor="middle" fill="#5b6474">firmware timing report</text>
   </g>
-  <g id="node-report" data-node-id="report" data-node-label="Driver trace stamp U" tabindex="0" role="button" aria-label="Focus Driver trace stamp U, original report QPC, Architecture component" aria-pressed="false" data-node-kind="messagebus" data-node-sublabel="original report QPC" data-node-context="Architecture component">
+  <g id="node-report" data-node-id="report" data-node-label="Driver trace stamp U" data-node-kind="messagebus" data-node-sublabel="original report QPC" data-node-context="Architecture component">
     <title>Driver trace stamp U · original report QPC · Architecture component</title>
     <rect x="760" y="290" width="190" height="72" rx="6" class="c-mask" fill="#ffffff" stroke="none" />
     <rect x="760" y="290" width="190" height="72" rx="6" class="c-messagebus" stroke-width="1.5" fill="rgba(251, 146, 60, 0.15)" stroke="#ea580c" />
@@ -98,7 +98,7 @@
     <text data-node-label="" data-detail-anchor="" x="855" y="324" class="t-primary" font-size="11" font-weight="600" text-anchor="middle" fill="#111827">Driver trace stamp U</text>
     <text data-detail="context" x="855" y="340" class="t-muted" font-size="9" text-anchor="middle" fill="#5b6474">original report QPC</text>
   </g>
-  <g id="node-window" data-node-id="window" data-node-label="Conditional sample" tabindex="0" role="button" aria-label="Focus Conditional sample, TSF T within [L, U], Architecture component" aria-pressed="false" data-node-kind="security" data-node-sublabel="TSF T within [L, U]" data-node-context="Architecture component">
+  <g id="node-window" data-node-id="window" data-node-label="Conditional sample" data-node-kind="security" data-node-sublabel="TSF T within [L, U]" data-node-context="Architecture component">
     <title>Conditional sample · TSF T within [L, U] · Architecture component</title>
     <rect x="400" y="290" width="190" height="72" rx="6" class="c-mask" fill="#ffffff" stroke="none" />
     <rect x="400" y="290" width="190" height="72" rx="6" class="c-security" stroke-width="1.5" fill="rgba(251, 113, 133, 0.15)" stroke="#e11d48" />
@@ -109,7 +109,7 @@
     <text data-node-label="" data-detail-anchor="" x="495" y="324" class="t-primary" font-size="11" font-weight="600" text-anchor="middle" fill="#111827">Conditional sample</text>
     <text data-detail="context" x="495" y="340" class="t-muted" font-size="9" text-anchor="middle" fill="#5b6474">TSF T within [L, U]</text>
   </g>
-  <g id="node-qpc" data-node-id="qpc" data-node-label="Windows QPC" tabindex="0" role="button" aria-label="Focus Windows QPC, monotonic host counter, Architecture component" aria-pressed="false" data-node-kind="external" data-node-sublabel="monotonic host counter" data-node-context="Architecture component">
+  <g id="node-qpc" data-node-id="qpc" data-node-label="Windows QPC" data-node-kind="external" data-node-sublabel="monotonic host counter" data-node-context="Architecture component">
     <title>Windows QPC · monotonic host counter · Architecture component</title>
     <rect x="40" y="290" width="190" height="72" rx="6" class="c-mask" fill="#ffffff" stroke="none" />
     <rect x="40" y="290" width="190" height="72" rx="6" class="c-external" stroke-width="1.5" fill="rgba(148, 163, 184, 0.18)" stroke="#64748b" />
@@ -120,7 +120,7 @@
     <text data-node-label="" data-detail-anchor="" x="135" y="324" class="t-primary" font-size="11" font-weight="600" text-anchor="middle" fill="#111827">Windows QPC</text>
     <text data-detail="context" x="135" y="340" class="t-muted" font-size="9" text-anchor="middle" fill="#5b6474">monotonic host counter</text>
   </g>
-  <g id="node-submit" data-node-id="submit" data-node-label="Submission stamp L" tabindex="0" role="button" aria-label="Focus Submission stamp L, QPC before actual IOCTL, Architecture component" aria-pressed="false" data-node-kind="backend" data-node-sublabel="QPC before actual IOCTL" data-node-context="Architecture component">
+  <g id="node-submit" data-node-id="submit" data-node-label="Submission stamp L" data-node-kind="backend" data-node-sublabel="QPC before actual IOCTL" data-node-context="Architecture component">
     <title>Submission stamp L · QPC before actual IOCTL · Architecture component</title>
     <rect x="40" y="510" width="190" height="72" rx="6" class="c-mask" fill="#ffffff" stroke="none" />
     <rect x="40" y="510" width="190" height="72" rx="6" class="c-backend" stroke-width="1.5" fill="rgba(52, 211, 153, 0.18)" stroke="#059669" />
@@ -130,7 +130,7 @@
     <text data-node-label="" data-detail-anchor="" x="135" y="544" class="t-primary" font-size="11" font-weight="600" text-anchor="middle" fill="#111827">Submission stamp L</text>
     <text data-detail="context" x="135" y="560" class="t-muted" font-size="9" text-anchor="middle" fill="#5b6474">QPC before actual IOCTL</text>
   </g>
-  <g id="node-bound" data-node-id="bound" data-node-label="TSF at event QPC" tabindex="0" role="button" aria-label="Focus TSF at event QPC, bounded-rate interval, Architecture component" aria-pressed="false" data-node-kind="backend" data-node-sublabel="bounded-rate interval" data-node-context="Architecture component">
+  <g id="node-bound" data-node-id="bound" data-node-label="TSF at event QPC" data-node-kind="backend" data-node-sublabel="bounded-rate interval" data-node-context="Architecture component">
     <title>TSF at event QPC · bounded-rate interval · Architecture component</title>
     <rect x="400" y="510" width="190" height="72" rx="6" class="c-mask" fill="#ffffff" stroke="none" />
     <rect x="400" y="510" width="190" height="72" rx="6" class="c-backend" stroke-width="1.5" fill="rgba(52, 211, 153, 0.18)" stroke="#059669" />
@@ -140,7 +140,7 @@
     <text data-node-label="" data-detail-anchor="" x="495" y="544" class="t-primary" font-size="11" font-weight="600" text-anchor="middle" fill="#111827">TSF at event QPC</text>
     <text data-detail="context" x="495" y="560" class="t-muted" font-size="9" text-anchor="middle" fill="#5b6474">bounded-rate interval</text>
   </g>
-  <g id="node-limits" data-node-id="limits" data-node-label="Qualification limits" tabindex="0" role="button" aria-label="Focus Qualification limits, AP equality not measured, Architecture component" aria-pressed="false" data-node-kind="security" data-node-sublabel="AP equality not measured" data-node-context="Architecture component">
+  <g id="node-limits" data-node-id="limits" data-node-label="Qualification limits" data-node-kind="security" data-node-sublabel="AP equality not measured" data-node-context="Architecture component">
     <title>Qualification limits · AP equality not measured · Architecture component</title>
     <rect x="760" y="510" width="190" height="72" rx="6" class="c-mask" fill="#ffffff" stroke="none" />
     <rect x="760" y="510" width="190" height="72" rx="6" class="c-security" stroke-width="1.5" fill="rgba(251, 113, 133, 0.15)" stroke="#e11d48" />

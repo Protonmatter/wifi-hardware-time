@@ -10,7 +10,7 @@ Find the calls, file names, terms and short strings recorded in this research. T
 
 ## Search
 
-Indexed **355 source files** and **10649 distinct terms**.
+Indexed **355 source files** and **10685 distinct terms**.
 
 The [JSON index](research-index.json) includes Python definitions/calls, C/Java/PowerShell call-shaped tokens, authored short strings and Markdown code terms. Vendor binaries, local artifacts, historical reproduction sources and generated indexes are excluded. Unresolved call-shaped tokens are explicitly labeled.
 
@@ -137,7 +137,7 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [docs/overview/2026-10-08-causal-provider-design.md](../../docs/overview/2026-10-08-causal-provider-design.md) | `e2e6023ed4cc` |
 | [docs/overview/OPERATIONS.md](../../docs/overview/OPERATIONS.md) | `9374e5f4d1c8` |
 | [docs/overview/README.md](../../docs/overview/README.md) | `17f219d58a2f` |
-| [docs/overview/archify-tsf/README.md](../../docs/overview/archify-tsf/README.md) | `9b667b41705d` |
+| [docs/overview/archify-tsf/README.md](../../docs/overview/archify-tsf/README.md) | `8d4d2cc068ad` |
 | [docs/overview/complete-event-2026-10-05/context-map.md](../../docs/overview/complete-event-2026-10-05/context-map.md) | `ea57333f0cba` |
 | [docs/overview/complete-event-2026-10-05/decision-log.md](../../docs/overview/complete-event-2026-10-05/decision-log.md) | `c089c83e1be6` |
 | [docs/overview/complete-event-2026-10-05/devex-review.md](../../docs/overview/complete-event-2026-10-05/devex-review.md) | `09bd1acc7f04` |
@@ -237,7 +237,7 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [research/evidence/build_knowledge_index.py](../../research/evidence/build_knowledge_index.py) | `5ae18af16221` |
 | [research/evidence/export_clock_evidence.py](../../research/evidence/export_clock_evidence.py) | `a9c4e6892f90` |
 | [research/evidence/hardware_observation.py](../../research/evidence/hardware_observation.py) | `ee18d8e79d2c` |
-| [research/evidence/publish_archify_previews.py](../../research/evidence/publish_archify_previews.py) | `02f3d49959fb` |
+| [research/evidence/publish_archify_previews.py](../../research/evidence/publish_archify_previews.py) | `ba6e99cc38e9` |
 | [research/evidence/sync_tsf_headlines.py](../../research/evidence/sync_tsf_headlines.py) | `0d9edb5889bf` |
 | [research/evidence/sync_workflow_diagrams.py](../../research/evidence/sync_workflow_diagrams.py) | `137739ca6ca3` |
 | [research/evidence/validate_research_bundle.py](../../research/evidence/validate_research_bundle.py) | `d6af87e49ac2` |
@@ -319,7 +319,7 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [tests/test_analyze_bound_run.py](../../tests/test_analyze_bound_run.py) | `27d99b8f9c57` |
 | [tests/test_analyze_latch.py](../../tests/test_analyze_latch.py) | `17461a88eb1e` |
 | [tests/test_analyze_tsf_series.py](../../tests/test_analyze_tsf_series.py) | `080e5ae955cc` |
-| [tests/test_archify_previews.py](../../tests/test_archify_previews.py) | `dd8c48766909` |
+| [tests/test_archify_previews.py](../../tests/test_archify_previews.py) | `d9b493f78afb` |
 | [tests/test_beacon_consistency.py](../../tests/test_beacon_consistency.py) | `482a2cb586eb` |
 | [tests/test_bound_campaign.py](../../tests/test_bound_campaign.py) | `2a5ec482abc6` |
 | [tests/test_bound_cleanup.py](../../tests/test_bound_cleanup.py) | `b35d5fe97688` |

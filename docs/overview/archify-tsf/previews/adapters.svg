@@ -53,7 +53,7 @@
     <path data-graph-role="automatic-crossover-underlay" d="M 485 542 L 485 680" fill="none" stroke="#ffffff" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none" />
     <path data-edge-from="receipt" data-edge-to="scope" data-edge-label="interpret" data-edge-key="7" data-edge-id="receipt-scope" data-composition-points="485,542;485,680" data-composition-crossover="halo" data-composition-independent="true" d="M 485 542 L 485 680" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)" stroke="#94a3b8" fill="none" />
   </g>
-  <g id="node-core" data-node-id="core" data-node-label="Sampler core" tabindex="0" role="button" aria-label="Focus Sampler core, injected dependencies, Architecture component" aria-pressed="false" data-node-kind="backend" data-node-sublabel="injected dependencies" data-node-context="Architecture component">
+  <g id="node-core" data-node-id="core" data-node-label="Sampler core" data-node-kind="backend" data-node-sublabel="injected dependencies" data-node-context="Architecture component">
     <title>Sampler core · injected dependencies · Architecture component</title>
     <rect x="390" y="260" width="190" height="72" rx="6" class="c-mask" fill="#ffffff" stroke="none" />
     <rect x="390" y="260" width="190" height="72" rx="6" class="c-backend" stroke-width="1.5" fill="rgba(52, 211, 153, 0.18)" stroke="#059669" />
@@ -63,7 +63,7 @@
     <text data-node-label="" data-detail-anchor="" x="485" y="294" class="t-primary" font-size="11" font-weight="600" text-anchor="middle" fill="#111827">Sampler core</text>
     <text data-detail="context" x="485" y="310" class="t-muted" font-size="9" text-anchor="middle" fill="#5b6474">injected dependencies</text>
   </g>
-  <g id="node-live" data-node-id="live" data-node-label="Win32 backend" tabindex="0" role="button" aria-label="Focus Win32 backend, explicit live selection, Architecture component" aria-pressed="false" data-node-kind="backend" data-node-sublabel="explicit live selection" data-node-context="Architecture component">
+  <g id="node-live" data-node-id="live" data-node-label="Win32 backend" data-node-kind="backend" data-node-sublabel="explicit live selection" data-node-context="Architecture component">
     <title>Win32 backend · explicit live selection · Architecture component</title>
     <rect x="60" y="260" width="190" height="72" rx="6" class="c-mask" fill="#ffffff" stroke="none" />
     <rect x="60" y="260" width="190" height="72" rx="6" class="c-backend" stroke-width="1.5" fill="rgba(52, 211, 153, 0.18)" stroke="#059669" />
@@ -73,7 +73,7 @@
     <text data-node-label="" data-detail-anchor="" x="155" y="294" class="t-primary" font-size="11" font-weight="600" text-anchor="middle" fill="#111827">Win32 backend</text>
     <text data-detail="context" x="155" y="310" class="t-muted" font-size="9" text-anchor="middle" fill="#5b6474">explicit live selection</text>
   </g>
-  <g id="node-kernel" data-node-id="kernel" data-node-label="Kernel / driver" tabindex="0" role="button" aria-label="Focus Kernel / driver, real overlapped action 4, Architecture component" aria-pressed="false" data-node-kind="external" data-node-sublabel="real overlapped action 4" data-node-context="Architecture component">
+  <g id="node-kernel" data-node-id="kernel" data-node-label="Kernel / driver" data-node-kind="external" data-node-sublabel="real overlapped action 4" data-node-context="Architecture component">
     <title>Kernel / driver · real overlapped action 4 · Architecture component</title>
     <rect x="60" y="60" width="190" height="72" rx="6" class="c-mask" fill="#ffffff" stroke="none" />
     <rect x="60" y="60" width="190" height="72" rx="6" class="c-external" stroke-width="1.5" fill="rgba(148, 163, 184, 0.18)" stroke="#64748b" />
@@ -84,7 +84,7 @@
     <text data-node-label="" data-detail-anchor="" x="155" y="94" class="t-primary" font-size="11" font-weight="600" text-anchor="middle" fill="#111827">Kernel / driver</text>
     <text data-detail="context" x="155" y="110" class="t-muted" font-size="9" text-anchor="middle" fill="#5b6474">real overlapped action 4</text>
   </g>
-  <g id="node-identity" data-node-id="identity" data-node-label="Live identity check" tabindex="0" role="button" aria-label="Focus Live identity check, exact adapter + hash, Architecture component" aria-pressed="false" data-node-kind="security" data-node-sublabel="exact adapter + hash" data-node-context="Architecture component">
+  <g id="node-identity" data-node-id="identity" data-node-label="Live identity check" data-node-kind="security" data-node-sublabel="exact adapter + hash" data-node-context="Architecture component">
     <title>Live identity check · exact adapter + hash · Architecture component</title>
     <rect x="60" y="470" width="190" height="72" rx="6" class="c-mask" fill="#ffffff" stroke="none" />
     <rect x="60" y="470" width="190" height="72" rx="6" class="c-security" stroke-width="1.5" fill="rgba(251, 113, 133, 0.15)" stroke="#e11d48" />
@@ -95,7 +95,7 @@
     <text data-node-label="" data-detail-anchor="" x="155" y="504" class="t-primary" font-size="11" font-weight="600" text-anchor="middle" fill="#111827">Live identity check</text>
     <text data-detail="context" x="155" y="520" class="t-muted" font-size="9" text-anchor="middle" fill="#5b6474">exact adapter + hash</text>
   </g>
-  <g id="node-fake" data-node-id="fake" data-node-label="Deterministic fake" tabindex="0" role="button" aria-label="Focus Deterministic fake, no device API loaded, Architecture component" aria-pressed="false" data-node-kind="backend" data-node-sublabel="no device API loaded" data-node-context="Architecture component">
+  <g id="node-fake" data-node-id="fake" data-node-label="Deterministic fake" data-node-kind="backend" data-node-sublabel="no device API loaded" data-node-context="Architecture component">
     <title>Deterministic fake · no device API loaded · Architecture component</title>
     <rect x="720" y="260" width="190" height="72" rx="6" class="c-mask" fill="#ffffff" stroke="none" />
     <rect x="720" y="260" width="190" height="72" rx="6" class="c-backend" stroke-width="1.5" fill="rgba(52, 211, 153, 0.18)" stroke="#059669" />
@@ -105,7 +105,7 @@
     <text data-node-label="" data-detail-anchor="" x="815" y="294" class="t-primary" font-size="11" font-weight="600" text-anchor="middle" fill="#111827">Deterministic fake</text>
     <text data-detail="context" x="815" y="310" class="t-muted" font-size="9" text-anchor="middle" fill="#5b6474">no device API loaded</text>
   </g>
-  <g id="node-cases" data-node-id="cases" data-node-label="Adversarial cases" tabindex="0" role="button" aria-label="Focus Adversarial cases, deadlines + loss + faults, Architecture component" aria-pressed="false" data-node-kind="security" data-node-sublabel="deadlines + loss + faults" data-node-context="Architecture component">
+  <g id="node-cases" data-node-id="cases" data-node-label="Adversarial cases" data-node-kind="security" data-node-sublabel="deadlines + loss + faults" data-node-context="Architecture component">
     <title>Adversarial cases · deadlines + loss + faults · Architecture component</title>
     <rect x="720" y="60" width="190" height="72" rx="6" class="c-mask" fill="#ffffff" stroke="none" />
     <rect x="720" y="60" width="190" height="72" rx="6" class="c-security" stroke-width="1.5" fill="rgba(251, 113, 133, 0.15)" stroke="#e11d48" />
@@ -116,7 +116,7 @@
     <text data-node-label="" data-detail-anchor="" x="815" y="94" class="t-primary" font-size="11" font-weight="600" text-anchor="middle" fill="#111827">Adversarial cases</text>
     <text data-detail="context" x="815" y="110" class="t-muted" font-size="9" text-anchor="middle" fill="#5b6474">deadlines + loss + faults</text>
   </g>
-  <g id="node-clock" data-node-id="clock" data-node-label="Fake clock / owner" tabindex="0" role="button" aria-label="Focus Fake clock / owner, time and permits injected, Architecture component" aria-pressed="false" data-node-kind="backend" data-node-sublabel="time and permits injected" data-node-context="Architecture component">
+  <g id="node-clock" data-node-id="clock" data-node-label="Fake clock / owner" data-node-kind="backend" data-node-sublabel="time and permits injected" data-node-context="Architecture component">
     <title>Fake clock / owner · time and permits injected · Architecture component</title>
     <rect x="720" y="470" width="190" height="72" rx="6" class="c-mask" fill="#ffffff" stroke="none" />
     <rect x="720" y="470" width="190" height="72" rx="6" class="c-backend" stroke-width="1.5" fill="rgba(52, 211, 153, 0.18)" stroke="#059669" />
@@ -126,7 +126,7 @@
     <text data-node-label="" data-detail-anchor="" x="815" y="504" class="t-primary" font-size="11" font-weight="600" text-anchor="middle" fill="#111827">Fake clock / owner</text>
     <text data-detail="context" x="815" y="520" class="t-muted" font-size="9" text-anchor="middle" fill="#5b6474">time and permits injected</text>
   </g>
-  <g id="node-receipt" data-node-id="receipt" data-node-label="Same receipt contract" tabindex="0" role="button" aria-label="Focus Same receipt contract, terminal state + provenance, Architecture component" aria-pressed="false" data-node-kind="database" data-node-sublabel="terminal state + provenance" data-node-context="Architecture component">
+  <g id="node-receipt" data-node-id="receipt" data-node-label="Same receipt contract" data-node-kind="database" data-node-sublabel="terminal state + provenance" data-node-context="Architecture component">
     <title>Same receipt contract · terminal state + provenance · Architecture component</title>
     <rect x="390" y="470" width="190" height="72" rx="6" class="c-mask" fill="#ffffff" stroke="none" />
     <rect x="390" y="470" width="190" height="72" rx="6" class="c-database" stroke-width="1.5" fill="rgba(167, 139, 250, 0.2)" stroke="#7c3aed" />
@@ -137,7 +137,7 @@
     <text data-node-label="" data-detail-anchor="" x="485" y="504" class="t-primary" font-size="11" font-weight="600" text-anchor="middle" fill="#111827">Same receipt contract</text>
     <text data-detail="context" x="485" y="520" class="t-muted" font-size="9" text-anchor="middle" fill="#5b6474">terminal state + provenance</text>
   </g>
-  <g id="node-scope" data-node-id="scope" data-node-label="Qualification boundary" tabindex="0" role="button" aria-label="Focus Qualification boundary, software tests vs hardware, Architecture component" aria-pressed="false" data-node-kind="security" data-node-sublabel="software tests vs hardware" data-node-context="Architecture component">
+  <g id="node-scope" data-node-id="scope" data-node-label="Qualification boundary" data-node-kind="security" data-node-sublabel="software tests vs hardware" data-node-context="Architecture component">
     <title>Qualification boundary · software tests vs hardware · Architecture component</title>
     <rect x="390" y="680" width="190" height="72" rx="6" class="c-mask" fill="#ffffff" stroke="none" />
     <rect x="390" y="680" width="190" height="72" rx="6" class="c-security" stroke-width="1.5" fill="rgba(251, 113, 133, 0.15)" stroke="#e11d48" />

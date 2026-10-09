@@ -53,7 +53,7 @@
     <path data-graph-role="automatic-crossover-underlay" d="M 815 522 L 815 650" fill="none" stroke="#ffffff" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" pointer-events="none" />
     <path data-edge-from="model" data-edge-to="results" data-edge-label="evaluate" data-edge-key="7" data-edge-id="model-results" data-composition-points="815,522;815,650" data-composition-crossover="halo" data-composition-independent="true" d="M 815 522 L 815 650" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)" stroke="#94a3b8" fill="none" />
   </g>
-  <g id="node-controller" data-node-id="controller" data-node-label="Campaign controller" tabindex="0" role="button" aria-label="Focus Campaign controller, slots + fresh permits, Architecture component" aria-pressed="false" data-node-kind="security" data-node-sublabel="slots + fresh permits" data-node-context="Architecture component">
+  <g id="node-controller" data-node-id="controller" data-node-label="Campaign controller" data-node-kind="security" data-node-sublabel="slots + fresh permits" data-node-context="Architecture component">
     <title>Campaign controller · slots + fresh permits · Architecture component</title>
     <rect x="40" y="50" width="190" height="72" rx="6" class="c-mask" fill="#ffffff" stroke="none" />
     <rect x="40" y="50" width="190" height="72" rx="6" class="c-security" stroke-width="1.5" fill="rgba(251, 113, 133, 0.15)" stroke="#e11d48" />
@@ -64,7 +64,7 @@
     <text data-node-label="" data-detail-anchor="" x="135" y="84" class="t-primary" font-size="11" font-weight="600" text-anchor="middle" fill="#111827">Campaign controller</text>
     <text data-detail="context" x="135" y="100" class="t-muted" font-size="9" text-anchor="middle" fill="#5b6474">slots + fresh permits</text>
   </g>
-  <g id="node-worker" data-node-id="worker" data-node-label="Persistent worker" tabindex="0" role="button" aria-label="Focus Persistent worker, one owned session, Architecture component" aria-pressed="false" data-node-kind="backend" data-node-sublabel="one owned session" data-node-context="Architecture component">
+  <g id="node-worker" data-node-id="worker" data-node-label="Persistent worker" data-node-kind="backend" data-node-sublabel="one owned session" data-node-context="Architecture component">
     <title>Persistent worker · one owned session · Architecture component</title>
     <rect x="380" y="50" width="190" height="72" rx="6" class="c-mask" fill="#ffffff" stroke="none" />
     <rect x="380" y="50" width="190" height="72" rx="6" class="c-backend" stroke-width="1.5" fill="rgba(52, 211, 153, 0.18)" stroke="#059669" />
@@ -74,7 +74,7 @@
     <text data-node-label="" data-detail-anchor="" x="475" y="84" class="t-primary" font-size="11" font-weight="600" text-anchor="middle" fill="#111827">Persistent worker</text>
     <text data-detail="context" x="475" y="100" class="t-muted" font-size="9" text-anchor="middle" fill="#5b6474">one owned session</text>
   </g>
-  <g id="node-driver" data-node-id="driver" data-node-label="Qualified adapter" tabindex="0" role="button" aria-label="Focus Qualified adapter, Win32 + Qualcomm driver, Architecture component" aria-pressed="false" data-node-kind="external" data-node-sublabel="Win32 + Qualcomm driver" data-node-context="Architecture component">
+  <g id="node-driver" data-node-id="driver" data-node-label="Qualified adapter" data-node-kind="external" data-node-sublabel="Win32 + Qualcomm driver" data-node-context="Architecture component">
     <title>Qualified adapter · Win32 + Qualcomm driver · Architecture component</title>
     <rect x="720" y="50" width="190" height="72" rx="6" class="c-mask" fill="#ffffff" stroke="none" />
     <rect x="720" y="50" width="190" height="72" rx="6" class="c-external" stroke-width="1.5" fill="rgba(148, 163, 184, 0.18)" stroke="#64748b" />
@@ -85,7 +85,7 @@
     <text data-node-label="" data-detail-anchor="" x="815" y="84" class="t-primary" font-size="11" font-weight="600" text-anchor="middle" fill="#111827">Qualified adapter</text>
     <text data-detail="context" x="815" y="100" class="t-muted" font-size="9" text-anchor="middle" fill="#5b6474">Win32 + Qualcomm driver</text>
   </g>
-  <g id="node-observer" data-node-id="observer" data-node-label="Trace observer" tabindex="0" role="button" aria-label="Focus Trace observer, raw QPC + received QPC, Architecture component" aria-pressed="false" data-node-kind="messagebus" data-node-sublabel="raw QPC + received QPC" data-node-context="Architecture component">
+  <g id="node-observer" data-node-id="observer" data-node-label="Trace observer" data-node-kind="messagebus" data-node-sublabel="raw QPC + received QPC" data-node-context="Architecture component">
     <title>Trace observer · raw QPC + received QPC · Architecture component</title>
     <rect x="720" y="250" width="190" height="72" rx="6" class="c-mask" fill="#ffffff" stroke="none" />
     <rect x="720" y="250" width="190" height="72" rx="6" class="c-messagebus" stroke-width="1.5" fill="rgba(251, 146, 60, 0.15)" stroke="#ea580c" />
@@ -98,7 +98,7 @@
     <text data-node-label="" data-detail-anchor="" x="815" y="284" class="t-primary" font-size="11" font-weight="600" text-anchor="middle" fill="#111827">Trace observer</text>
     <text data-detail="context" x="815" y="300" class="t-muted" font-size="9" text-anchor="middle" fill="#5b6474">raw QPC + received QPC</text>
   </g>
-  <g id="node-evidence" data-node-id="evidence" data-node-label="Private evidence" tabindex="0" role="button" aria-label="Focus Private evidence, receipts + ETL + journal, Architecture component" aria-pressed="false" data-node-kind="database" data-node-sublabel="receipts + ETL + journal" data-node-context="Architecture component">
+  <g id="node-evidence" data-node-id="evidence" data-node-label="Private evidence" data-node-kind="database" data-node-sublabel="receipts + ETL + journal" data-node-context="Architecture component">
     <title>Private evidence · receipts + ETL + journal · Architecture component</title>
     <rect x="380" y="250" width="190" height="72" rx="6" class="c-mask" fill="#ffffff" stroke="none" />
     <rect x="380" y="250" width="190" height="72" rx="6" class="c-database" stroke-width="1.5" fill="rgba(167, 139, 250, 0.2)" stroke="#7c3aed" />
@@ -109,7 +109,7 @@
     <text data-node-label="" data-detail-anchor="" x="475" y="284" class="t-primary" font-size="11" font-weight="600" text-anchor="middle" fill="#111827">Private evidence</text>
     <text data-detail="context" x="475" y="300" class="t-muted" font-size="9" text-anchor="middle" fill="#5b6474">receipts + ETL + journal</text>
   </g>
-  <g id="node-screen" data-node-id="screen" data-node-label="Offline screening" tabindex="0" role="button" aria-label="Focus Offline screening, association + freshness, Architecture component" aria-pressed="false" data-node-kind="security" data-node-sublabel="association + freshness" data-node-context="Architecture component">
+  <g id="node-screen" data-node-id="screen" data-node-label="Offline screening" data-node-kind="security" data-node-sublabel="association + freshness" data-node-context="Architecture component">
     <title>Offline screening · association + freshness · Architecture component</title>
     <rect x="380" y="450" width="190" height="72" rx="6" class="c-mask" fill="#ffffff" stroke="none" />
     <rect x="380" y="450" width="190" height="72" rx="6" class="c-security" stroke-width="1.5" fill="rgba(251, 113, 133, 0.15)" stroke="#e11d48" />
@@ -120,7 +120,7 @@
     <text data-node-label="" data-detail-anchor="" x="475" y="484" class="t-primary" font-size="11" font-weight="600" text-anchor="middle" fill="#111827">Offline screening</text>
     <text data-detail="context" x="475" y="500" class="t-muted" font-size="9" text-anchor="middle" fill="#5b6474">association + freshness</text>
   </g>
-  <g id="node-model" data-node-id="model" data-node-label="Clock models" tabindex="0" role="button" aria-label="Focus Clock models, exact conditional bounds, Architecture component" aria-pressed="false" data-node-kind="backend" data-node-sublabel="exact conditional bounds" data-node-context="Architecture component">
+  <g id="node-model" data-node-id="model" data-node-label="Clock models" data-node-kind="backend" data-node-sublabel="exact conditional bounds" data-node-context="Architecture component">
     <title>Clock models · exact conditional bounds · Architecture component</title>
     <rect x="720" y="450" width="190" height="72" rx="6" class="c-mask" fill="#ffffff" stroke="none" />
     <rect x="720" y="450" width="190" height="72" rx="6" class="c-backend" stroke-width="1.5" fill="rgba(52, 211, 153, 0.18)" stroke="#059669" />
@@ -130,7 +130,7 @@
     <text data-node-label="" data-detail-anchor="" x="815" y="484" class="t-primary" font-size="11" font-weight="600" text-anchor="middle" fill="#111827">Clock models</text>
     <text data-detail="context" x="815" y="500" class="t-muted" font-size="9" text-anchor="middle" fill="#5b6474">exact conditional bounds</text>
   </g>
-  <g id="node-results" data-node-id="results" data-node-label="Provisional + settled" tabindex="0" role="button" aria-label="Focus Provisional + settled, preserve original event, Architecture component" aria-pressed="false" data-node-kind="frontend" data-node-sublabel="preserve original event" data-node-context="Architecture component">
+  <g id="node-results" data-node-id="results" data-node-label="Provisional + settled" data-node-kind="frontend" data-node-sublabel="preserve original event" data-node-context="Architecture component">
     <title>Provisional + settled · preserve original event · Architecture component</title>
     <rect x="720" y="650" width="190" height="72" rx="6" class="c-mask" fill="#ffffff" stroke="none" />
     <rect x="720" y="650" width="190" height="72" rx="6" class="c-frontend" stroke-width="1.5" fill="rgba(34, 211, 238, 0.15)" stroke="#0891b2" />

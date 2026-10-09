@@ -39,7 +39,7 @@
   <path data-edge-from="submit" data-edge-to="receipt" data-edge-label="terminal" data-edge-key="8" data-edge-id="submit-receipt" data-composition-routing="workflow-v2-auto" data-edge-role="" data-composition-points="624,449;680.4,449" d="M 624 449 L 680.4 449" class="a-default" stroke-width="1.4" marker-end="url(#arrowhead)" stroke="#94a3b8" fill="none" />
   <path data-edge-from="submit" data-edge-to="stop" data-edge-label="failure" data-edge-key="9" data-edge-id="submit-stop" data-composition-routing="workflow-v2-auto" data-edge-role="" data-composition-points="547,475;547,547" d="M 547 475 L 547 547" class="a-security" stroke-width="1.4" marker-end="url(#arrowhead-security)" stroke="#e11d48" fill="none" stroke-dasharray="5,5" />
   <path data-edge-from="wait" data-edge-to="next" data-edge-label="wait resolved" data-edge-key="10" data-edge-id="wait-next" data-composition-routing="workflow-v2-auto" data-edge-role="" data-composition-points="834.4,222;914.8,222" d="M 834.4 222 L 914.8 222" class="a-default" stroke-width="1.4" marker-end="url(#arrowhead)" stroke="#94a3b8" fill="none" />
-  <g id="node-guard" data-node-id="guard" data-node-label="Campaign guard" tabindex="0" role="button" aria-label="Focus Campaign guard, lock + unfinished record, Controller and report delivery" aria-pressed="false" data-node-kind="security" data-node-sublabel="lock + unfinished record" data-node-context="Controller and report delivery">
+  <g id="node-guard" data-node-id="guard" data-node-label="Campaign guard" data-node-kind="security" data-node-sublabel="lock + unfinished record" data-node-context="Controller and report delivery">
     <title>Campaign guard · lock + unfinished record · Controller and report delivery</title>
     <rect x="48" y="196" width="154" height="52" rx="6" class="c-mask" fill="#ffffff" stroke="none" />
     <rect x="48" y="196" width="154" height="52" rx="6" class="c-security" stroke-width="1.5" fill="rgba(251, 113, 133, 0.15)" stroke="#e11d48" />
@@ -50,7 +50,7 @@
     <text data-node-label="" data-detail-anchor="" x="125" y="217" class="t-primary" font-size="11" font-weight="600" text-anchor="middle" fill="#111827">Campaign guard</text>
     <text data-detail="context" x="125" y="234" class="t-muted" font-size="8" text-anchor="middle" fill="#5b6474">lock + unfinished record</text>
   </g>
-  <g id="node-slot" data-node-id="slot" data-node-label="Next fixed slot" tabindex="0" role="button" aria-label="Focus Next fixed slot, skip missed slots, Controller and report delivery" aria-pressed="false" data-node-kind="backend" data-node-sublabel="skip missed slots" data-node-context="Controller and report delivery">
+  <g id="node-slot" data-node-id="slot" data-node-label="Next fixed slot" data-node-kind="backend" data-node-sublabel="skip missed slots" data-node-context="Controller and report delivery">
     <title>Next fixed slot · skip missed slots · Controller and report delivery</title>
     <rect x="288" y="196" width="154" height="52" rx="6" class="c-mask" fill="#ffffff" stroke="none" />
     <rect x="288" y="196" width="154" height="52" rx="6" class="c-backend" stroke-width="1.5" fill="rgba(52, 211, 153, 0.18)" stroke="#059669" />
@@ -60,7 +60,7 @@
     <text data-node-label="" data-detail-anchor="" x="365" y="217" class="t-primary" font-size="11" font-weight="600" text-anchor="middle" fill="#111827">Next fixed slot</text>
     <text data-detail="context" x="365" y="234" class="t-muted" font-size="8" text-anchor="middle" fill="#5b6474">skip missed slots</text>
   </g>
-  <g id="node-permit" data-node-id="permit" data-node-label="Fresh permit" tabindex="0" role="button" aria-label="Focus Fresh permit, owner still alive, Controller and report delivery" aria-pressed="false" data-node-kind="security" data-node-sublabel="owner still alive" data-node-context="Controller and report delivery">
+  <g id="node-permit" data-node-id="permit" data-node-label="Fresh permit" data-node-kind="security" data-node-sublabel="owner still alive" data-node-context="Controller and report delivery">
     <title>Fresh permit · owner still alive · Controller and report delivery</title>
     <rect x="470" y="196" width="154" height="52" rx="6" class="c-mask" fill="#ffffff" stroke="none" />
     <rect x="470" y="196" width="154" height="52" rx="6" class="c-security" stroke-width="1.5" fill="rgba(251, 113, 133, 0.15)" stroke="#e11d48" />
@@ -71,7 +71,7 @@
     <text data-node-label="" data-detail-anchor="" x="547" y="217" class="t-primary" font-size="11" font-weight="600" text-anchor="middle" fill="#111827">Fresh permit</text>
     <text data-detail="context" x="547" y="234" class="t-muted" font-size="8" text-anchor="middle" fill="#5b6474">owner still alive</text>
   </g>
-  <g id="node-reports" data-node-id="reports" data-node-label="Reports received" tabindex="0" role="button" aria-label="Focus Reports received, observer to controller, Controller and report delivery" aria-pressed="false" data-node-kind="messagebus" data-node-sublabel="observer to controller" data-node-context="Controller and report delivery">
+  <g id="node-reports" data-node-id="reports" data-node-label="Reports received" data-node-kind="messagebus" data-node-sublabel="observer to controller" data-node-context="Controller and report delivery">
     <title>Reports received · observer to controller · Controller and report delivery</title>
     <rect x="680.4" y="86" width="154" height="52" rx="6" class="c-mask" fill="#ffffff" stroke="none" />
     <rect x="680.4" y="86" width="154" height="52" rx="6" class="c-messagebus" stroke-width="1.5" fill="rgba(251, 146, 60, 0.15)" stroke="#ea580c" />
@@ -84,7 +84,7 @@
     <text data-node-label="" data-detail-anchor="" x="757.4" y="107" class="t-primary" font-size="11" font-weight="600" text-anchor="middle" fill="#111827">Reports received</text>
     <text data-detail="context" x="757.4" y="124" class="t-muted" font-size="8" text-anchor="middle" fill="#5b6474">observer to controller</text>
   </g>
-  <g id="node-wait" data-node-id="wait" data-node-label="Keep report wait" tabindex="0" role="button" aria-label="Focus Keep report wait, existing five-second policy, Controller and report delivery" aria-pressed="false" data-node-kind="backend" data-node-sublabel="existing five-second policy" data-node-context="Controller and report delivery">
+  <g id="node-wait" data-node-id="wait" data-node-label="Keep report wait" data-node-kind="backend" data-node-sublabel="existing five-second policy" data-node-context="Controller and report delivery">
     <title>Keep report wait · existing five-second policy · Controller and report delivery</title>
     <rect x="680.4" y="196" width="154" height="52" rx="6" class="c-mask" fill="#ffffff" stroke="none" />
     <rect x="680.4" y="196" width="154" height="52" rx="6" class="c-backend" stroke-width="1.5" fill="rgba(52, 211, 153, 0.18)" stroke="#059669" />
@@ -94,7 +94,7 @@
     <text data-node-label="" data-detail-anchor="" x="757.4" y="217" class="t-primary" font-size="11" font-weight="600" text-anchor="middle" fill="#111827">Keep report wait</text>
     <text data-detail="context" x="757.4" y="234" class="t-muted" font-size="8" text-anchor="middle" fill="#5b6474">existing five-second policy</text>
   </g>
-  <g id="node-next" data-node-id="next" data-node-label="Continue or finish" tabindex="0" role="button" aria-label="Focus Continue or finish, same stop conditions, Controller and report delivery" aria-pressed="false" data-node-kind="backend" data-node-sublabel="same stop conditions" data-node-context="Controller and report delivery">
+  <g id="node-next" data-node-id="next" data-node-label="Continue or finish" data-node-kind="backend" data-node-sublabel="same stop conditions" data-node-context="Controller and report delivery">
     <title>Continue or finish · same stop conditions · Controller and report delivery</title>
     <rect x="914.8" y="196" width="154" height="52" rx="6" class="c-mask" fill="#ffffff" stroke="none" />
     <rect x="914.8" y="196" width="154" height="52" rx="6" class="c-backend" stroke-width="1.5" fill="rgba(52, 211, 153, 0.18)" stroke="#059669" />
@@ -104,7 +104,7 @@
     <text data-node-label="" data-detail-anchor="" x="993.1999999999999" y="217" class="t-primary" font-size="11" font-weight="600" text-anchor="middle" fill="#111827">Continue or finish</text>
     <text data-detail="context" x="991.8" y="234" class="t-muted" font-size="8" text-anchor="middle" fill="#5b6474">same stop conditions</text>
   </g>
-  <g id="node-ready" data-node-id="ready" data-node-label="Establish readiness" tabindex="0" role="button" aria-label="Focus Establish readiness, identity + open once, Sampler worker" aria-pressed="false" data-node-kind="backend" data-node-sublabel="identity + open once" data-node-context="Sampler worker">
+  <g id="node-ready" data-node-id="ready" data-node-label="Establish readiness" data-node-kind="backend" data-node-sublabel="identity + open once" data-node-context="Sampler worker">
     <title>Establish readiness · identity + open once · Sampler worker</title>
     <rect x="168" y="423" width="154" height="52" rx="6" class="c-mask" fill="#ffffff" stroke="none" />
     <rect x="168" y="423" width="154" height="52" rx="6" class="c-backend" stroke-width="1.5" fill="rgba(52, 211, 153, 0.18)" stroke="#059669" />
@@ -114,7 +114,7 @@
     <text data-node-label="" data-detail-anchor="" x="249.7" y="444" class="t-primary" font-size="11" font-weight="600" text-anchor="middle" fill="#111827">Establish readiness</text>
     <text data-detail="context" x="245" y="461" class="t-muted" font-size="8" text-anchor="middle" fill="#5b6474">identity + open once</text>
   </g>
-  <g id="node-submit" data-node-id="submit" data-node-label="Submit action 4" tabindex="0" role="button" aria-label="Focus Submit action 4, single outstanding I/O, Sampler worker" aria-pressed="false" data-node-kind="backend" data-node-sublabel="single outstanding I/O" data-node-context="Sampler worker">
+  <g id="node-submit" data-node-id="submit" data-node-label="Submit action 4" data-node-kind="backend" data-node-sublabel="single outstanding I/O" data-node-context="Sampler worker">
     <title>Submit action 4 · single outstanding I/O · Sampler worker</title>
     <rect x="470" y="423" width="154" height="52" rx="6" class="c-mask" fill="#ffffff" stroke="none" />
     <rect x="470" y="423" width="154" height="52" rx="6" class="c-backend" stroke-width="1.5" fill="rgba(52, 211, 153, 0.18)" stroke="#059669" />
@@ -124,7 +124,7 @@
     <text data-node-label="" data-detail-anchor="" x="547" y="444" class="t-primary" font-size="11" font-weight="600" text-anchor="middle" fill="#111827">Submit action 4</text>
     <text data-detail="context" x="547" y="461" class="t-muted" font-size="8" text-anchor="middle" fill="#5b6474">single outstanding I/O</text>
   </g>
-  <g id="node-receipt" data-node-id="receipt" data-node-label="Terminal receipt" tabindex="0" role="button" aria-label="Focus Terminal receipt, real result + QPC, Sampler worker" aria-pressed="false" data-node-kind="backend" data-node-sublabel="real result + QPC" data-node-context="Sampler worker">
+  <g id="node-receipt" data-node-id="receipt" data-node-label="Terminal receipt" data-node-kind="backend" data-node-sublabel="real result + QPC" data-node-context="Sampler worker">
     <title>Terminal receipt · real result + QPC · Sampler worker</title>
     <rect x="680.4" y="423" width="154" height="52" rx="6" class="c-mask" fill="#ffffff" stroke="none" />
     <rect x="680.4" y="423" width="154" height="52" rx="6" class="c-backend" stroke-width="1.5" fill="rgba(52, 211, 153, 0.18)" stroke="#059669" />
@@ -134,7 +134,7 @@
     <text data-node-label="" data-detail-anchor="" x="757.4" y="444" class="t-primary" font-size="11" font-weight="600" text-anchor="middle" fill="#111827">Terminal receipt</text>
     <text data-detail="context" x="757.4" y="461" class="t-muted" font-size="8" text-anchor="middle" fill="#5b6474">real result + QPC</text>
   </g>
-  <g id="node-stop" data-node-id="stop" data-node-label="Stop admission" tabindex="0" role="button" aria-label="Focus Stop admission, failure stays latched, Failure path" aria-pressed="false" data-node-kind="security" data-node-sublabel="failure stays latched" data-node-context="Failure path">
+  <g id="node-stop" data-node-id="stop" data-node-label="Stop admission" data-node-kind="security" data-node-sublabel="failure stays latched" data-node-context="Failure path">
     <title>Stop admission · failure stays latched · Failure path</title>
     <rect x="470" y="547" width="154" height="52" rx="6" class="c-mask" fill="#ffffff" stroke="none" />
     <rect x="470" y="547" width="154" height="52" rx="6" class="c-security" stroke-width="1.5" fill="rgba(251, 113, 133, 0.15)" stroke="#e11d48" />
@@ -145,7 +145,7 @@
     <text data-node-label="" data-detail-anchor="" x="547" y="568" class="t-primary" font-size="11" font-weight="600" text-anchor="middle" fill="#111827">Stop admission</text>
     <text data-detail="context" x="547" y="585" class="t-muted" font-size="8" text-anchor="middle" fill="#5b6474">failure stays latched</text>
   </g>
-  <g id="node-drain" data-node-id="drain" data-node-label="Retain and drain" tabindex="0" role="button" aria-label="Focus Retain and drain, no worker kill, Failure path" aria-pressed="false" data-node-kind="security" data-node-sublabel="no worker kill" data-node-context="Failure path">
+  <g id="node-drain" data-node-id="drain" data-node-label="Retain and drain" data-node-kind="security" data-node-sublabel="no worker kill" data-node-context="Failure path">
     <title>Retain and drain · no worker kill · Failure path</title>
     <rect x="680.4" y="547" width="154" height="52" rx="6" class="c-mask" fill="#ffffff" stroke="none" />
     <rect x="680.4" y="547" width="154" height="52" rx="6" class="c-security" stroke-width="1.5" fill="rgba(251, 113, 133, 0.15)" stroke="#e11d48" />
@@ -156,7 +156,7 @@
     <text data-node-label="" data-detail-anchor="" x="757.4" y="568" class="t-primary" font-size="11" font-weight="600" text-anchor="middle" fill="#111827">Retain and drain</text>
     <text data-detail="context" x="757.4" y="585" class="t-muted" font-size="8" text-anchor="middle" fill="#5b6474">no worker kill</text>
   </g>
-  <g id="node-quarantine" data-node-id="quarantine" data-node-label="Quarantine" tabindex="0" role="button" aria-label="Focus Quarantine, no automatic clearance, Failure path" aria-pressed="false" data-node-kind="database" data-node-sublabel="no automatic clearance" data-node-context="Failure path">
+  <g id="node-quarantine" data-node-id="quarantine" data-node-label="Quarantine" data-node-kind="database" data-node-sublabel="no automatic clearance" data-node-context="Failure path">
     <title>Quarantine · no automatic clearance · Failure path</title>
     <rect x="914.8" y="547" width="154" height="52" rx="6" class="c-mask" fill="#ffffff" stroke="none" />
     <rect x="914.8" y="547" width="154" height="52" rx="6" class="c-database" stroke-width="1.5" fill="rgba(167, 139, 250, 0.2)" stroke="#7c3aed" />

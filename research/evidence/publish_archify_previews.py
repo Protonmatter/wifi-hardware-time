@@ -72,6 +72,11 @@ def portable_svg(html: str, source_hash: str) -> bytes:
     for element in svg.iter():
         if element.tag.rsplit('}', 1)[-1] in ('script', 'foreignObject', 'iframe', 'animate'):
             raise ValueError('Executable or embedded content is not a static preview')
+        if element.attrib.get('role') == 'button':
+            element.attrib.pop('role')
+            element.attrib.pop('aria-label', None)
+        for attribute in ('tabindex', 'aria-pressed', 'aria-expanded', 'aria-controls'):
+            element.attrib.pop(attribute, None)
         classes = element.attrib.get('class', '').split()
         for name, paints in class_rules:
             if name in classes:
@@ -125,6 +130,7 @@ def main() -> int:
                 output = ROOT / 'artifacts/archify-previews' / (slug + '.html')
                 output.parent.mkdir(parents=True, exist_ok=True)
                 subprocess.run(['node', str(cli), 'render', item['type'], str(spec), str(output), '--quality', 'showcase'], check=True, stdout=subprocess.DEVNULL)
+                subprocess.run(['node', str(cli), 'check', str(output), '--json'], check=True, stdout=subprocess.DEVNULL)
                 data = portable_svg(output.read_text(encoding='utf-8'), digest)
                 item['preview_sha256'] = hashlib.sha256(data).hexdigest()
                 generated.append((destination, data))
