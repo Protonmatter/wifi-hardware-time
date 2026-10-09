@@ -27,6 +27,7 @@ import uuid
 
 from research.acquisition.campaign_admission import Admission, transition
 from research.acquisition.campaign_gate import ReportGate
+from research.acquisition.persistent_sampler import record_quarantine
 from research.clock_models.sample_screen import LISTEN_TIMEOUT_S, MAX_WINDOW_US, TIMING_KINDS
 
 MARKER_NAME = 'bound-campaign-quarantine.json'
@@ -84,8 +85,13 @@ def remaining_sleep(spacing_s: float, elapsed_s: float) -> float:
     return max(0.0, spacing_s - elapsed_s)
 
 
-def loss_budget_exceeded(losses: int, requests: int) -> bool:
-    return requests >= MIN_REQUESTS_FOR_LOSS_LIMIT and losses > OWN_LOSS_LIMIT * requests
+def loss_budget_exceeded(losses: int, requests: int, *, final: bool = False) -> bool:
+    """Keep interim warm-up; final success requires requests and at most 1% loss."""
+    if type(losses) is not int or type(requests) is not int or not 0 <= losses <= requests:
+        raise ValueError('Invalid own-loss counts')
+    if final and requests == 0:
+        return True
+    return (final or requests >= MIN_REQUESTS_FOR_LOSS_LIMIT) and losses * 100 > requests
 
 
 def _save(path: Path, data: object) -> None:
@@ -180,7 +186,7 @@ def admit(adapter_guid: str, marker: Path, state_dir: Path, namespace: str = 'Gl
         lock.acquire()
     except CampaignBusy as busy:
         if busy.abandoned:
-            _save(marker, dict(created_utc=_utc(), run=None, reason=str(busy)))
+            record_quarantine(marker, dict(created_utc=_utc(), run=None, reason=str(busy)))
         raise
     try:
         record = in_progress_path(state_dir, adapter_guid)
@@ -227,10 +233,12 @@ def finalize(decoder: Path, etl: Path, output: Path, live_timing: list[dict], ru
 
 
 def persist_outcome(folder: Path, marker: Path, summary: dict, failure: str | None, utc_fn) -> None:
-    """Write the quarantine marker first on failure, then the run result."""
-    if failure:
-        _save(marker, dict(created_utc=utc_fn(), run=str(folder), reason=failure))
-    _save(folder / 'run-result.json', dict(summary, success=failure is None, error=failure))
+    """Attempt quarantine first; preserve the failed result even if its marker fails."""
+    try:
+        if failure:
+            record_quarantine(marker, dict(created_utc=utc_fn(), run=str(folder), reason=failure))
+    finally:
+        _save(folder / 'run-result.json', dict(summary, success=failure is None, error=failure))
 
 
 def download_stalled(last_progress: float, now: float) -> bool:
@@ -390,7 +398,7 @@ def campaign(args: argparse.Namespace) -> int:
         succeeded = code == 0
         return code
     except BaseException as error:
-        _save(marker, dict(created_utc=utc(), run=None, reason=f'Controller error: {type(error).__name__}: {error}'))
+        record_quarantine(marker, dict(created_utc=utc(), run=None, reason=f'Controller error: {type(error).__name__}: {error}'))
         raise
     finally:
         if succeeded:
@@ -572,8 +580,12 @@ def _execute(args: argparse.Namespace, clock, baseline: dict, plan: dict, marker
     if failure is None:
         failure = finalize(ROOT / 'artifacts/decode_tsf_etl.exe', folder / 'tsf.etl', folder / 'raw-timing.jsonl',
                            gate.timing, run)
+    final_loss_failed = loss_budget_exceeded(losses, len(receipts), final=True)
+    if final_loss_failed:
+        failure = failure or ('No requests collected' if not receipts else 'Final own-loss budget exceeded')
     persist_outcome(folder, marker, dict(condition=args.condition, duration_s=args.duration_s,
                                          request_count=len(receipts), own_losses_live=losses,
+                                         own_loss_policy_passed=not final_loss_failed,
                                          beacon_reads=beacon_count, beacon_skips=beacon_skips,
                                          collection_start_qpc=receipts[0]['qpc_request_before'] if receipts else None,
                                          collection_end_qpc=receipts[-1]['qpc_request_before'] if receipts else None,

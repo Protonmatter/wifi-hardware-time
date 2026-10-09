@@ -5,9 +5,9 @@ handoff boundary. The original C timestamp exporter accepts synthetic records;
 the raw broker and source-record layer also support unqualified saved replay.
 They do not open a device, implement a kernel handler or qualify a hardware clock.
 
-<!-- current-context:2026-10-04 -->
-**Current context (2026-10-04):** A QUTS client-owned byte return is now located statically. Keep client ownership, server publication, firmware identity and timing accuracy as separate qualification states. See [current findings](../../docs/knowledge/current-findings.md).
-<!-- /current-context -->
+<!-- historical-context:2026-10-04 -->
+**Historical context (2026-10-04):** A QUTS client-owned byte return is now located statically. Keep client ownership, server publication, firmware identity and timing accuracy as separate qualification states. See [current findings](../../docs/knowledge/current-findings.md).
+<!-- /historical-context -->
 
 ## Contents
 

@@ -2,9 +2,9 @@
 
 These tools collect and assess timing observations, enforce request limits and stop admission when reports are ambiguous or evidence is lost. They distinguish healthy cleanup from proof that firmware work has drained. Private acquisition remains quarantined, and lifecycle preparation does not authorize reset, suspend or roaming experiments.
 
-<!-- current-context:2026-10-04 -->
-**Current context (2026-10-04):** The private campaign remains quarantined. The new QUTS client ownership finding does not establish firmware drain, report association or a new live acquisition. See [current findings](../../docs/knowledge/current-findings.md).
-<!-- /current-context -->
+<!-- historical-context:2026-10-04 -->
+**Historical context (2026-10-04):** The private campaign remains quarantined. The new QUTS client ownership finding does not establish firmware drain, report association or a new live acquisition. See [current findings](../../docs/knowledge/current-findings.md).
+<!-- /historical-context -->
 
 ## Files
 

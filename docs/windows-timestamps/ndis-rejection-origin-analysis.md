@@ -2,9 +2,9 @@
 
 Which component first rejected the timestamp queries? Static analysis shows that the recorded event repeats a supplied completion status; its location marker does not name the rejecting layer. Missing timestamp-cache branches return a different status, narrowing the possibilities without identifying the live branch or proving absent hardware support.
 
-<!-- current-context:2026-10-04 -->
-**Current context (2026-10-04):** Vendor/private transport research continues alongside documented Windows APIs. No new hardware-to-QPC result is established by file inspection. See [current findings](../knowledge/current-findings.md).
-<!-- /current-context -->
+<!-- historical-context:2026-10-04 -->
+**Historical context (2026-10-04):** Vendor/private transport research continues alongside documented Windows APIs. No new hardware-to-QPC result is established by file inspection. See [current findings](../knowledge/current-findings.md).
+<!-- /historical-context -->
 
 NDIS is the Windows network-driver framework; an OID identifies a driver query. A completion reports a finished request and can forward another component’s error. An RVA locates code within the exact binary. See the [glossary](../glossary.md).
 

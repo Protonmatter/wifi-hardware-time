@@ -2,8 +2,9 @@
 
 An event's QPC is recorded immediately; once a sample captured after the event has become available,
 the event is bracketed and gets the rate-only bound from the samples on both sides (the guarantee)
-plus a constant-rate best estimate from nearby samples (a stronger assumption). Only samples
-available by the settle time are used. Offline research code; contract in
+plus a constant-rate best estimate from nearby samples (a stronger assumption). An event-overlapping
+capture can narrow a complete bracket but never establish either side. Only samples available by
+the reported settle time are used. Offline research code; contract in
 docs/overview/2026-10-08-causal-provider-design.md.
 """
 from __future__ import annotations
@@ -18,6 +19,7 @@ from research.clock_models.rate_bound import envelope, rate_limits
 
 AFFINE_HALF_SPAN_S = 30
 AFFINE_CONDITION = 'best estimate only: assumes one constant rate within the surrounding 60-second span'
+SETTLEMENT_POLICY_VERSION = 'wht/settlement-v2'
 
 
 @dataclass(frozen=True)
@@ -35,6 +37,8 @@ class Settled:
     earlier_sequence: int | None = None
     later_sequence: int | None = None
     conditions: tuple[str, ...] = CONDITIONS
+    settlement_policy_version: str = SETTLEMENT_POLICY_VERSION
+    rate_bound_sequences: tuple[int, ...] = ()
 
 
 def settle(event_qpc: int, samples: list[AvailableSample], now_qpc: int, qpc_hz: int,
@@ -58,13 +62,24 @@ def settle(event_qpc: int, samples: list[AvailableSample], now_qpc: int, qpc_hz:
     lo1, hi1 = envelope(earlier.tsf_us, earlier.lower_qpc, earlier.upper_qpc, event_qpc, limits)
     lo2, hi2 = envelope(later.tsf_us, later.lower_qpc, later.upper_qpc, event_qpc, limits)
     low, high = max(lo1, lo2), min(hi1, hi2)
-    if low > high:
-        return Settled(event_qpc, 'inconsistent', earlier_sequence=earlier.sequence, later_sequence=later.sequence)
     settled_at = max(later.available_qpc, earlier.available_qpc)
+    # An overlapping capture cannot establish a bracket side. Once a bracket
+    # exists, its envelope can narrow the result only if already available at
+    # the reported cutoff (which may be earlier than this call's now_qpc).
+    overlaps = [s for s in available if s.lower_qpc <= event_qpc < s.upper_qpc + 1
+                and s.available_qpc <= settled_at]
+    for sample in overlaps:
+        lo, hi = envelope(sample.tsf_us, sample.lower_qpc, sample.upper_qpc, event_qpc, limits)
+        low, high = max(low, lo), min(high, hi)
+    sequences = tuple(s.sequence for s in [earlier, *overlaps, later])
+    if low > high:
+        return Settled(event_qpc, 'inconsistent', earlier_sequence=earlier.sequence, later_sequence=later.sequence,
+                       rate_bound_sequences=sequences)
     estimate = _affine(event_qpc, samples, settled_at, qpc_hz, rate_prior_ppm) if affine else (None, None, None)
     return Settled(event_qpc, 'settled', low, high, (low + high) / 2, (high - low) / 2, *estimate,
                    settled_at_qpc=settled_at,
                    earlier_sequence=earlier.sequence, later_sequence=later.sequence,
+                   rate_bound_sequences=sequences,
                    conditions=CONDITIONS + (AFFINE_CONDITION,))
 
 
@@ -114,6 +129,9 @@ def settle_replay(samples: list[AvailableSample], qpc_hz: int, step_qpc: int, af
         event += step_qpc
     count = sum(states.values())
     return dict(events=count, step_s=round(step_qpc / qpc_hz, 6), states=dict(states),
+                settlement_policy_version=SETTLEMENT_POLICY_VERSION,
+                actual_settled_grid_max_half_width_us=round(float(max(widths)), 3) if widths else None,
+                actual_settled_grid_max_half_width_exact=str(max(widths)) if widths else None,
                 wait_s=_quantiles(waits) if waits else None,
                 half_width_us=_quantiles(widths) if widths else None,
                 affine_half_width_us=_quantiles(affine_widths) if affine_widths else None,

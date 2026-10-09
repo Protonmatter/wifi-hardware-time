@@ -2,9 +2,9 @@
 
 The maintained tools are grouped by the research function they serve, from adapter discovery to evidence handoff. This index connects each source folder to its findings. Some tools only inspect files; others can request hardware work, so folder organization does not replace the execution controls and experiment-specific prerequisites.
 
-<!-- current-context:2026-10-04 -->
-**Current context (2026-10-04):** Current findings now include complete vendor package inventories, QUTS client ownership and a correction ledger. Historical acquisitions retain their original scope and limits. See [current findings](../docs/knowledge/current-findings.md).
-<!-- /current-context -->
+<!-- historical-context:2026-10-04 -->
+**Historical context (2026-10-04):** Current findings now include complete vendor package inventories, QUTS client ownership and a correction ledger. Historical acquisitions retain their original scope and limits. See [current findings](../docs/knowledge/current-findings.md).
+<!-- /historical-context -->
 
 ## Choose an area
 

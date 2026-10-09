@@ -10,7 +10,7 @@ import os
 from pathlib import Path
 import time
 
-from research.acquisition.persistent_sampler import ControllerOwner, durable_save
+from research.acquisition.persistent_sampler import ControllerOwner, durable_save, record_quarantine
 from research.tsf.tsf_sampler import Sampler, State, QUALIFIED_SHA256
 
 
@@ -63,6 +63,7 @@ class Journal:
     def __init__(self, folder: Path, marker: Path, admission=None):
         self.folder, self.marker, self.admission = folder, marker, admission
         self.last_snapshot = None
+        self.last_evidence_snapshot = None
 
     def __call__(self, snapshot: dict) -> None:
         with self.admission.locked() if self.admission is not None else contextlib.nullcontext():
@@ -72,10 +73,17 @@ class Journal:
             self.last_snapshot = copy.deepcopy(snapshot)
 
     def _write(self, snapshot: dict) -> None:
-        session, request = snapshot['session'], snapshot['request']
+        if snapshot != self.last_evidence_snapshot:
+            self._write_evidence(snapshot)
+            self.last_evidence_snapshot = copy.deepcopy(snapshot)
+        # Retry a failed marker separately, without appending unchanged raw snapshots.
+        session = snapshot['session']
         if session['failed']:
-            durable_save(self.marker, dict(reason=session['failure'], sampler_session=session['session_id'],
-                                           worker_pid=os.getpid(), drain_pending=bool(session['outstanding_operations'])))
+            record_quarantine(self.marker, dict(reason=session['failure'], sampler_session=session['session_id'],
+                                                worker_pid=os.getpid(), drain_pending=bool(session['outstanding_operations'])))
+
+    def _write_evidence(self, snapshot: dict) -> None:
+        session, request = snapshot['session'], snapshot['request']
         with (self.folder / 'sampler-events.jsonl').open('a', encoding='utf-8') as stream:
             stream.write(json.dumps(snapshot, allow_nan=False) + '\n')
             stream.flush()

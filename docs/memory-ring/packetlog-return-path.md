@@ -2,9 +2,9 @@
 
 An existing private response path can copy the driver's binary packet log into a returned buffer. This is a concrete transport lead, but it does not yet return one trustworthy management event. The log writer can advance its position before copying a payload, the inspected reader has no matching snapshot lock, and stopping the logger can free its storage. No live request was sent.
 
-<!-- current-context:2026-10-04 -->
-**Current context (2026-10-04):** The QUTS client is a separate owned-byte return candidate. It does not repair the existing ring publication or temporary-buffer lifetime gaps. See [current findings](../knowledge/current-findings.md).
-<!-- /current-context -->
+<!-- historical-context:2026-10-04 -->
+**Historical context (2026-10-04):** The QUTS client is a separate owned-byte return candidate. It does not repair the existing ring publication or temporary-buffer lifetime gaps. See [current findings](../knowledge/current-findings.md).
+<!-- /historical-context -->
 
 ## Contents
 

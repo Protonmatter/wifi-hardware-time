@@ -2,9 +2,9 @@
 
 Can existing Windows events reveal the status hidden by error 23? Metadata identified a candidate event, and a later capture found invalid-query status on interfaces above the selected adapter. The recorded events lack request pointers, so timing and interface relationships support association without proving the original rejecting component.
 
-<!-- current-context:2026-10-04 -->
-**Current context (2026-10-04):** Vendor/private transport research continues alongside documented Windows APIs. No new hardware-to-QPC result is established by file inspection. See [current findings](../knowledge/current-findings.md).
-<!-- /current-context -->
+<!-- historical-context:2026-10-04 -->
+**Historical context (2026-10-04):** Vendor/private transport research continues alongside documented Windows APIs. No new hardware-to-QPC result is established by file inspection. See [current findings](../knowledge/current-findings.md).
+<!-- /historical-context -->
 
 NDIS is the Windows network-driver framework; an OID identifies a driver query. ETW is Windows event tracing, and ETL is its saved trace format. A miniport is the adapter-facing driver; filters sit above it. See the [glossary](../glossary.md).
 

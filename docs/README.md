@@ -2,9 +2,9 @@
 
 Start with the question you need answered, then follow its evidence to the relevant experiment. The project has useful Wi-Fi timing observations but no qualified synchronized hardware clock. This guide separates what was observed, what was inferred, what remains unknown and which tools belong to each question.
 
-<!-- current-context:2026-10-04 -->
-**Current context (2026-10-04):** Current findings now include complete vendor package inventories, QUTS client ownership and a correction ledger. Historical acquisitions retain their original scope and limits. See [current findings](knowledge/current-findings.md).
-<!-- /current-context -->
+<!-- historical-context:2026-10-04 -->
+**Historical context (2026-10-04):** Current findings now include complete vendor package inventories, QUTS client ownership and a correction ledger. Historical acquisitions retain their original scope and limits. See [current findings](knowledge/current-findings.md).
+<!-- /historical-context -->
 
 ## Contents
 

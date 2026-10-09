@@ -38,6 +38,17 @@ def samples(clock, count=8, spacing=20_000_000):
 
 
 class RateBoundTests(unittest.TestCase):
+    def test_envelope_contains_exact_extreme_rates_and_fractional_counter_edges(self):
+        for ppm in (-200, 200):
+            rate = Fraction(1_000_000 + ppm, HZ)
+            clock = lambda q: Fraction(1_000) + Fraction(999, 1_000) + rate * q
+            for capture in (Fraction(100), Fraction(110), Fraction(110) + Fraction(999, 1_000)):
+                for query in (0, 100, 110, Fraction(110) + Fraction(999, 1_000), 111, 100_000_111):
+                    with self.subTest(ppm=ppm, capture=capture, query=query):
+                        low, high = envelope(int(clock(capture)), 100, 110, query, rate_limits(HZ))
+                        self.assertLessEqual(low, clock(query))
+                        self.assertGreaterEqual(high, clock(query))
+
     def test_rate_limits_are_exact(self):
         a, b = rate_limits(HZ, 200)
         self.assertEqual((a, b), (NOMINAL * Fraction(999_800, 1_000_000), NOMINAL * Fraction(1_000_200, 1_000_000)))

@@ -2,9 +2,9 @@
 
 This plan tests whether extra clock reports appear after a normal Wi-Fi scan without private timing requests. It defines quiet periods, deadlines and rejection rules before execution. The later three trials reproduced the report pattern but all failed the four-second completion limit; the private campaign therefore remains quarantined.
 
-<!-- current-context:2026-10-04 -->
-**Current context (2026-10-04):** The private campaign remains quarantined. The new QUTS client ownership finding does not establish firmware drain, report association or a new live acquisition. See [current findings](../knowledge/current-findings.md).
-<!-- /current-context -->
+<!-- historical-context:2026-10-04 -->
+**Historical context (2026-10-04):** The private campaign remains quarantined. The new QUTS client ownership finding does not establish firmware drain, report association or a new live acquisition. See [current findings](../knowledge/current-findings.md).
+<!-- /historical-context -->
 
 TSF is the Wi-Fi timing counter; SoC denotes the reported system-on-chip counter. QPC is Windows' high-resolution host counter. WLAN means wireless LAN; ACM notifications report Windows Wi-Fi connection and scan events. See the [glossary](../glossary.md) for related terms.
 

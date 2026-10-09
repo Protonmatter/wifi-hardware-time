@@ -2,9 +2,9 @@
 
 Can Wi-Fi ranging supply the four timestamps needed to compare clocks? Saved results and driver analysis explain aggregate ranging output and identify an earlier internal measurement buffer. No supported export of the four absolute event times is established. Successful ranging therefore does not qualify clock offset, timestamp accuracy, or general packet timing.
 
-<!-- current-context:2026-10-04 -->
-**Current context (2026-10-04):** QXDM WLAN RTT definitions are a new schema lead. They have not been matched to a complete live four-event export from this adapter. See [current findings](../knowledge/current-findings.md).
-<!-- /current-context -->
+<!-- historical-context:2026-10-04 -->
+**Historical context (2026-10-04):** QXDM WLAN RTT definitions are a new schema lead. They have not been matched to a complete live four-event export from this adapter. See [current findings](../knowledge/current-findings.md).
+<!-- /historical-context -->
 
 FTM (Fine Timing Measurement) is a Wi-Fi ranging exchange. RTT is round-trip time; an ACK is a frame acknowledging receipt. An aggregate combines several measurements into one result. See the [glossary](../glossary.md).
 

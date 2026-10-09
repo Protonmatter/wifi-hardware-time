@@ -2,9 +2,9 @@
 
 This plan prioritizes the private clock-report paths already found in the Qualcomm driver. It separates raw counter access, report delivery, sampling meaning and accuracy so progress in one does not imply the others. Private acquisition remains quarantined; further investigation must establish safe retrieval and report identity before another live campaign.
 
-<!-- current-context:2026-10-04 -->
-**Current context (2026-10-04):** The private campaign remains quarantined. The new QUTS client ownership finding does not establish firmware drain, report association or a new live acquisition. See [current findings](../knowledge/current-findings.md).
-<!-- /current-context -->
+<!-- historical-context:2026-10-04 -->
+**Historical context (2026-10-04):** The private campaign remains quarantined. The new QUTS client ownership finding does not establish firmware drain, report association or a new live acquisition. See [current findings](../knowledge/current-findings.md).
+<!-- /historical-context -->
 
 Private means an interface outside the documented public API. TSF is the Wi-Fi timing counter, SoC denotes the reported system-on-chip counter, and FTM is Wi-Fi Fine Timing Measurement. QPC is Windows' high-resolution host counter; ETW is its event-tracing system. See the [glossary](../glossary.md) for related terms.
 

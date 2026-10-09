@@ -209,7 +209,7 @@
       "items": [
         "Nominal TSF rate is 1,000,000 / QPC_Hz microseconds per tick; prior is +/-200 ppm.",
         "low(Q) = max(T - a*(U+1)) + a*Q; high(Q) = min(T+1 - b*L) + b*Q.",
-        "Acquiring before a usable sample; stale when half-width reaches 1,000 us; conflicts latch invalid."
+        "Acquiring before a usable sample; stale when half-width plus 0.5 us reaches 1,000 us; conflicts latch invalid."
       ]
     },
     {
@@ -217,7 +217,7 @@
       "title": "Settlement and scope",
       "items": [
         "A later available sample brackets the preserved event with an earlier sample.",
-        "Intersect the two rate envelopes. Optional affine estimate assumes constant rate across 60 seconds.",
+        "Intersect bracket envelopes and any overlap available by the settlement cutoff. Affine estimate additionally assumes constant rate.",
         "These are conditional offline replay results; numerical ingest is not online acquisition admission."
       ]
     }

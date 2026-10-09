@@ -2,9 +2,9 @@
 
 A timestamp can describe a radio event, a driver action or the moment an application receives data. These diagrams show those different locations and the missing links between them. Wi-Fi counters, ranging results and packet timestamps contribute different information; none alone establishes accurate synchronized time on the current adapter.
 
-<!-- current-context:2026-10-04 -->
-**Current context (2026-10-04):** QUTS and QXDM expose distinct hardware-origin, interpolated and host-delivery times. Owned bytes do not establish fresh hardware-to-QPC sampling or an accuracy bound. See [current findings](../knowledge/current-findings.md).
-<!-- /current-context -->
+<!-- historical-context:2026-10-04 -->
+**Historical context (2026-10-04):** QUTS and QXDM expose distinct hardware-origin, interpolated and host-delivery times. Owned bytes do not establish fresh hardware-to-QPC sampling or an accuracy bound. See [current findings](../knowledge/current-findings.md).
+<!-- /historical-context -->
 
 **Key terms:** TX and RX mean transmit and receive. A clock domain identifies the counter and units. A reference point is the exact event a timestamp describes; delivery time is a different event. See the [glossary](../glossary.md).
 

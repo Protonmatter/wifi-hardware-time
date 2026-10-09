@@ -2,9 +2,9 @@
 
 The existing C exporter now has a separate interface for owning MLO messages and management-frame evidence. Tests establish useful software behavior: source buffers can be reused after publication, reference fields decode correctly, malformed records are rejected, and losses and generations are tracked. The implementation remains an offline prototype because no running-driver producer is connected. Software results and hardware qualification are recorded separately.
 
-<!-- current-context:2026-10-04 -->
-**Current context (2026-10-04):** A QUTS client-owned byte return is now located statically. Keep client ownership, server publication, firmware identity and timing accuracy as separate qualification states. See [current findings](../knowledge/current-findings.md).
-<!-- /current-context -->
+<!-- historical-context:2026-10-04 -->
+**Historical context (2026-10-04):** A QUTS client-owned byte return is now located statically. Keep client ownership, server publication, firmware identity and timing accuracy as separate qualification states. See [current findings](../knowledge/current-findings.md).
+<!-- /historical-context -->
 
 ## Contents
 

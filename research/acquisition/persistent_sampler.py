@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import contextlib
+import errno
 import json
 import math
 import os
@@ -26,6 +27,63 @@ def durable_save(path: Path, data: dict) -> None:
         os.replace(temporary, path)
     finally:
         temporary.unlink(missing_ok=True)
+
+
+@contextlib.contextmanager
+def quarantine_locked(path: Path):
+    """Cross-process marker lock, independent of the shorter-lived admission handle.
+
+    The stable lock file is never replaced/deleted. The OS releases byte/file locks
+    on process exit. All marker read/merge/replace operations hold it; admission may
+    precede this lock, but no caller may acquire admission while holding this lock.
+    """
+    with path.with_name(path.name + '.lock').open('a+b') as stream:
+        if os.name == 'nt':
+            import msvcrt
+            def acquire():
+                stream.seek(0)
+                msvcrt.locking(stream.fileno(), msvcrt.LK_NBLCK, 1)
+            def release():
+                stream.seek(0)
+                msvcrt.locking(stream.fileno(), msvcrt.LK_UNLCK, 1)
+        else:
+            import fcntl
+            def acquire():
+                fcntl.flock(stream, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            def release():
+                fcntl.flock(stream, fcntl.LOCK_UN)
+        for attempt in range(101):
+            try:
+                acquire()
+                break
+            except OSError as error:
+                if error.errno not in (errno.EACCES, errno.EAGAIN, errno.EDEADLK):
+                    raise
+                if attempt == 100:
+                    raise TimeoutError('Quarantine marker lock deadline; unfinished-run guard retained') from error
+                time.sleep(0.02)
+        try:
+            yield
+        finally:
+            release()
+
+
+def record_quarantine(path: Path, cause: dict) -> None:
+    """Durably merge distinct failure evidence; retain legacy top-level fields.
+
+    Corrupt prior evidence is never overwritten. Marker write failure propagates;
+    it cannot authorize clearing the independent unfinished-run record.
+    """
+    with quarantine_locked(path):
+        previous = json.loads(path.read_text(encoding='utf-8')) if path.exists() else {}
+        if type(previous) is not dict or 'causes' in cause:
+            raise ValueError('Invalid quarantine evidence')
+        causes = previous.get('causes', [previous] if previous else [])
+        if type(causes) is not list or any(type(item) is not dict for item in causes):
+            raise ValueError('Invalid quarantine causes')
+        if cause not in causes:
+            causes.append(cause)
+        durable_save(path, dict(previous, **cause, causes=causes))
 
 
 class RequestSlots:
@@ -229,7 +287,7 @@ class PersistentClient:
         raise RuntimeError('Persistent receipt deadline; worker retained for drain')
 
     def abort(self, reason: str) -> None:
-        durable_save(self.marker, dict(reason=reason, sampler_session=self.session_id, pid=os.getpid()))
+        record_quarantine(self.marker, dict(reason=reason, sampler_session=self.session_id, pid=os.getpid()))
         if self.admission is not None:
             self._control('abort')
 
@@ -246,7 +304,7 @@ class PersistentClient:
             session = self.read_snapshot(path) if path.exists() else {}
             clean = self.process.poll() == 0 and session_clean(session)
             if not clean:
-                durable_save(self.marker, dict(reason='Sampler not cleanly closed', sampler_session=self.session_id,
+                record_quarantine(self.marker, dict(reason='Sampler not cleanly closed', sampler_session=self.session_id,
                                                worker_pid=self.process.pid, still_running=self.process.poll() is None))
             return clean
         finally:

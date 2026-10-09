@@ -2,9 +2,9 @@
 
 This ledger separates successful operations from claims about accurate time. It records which hardware tests ran, which observations were rejected and what each result supports. Repeated counter reports and working ranging operations are useful findings, but they do not yet establish a calibrated clock or general packet timestamp interface.
 
-<!-- current-context:2026-10-04 -->
-**Current context (2026-10-04):** Current findings now include complete vendor package inventories, QUTS client ownership and a correction ledger. Historical acquisitions retain their original scope and limits. See [current findings](../knowledge/current-findings.md).
-<!-- /current-context -->
+<!-- historical-context:2026-10-04 -->
+**Historical context (2026-10-04):** Current findings now include complete vendor package inventories, QUTS client ownership and a correction ledger. Historical acquisitions retain their original scope and limits. See [current findings](../knowledge/current-findings.md).
+<!-- /historical-context -->
 
 **Key terms:** Qualification is a claim supported by stated evidence. Static inspection reads code; live validation exercises hardware. A trace is a record of events, not necessarily every event the device performed. See the [glossary](../glossary.md).
 

@@ -2,9 +2,9 @@
 
 These tools inspect the driver file and model a diagnostic ring buffer without reading live kernel memory. They locate candidate return paths and test whether copy rules establish complete records. The current findings do not provide a safe live getter, measured retrieval performance or hardware sampling guarantee.
 
-<!-- current-context:2026-10-04 -->
-**Current context (2026-10-04):** The QUTS client is a separate owned-byte return candidate. It does not repair the existing ring publication or temporary-buffer lifetime gaps. See [current findings](../../docs/knowledge/current-findings.md).
-<!-- /current-context -->
+<!-- historical-context:2026-10-04 -->
+**Historical context (2026-10-04):** The QUTS client is a separate owned-byte return candidate. It does not repair the existing ring publication or temporary-buffer lifetime gaps. See [current findings](../../docs/knowledge/current-findings.md).
+<!-- /historical-context -->
 
 ## Files
 

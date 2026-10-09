@@ -2,9 +2,9 @@
 
 Can the ALFA USB adapter provide useful hardware timing? Source inspection identifies a readable Wi-Fi timer and packet timestamp fields, but no complete standard timestamp export. Windows register access remains a static finding; no live request or physical timing accuracy was validated for this adapter.
 
-<!-- current-context:2026-10-04 -->
-**Current context (2026-10-04):** Later archive and installed-file inspection located QUTS client-owned byte returns and corrected vendor package/version assumptions; exact adapter-to-producer association remains open. See [current findings](../knowledge/current-findings.md).
-<!-- /current-context -->
+<!-- historical-context:2026-10-04 -->
+**Historical context (2026-10-04):** Later archive and installed-file inspection located QUTS client-owned byte returns and corrected vendor package/version assumptions; exact adapter-to-producer association remains open. See [current findings](../knowledge/current-findings.md).
+<!-- /historical-context -->
 
 TSF (Timing Synchronization Function) is the Wi-Fi hardware timer. RX and TX mean receive and transmit; a PHC is a Precision Time Protocol hardware clock. See the [glossary](../glossary.md) for clock and driver terms.
 

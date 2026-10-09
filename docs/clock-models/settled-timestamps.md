@@ -12,14 +12,14 @@ Waiting a few seconds turns the live clock's intermittent sub-millisecond status
 - [What this shows and what it does not](#what-this-shows-and-what-it-does-not)
 - [Reproduce](#reproduce)
 
-**Terms:** the **guarantee** is the rate-only bound (TSF rate within 200 ppm of nominal at every instant). The **best estimate** additionally assumes one constant rate within the surrounding 60 seconds. See the [causal provider replay](causal-provider-replay.md), the [design contract](../overview/2026-10-08-causal-provider-design.md) and the [glossary](../glossary.md).
+**Terms:** the **conditional rate-only bound** is the rate-only bound (TSF rate within 200 ppm of nominal at every instant). The **best estimate** additionally assumes one constant rate within the surrounding 60 seconds. See the [causal provider replay](causal-provider-replay.md), the [design contract](../overview/2026-10-08-causal-provider-design.md) and the [glossary](../glossary.md).
 
 ## How settling works
 
 1. **Stamp:** record the event's QPC. Until it settles, the [causal provider](../../research/clock_models/causal_provider.py) gives a provisional interval and state.
 2. **Settle** ([`settle.py`](../../research/clock_models/settle.py)): once the first sample captured after the event has arrived, intersect the bounds implied by that sample and the last sample before the event. Only samples available at settle time are used.
 3. **States:**
-   - `settled`: the guarantee interval is available;
+   - `settled`: the conditional rate-only interval is available;
    - `pending`: the bracketing sample has not arrived;
    - `unbracketed`: no earlier sample exists in the epoch;
    - `inconsistent`: the two sides cannot both hold under the assumptions.
@@ -36,16 +36,16 @@ Events were placed every second from the first capture to the last, each settled
 | Events / settled | 3,598 / 3,598 | 3,597 / 3,597 |
 | Settled below 1,000 us | 100% | 100% |
 | Wait until settled: median / p90 / p99 / max (s) | 3.112 / 4.560 / 5.173 / 8.029 | 3.347 / 4.732 / 5.770 / 7.823 |
-| **Guarantee half-width: median / p90 / p99 (us)** | **308.5 / 447.4 / 578.7** | **324.9 / 463.1 / 585.3** |
-| Guarantee half-width, worst at any instant (us) | 894.669 | 785.584 |
+| **Conditional rate-only half-width: median / p90 / p99 (us)** | **308.5 / 447.4 / 578.7** | **324.9 / 463.1 / 585.3** |
+| Retrospective consecutive-pair maximum half-width (us; different from settlement) | 894.669 | 785.584 |
 | Best-estimate half-width: median / p90 / p99 / max (us) | 126.6 / 154.0 / 193.8 / 309.7 | 130.2 / 161.7 / 204.3 / 244.0 |
 
 The worst-at-any-instant figure is the exact retrospective maximum over every instant, not only the one-second grid. Pinned outputs with input hashes and source revision `ef8adf0` are in [`settled-timestamps-2026-10-08/`](settled-timestamps-2026-10-08/).
 
 ## How to use it
 
-- **Event correlation, logs and measurement records:** use settled timestamps and report the guarantee interval. Every event in these runs settled below 1 ms within about 8 seconds.
-- **Cross-device correlation:** two machines on the same access point can each settle their events onto that access point's TSF. Events are then comparable to within the sum of the two guarantees, if each station's TSF follows the access point (the assumption below).
+- **Event correlation, logs and measurement records:** use settled timestamps and report the conditional rate-only interval. Every event in these runs settled below 1 ms within about 8 seconds.
+- **Cross-device correlation (research hypothesis):** sharing an access point does not establish a qualified common clock. Independently bound each station-to-AP relationship and include both capture/conversion uncertainties in a combined error budget before comparing device events. This implementation supplies no calibrated cross-device capability.
 - **Decisions needed immediately:** use the provisional value with its state and uncertainty, and treat `stale` as not sub-millisecond.
 
 ## What this shows and what it does not
@@ -60,7 +60,7 @@ The worst-at-any-instant figure is the exact retrospective maximum over every in
 - **Online sample admission.** Samples were screened offline over the complete recording.
 - **Settle latency inside an application.** It is measured only to the controller's reader boundary.
 
-A persistent sampler at about one-second spacing would shorten the waits and tighten the guarantee.
+A persistent sampler at about one-second spacing would shorten the waits and tighten the conditional bound.
 
 ## Reproduce
 

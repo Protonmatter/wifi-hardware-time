@@ -2,9 +2,9 @@
 
 This runbook describes how a guarded campaign collects reports, rejects ambiguous results and cleans up its own tracing resources. The first completed campaign passed its collection checks; a later repeat was quarantined. The procedure preserves those limits and does not qualify accurate clock conversion or authorize another private run.
 
-<!-- current-context:2026-10-04 -->
-**Current context (2026-10-04):** The private campaign remains quarantined. The new QUTS client ownership finding does not establish firmware drain, report association or a new live acquisition. See [current findings](../knowledge/current-findings.md).
-<!-- /current-context -->
+<!-- historical-context:2026-10-04 -->
+**Historical context (2026-10-04):** The private campaign remains quarantined. The new QUTS client ownership finding does not establish firmware drain, report association or a new live acquisition. See [current findings](../knowledge/current-findings.md).
+<!-- /historical-context -->
 
 Admission means permission for one checked request. Quarantine blocks further requests after an uncertain result. ETW is Windows event tracing; ETL is its saved file. QPC is Windows' high-resolution host counter, and an IOCTL is a request sent to a driver. See the [glossary](../glossary.md) for related terms.
 

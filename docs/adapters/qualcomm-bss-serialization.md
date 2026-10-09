@@ -2,9 +2,9 @@
 
 The traced BSS path preserves peer-advertised timestamps and optionally exports Multiple-BSSID profile metadata. Its 28-byte context is profile-processing state in the inspected writers, not a recovered hardware clock. The cache also stores host tick-based aging values. Windows host time follows a separate path, so these fields do not establish a simultaneous radio/host sample.
 
-<!-- current-context:2026-10-04 -->
-**Current context (2026-10-04):** Later archive and installed-file inspection located QUTS client-owned byte returns and corrected vendor package/version assumptions; exact adapter-to-producer association remains open. See [current findings](../knowledge/current-findings.md).
-<!-- /current-context -->
+<!-- historical-context:2026-10-04 -->
+**Historical context (2026-10-04):** Later archive and installed-file inspection located QUTS client-owned byte returns and corrected vendor package/version assumptions; exact adapter-to-producer association remains open. See [current findings](../knowledge/current-findings.md).
+<!-- /historical-context -->
 
 ## Contents
 

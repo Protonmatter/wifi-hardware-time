@@ -5,10 +5,20 @@ import unittest
 import os
 import subprocess
 import shutil
-from research.evidence.build_knowledge_index import build, rendered_files
+from research.evidence.build_knowledge_index import build, rendered_files, tokens
 
 
 class KnowledgeIndexTests(unittest.TestCase):
+    def test_multiline_fstring_fragments_use_portable_expression_location(self):
+        source = 'value = (f"hello {x}"\n         f"world {y}")\nother = "separate"\n'
+        strings = {(term, line) for term, kind, line in tokens(source, '.py') if kind == 'authored-string'}
+        self.assertEqual(strings, {('hello', 1), ('world', 1), ('separate', 3)})
+
+    def test_replacement_strings_and_nested_fstrings_keep_their_own_locations(self):
+        source = "value = f'''prefix {lookup(\n    \"independent-string\", f\"nested {x}\"\n)} suffix'''\n"
+        strings = {(term, line) for term, kind, line in tokens(source, '.py') if kind == 'authored-string'}
+        self.assertEqual(strings, {('prefix', 1), ('suffix', 1), ('independent-string', 2), ('nested', 2)})
+
     def test_file_order_uses_portable_ordinal_paths(self):
         with tempfile.TemporaryDirectory() as name:
             root=Path(name);(root/'research').mkdir()

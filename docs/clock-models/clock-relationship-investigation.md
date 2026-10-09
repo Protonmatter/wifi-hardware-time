@@ -2,9 +2,9 @@
 
 This investigation tests whether the exposed ranging and counter values can determine clock relationships. Saved records reproduce the driver’s arithmetic, but aggregated ranging intervals cannot identify clock offset. Counter models can fit some observations only under unproven sampling assumptions, so their numerical agreement does not qualify a usable hardware-to-host conversion.
 
-<!-- current-context:2026-10-04 -->
-**Current context (2026-10-04):** QUTS and QXDM expose distinct hardware-origin, interpolated and host-delivery times. Owned bytes do not establish fresh hardware-to-QPC sampling or an accuracy bound. See [current findings](../knowledge/current-findings.md).
-<!-- /current-context -->
+<!-- historical-context:2026-10-04 -->
+**Historical context (2026-10-04):** QUTS and QXDM expose distinct hardware-origin, interpolated and host-delivery times. Owned bytes do not establish fresh hardware-to-QPC sampling or an accuracy bound. See [current findings](../knowledge/current-findings.md).
+<!-- /historical-context -->
 
 **Key terms:** Clock offset is the difference between two clocks. An affine model uses a rate and offset. A sampling bracket must contain the actual measurement instant, not merely the delivery of a cached value. See the [glossary](../glossary.md).
 

@@ -28,6 +28,7 @@ ROOT=Path(__file__).resolve().parents[2]
 from research.tsf.qualcomm_protocol import QUALIFIED_SHA256,validate_driver
 from research.evidence.export_clock_evidence import normalize_run,export_sanitized
 from research.acquisition.campaign_admission import Admission,transition
+from research.acquisition.persistent_sampler import durable_save
 
 PROVIDER='{bb6f5b93-635c-47be-816f-e895e77064a8}'
 KINDS=('command','report','soc_timer','delay')
@@ -57,10 +58,51 @@ class TraceOwner:
         (self.folder/'trace-start.txt').write_text(result.stdout)
 
     def stop(self) -> None:
-        if self.attempted:
-            result=run(['logman','stop',self.session,'-ets'])
-            (self.folder/'trace-stop.txt').write_text(result.stdout)
-            self.attempted=False
+        if not self.attempted:
+            return
+        # Only our exact session may be stopped. A failed command/query never proves
+        # absence. Keep attempted set unless a successful stop AND its receipt persist.
+        receipt = dict(session=self.session, stopped=False, attempts=[], evidence_complete=True, evidence_errors=[])
+        path = self.folder / 'trace-stop-attempts.json'
+        evidence_errors: list[BaseException] = []
+
+        def evidence_failed(stage: str, error: BaseException) -> None:
+            evidence_errors.append(error)
+            receipt.update(stopped=False, evidence_complete=False)
+            receipt['evidence_errors'].append(dict(stage=stage, error_type=type(error).__name__, error=str(error)))
+
+        def persist(stage: str) -> None:
+            # Evidence I/O must not suppress or interrupt bounded owned-trace cleanup.
+            try:
+                durable_save(path, receipt)
+            except BaseException as error:
+                evidence_failed(stage, error)
+
+        for number in range(1, 4):
+            attempt = dict(number=number, state='attempted', timeout_s=5)
+            receipt['attempts'].append(attempt)
+            persist(f'attempt-{number}-before')
+            try:
+                result = run(['logman', 'stop', self.session, '-ets'], timeout=5)
+            except BaseException as error:
+                attempt.update(state='unproven', error_type=type(error).__name__, error=str(error))
+                persist(f'attempt-{number}-after')
+                if not isinstance(error, Exception) or number == 3:
+                    if evidence_errors:
+                        error.add_note('Trace stop evidence incomplete: ' + str(evidence_errors[0]))
+                    raise
+                continue
+            attempt.update(state='stopped', returncode=result.returncode)
+            try:
+                (self.folder / 'trace-stop.txt').write_text(result.stdout)
+            except BaseException as error:
+                evidence_failed('stop-output', error)
+            receipt['stopped'] = not evidence_errors
+            persist(f'attempt-{number}-after')
+            if evidence_errors:
+                raise RuntimeError('Trace stop command succeeded; evidence incomplete: ' + str(evidence_errors[0])) from evidence_errors[0]
+            self.attempted = False
+            return
 
 
 def finalize_run(path: Path,summary: dict,verify) -> dict:

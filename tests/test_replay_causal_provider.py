@@ -4,6 +4,7 @@ from pathlib import Path
 if __package__ in (None, ""):
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from fractions import Fraction
+from dataclasses import replace
 import json
 import subprocess
 import tempfile
@@ -11,7 +12,7 @@ import unittest
 from unittest.mock import patch
 from research.clock_models.causal_provider import AvailableSample, CausalProvider
 from research.clock_models.replay_causal_provider import SCREENING_LABEL, arrival_map, availability, replay, replay_run
-from research.clock_models.sample_screen import Request, Sample, Screen
+from research.clock_models.sample_screen import ContinuityBreak, Request, Sample, Screen
 
 ROOT = Path(__file__).resolve().parents[1]
 HZ = 10_000_000
@@ -22,6 +23,67 @@ def tsf(qpc):
 
 
 class ReplayTests(unittest.TestCase):
+    def test_late_historical_samples_are_skipped_without_changing_past_coverage(self):
+        for arrivals, skipped in (((50_000_000, 22_000_000), [1]),
+                                  ((2_000_000, 60_000_000, 42_000_000), [2])):
+            with self.subTest(arrivals=arrivals):
+                samples = [AvailableSample(i + 1, tsf(1_004_000 + i * 20_000_000),
+                                           1_000_000 + i * 20_000_000, 1_004_000 + i * 20_000_000, arrival)
+                           for i, arrival in enumerate(arrivals)]
+                events = [('accepted', None, s) for s in samples]
+                retained = [e for e in events if e[2].sequence not in skipped]
+                baseline = replay(retained, HZ, 0, 80_000_000, (0, min(arrivals)))
+                try:
+                    result = replay(events, HZ, 0, 80_000_000, (0, min(arrivals)))
+                except ValueError as error:
+                    self.fail(f'Late history must be accounted for without aborting replay: {error}')
+                self.assertEqual([s['sequence'] for s in result['late_history_skipped']], skipped)
+                self.assertEqual(result['samples_ingested'], len(retained))
+                self.assertEqual(result['incompatible'], [])
+                self.assertEqual(result['durations_ticks'], baseline['durations_ticks'])
+                self.assertEqual(result['coverage_review_interval'], baseline['coverage_review_interval'])
+                self.assertEqual(sum(Fraction(v) for v in result['durations_ticks'].values()), 80_000_000)
+                self.assertEqual(result['arrival_order_policy_version'], 'wht/arrival-order-v2')
+
+    def test_equal_availability_ties_use_capture_order_without_backdating(self):
+        first = AvailableSample(1, tsf(1_004_000), 1_000_000, 1_004_000, 30_000_000)
+        second = AvailableSample(2, tsf(21_004_000), 21_000_000, 21_004_000, 30_000_000)
+        expected = replay([('accepted', None, first), ('accepted', None, second)], HZ, 0, 40_000_000)
+        try:
+            result = replay([('accepted', None, second), ('accepted', None, first)], HZ, 0, 40_000_000)
+        except ValueError as error:
+            self.fail(f'Simultaneous available captures must use deterministic tie order: {error}')
+        self.assertEqual(result, expected)
+        self.assertEqual(result['samples_ingested'], 2)
+        self.assertEqual(Fraction(result['durations_ticks']['acquiring']), 30_000_000)
+
+    def test_cli_completes_reordered_arrivals_with_structured_skip_accounting(self):
+        sys.path.insert(0, str(Path(__file__).resolve().parent))
+        from test_analyze_bound_run import write_run
+        for order, skipped in (((2, 1), [1]), ((1, 3, 2), [2]), ((2, 1, 3), [])):
+            with self.subTest(order=order), tempfile.TemporaryDirectory() as directory:
+                folder = Path(directory)
+                write_run(folder, count=len(order))
+                records = [json.loads(line) for line in (folder / 'raw-timing.jsonl').read_text().splitlines()]
+                latest = max(r.get('raw_timestamp', 0) for r in records)
+                # Last case exercises exact receipt ties in the real CLI.
+                arrivals = {seq: latest + (1 if order == (2, 1, 3) else rank + 1) * 10_000_000
+                            for rank, seq in enumerate(order)}
+                groups = [[r for r in records if r.get('kind') in ('report', 'soc_timer', 'delay')][i:i + 3]
+                          for i in range(0, 3 * len(order), 3)]
+                live = [dict(r, received_qpc=arrivals[seq]) for seq in order for r in groups[seq - 1]]
+                (folder / 'live-observer.jsonl').write_text(''.join(json.dumps(r) + '\n' for r in live))
+                process = subprocess.run([sys.executable, '-B', str(ROOT / 'research/clock_models/replay_causal_provider.py'),
+                                          directory, '--mode', 'causal-arrival'], cwd=directory,
+                                         capture_output=True, text=True, timeout=20)
+                self.assertEqual(process.returncode, 0, process.stderr)
+                result = json.loads(process.stdout)['causal-arrival']
+                self.assertEqual([s['sequence'] for s in result['late_history_skipped']], skipped)
+                self.assertEqual(result['screen']['accepted'], len(order))
+                self.assertEqual(result['samples_ingested'] + len(result['late_history_skipped']), len(order))
+                self.assertEqual(sum(Fraction(v) for v in result['durations_ticks'].values()),
+                                 (len(order) - 1) * 200_000_000 + 50_000_000)
+
     def test_arrival_uses_the_last_required_record_and_request_completion(self):
         live = [dict(kind='command', raw_timestamp=100, received_qpc=5_000),
                 dict(kind='report', raw_timestamp=3_000, received_qpc=6_000),
@@ -84,11 +146,14 @@ class ReplayTests(unittest.TestCase):
         self.assertEqual(diagnostic['stale_interval_count'], baseline['stale_interval_count'])
         self.assertEqual(diagnostic['longest_stale_s'], baseline['longest_stale_s'])
 
-    def _screened_replay(self, accepted, rejected=(), mode='causal-etw', live=(), receipts=None):
+    def _screened_replay(self, accepted, rejected=(), mode='causal-etw', live=(), receipts=None,
+                         continuity_break=None):
         data = dict(qpc_hz=HZ, records=[], requests=[Request(1, 0, True), Request(2, 20_000_000, True)],
                     identity=dict(folder='synthetic', session='synthetic'))
         screened = Screen(tuple(accepted), tuple((s.sequence, r) for r, s in rejected), 0, 0, 0,
                           Fraction(2), Fraction(0), tuple(rejected))
+        if continuity_break is not None:
+            screened = replace(screened, continuity_closed=True, continuity_breaks=(continuity_break,))
         if receipts is None:
             receipts = [dict(sequence=1, qpc_request_completed=1), dict(sequence=2, qpc_request_completed=20_000_001)]
         with tempfile.TemporaryDirectory() as directory, \
@@ -98,6 +163,52 @@ class ReplayTests(unittest.TestCase):
                 patch('research.clock_models.replay_causal_provider._lines',
                       side_effect=lambda p: live if p.name == 'live-observer.jsonl' else receipts):
             return replay_run(Path(directory), mode)
+
+    def test_continuity_break_invalidates_only_from_its_recorded_availability(self):
+        first = Sample(1, tsf(1_004_000), 0, 1_000_000, 1_004_000)
+        reset = Sample(2, 100, 0, 21_000_000, 21_004_000)
+        later = Sample(3, 19_999_000, 0, 41_000_000, 41_004_000)
+        live = []
+        for s, at in ((first, 2_000_000), (reset, 30_000_000), (later, 50_000_000)):
+            live.extend([dict(kind='report', raw_timestamp=s.upper_qpc), dict(kind='delay', received_qpc=at)])
+        receipts = [dict(sequence=s.sequence, qpc_request_completed=s.upper_qpc + 1)
+                    for s in (first, reset, later)]
+        diagnostic = ContinuityBreak(1, 2, first.tsf_us, reset.tsf_us, reset.lower_qpc)
+        result = self._screened_replay([first], [('suspected_tsf_discontinuity', reset),
+                                               ('continuity_segment_closed', later)],
+                                      'causal-arrival', live, receipts, diagnostic)
+        self.assertEqual(Fraction(result['durations_ticks']['invalid']), 40_000_000)
+        baseline = replay([('accepted', None, AvailableSample(1, first.tsf_us, first.lower_qpc,
+                                                              first.upper_qpc, 2_000_000))], HZ, 0, 30_000_000)
+        for state in ('acquiring', 'tracking', 'stale'):
+            self.assertEqual(result['durations_ticks'][state], baseline['durations_ticks'][state])
+        self.assertFalse(result['whole_recording_continuity_eligible'])
+        self.assertTrue(result['screen']['continuity_closed'])
+        self.assertEqual(result['screen']['continuity_breaks'][0]['sequence'], 2)
+        self.assertEqual(result['continuity_invalidations'][0]['available_qpc'], 30_000_000)
+
+    def test_unknown_break_availability_rejects_replay_instead_of_claiming_tracking(self):
+        first = Sample(1, tsf(1_004_000), 0, 1_000_000, 1_004_000)
+        reset = Sample(2, 100, 0, 21_000_000, 21_004_000)
+        diagnostic = ContinuityBreak(1, 2, first.tsf_us, reset.tsf_us, reset.lower_qpc)
+        live = [dict(kind='report', raw_timestamp=first.upper_qpc), dict(kind='delay', received_qpc=2_000_000)]
+        with self.assertRaisesRegex(ValueError, 'continuity break availability'):
+            self._screened_replay([first], [('suspected_tsf_discontinuity', reset)], 'causal-arrival', live,
+                                  continuity_break=diagnostic)
+
+    def test_continuity_diagnostic_waits_for_both_observations(self):
+        first = Sample(1, tsf(1_004_000), 0, 1_000_000, 1_004_000)
+        reset = Sample(2, 100, 0, 21_000_000, 21_004_000)
+        diagnostic = ContinuityBreak(1, 2, first.tsf_us, reset.tsf_us, reset.lower_qpc)
+        live = [dict(kind='report', raw_timestamp=first.upper_qpc), dict(kind='delay', received_qpc=40_000_000),
+                dict(kind='report', raw_timestamp=reset.upper_qpc), dict(kind='delay', received_qpc=30_000_000)]
+        result = self._screened_replay([first], [('suspected_tsf_discontinuity', reset)],
+                                      'causal-arrival', live, continuity_break=diagnostic)
+        self.assertEqual(Fraction(result['durations_ticks']['acquiring']), 40_000_000)
+        self.assertEqual(Fraction(result['durations_ticks']['invalid']), 30_000_000)
+        self.assertEqual(result['continuity_diagnostics'][0]['sample_available_qpc'], 30_000_000)
+        self.assertEqual(result['continuity_diagnostics'][0]['previous_available_qpc'], 40_000_000)
+        self.assertEqual(result['continuity_invalidations'][0]['available_qpc'], 40_000_000)
 
     def test_rejected_reports_with_missing_evidence_are_accounted_for(self):
         first = Sample(1, tsf(1_004_000), 0, 1_000_000, 1_004_000)

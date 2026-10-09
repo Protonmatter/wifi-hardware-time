@@ -14,11 +14,15 @@ The private campaign remains quarantined.
 
 ## Persistent diagnostic-TSF status, 2026-10-08
 
+<!-- tsf-headlines:smoke -->
+**Current retained smoke analysis:** 139 recorded requests, 138 offline-screened samples; **92.862589%** tracking coverage under the conditional integer-estimate uncertainty threshold. **297/297** event-grid points settled, with median/max rate-only half-widths of 280.429/614.883 us and median wait 2.341 s. [Versioned results and source pins](postmerge-corrections-2026-10-08.json). This is offline-screened replay of the retained capture, not online admission or calibrated AP/UTC accuracy.
+<!-- /tsf-headlines:smoke -->
+
 | Gate | Current disposition | Evidence / next dependency |
 |---|---|---|
 | Persistent sampler software | Implemented, independently reviewed and offline-tested | [Contract and acceptance map](../acquisition/persistent-tsf-sampler.md); the audited per-request probe is unchanged |
 | First live persistent smoke | Passed for normal completion on the exact build | [139 requests, 138 screened samples and clean lifecycle](../acquisition/persistent-tsf-smoke-2026-10-08.md); long-run/load and real failure paths remain open |
-| Conditional TSF/QPC results | Useful with explicit assumptions | [Mathematics](../clock-models/tsf-mathematics.md); 92.884% arrival-aware coverage and 297/297 settled event-grid points in the smoke |
+| Conditional TSF/QPC results | Useful with explicit assumptions | [Mathematics](../clock-models/tsf-mathematics.md); versioned numerical summary above, with offline screening and capture assumptions |
 | Report-wait decoupling / online admission | Not implemented | Need supported report lifecycle/association and causal admission contracts before consumer ingestion |
 | Physical/AP/UTC/multi-node accuracy | Unqualified | Need independent reference and combined error budget; `physical_bound_proven` remains false |
 | Publication / merge | Separate from qualification | [Sequenced roadmap](persistent-tsf-next-steps.md); verify exact-head CI and dependency stack, then obtain the relevant user authorization |

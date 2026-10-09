@@ -31,6 +31,82 @@ def requests(count):
 
 
 class ScreenTests(unittest.TestCase):
+    def test_fractional_upper_qpc_tick_is_admitted_at_positive_rate_limit(self):
+        # Exact +100 ppm truth at U+0.99999 tick floors to TSF 10003.
+        capture = Fraction(100_009) + Fraction(99_999, 100_000)
+        truth = Fraction(99_999, 100_000) + Fraction(1_000_100, HZ) * capture
+        self.assertEqual(int(truth), 10_003)
+        samples = [Sample(1, 0, 0, 0, 0), Sample(2, int(truth), 0, 100_009, 100_009)]
+        self.assertEqual(freshness_filter(samples, HZ), (samples, []))
+
+    def test_previous_fractional_upper_tick_is_admitted_at_negative_rate_limit(self):
+        capture = Fraction(99_999, 100_000)
+        previous_truth = Fraction(100_000_001, 100_000)
+        current_truth = previous_truth + Fraction(999_900, HZ) * (100_011 - capture)
+        samples = [Sample(1, int(previous_truth), 0, 0, 0),
+                   Sample(2, int(current_truth), 0, 100_011, 100_011)]
+        self.assertEqual(freshness_filter(samples, HZ), (samples, []))
+
+    def test_jittered_capture_edges_preserve_fresh_rate_limit_clocks(self):
+        for ppm in (-100, 0, 100):
+            for phase in (Fraction(0), Fraction(1, 2), Fraction(99_999, 100_000)):
+                for edge in (Fraction(0), Fraction(10), Fraction(1_099_999, 100_000)):
+                    samples = [Sample(i, int(10_000 + phase + Fraction(1_000_000 + ppm, HZ) * (lo + edge)),
+                                      0, lo, lo + 10) for i, lo in enumerate((100, 100_011, 5_000_003))]
+                    with self.subTest(ppm=ppm, phase=phase, edge=edge):
+                        self.assertEqual(freshness_filter(samples, HZ), (samples, []))
+
+    def test_noninteger_or_unordered_candidates_fail_closed(self):
+        for samples, hz in (([Sample(1, True, 0, 0, 0)], HZ),
+                            ([Sample(1, 0, 0, 0, 0)], True),
+                            ([Sample(1, 0, 0, 0, 0)], 0),
+                            ([Sample(1, 0, 0, 1, 1), Sample(2, 2, 0, 0, 0)], HZ)):
+            with self.subTest(samples=samples, hz=hz), self.assertRaises(ValueError):
+                freshness_filter(samples, hz)
+
+    def test_backward_observation_latches_even_after_drift_allowance_grows(self):
+        samples = [Sample(1, 1_000, 0, 0, 0), Sample(2, 100, 0, 11_000, 11_000),
+                   Sample(3, 19_999_000, 0, 200_000_000, 200_000_000)]
+        accepted, rejected = freshness_filter(samples, HZ)
+        self.assertEqual(accepted, samples[:1])
+        self.assertEqual(rejected, [(2, 'suspected_tsf_discontinuity'), (3, 'continuity_segment_closed')])
+        # A caller must explicitly supply a new analysis segment to rearm.
+        self.assertEqual(freshness_filter(samples[1:], HZ), (samples[1:], []))
+
+    def test_repeated_stale_report_does_not_close_continuity(self):
+        samples = [Sample(1, 1_000, 0, 0, 0), Sample(2, 1_000, 0, 11_000, 11_000),
+                   Sample(3, 20_001_000, 0, 200_000_000, 200_000_000)]
+        self.assertEqual(freshness_filter(samples, HZ),
+                         ([samples[0], samples[2]], [(2, 'stale_or_inconsistent')]))
+
+    def test_backward_counter_wrap_is_not_automatically_unwrapped(self):
+        samples = [Sample(1, (1 << 64) - 10, 0, 0, 0), Sample(2, 10, 0, 200, 200)]
+        self.assertEqual(freshness_filter(samples, HZ)[1], [(2, 'suspected_tsf_discontinuity')])
+
+    def test_screen_preserves_closed_continuity_and_observations(self):
+        reqs = requests(4)
+        values = [1_000, 100, 4_001_000, 6_001_000]
+        records = [r for req, value in zip(reqs, values) for r in ours(req.lower_qpc, tsf=value)]
+        result = screen(records, reqs, HZ)
+        self.assertEqual([s.sequence for s in result.accepted], [1])
+        self.assertTrue(result.continuity_closed)
+        self.assertEqual(result.policy_version, 'wht/sample-screen-v2')
+        self.assertEqual(len(result.continuity_breaks), 1)
+        discontinuity = result.continuity_breaks[0]
+        self.assertEqual((discontinuity.previous_sequence, discontinuity.sequence), (1, 2))
+        self.assertEqual((discontinuity.previous_tsf_us, discontinuity.tsf_us), (1_000, 100))
+        self.assertEqual(discontinuity.reason, 'backward_tsf_observation')
+        self.assertEqual([reason for reason, _ in result.rejected_samples],
+                         ['suspected_tsf_discontinuity', 'continuity_segment_closed', 'continuity_segment_closed'])
+
+    def test_structurally_rejected_backward_report_does_not_latch(self):
+        reqs = requests(3)
+        records = [r for req in reqs for r in ours(req.lower_qpc)]
+        records += group(reqs[1].lower_qpc + 1_000, 0)
+        result = screen(records, reqs, HZ)
+        self.assertEqual([s.sequence for s in result.accepted], [1, 3])
+        self.assertFalse(result.continuity_closed)
+
     def test_one_owned_group_per_window_is_accepted(self):
         reqs = requests(3)
         records = [r for q in reqs for r in ours(q.lower_qpc)]

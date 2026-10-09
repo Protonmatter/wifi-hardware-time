@@ -37,6 +37,47 @@ class VariableClock:
 
 
 class CausalProviderTests(unittest.TestCase):
+    def test_exact_rate_extremes_and_quantized_capture_edges_contain_truth(self):
+        for ppm in (-200, 200):
+            rate = Fraction(1_000_000 + ppm, HZ)
+            clock = lambda q: Fraction(1_000) + Fraction(999, 1_000) + rate * q
+            for capture in (Fraction(100), Fraction(110), Fraction(110) + Fraction(999, 1_000)):
+                with self.subTest(ppm=ppm, capture=capture):
+                    provider = CausalProvider(HZ)
+                    self.assertTrue(provider.ingest(AvailableSample(1, int(clock(capture)), 100, 110, 111)).compatible)
+                    for query in (111, 10_000_111, 100_000_111):
+                        result = provider.estimate(query)
+                        self.assertLessEqual(result.low_us, clock(query))
+                        self.assertGreaterEqual(result.high_us, clock(query))
+                        self.assertLessEqual(abs(result.estimate_us - clock(query)), result.uncertainty_us)
+
+    def test_piecewise_clock_touching_both_rate_extremes_is_contained(self):
+        clock, provider = VariableClock(), CausalProvider(HZ)
+        clock.rates = (Fraction(1_000_200, HZ), Fraction(999_800, HZ))
+        for i in range(8):
+            lower = 1_000_000 + i * 20_000_000
+            capture = Fraction(lower + 4_000) + Fraction(999, 1_000)
+            item = AvailableSample(i + 1, int(clock.at(capture)), lower, lower + 4_000, lower + 4_001)
+            self.assertTrue(provider.ingest(item).compatible)
+            for query in (item.available_qpc, item.available_qpc + 7_000_000):
+                result = provider.estimate(query)
+                self.assertLessEqual(result.low_us, clock.at(query))
+                self.assertGreaterEqual(result.high_us, clock.at(query))
+
+    def test_historical_ingest_guard_preserves_model_and_issued_estimate(self):
+        provider = CausalProvider(HZ)
+        later = sample(2, 21_000_000)
+        provider.ingest(later)
+        issued = provider.estimate(23_000_000)
+        model = provider.model()
+        historical = sample(1, 1_000_000, delay=30_000_000)
+        with self.assertRaisesRegex(ValueError, 'overlaps or precedes'):
+            provider.ingest(historical)
+        self.assertEqual(provider.model(), model)
+        self.assertEqual(provider.estimate(23_000_000), issued)
+        self.assertLessEqual(issued.low_us, at(23_000_000))
+        self.assertGreaterEqual(issued.high_us, at(23_000_000))
+
     def test_acquiring_until_the_first_sample(self):
         provider = CausalProvider(HZ)
         self.assertEqual(provider.estimate(0).state, 'acquiring')

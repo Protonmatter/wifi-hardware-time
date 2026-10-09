@@ -2,9 +2,11 @@
 
 This project asks whether Wi-Fi hardware can provide trustworthy timestamps for applications and synchronized clocks. We have recovered useful diagnostic data, but have not demonstrated calibrated synchronization. The research is organized by the question each experiment answers, with its scripts, evidence limits and diagrams linked together.
 
-<!-- current-context:2026-10-08 -->
-**Current context (2026-10-08):** Persistent action-4 sampling completed a five-minute idle live smoke with 139 successful requests and clean shutdown. Offline screening accepted 138 samples; corrected arrival-aware replay reports conditional integer-estimate uncertainty below 1 ms for 92.863% of its declared interval, and all 297 event-grid points settled below a 1-ms half-width after a median 2.341-second wait. These are conditional station-TSF/QPC results, not calibrated AP/UTC accuracy. Read the [review corrections and retained-data comparison](docs/overview/pr-reconciliation-2026-10-08.md), [original tested findings](docs/acquisition/persistent-tsf-smoke-2026-10-08.md), [mathematics](docs/clock-models/tsf-mathematics.md) and [next research and implementation gates](docs/overview/persistent-tsf-next-steps.md). The separate complete-original-event export route remains unqualified.
-<!-- /current-context -->
+<!-- tsf-headlines:smoke -->
+**Current retained smoke analysis:** 139 recorded requests, 138 offline-screened samples; **92.862589%** tracking coverage under the conditional integer-estimate uncertainty threshold. **297/297** event-grid points settled, with median/max rate-only half-widths of 280.429/614.883 us and median wait 2.341 s. [Versioned results and source pins](docs/overview/postmerge-corrections-2026-10-08.json). This is offline-screened replay of the retained capture, not online admission or calibrated AP/UTC accuracy.
+<!-- /tsf-headlines:smoke -->
+
+See the [post-merge corrections](docs/overview/postmerge-corrections-2026-10-08.md), [original capture](docs/acquisition/persistent-tsf-smoke-2026-10-08.md) and [research roadmap](docs/overview/persistent-tsf-next-steps.md).
 
 ## Contents
 

@@ -71,6 +71,11 @@ def normalize(sequence: int, receipt: dict, session: dict, qpc_hz: int | None = 
         _boolean(receipt, field)
     if not receipt['completion_established']:
         raise ValueError('Request completion unresolved')
+    if 'event_close_attempted' in receipt or 'event_closed' in receipt:
+        attempted = _boolean(receipt, 'event_close_attempted')
+        closed = _boolean(receipt, 'event_closed')
+        if (closed and not attempted) or (receipt['success'] and not closed):
+            raise ValueError('Contradictory event closure evidence')
     initial_error = _integer(receipt, 'initial_error')
     terminal_error = _integer(receipt, 'terminal_error')
     if receipt['initial_success'] != (initial_error == 0) or receipt['terminal_success'] != (terminal_error == 0):

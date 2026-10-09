@@ -2,9 +2,9 @@
 
 This source list identifies the public code and platform documentation used to investigate Wi-Fi timing. Fixed revisions make findings reproducible; vendor names alone do not. References explain possible interfaces and behavior, while the project’s experiment reports separately establish what was actually observed on the inspected hardware.
 
-<!-- current-context:2026-10-04 -->
-**Current context (2026-10-04):** Current findings now include complete vendor package inventories, QUTS client ownership and a correction ledger. Historical acquisitions retain their original scope and limits. See [current findings](../knowledge/current-findings.md).
-<!-- /current-context -->
+<!-- historical-context:2026-10-04 -->
+**Historical context (2026-10-04):** Current findings now include complete vendor package inventories, QUTS client ownership and a correction ledger. Historical acquisitions retain their original scope and limits. See [current findings](../knowledge/current-findings.md).
+<!-- /historical-context -->
 
 **Key terms:** A pinned revision identifies a fixed source version. A primary source is the vendor or project defining the interface. Source availability does not demonstrate that a particular device implements it. See the [glossary](../glossary.md).
 
