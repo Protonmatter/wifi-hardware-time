@@ -31,8 +31,8 @@ Environment: Windows, Python 3.14.3. Commands ran from the isolated repository r
 | Check / command | Observed result |
 |---|---|
 | `python -m compileall -q research tests` | Passed |
-| `python -m unittest discover -s tests -v` | Latest readable-copy/parent follow-up: 580 discovered, **543 passed, 37 skipped**, zero failures/errors; 57.807 s. Earlier milestone pass: 577 discovered, 540 passed and 37 skipped; initial integrated documentation pass: 562 discovered, 525 passed and 37 skipped |
-| `python -m unittest discover -s tests -p test_documentation_archive.py -v` | 20 passed: independent reading-copy transformation, full publication-parent restoration, pinned milestones/revisions/scopes, canonical copy paths, Git-blob identity, complete inventory, missing/extra-file and unsafe-path/alias rejection, hashes and newline preservation |
+| `python -m unittest discover -s tests -v` | Latest archive-entry/index/JSON follow-up: 585 discovered, **548 passed, 37 skipped**, zero failures/errors; 63.476 s. Earlier milestone pass: 577 discovered, 540 passed and 37 skipped; initial integrated documentation pass: 562 discovered, 525 passed and 37 skipped |
+| `python -m unittest discover -s tests -p test_documentation_archive.py -v` | 25 passed: strict JSON decoding, complete snapshot indexes, link/nonregular-entry and directory inventory rejection, independent reading-copy transformation, full publication-parent restoration, pinned milestones/revisions/scopes, canonical copy paths, Git-blob identity, complete inventory, missing/extra-file and unsafe-path/alias rejection, hashes and newline preservation |
 | `python -m unittest discover -s tests -p test_documentation_navigation.py -v` | 4 passed, including file links, opening synopsis, fences and canonical overview diagrams |
 | `python -m unittest discover -s tests -p test_knowledge_index.py -v` | 6 passed |
 | `python -m unittest discover -s tests -p test_tsf_headlines.py -v` | 3 passed |
@@ -80,6 +80,12 @@ The follow-up review identified that recomputing a readable-copy digest could hi
 Readable copies now must equal the deterministic output of `render_documentation_archive.py` applied to independently retrieved Git source bytes and that revision's file/directory inventory. This validates the notice and inline-link transformation independently of manifest hashes, including multiline labels and linked images. All existing 156 readable copies match that transformation without changes.
 
 The new `2026-10-09-publication-parent-da4f55e` supplement adds the exact parent versions of `README.md`, the generated reference index, the diagram gallery, and the atlas guide. Its four records bring the public archive to seven snapshots and 160 document versions. Overlaying it on the complete initial snapshot reconstructs every one of the publication parent's 146 Markdown files byte-for-byte; a dedicated test compares that result with Git. Rollback instructions now use `da4f55e` so merged atlas additions are retained.
+
+## PR #11 archive-entry, index and JSON follow-up
+
+Further review found that file-only traversal ignored dangling/directory symlinks, snapshot index text was not independently checked, and duplicate JSON names used Python's last-value behavior. Negative fixtures reproduced acceptance of the ignored link entries, truncated/redirected indexes, and duplicate root/row keys before correction.
+
+Inventory now inspects every entry with `lstat()` before reading content or descending into directories, rejects symlinks/reparse points/non-regular entries and checks both file and directory sets. Snapshot indexes are reproduced in full from their validated source/copy mapping, preserving the existing text while detecting missing rows, wrong links or changed notices. Strict manifest decoding rejects duplicate names at every level, escaped equivalent names and non-standard JSON constants. Link/reparse/FIFO metadata cases use mocks so the unit tests need no special Windows privileges; an empty unmanifested directory is exercised directly. The publication-parent restoration and fixture setup also inventory entries before their first content read; a regression asserts that a mocked FIFO is rejected with neither text nor byte reads attempted. Existing archived files remain unchanged.
 
 The review-only audit also detected three unre-based multiline links in two archive reading copies. Those derived copies and their manifest hashes were repaired; exact originals were untouched. The subsequent full archive/link/anchor audit passed. This helper belongs to the review workspace, not the repository's supported research CLI.
 

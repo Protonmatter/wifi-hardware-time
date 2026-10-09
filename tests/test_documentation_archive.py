@@ -4,11 +4,12 @@ import json
 from pathlib import Path
 import re
 import shutil
+import stat
 import subprocess
 import tempfile
 import unittest
 from unittest.mock import patch
-from research.evidence.render_documentation_archive import render_reading_copy
+from research.evidence.render_documentation_archive import parse_manifest, render_reading_copy, render_snapshot_index
 
 ROOT = Path(__file__).resolve().parents[1]
 COMPLETE_SNAPSHOT = '2026-10-09-pre-refresh-e9d71b8'
@@ -33,6 +34,32 @@ FIXTURE_SNAPSHOT = '2026-10-06-complete-event-d1055a1'
 
 
 class DocumentationArchiveTests(unittest.TestCase):
+    def archive_inventory(self, folder: Path) -> tuple[set[str], set[str]]:
+        files: set[str] = set()
+        directories: set[str] = set()
+        def visit(path: Path) -> None:
+            info = path.lstat()
+            self.assertFalse(stat.S_ISLNK(info.st_mode) or
+                             getattr(info, 'st_file_attributes', 0) & getattr(stat, 'FILE_ATTRIBUTE_REPARSE_POINT', 0x400),
+                             'Archive link or non-regular entry')
+            if stat.S_ISDIR(info.st_mode):
+                if path != folder:
+                    directories.add(path.relative_to(folder).as_posix())
+                for child in sorted(path.iterdir()):
+                    visit(child)
+            elif stat.S_ISREG(info.st_mode) and path != folder:
+                files.add(path.relative_to(folder).as_posix())
+            else:
+                self.fail('Archive link or non-regular entry')
+        visit(folder)
+        return files, directories
+
+    def expected_directories(self, files: set[str]) -> set[str]:
+        return {parent.as_posix() for file in files for parent in Path(file).parents if parent != Path('.')}
+
+    def manifest_data(self, path: Path) -> dict:
+        return parse_manifest(self.archive_file(path.parent, path.name).read_text(encoding='utf-8'))
+
     def archive_file(self, folder: Path, relative: str) -> Path:
         self.assertIsInstance(relative, str, 'Invalid archive path')
         self.assertTrue(relative and '\\' not in relative and ':' not in relative
@@ -57,12 +84,14 @@ class DocumentationArchiveTests(unittest.TestCase):
                 for entry in entries if entry}
 
     def verify_snapshot(self, manifest: Path) -> None:
+        actual_files, actual_directories = self.archive_inventory(manifest.parent)
         name = manifest.parent.name
         self.assertIn(name, EXPECTED_SNAPSHOTS, 'Unexpected snapshot directory')
         expected_revision, selected_sources = EXPECTED_SNAPSHOTS[name]
         self.assertTrue(expected_revision.startswith(name.rsplit('-', 1)[-1]),
                         'Snapshot directory suffix differs from its pinned revision')
-        data = json.loads(manifest.read_text(encoding='utf-8'))
+        data = self.manifest_data(manifest)
+        self.assertEqual(data['schema'], 'wht/documentation-archive-v1')
         self.assertEqual(data['source_kind'], 'git-blob')
         self.assertRegex(data['source_revision'], r'^[0-9a-f]{40}$')
         revision = data['source_revision']
@@ -98,17 +127,22 @@ class DocumentationArchiveTests(unittest.TestCase):
                 raw = path.read_bytes()
                 self.assertEqual(hashlib.sha256(raw).hexdigest(), row[digest])
                 if field == 'original_path':
+                    self.assertIs(type(row['original_bytes']), int, 'Original byte length must be an integer')
                     self.assertEqual(len(raw), row['original_bytes'])
                     self.assertEqual(raw, expected, f'Archived original differs from Git blob: {row["source_path"]}')
                 else:
                     self.assertEqual(raw, render_reading_copy(row['source_path'], revision, expected, objects),
                                      f'Readable copy differs from Git-source transformation: {row["source_path"]}')
-        actual_files = {path.relative_to(manifest.parent).as_posix()
-                        for path in manifest.parent.rglob('*') if path.is_file()}
         self.assertEqual(actual_files, expected_files, 'Unmanifested or missing archive files')
+        self.assertEqual(actual_directories, self.expected_directories(expected_files),
+                         'Unmanifested or missing archive directories')
+        self.assertEqual((manifest.parent/'README.md').read_bytes(), render_snapshot_index(name, data),
+                         'Snapshot index differs from its complete manifest-derived rendering')
 
     def verify_archive(self, archive: Path) -> None:
-        manifests = sorted(archive.glob('*/manifest.json'))
+        actual_files, actual_directories = self.archive_inventory(archive)
+        manifests = sorted(archive/path for path in actual_files
+                           if path.count('/') == 1 and path.endswith('/manifest.json'))
         self.assertIn(archive/COMPLETE_SNAPSHOT/'manifest.json', manifests,
                       'Required complete snapshot is missing')
         self.assertEqual({manifest.parent.name for manifest in manifests}, set(EXPECTED_SNAPSHOTS),
@@ -117,21 +151,25 @@ class DocumentationArchiveTests(unittest.TestCase):
         entries = re.findall(r'\]\((\d{4}-\d{2}-\d{2}-[^/()]+)/README\.md\)', catalogue)
         self.assertEqual(len(entries), len(set(entries)), 'Archive catalogue contains duplicate snapshots')
         self.assertEqual(set(entries), set(EXPECTED_SNAPSHOTS), 'Archive catalogue differs from pinned snapshots')
-        expected_files = {archive/'README.md'}
+        expected_files = {'README.md'}
         for manifest in manifests:
             self.verify_snapshot(manifest)
-            expected_files.update(path for path in manifest.parent.rglob('*') if path.is_file())
-        self.assertEqual({path for path in archive.rglob('*') if path.is_file()}, expected_files,
+            files, _ = self.archive_inventory(manifest.parent)
+            expected_files.update(manifest.parent.name+'/'+path for path in files)
+        self.assertEqual(actual_files, expected_files,
                          'Unmanifested archive files outside recorded snapshots')
+        self.assertEqual(actual_directories, self.expected_directories(expected_files),
+                         'Unmanifested archive directories outside recorded snapshots')
 
     def fixture(self, folder: Path, *, complete: bool = False,
                 snapshot_name: str | None = None) -> Path:
+        self.archive_inventory(ROOT/'archive')
         if snapshot_name is None:
             snapshot_name = COMPLETE_SNAPSHOT if complete else FIXTURE_SNAPSHOT
         source = self.archive_file(ROOT/'archive', snapshot_name)
         self.assertTrue(source.resolve().is_relative_to(ROOT.resolve()), 'Archive source escapes containment')
         snapshot = self.archive_file(folder, snapshot_name)
-        data = json.loads((source/'manifest.json').read_text(encoding='utf-8'))
+        data = self.manifest_data(source/'manifest.json')
         copies = [(self.archive_file(source, 'README.md'), self.archive_file(snapshot, 'README.md'))]
         for row in data['files']:
             for field in ('original_path', 'reading_path'):
@@ -146,6 +184,7 @@ class DocumentationArchiveTests(unittest.TestCase):
         return manifest
 
     def archive_fixture(self, folder: Path) -> Path:
+        self.archive_inventory(ROOT/'archive')
         archive = folder/'archive'
         archive.mkdir()
         shutil.copyfile(self.archive_file(ROOT/'archive', 'README.md'), archive/'README.md')
@@ -331,13 +370,13 @@ class DocumentationArchiveTests(unittest.TestCase):
                 with self.assertRaisesRegex(AssertionError, 'Readable copy differs'):
                     self.verify_snapshot(manifest)
 
-    def test_actual_publication_parent_markdown_can_be_restored(self):
-        archive = ROOT/'archive'
+    def verify_parent_overlay(self, archive: Path) -> None:
+        self.archive_inventory(archive)
         overlay = {}
         for name in (COMPLETE_SNAPSHOT, PARENT_SNAPSHOT):
             manifest = archive/name/'manifest.json'
             if manifest.exists():
-                data = json.loads(manifest.read_text(encoding='utf-8'))
+                data = self.manifest_data(manifest)
                 overlay.update({row['source_path']: self.archive_file(manifest.parent, row['original_path'])
                                 for row in data['files']})
         inventory = self.git_source('ls-tree', '-r', '-z', '--name-only', PUBLICATION_PARENT).decode('utf-8')
@@ -346,6 +385,25 @@ class DocumentationArchiveTests(unittest.TestCase):
         for source_path, original in overlay.items():
             self.assertEqual(original.read_bytes(), self.git_source('show', f'{PUBLICATION_PARENT}:{source_path}'),
                              f'Publication-parent original differs: {source_path}')
+
+    def test_actual_publication_parent_markdown_can_be_restored(self):
+        self.verify_parent_overlay(ROOT/'archive')
+
+    def test_parent_restore_rejects_nonregular_entries_before_reading(self):
+        archive = ROOT/'archive'
+        target = archive/COMPLETE_SNAPSHOT/'originals/docs__glossary.md.txt'
+        original_lstat = Path.lstat
+        def fifo_lstat(path: Path, *args, **kwargs):
+            if path == target:
+                return type('FifoStat', (), {'st_mode': stat.S_IFIFO})()
+            return original_lstat(path, *args, **kwargs)
+        with patch.object(Path, 'lstat', fifo_lstat), \
+             patch.object(Path, 'read_text') as read_text, \
+             patch.object(Path, 'read_bytes') as read_bytes:
+            with self.assertRaisesRegex(AssertionError, 'Archive link or non-regular entry'):
+                self.verify_parent_overlay(archive)
+            read_text.assert_not_called()
+            read_bytes.assert_not_called()
 
     def test_reading_transform_handles_multiline_links_images_and_directories(self):
         revision = EXPECTED_SNAPSHOTS[COMPLETE_SNAPSHOT][0]
@@ -363,8 +421,70 @@ class DocumentationArchiveTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'absent from pinned Git tree'):
             render_reading_copy('docs/guide.md', revision, b'# Guide\n\n[Missing](missing.md)\n', objects)
 
+    def test_snapshot_index_cannot_be_truncated_or_redirected(self):
+        for change in ('truncated', 'wrong-link'):
+            with self.subTest(change=change), tempfile.TemporaryDirectory() as directory:
+                manifest = self.fixture(Path(directory))
+                index = manifest.parent/'README.md'
+                text = index.read_text(encoding='utf-8')
+                changed = '# wrong\n' if change == 'truncated' else text.replace(
+                    '(pages/README.md)', '(originals/README.md.txt)', 1)
+                self.assertNotEqual(changed, text)
+                index.write_text(changed, encoding='utf-8')
+                with self.assertRaisesRegex(AssertionError, 'Snapshot index differs'):
+                    self.verify_snapshot(manifest)
+
+    def test_duplicate_manifest_keys_are_rejected(self):
+        for key, discarded in (('source_revision', '"'+'0'*40+'"'), ('files', '[]'),
+                               ('source_path', '"wrong.md"'), ('original_sha256', '"wrong"')):
+            with self.subTest(key=key), tempfile.TemporaryDirectory() as directory:
+                manifest = self.fixture(Path(directory))
+                raw = manifest.read_text(encoding='utf-8')
+                needle = json.dumps(key)+':'
+                self.assertIn(needle, raw)
+                manifest.write_text(raw.replace(needle, needle+discarded+','+needle, 1), encoding='utf-8')
+                with self.assertRaisesRegex(ValueError, 'Duplicate JSON key'):
+                    self.verify_snapshot(manifest)
+        with self.assertRaisesRegex(ValueError, 'Duplicate JSON key'):
+            parse_manifest('{"source_revision":"x","\\u0073ource_revision":"y"}')
+        for raw in ('{"ignored":NaN}', '{"ignored":Infinity}'):
+            with self.subTest(raw=raw), self.assertRaisesRegex(ValueError, 'Non-standard JSON constant'):
+                parse_manifest(raw)
+
+    def test_unmanifested_link_and_nonregular_entries_are_rejected(self):
+        cases = ((stat.S_IFLNK, 0, False), (stat.S_IFLNK, 0, True),
+                 (stat.S_IFDIR, 0x400, True), (stat.S_IFIFO, 0, False))
+        for mode, attributes, directory_link in cases:
+            with self.subTest(mode=mode, attributes=attributes), tempfile.TemporaryDirectory() as directory:
+                archive = self.archive_fixture(Path(directory))
+                link = archive/'unmanifested-link'
+                if directory_link:
+                    link.mkdir()
+                else:
+                    link.write_bytes(b'link fixture')
+                original_lstat, original_is_file = Path.lstat, Path.is_file
+                def link_lstat(path: Path, *args, **kwargs):
+                    if path == link:
+                        return type('LinkStat', (), {'st_mode':mode, 'st_file_attributes':attributes})()
+                    return original_lstat(path, *args, **kwargs)
+                def no_regular_file(path: Path, *args, **kwargs):
+                    return False if path == link else original_is_file(path, *args, **kwargs)
+                # Match is_file() semantics for dangling and directory symlinks,
+                # without requiring a Windows symlink privilege in this unit test.
+                with patch.object(Path, 'lstat', link_lstat), patch.object(Path, 'is_file', no_regular_file):
+                    with self.assertRaisesRegex(AssertionError, 'Archive link or non-regular entry'):
+                        self.verify_archive(archive)
+
+    def test_unmanifested_empty_directory_is_rejected(self):
+        with tempfile.TemporaryDirectory() as directory:
+            archive = self.archive_fixture(Path(directory))
+            (archive/'unrecorded-empty').mkdir()
+            with self.assertRaisesRegex(AssertionError, 'Unmanifested archive directories outside'):
+                self.verify_archive(archive)
+
     def test_fixture_rejects_unsafe_paths_before_any_writes(self):
-        original = json.loads((ROOT/'archive'/COMPLETE_SNAPSHOT/'manifest.json').read_text(encoding='utf-8'))
+        self.archive_inventory(ROOT/'archive')
+        original = self.manifest_data(ROOT/'archive'/COMPLETE_SNAPSHOT/'manifest.json')
         for field in ('original_path', 'reading_path'):
             for invalid in ('../../README.md', '/outside.md', 'C:/outside.md',
                             '..\\outside.md', 'originals/../README.md', '//server/share/file.md'):
@@ -393,6 +513,7 @@ class DocumentationArchiveTests(unittest.TestCase):
                 self.archive_file(folder, 'pages/README.md')
 
     def test_originals_are_not_subject_to_git_newline_conversion(self):
+        self.archive_inventory(ROOT/'archive')
         paths = sorted(p.relative_to(ROOT).as_posix() for p in (ROOT/'archive').glob('*/originals/*'))
         self.assertTrue(paths)
         result = subprocess.run(['git','check-attr','--stdin','text'], input='\n'.join(paths)+'\n',

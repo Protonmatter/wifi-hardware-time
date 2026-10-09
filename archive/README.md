@@ -32,6 +32,8 @@ Run `python -m unittest discover -s tests -p test_documentation_archive.py -v` f
 
 The tests also compare the complete initial snapshot with its full Git Markdown inventory and verify the 146-file publication-parent overlay byte-for-byte. Missing records, missing registered snapshots and unmanifested files anywhere in the archive fail validation.
 
+Filesystem inventory uses `lstat()` before traversal or content reads. Symlinks (including dangling and directory links), Windows reparse points, non-regular entries and unmanifested directories are rejected. Each snapshot index must match its complete deterministic rendering, including the source/read/original table. Manifest JSON rejects duplicate names at every object level, including escaped equivalent keys, and rejects non-standard numeric constants; no consumer-dependent last-key interpretation is accepted.
+
 The verifier's `EXPECTED_SNAPSHOTS` registry independently pins all seven directory names, full source commits and selected file scopes. The catalogue must list that exact set once each. Removing a milestone and its catalogue row together, or substituting another valid source revision with the same file inventory, fails validation.
 
 Each source path has two canonical, case-insensitively unique storage paths: `originals/<source-path-with-slashes-replaced-by-double-underscores>.txt` and `pages/<source-path-with-slashes-replaced-by-double-underscores>`. The paths cannot alias each other, reuse another row's copy, swap namespaces or resolve through a link to another location. Original and reading-copy hashes remain separate.
