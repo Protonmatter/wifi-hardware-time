@@ -6,6 +6,8 @@ This catalogue accounts for all 145 tracked Markdown files in pre-refresh main `
 
 The date/commit column is the last committed change to that document at the pinned baseline. It is not necessarily the experiment date. Current pages preserve detailed evidence; historical reports/plans are explicitly scoped; source reproductions and the skill remain unchanged. The generated reference index is rebuilt after this refresh.
 
+The archive test suite derives the baseline Markdown inventory directly from its pinned Git tree. It requires each path exactly once in the tables below, validates both its current and previous-version link, and checks the displayed last-change date and commit against that baseline's Git history.
+
 ## New and separately captured material
 
 - [Timeline](timeline.md), [results](results-and-validation.md), [hypotheses](hypotheses-and-lessons.md), [next steps](next-steps.md), [publication](publication-status.md) and [review validation](documentation-review-2026-10-09.md).

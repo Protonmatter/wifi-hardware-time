@@ -31,8 +31,8 @@ Environment: Windows, Python 3.14.3. Commands ran from the isolated repository r
 | Check / command | Observed result |
 |---|---|
 | `python -m compileall -q research tests` | Passed |
-| `python -m unittest discover -s tests -v` | Latest archive-entry/index/JSON follow-up: 585 discovered, **548 passed, 37 skipped**, zero failures/errors; 63.476 s. Earlier milestone pass: 577 discovered, 540 passed and 37 skipped; initial integrated documentation pass: 562 discovered, 525 passed and 37 skipped |
-| `python -m unittest discover -s tests -p test_documentation_archive.py -v` | 25 passed: strict JSON decoding, complete snapshot indexes, link/nonregular-entry and directory inventory rejection, independent reading-copy transformation, full publication-parent restoration, pinned milestones/revisions/scopes, canonical copy paths, Git-blob identity, complete inventory, missing/extra-file and unsafe-path/alias rejection, hashes and newline preservation |
+| `python -m unittest discover -s tests -v` | Latest provenance/catalogue follow-up: 589 discovered, **552 passed, 37 skipped**, zero failures/errors; 99.259 s. Earlier milestone pass: 577 discovered, 540 passed and 37 skipped; initial integrated documentation pass: 562 discovered, 525 passed and 37 skipped |
+| `python -m unittest discover -s tests -p test_documentation_archive.py -v` | 29 passed: Git-derived last-change history, complete catalogue preservation, source-map row/link/history validation, strict JSON decoding, complete snapshot indexes, link/nonregular-entry and directory inventory rejection, independent reading-copy transformation, full publication-parent restoration, pinned milestones/revisions/scopes, canonical copy paths, Git-blob identity, complete inventory, missing/extra-file and unsafe-path/alias rejection, hashes and newline preservation |
 | `python -m unittest discover -s tests -p test_documentation_navigation.py -v` | 4 passed, including file links, opening synopsis, fences and canonical overview diagrams |
 | `python -m unittest discover -s tests -p test_knowledge_index.py -v` | 6 passed |
 | `python -m unittest discover -s tests -p test_tsf_headlines.py -v` | 3 passed |
@@ -112,6 +112,10 @@ for manifest in sorted(Path("archive").glob("*/manifest.json")):
 ```
 
 This snippet requires the original commits to be present locally; a shallow clone may need their history. The public archive contains committed-source snapshots only.
+
+## PR #11 provenance and catalogue follow-up
+
+The next review found three unverified published contracts: manifest `last_change` fields, the archive catalogue's complete guidance, and the source map's claimed 145-document coverage. The verifier now compares every recorded per-file commit/timestamp with Git history, checks the fixed capture date/timezone, pins the complete normalized archive-catalogue text independently of its links, and derives the source-map row inventory from the baseline Git tree. Current and previous-version links must match each source path; displayed last-change metadata must match Git as well. Mutation checks reject wrong commits/timestamps, a catalogue reduced to bare links, missing or duplicate source-map rows, wrong current/previous links, extra fallback links, indented/incomplete duplicate rows and incorrect displayed history. Existing snapshot originals, reading copies, indexes and manifests remain unchanged.
 
 ## Not revalidated by this task
 

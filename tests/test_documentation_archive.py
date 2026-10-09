@@ -2,6 +2,7 @@
 import hashlib
 import json
 from pathlib import Path
+import posixpath
 import re
 import shutil
 import stat
@@ -31,6 +32,8 @@ EXPECTED_SNAPSHOTS: dict[str, tuple[str, frozenset[str] | None]] = {
         'docs/knowledge/workflow-diagrams.md', 'docs/overview/archify-studio/README.md'})),
 }
 FIXTURE_SNAPSHOT = '2026-10-06-complete-event-d1055a1'
+# Reviewed prose is pinned independently of the archive's own metadata.
+ARCHIVE_CATALOGUE_SHA256 = 'e885b273d376d52b6bc8e0830b0d702b603058c2010301d314d6c766a2a037f9'
 
 
 class DocumentationArchiveTests(unittest.TestCase):
@@ -92,6 +95,8 @@ class DocumentationArchiveTests(unittest.TestCase):
                         'Snapshot directory suffix differs from its pinned revision')
         data = self.manifest_data(manifest)
         self.assertEqual(data['schema'], 'wht/documentation-archive-v1')
+        self.assertEqual(data['captured_date'], '2026-10-09')
+        self.assertEqual(data['timezone'], 'America/New_York')
         self.assertEqual(data['source_kind'], 'git-blob')
         self.assertRegex(data['source_revision'], r'^[0-9a-f]{40}$')
         revision = data['source_revision']
@@ -119,6 +124,9 @@ class DocumentationArchiveTests(unittest.TestCase):
         objects = self.git_objects(revision)
         for row in data['files']:
             self.assertEqual(row['source_commit'], data['source_revision'])
+            self.assertEqual(row['last_change'], self.git_source(
+                'log', '-1', '--format=%H%x09%cI', revision, '--', row['source_path']).decode('utf-8').strip(),
+                'Recorded last-change history differs from Git')
             self.assertIsNone(row.get('local_base_commit'))
             expected = self.git_source('show', f'{revision}:{row["source_path"]}')
             for field, digest in [('original_path', 'original_sha256'), ('reading_path', 'reading_sha256')]:
@@ -151,6 +159,8 @@ class DocumentationArchiveTests(unittest.TestCase):
         entries = re.findall(r'\]\((\d{4}-\d{2}-\d{2}-[^/()]+)/README\.md\)', catalogue)
         self.assertEqual(len(entries), len(set(entries)), 'Archive catalogue contains duplicate snapshots')
         self.assertEqual(set(entries), set(EXPECTED_SNAPSHOTS), 'Archive catalogue differs from pinned snapshots')
+        self.assertEqual(hashlib.sha256(catalogue.encode('utf-8')).hexdigest(), ARCHIVE_CATALOGUE_SHA256,
+                         'Archive catalogue differs from reviewed content')
         expected_files = {'README.md'}
         for manifest in manifests:
             self.verify_snapshot(manifest)
@@ -194,6 +204,77 @@ class DocumentationArchiveTests(unittest.TestCase):
 
     def test_public_snapshots_exclude_uncommitted_private_reports_and_match_hashes(self):
         self.verify_archive(ROOT/'archive')
+
+    def test_last_change_revision_and_timestamp_are_verified(self):
+        for value in ('0'*40+'\t2026-10-01T23:18:25-04:00',
+                      '5a4228690106469944510d19e0bd1331388dd008\t2000-01-01T00:00:00Z'):
+            with self.subTest(value=value), tempfile.TemporaryDirectory() as directory:
+                manifest = self.fixture(Path(directory), snapshot_name='2026-10-01-initial-5a42286')
+                data = self.manifest_data(manifest)
+                data['files'][0]['last_change'] = value
+                manifest.write_text(json.dumps(data), encoding='utf-8')
+                with self.assertRaisesRegex(AssertionError, 'last-change history'):
+                    self.verify_snapshot(manifest)
+
+    def test_catalogue_cannot_discard_its_guidance(self):
+        with tempfile.TemporaryDirectory() as directory:
+            archive = self.archive_fixture(Path(directory))
+            (archive/'README.md').write_text('\n'.join(
+                f'[x]({name}/README.md)' for name in EXPECTED_SNAPSHOTS)+'\n', encoding='utf-8')
+            with self.assertRaisesRegex(AssertionError, 'catalogue differs from reviewed content'):
+                self.verify_archive(archive)
+
+    def verify_source_map(self, text: str) -> None:
+        baseline = EXPECTED_SNAPSHOTS[COMPLETE_SNAPSHOT][0]
+        inventory = self.git_source('ls-tree', '-r', '-z', '--name-only', baseline).decode('utf-8')
+        expected = {posixpath.relpath(path, 'docs/research-history'): path
+                    for path in inventory.split('\0') if path.endswith('.md')}
+        # This authored catalogue uses canonical four-cell rows. Inspect all
+        # pipe-bearing lines so indentation or omitted outer pipes cannot hide rows.
+        rows = [line.strip() for line in text.splitlines() if '|' in line
+                and line.strip() != '| Document | Disposition | Last baseline change | Previous version |'
+                and line.strip() != '|---|---|---|---|']
+        seen = []
+        pattern = (r'\| \[[^\[\]\n|]+\]\(([^)]+)\) \| [^|\n]+ \| (\d{4}-\d{2}-\d{2}) / '
+                   r'\[([0-9a-f]{7})\]\(https://github.com/Protonmatter/wifi-hardware-time/commit/([0-9a-f]{40})\) '
+                   r'\| \[Archive\]\(([^)]+)\) \|')
+        for line in rows:
+            row = re.fullmatch(pattern, line)
+            self.assertIsNotNone(row, 'Malformed source-map inventory row')
+            current, date, short_revision, revision, previous = row.groups()
+            self.assertIn(current, expected, 'Source-map current link is not a baseline document')
+            path = expected[current]
+            seen.append(path)
+            self.assertEqual(previous, f'../../archive/{COMPLETE_SNAPSHOT}/pages/{path.replace("/", "__")}',
+                             'Source-map previous link differs from baseline archive')
+            change, timestamp = self.git_source('log', '-1', '--format=%H%x09%cI', baseline, '--', path).decode().strip().split('\t')
+            self.assertEqual((revision, short_revision, date), (change, change[:7], timestamp[:10]),
+                             'Source-map history differs from Git')
+        self.assertEqual(len(seen), len(set(seen)), 'Duplicate source-map document')
+        self.assertEqual(set(seen), set(expected.values()), 'Source-map Markdown inventory differs from Git')
+
+    def test_source_map_covers_every_baseline_document_once(self):
+        self.verify_source_map((ROOT/'docs/research-history/source-map.md').read_text(encoding='utf-8'))
+
+    def test_source_map_rejects_missing_duplicate_and_wrong_links(self):
+        text = (ROOT/'docs/research-history/source-map.md').read_text(encoding='utf-8')
+        row = next(line for line in text.splitlines() if line.startswith('| [Wi-Fi Hardware Time]'))
+        changes = {
+            'missing': text.replace(row+'\n', '', 1),
+            'duplicate': text.replace(row, row+'\n'+row, 1),
+            'indented-duplicate': text.replace(row, row+'\n '+row, 1),
+            'missing-outer-pipe': text.replace(row, row+'\n'+row.lstrip('|'), 1),
+            'wrong-current': text.replace('(../../README.md)', '(../../missing.md)', 1),
+            'extra-link': text.replace('[Wi-Fi Hardware Time](../../README.md)',
+                                       '[Wi-Fi Hardware Time](README.md) [Fallback](../../README.md)', 1),
+            'wrong-previous': text.replace(f'({"../../archive/"+COMPLETE_SNAPSHOT}/pages/README.md)', '(README.md)', 1),
+            'wrong-history': text.replace('/commit/e2798bd9244cf0b2d27f7bb5f9c0961146bc795f)', '/commit/'+'0'*40+')', 1),
+        }
+        for change, changed in changes.items():
+            with self.subTest(change=change):
+                self.assertNotEqual(changed, text)
+                with self.assertRaises(AssertionError):
+                    self.verify_source_map(changed)
 
     def test_changed_original_with_recomputed_manifest_hash_is_rejected(self):
         with tempfile.TemporaryDirectory() as directory:
