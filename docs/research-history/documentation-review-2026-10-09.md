@@ -31,8 +31,8 @@ Environment: Windows, Python 3.14.3. Commands ran from the isolated repository r
 | Check / command | Observed result |
 |---|---|
 | `python -m compileall -q research tests` | Passed |
-| `python -m unittest discover -s tests -v` | Final integrated documentation tree: 562 discovered, **525 passed, 37 skipped**, zero failures/errors; 25.938 s. Initial pre-atlas pass: 556 discovered, 519 passed and 37 skipped |
-| `python -m unittest discover -s tests -p test_documentation_archive.py -v` | 2 passed; committed-public-source-only manifests, byte hashes/sizes and Git newline-conversion exclusion |
+| `python -m unittest discover -s tests -v` | After PR #11 comment fixes: 569 discovered, **532 passed, 37 skipped**, zero failures/errors; 40.847 s. Before that follow-up: 562 discovered, 525 passed and 37 skipped; initial pre-atlas pass: 556 discovered, 519 passed and 37 skipped |
+| `python -m unittest discover -s tests -p test_documentation_archive.py -v` | 9 passed after review: direct Git-blob identity, complete inventory, missing/extra-file rejection, no-write unsafe-path fixtures, manifest hashes and Git newline preservation |
 | `python -m unittest discover -s tests -p test_documentation_navigation.py -v` | 4 passed, including file links, opening synopsis, fences and canonical overview diagrams |
 | `python -m unittest discover -s tests -p test_knowledge_index.py -v` | 6 passed |
 | `python -m unittest discover -s tests -p test_tsf_headlines.py -v` | 3 passed |
@@ -52,6 +52,18 @@ Environment: Windows, Python 3.14.3. Commands ran from the isolated repository r
 The 37 skips comprise 32 checks requiring privately owned exact-build image/driver fixtures and five requiring an available/configured native compiler or MSVC developer environment. They are not reported as passes. The full offline suite ran again after integrating the corrected atlas merge and archive-preservation tests. Focused documentation/index/headline checks and the read-only audit were repeated after final validation prose edits. Repeating unaffected hardware/software experiments was not necessary for those final prose changes.
 
 An independent read-only privacy/archive review compared the candidate with the excluded private reports and the complete published baseline. It found no remaining copies, distinctive result summaries or private capture digests. All 156 public archive records matched ancestor public Git blobs. The review identified and verified correction of outdated archive instructions that had allowed uncommitted snapshots; current instructions and tests require committed public sources. This was a bounded comparison, not an exhaustive secrets audit of unrelated repositories.
+
+## PR #11 archive verification follow-up
+
+The initial two archive CI tests verified manifest consistency and Git newline policy. Review identified two gaps: changing an original and its manifest hash together could pass, and removing a complete-snapshot document together with its manifest row/files could pass. The one-time source/inventory audit above had checked the real repository, but those invariants were not yet enforced in CI.
+
+Four adversarial checks first reproduced the missing rejection behavior. The corrected verifier compares each original with `git show source_revision:source_path`, obtains the complete Markdown inventory with `git ls-tree`, requires the complete snapshot to exist, and rejects extra files inside snapshots or elsewhere in the archive. A nonexistent source commit fails with a full-history diagnostic. Six mutation cases plus the two repository checks now cover these conditions without modifying the retained archive.
+
+Independent review also identified a path-escape risk in the new temporary-fixture builder. It now validates every source/destination as a contained portable relative path before creating directories or copying files. A ninth focused test covers twelve traversal/absolute-path cases and asserts that no directory, copy or file write occurs before rejection. Mutation writes and deletes use the same containment check.
+
+Both existing CI jobs fetch full Git history so the checks can inspect the recorded revisions in fresh hosted checkouts. Validation itself stays offline. The [archive verification instructions](../../archive/README.md#verify-committed-sources-and-completeness) explain the local prerequisite. No report contents, original bytes, result JSON or private-public boundary changed in this follow-up.
+
+A separate local-only shallow Git reproduction rejected unavailable source history, then passed the complete 145-file blob/inventory check after an unshallow fetch from the local repository. This did not contact an external service or alter the retained archive.
 
 The review-only audit also detected three unre-based multiline links in two archive reading copies. Those derived copies and their manifest hashes were repaired; exact originals were untouched. The subsequent full archive/link/anchor audit passed. This helper belongs to the review workspace, not the repository's supported research CLI.
 

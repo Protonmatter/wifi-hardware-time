@@ -25,6 +25,12 @@ Historical linked binaries, measurements, diagrams and code are not duplicated h
 
 The complete snapshot permits restoring any pre-refresh Markdown file from exact bytes. Later result JSON and historical capture files remain in their original locations and are not overwritten. Existing [October 3 reproductions](../docs/reproductions/2026-10-03/README.md) retain their own original scope; this archive does not replace them.
 
+## Verify committed sources and completeness
+
+Run `python -m unittest discover -s tests -p test_documentation_archive.py -v` from the repository root. The checks compare every original directly with its recorded Git blob, verify reading-copy hashes and exact byte preservation, and compare the complete snapshot's source paths with all Markdown files in its recorded Git tree. Missing records, a removed complete snapshot and unmanifested files anywhere in the archive fail validation. Recomputing a manifest hash cannot make changed original bytes match their source commit.
+
+These checks require the recorded commits locally. Both CI checkout steps use `fetch-depth: 0`. For an existing shallow clone, run `git fetch --unshallow origin` before the tests; for another incomplete-history checkout, obtain the recorded revisions from this public repository before validation. The tests themselves make no network calls, do not skip unavailable history, and do not execute archived content.
+
 ## Adding the next version
 
 The public archive accepts committed public-source snapshots only. Before changing a maintained conclusion, snapshot its superseded published Markdown and record the exact source revision, byte hash and original path. Use `YYYY-MM-DD-description-shortsha`, add a row here in date order, link the new current page, and validate preservation and navigation. Retain uncommitted or private reports in the private evidence repository until a separate publication review approves them; do not place them in this public archive. Git remains the full history; milestone snapshots are deliberately selective between complete refreshes.

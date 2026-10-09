@@ -10,7 +10,7 @@ Find the calls, file names, terms and short strings recorded in this research. T
 
 ## Search
 
-Indexed **368 source files** and **10804 distinct terms**.
+Indexed **368 source files** and **10887 distinct terms**.
 
 The [JSON index](research-index.json) includes Python definitions/calls, C/Java/PowerShell call-shaped tokens, authored short strings and Markdown code terms. Vendor binaries, local artifacts, historical reproduction sources and generated indexes are excluded. Unresolved call-shaped tokens are explicitly labeled.
 
@@ -33,7 +33,7 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 
 | File | Normalized text SHA-256 prefix |
 |---|---|
-| [.github/workflows/offline-checks.yml](../../.github/workflows/offline-checks.yml) | `8f03e34a0760` |
+| [.github/workflows/offline-checks.yml](../../.github/workflows/offline-checks.yml) | `c0b8272ee840` |
 | [README.md](../../README.md) | `fe42ea4aefd0` |
 | [docs/README.md](../../docs/README.md) | `f75876c007ca` |
 | [docs/acquisition/README.md](../../docs/acquisition/README.md) | `bbc9c982c3b5` |
@@ -157,7 +157,7 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [docs/overview/validation-execution-catalog.md](../../docs/overview/validation-execution-catalog.md) | `c2e504bd6633` |
 | [docs/overview/validation.md](../../docs/overview/validation.md) | `86c32c1ba0fd` |
 | [docs/research-history/README.md](../../docs/research-history/README.md) | `d4336b2861db` |
-| [docs/research-history/documentation-review-2026-10-09.md](../../docs/research-history/documentation-review-2026-10-09.md) | `23bf8893b399` |
+| [docs/research-history/documentation-review-2026-10-09.md](../../docs/research-history/documentation-review-2026-10-09.md) | `04ff1589de49` |
 | [docs/research-history/hypotheses-and-lessons.md](../../docs/research-history/hypotheses-and-lessons.md) | `52e55d1f47df` |
 | [docs/research-history/next-steps.md](../../docs/research-history/next-steps.md) | `5d7c10c28422` |
 | [docs/research-history/publication-boundary.md](../../docs/research-history/publication-boundary.md) | `afecd6c6d7aa` |
@@ -342,7 +342,7 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [tests/test_clock_pairing_hypothesis.py](../../tests/test_clock_pairing_hypothesis.py) | `3576e1bfb79b` |
 | [tests/test_decode_tsf_report.py](../../tests/test_decode_tsf_report.py) | `535d24bdd33c` |
 | [tests/test_device_service_control.py](../../tests/test_device_service_control.py) | `2ed65785ca04` |
-| [tests/test_documentation_archive.py](../../tests/test_documentation_archive.py) | `40d4bb2d272e` |
+| [tests/test_documentation_archive.py](../../tests/test_documentation_archive.py) | `60b08b93ffaa` |
 | [tests/test_documentation_navigation.py](../../tests/test_documentation_navigation.py) | `5dac016c2228` |
 | [tests/test_event_export_candidates.py](../../tests/test_event_export_candidates.py) | `df0e9c3801ab` |
 | [tests/test_evidence_contract.py](../../tests/test_evidence_contract.py) | `8d716fe0ed82` |
