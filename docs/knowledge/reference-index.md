@@ -10,7 +10,7 @@ Find the calls, file names, terms and short strings recorded in this research. T
 
 ## Search
 
-Indexed **356 source files** and **10688 distinct terms**.
+Indexed **358 source files** and **10745 distinct terms**.
 
 The [JSON index](research-index.json) includes Python definitions/calls, C/Java/PowerShell call-shaped tokens, authored short strings and Markdown code terms. Vendor binaries, local artifacts, historical reproduction sources and generated indexes are excluded. Unresolved call-shaped tokens are explicitly labeled.
 
@@ -137,7 +137,7 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [docs/overview/2026-10-08-causal-provider-design.md](../../docs/overview/2026-10-08-causal-provider-design.md) | `e2e6023ed4cc` |
 | [docs/overview/OPERATIONS.md](../../docs/overview/OPERATIONS.md) | `9374e5f4d1c8` |
 | [docs/overview/README.md](../../docs/overview/README.md) | `17f219d58a2f` |
-| [docs/overview/archify-studio/README.md](../../docs/overview/archify-studio/README.md) | `a4a72b894490` |
+| [docs/overview/archify-studio/README.md](../../docs/overview/archify-studio/README.md) | `b83ac4b4cb07` |
 | [docs/overview/archify-tsf/README.md](../../docs/overview/archify-tsf/README.md) | `8d4d2cc068ad` |
 | [docs/overview/complete-event-2026-10-05/context-map.md](../../docs/overview/complete-event-2026-10-05/context-map.md) | `ea57333f0cba` |
 | [docs/overview/complete-event-2026-10-05/decision-log.md](../../docs/overview/complete-event-2026-10-05/decision-log.md) | `c089c83e1be6` |
@@ -235,6 +235,7 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [research/clock_models/soc_domain_test.py](../../research/clock_models/soc_domain_test.py) | `8d105806ba47` |
 | [research/evidence/README.md](../../research/evidence/README.md) | `17b375c230ea` |
 | [research/evidence/Update-ResearchKnowledge.ps1](../../research/evidence/Update-ResearchKnowledge.ps1) | `4547d8e08593` |
+| [research/evidence/apply_studio_export_policy.py](../../research/evidence/apply_studio_export_policy.py) | `1d49fda590d3` |
 | [research/evidence/build_knowledge_index.py](../../research/evidence/build_knowledge_index.py) | `5ae18af16221` |
 | [research/evidence/export_clock_evidence.py](../../research/evidence/export_clock_evidence.py) | `a9c4e6892f90` |
 | [research/evidence/hardware_observation.py](../../research/evidence/hardware_observation.py) | `ee18d8e79d2c` |
@@ -377,6 +378,7 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [tests/test_soc_domain.py](../../tests/test_soc_domain.py) | `027c131dcd3c` |
 | [tests/test_source_record.py](../../tests/test_source_record.py) | `86754567b493` |
 | [tests/test_static_inspection.py](../../tests/test_static_inspection.py) | `54ff3c879dab` |
+| [tests/test_studio_previews.py](../../tests/test_studio_previews.py) | `dcc96e96e7db` |
 | [tests/test_timing_boundaries.py](../../tests/test_timing_boundaries.py) | `facac334de65` |
 | [tests/test_trace_bytes.py](../../tests/test_trace_bytes.py) | `24fdc154dbe6` |
 | [tests/test_trace_export_output.py](../../tests/test_trace_export_output.py) | `d6b221723a6c` |

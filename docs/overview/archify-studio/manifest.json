@@ -153,7 +153,7 @@
   "previews": [
     {
       "path": "previews/overview.svg",
-      "sha256": "ba2db330d04f9d8a8520ab517872a1a59068036f9f6890e30acc4025add7d450",
+      "sha256": "63f29e5c232440fc78da8a36ec88ad43e26b7d085e63ba13974a201ea07e357f",
       "nodes": 6,
       "edges": 5,
       "xml": true,
@@ -161,7 +161,7 @@
     },
     {
       "path": "previews/acquisition.svg",
-      "sha256": "8e5577797b2599b29a302a7cd7bf50298632b34d581b3372e647b10b4fa5f80d",
+      "sha256": "7069be06e6b00a7b782d5a65662536b84c2859c9eb7b9940052c68ad5dd1f584",
       "nodes": 7,
       "edges": 6,
       "xml": true,
@@ -169,7 +169,7 @@
     },
     {
       "path": "previews/lifecycle.svg",
-      "sha256": "0db36d6d046db32ee195f3c514c4597f5d56d55d399783001933361e5259e324",
+      "sha256": "a1fcdffd680e2d15a6ed99bc610af2b720e1fc0e7083a441b396824c03e550b5",
       "nodes": 6,
       "edges": 7,
       "xml": true,
@@ -177,7 +177,7 @@
     },
     {
       "path": "previews/adapters.svg",
-      "sha256": "c02fd3816ad31a196cfd463e3e7586a489a41f88535fb8ccb3b327516dc22e0e",
+      "sha256": "b02df23b468f0abbaf81adbd6f4371dfeb863a61d7d4e3dae85604416bfabef0",
       "nodes": 6,
       "edges": 6,
       "xml": true,
@@ -185,7 +185,7 @@
     },
     {
       "path": "previews/time-domains.svg",
-      "sha256": "c791842998e06a9fbbb4a25b8381a1de7f94c0b1a5bf14d22ea08105b99db595",
+      "sha256": "bb45f35694862ef8ac0d06d534e00c8cef177d2a4c573c34193d3a32cf93a2da",
       "nodes": 6,
       "edges": 5,
       "xml": true,
@@ -193,7 +193,7 @@
     },
     {
       "path": "previews/availability.svg",
-      "sha256": "aa3d2922c4a95cf735aeddef4b69cb753cf8ab8dc86cca0c750e09ed5d9a9cc0",
+      "sha256": "9c72ec7307f16e18ce3342470539d00d0a8ddd8aa1dc6cfef0c39163accffac1",
       "nodes": 6,
       "edges": 6,
       "xml": true,
@@ -201,7 +201,7 @@
     },
     {
       "path": "previews/causal.svg",
-      "sha256": "0f61dd14b1a13e15e1247f2f2b4656037dc5341fb32fc9d82fc2d6e06f0cbb0d",
+      "sha256": "8b2b58469cf304f54a2f16953d6c9f2813a8a6e685ed25eb2312b8445c820681",
       "nodes": 6,
       "edges": 6,
       "xml": true,
@@ -209,7 +209,7 @@
     },
     {
       "path": "previews/settlement.svg",
-      "sha256": "41039626d5b7008f1c19ef18d78a9eea43bd63649b0f324a9ecc3e933dd179b3",
+      "sha256": "f34d536d65c4fdf3d5659cbecf5b349bafd2a01192ed1cd7ea6defe456fefd2d",
       "nodes": 6,
       "edges": 5,
       "xml": true,
@@ -217,7 +217,7 @@
     },
     {
       "path": "previews/producer-routes.svg",
-      "sha256": "43e755800b052077987603bc3d359d00164592bafad5dabad5bca3472edd3d7d",
+      "sha256": "91e6dd40559e16b605b20c72378d8e24d2d833c4cc3152c6c22ba00f38cd8b7b",
       "nodes": 7,
       "edges": 6,
       "xml": true,
@@ -225,7 +225,7 @@
     },
     {
       "path": "previews/qualification.svg",
-      "sha256": "2fab53fb54749a0cbaaa7e3a68448399b8bdb87a098af2a511381a5fdf00a057",
+      "sha256": "4d160794177cbab01ca8a3ab459fcd4a22497b174e88501e2abed03a152029a1",
       "nodes": 6,
       "edges": 5,
       "xml": true,
@@ -234,9 +234,14 @@
   ],
   "html": {
     "path": "index.html",
-    "sha256": "bf5f6f2fd01013313bdfdd6bb5f471f3fbf1f79adebb86a0ffab27c6f58d2533",
-    "bytes": 400389,
+    "sha256": "ad92f844c44c33bbaf772a569e3eff05d0136b82f2cc8643c88245b6b032f24c",
+    "bytes": 401341,
     "self_contained": true,
     "renderer_license": "Embedded MIT notice"
+  },
+  "static_export_policy": {
+    "path": "static-export-policy.js",
+    "sha256": "d3815a85d0a43b66a52a78b15c502c768775cccaccc756f873f07420f7e49d44",
+    "scope": "Local packaging correction to pinned Studio renderer; exported SVG only, interactive UI unchanged"
   }
 }

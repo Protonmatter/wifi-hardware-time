@@ -6,7 +6,7 @@ The atlas describes research revision `e9d71b84365122ff2640e240b20fc1dbb834388a`
 
 ## Open the interactive atlas
 
-**[Interactive atlas — index.html](index.html)** includes all ten diagrams, source snapshots, search, evidence inspection and exports in one 400,389-byte file. No installation, online dependency or local server is required to use the saved file.
+**[Interactive atlas — index.html](index.html)** includes all ten diagrams, source snapshots, search, evidence inspection and exports in one portable file; its current byte size and digest are recorded in the manifest. No installation, online dependency or local server is required to use the saved file.
 
 On GitHub, open the file above, select **Download raw file**, then open the saved `index.html` in a browser. GitHub displays HTML source in its repository viewer; the README itself does not execute this application. For direct viewing inside GitHub, use the SVG previews below. GitHub Pages hosting is not configured by this change.
 
@@ -93,9 +93,13 @@ python "$Studio/studio/tools/package_atlas.py" --model docs/overview/archify-stu
 if ($LASTEXITCODE -ne 0) { throw 'Atlas packaging failed' }
 node "$Studio/studio/build.mjs" --atlas $Packet --out $Html
 if ($LASTEXITCODE -ne 0) { throw 'Atlas build failed' }
+python research/evidence/apply_studio_export_policy.py --html $Html --write
+if ($LASTEXITCODE -ne 0) { throw 'Static export policy failed' }
 ```
 
 Verify both printed revisions against [manifest.json](manifest.json) before building. An existing identical complete packet returns `unchanged`; a changed destination is refused, so choose a fresh packet directory for a new edition. Package/build success exits 0; invalid source/model or I/O/build failures are nonzero. The JSON model and packet are UTF-8, and original source bytes are retained with SHA-256 digests.
+
+The pinned renderer receives one repository-local packaging correction from [static-export-policy.js](static-export-policy.js). It gives exported SVGs image semantics and strips inactive button labels, focus attributes and control state from every element, including nodes that were never selected. It also removes graph pointer-cursor and hover/focus highlighting rules from the export's cloned stylesheet. Interactive HTML controls and styling retain their behavior. The helper checks without writing by default, applies only with `--write`, and rejects unfamiliar or partial exporter patches before writing. Exit 0 means matched/applied, 1 means drift or invalid input/I/O, and 2 means invalid arguments. Rebuilding the pinned upstream HTML restores the pre-policy artifact. No new dependencies, permissions or hardware operations are needed.
 
 Open the generated HTML directly in a browser. If an embedded browser blocks local file URLs, use the optional loopback-only preview and stop it with Ctrl+C:
 
@@ -118,9 +122,11 @@ python research/evidence/publish_archify_previews.py --check
 python research/evidence/sync_tsf_headlines.py --check
 python -m unittest discover -s tests -p test_documentation_navigation.py -v
 python -m unittest discover -s tests -p test_workflow_diagrams.py -v
+python -m unittest discover -s tests -p test_studio_previews.py -v
+python research/evidence/apply_studio_export_policy.py --html docs/overview/archify-studio/index.html
 ```
 
-The existing `publish_archify_previews.py` checks the separate seven-view upstream gallery. For this Studio atlas, rebuild the packet/HTML, open each view, and use **Export → Diagram as SVG** in Paper theme to refresh these ten SVG files. Preserve complete topology and the embedded MIT notice. Check SVG XML, component/relationship counts, source hashes and source line bounds separately from actual browser interaction and visual inspection. Desktop and narrow layouts, keyboard access, source inspection and export need browser review; no blanket accessibility certification is implied.
+The existing `publish_archify_previews.py` checks the separate seven-view upstream gallery. For this Studio atlas, rebuild the packet/HTML, apply the local export policy, open each view, and use **Export → Diagram as SVG** in Paper theme to refresh these ten SVG files. Preserve complete topology and the embedded MIT notice. Update the corresponding preview and HTML hashes/size in the manifest after intentional regeneration. The Studio regression tests verify all ten static previews, topology and manifest hashes, and exercise the export policy with Node.js when available. Check source hashes and source line bounds separately from actual browser interaction and visual inspection. Desktop and narrow layouts, keyboard access, source inspection and export need browser review; no blanket accessibility certification is implied.
 
 ## Rollback
 

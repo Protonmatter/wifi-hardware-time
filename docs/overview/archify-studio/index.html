@@ -1115,6 +1115,28 @@ function openSearch(){if($('search-dialog').open)return;$('search-input').value=
 
 /* Export */
 function download(content,name,type){const url=URL.createObjectURL(new Blob([content],{type}));const a=html('a');a.href=url;a.download=name;body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);announce('Export prepared on this device.');}
+// BEGIN WHT STATIC EXPORT POLICY
+// Local packaging policy for script-free exports from the pinned Studio renderer.
+function sanitizeStaticSvg(root, title) {
+  root.setAttribute('role', 'img');
+  root.setAttribute('aria-label', title + ' diagram');
+  for (const element of [root, ...root.querySelectorAll('*')]) {
+    if (element.tagName && element.tagName.toLowerCase() === 'style') {
+      element.textContent = element.textContent.replace(
+        /(^|\n)[^\n{}]*\.graph-(?:node|edge)[^{]*\{[^{}]*\}/g,
+        rule => /:hover|:focus|\bcursor\s*:/.test(rule) ? '' : rule
+      );
+    }
+    if (element.getAttribute('role') === 'button') {
+      element.removeAttribute('role');
+      element.removeAttribute('aria-label');
+    }
+    for (const name of ['tabindex', 'focusable', 'aria-pressed', 'aria-expanded', 'aria-controls']) {
+      element.removeAttribute(name);
+    }
+  }
+}
+// END WHT STATIC EXPORT POLICY
 function exportSVG(){
   const clone=$('diagram').cloneNode(true),r=route();clone.setAttribute('viewBox',r.bounds.join(' '));clone.setAttribute('width',String(r.bounds[2]));clone.setAttribute('height',String(r.bounds[3]));clone.setAttribute('data-theme',document.documentElement.dataset.theme);
   const license=[...document.documentElement.childNodes].find(n=>n.nodeType===8&&n.textContent.includes('MIT License'));if(license)clone.prepend(license.cloneNode(true));
@@ -1122,6 +1144,7 @@ function exportSVG(){
   clone.prepend(svg('desc',{},(r.summary||r.title)+' Evidence states are retained. Built with Archify Studio / Archify, MIT license.'));
   for(const e of clone.querySelectorAll('[data-dim],[data-selected],[data-traced],[data-near],[data-on]'))for(const a of ['data-dim','data-selected','data-traced','data-near','data-on','tabindex','aria-pressed'])e.removeAttribute(a);
   for(const e of clone.querySelectorAll('.edge-hit,.edge-flow'))e.remove();
+  sanitizeStaticSvg(clone,r.title);
   download(new XMLSerializer().serializeToString(clone),(r.id||'diagram')+'.svg','image/svg+xml');closeDialog('export-dialog');
 }
 
