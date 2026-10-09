@@ -13,12 +13,13 @@ if __package__ in (None, ""):
     sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 import argparse
 from collections import Counter
+from dataclasses import asdict
 from fractions import Fraction
 import json
 
 from research.clock_models.beacon_consistency import Beacon, check_beacons
 from research.clock_models.bracket_bound import Window, coverage, sliding_bounds
-from research.clock_models.sample_screen import Sample, freshness_filter, request_from_receipt, screen
+from research.clock_models.sample_screen import SCREEN_POLICY_VERSION, Sample, freshness_filter, request_from_receipt, screen
 from research.clock_models.soc_domain_test import soc_domain
 from research.evidence.validate_research_bundle import validate_bundle
 
@@ -162,6 +163,8 @@ def analyze_run(folder: Path) -> dict:
     reasons = Counter(reason for _, reason in result.rejected)
     return dict(schema='wht/tsf-host-bound-run-v1', run_completed=data['completed'], run=data['identity'],
                 screen=dict(request_count=len(data['requests']), accepted_count=len(result.accepted),
+                            policy_version=result.policy_version, continuity_closed=result.continuity_closed,
+                            continuity_breaks=[asdict(item) for item in result.continuity_breaks],
                             rejected_count=len(result.rejected), rejected_by_reason=dict(reasons),
                             foreign_groups=result.foreign_groups, foreign_commands=result.foreign_commands,
                             own_losses=result.own_losses, duration_s=_f(result.duration_s),
@@ -198,6 +201,8 @@ def evaluate(idle: dict, load: dict) -> dict:
         workload = identity.get('workload') or {}
         criteria = dict(
             run_completed=run['run_completed'],
+            continuity_clear=(info.get('policy_version') == SCREEN_POLICY_VERSION
+                              and info.get('continuity_closed') is False and info.get('continuity_breaks') == []),
             condition_recorded=identity.get('condition') == name,
             duration_at_least_3600s=type(identity.get('duration_s')) is int and identity['duration_s'] >= REQUIRED_DURATION_S,
             **execution_checks(identity),

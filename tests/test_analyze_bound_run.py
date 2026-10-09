@@ -57,6 +57,34 @@ def pair(a: str, b: str, **load_options):
 
 
 class AnalyzeTests(unittest.TestCase):
+    def test_backward_last_report_fails_even_below_rejection_threshold(self):
+        with tempfile.TemporaryDirectory() as a, tempfile.TemporaryDirectory() as b:
+            write_run(Path(a))
+            write_run(Path(b), condition='load')
+            path = Path(a) / 'raw-timing.jsonl'
+            records = [json.loads(line) for line in path.read_text(encoding='utf-8').splitlines()]
+            last_report = [r for r in records if r['kind'] == 'report'][-1]
+            last_report['tsf_raw'] = 1
+            [r for r in records if r['kind'] == 'delay'][-1]['tsf_delay_raw'] = (1 - 5) & 0xffffffff
+            path.write_text(''.join(json.dumps(r) + '\n' for r in records), encoding='utf-8')
+            idle, load = analyze_run(Path(a)), analyze_run(Path(b))
+            self.assertTrue(idle['screen']['continuity_closed'])
+            self.assertEqual(len(idle['screen']['continuity_breaks']), 1)
+            verdict = evaluate(idle, load)
+            self.assertTrue(verdict['idle']['rejected_at_most_1pct'])
+            self.assertFalse(verdict['idle']['continuity_clear'])
+            self.assertFalse(verdict['passed'])
+            self.assertFalse(verdict['physical_bound_proven'])
+
+    def test_unversioned_historical_analysis_cannot_claim_continuity_clear(self):
+        with tempfile.TemporaryDirectory() as a, tempfile.TemporaryDirectory() as b:
+            idle, load = pair(a, b)
+            for key in ('policy_version', 'continuity_closed', 'continuity_breaks'):
+                idle['screen'].pop(key, None)
+            verdict = evaluate(idle, load)
+            self.assertFalse(verdict['idle']['continuity_clear'])
+            self.assertFalse(verdict['passed'])
+
     def test_clean_run_passes_every_criterion(self):
         with tempfile.TemporaryDirectory() as a, tempfile.TemporaryDirectory() as b:
             idle, load = pair(a, b, foreign=3)

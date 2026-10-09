@@ -14,6 +14,7 @@ from pathlib import Path
 if __package__ in (None, ""):
     sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 import argparse
+from dataclasses import asdict
 from fractions import Fraction
 import hashlib
 import json
@@ -28,6 +29,7 @@ from research.clock_models.settle import settle_replay
 ROOT = Path(__file__).resolve().parents[2]
 SETTLE_STEP_S = 1
 SCREENING_LABEL = 'causal clock-model replay conditioned on offline sample screening'
+ARRIVAL_ORDER_POLICY_VERSION = 'wht/arrival-order-v2'
 AVAILABILITY_RULES = {
     'causal-etw': 'one QPC tick after the report ETW timestamp (reproduces the earlier review)',
     'causal-arrival': ('max of the reader-thread receipt of the delay record (the last record a sample needs) '
@@ -59,10 +61,16 @@ def availability(sample, mode: str, delay_seen: dict[int, int], completed: dict[
 
 def replay(events: list, qpc_hz: int, start: int, end: int, review_interval: tuple[int, int] | None = None,
            rate_prior_ppm: int = 200, threshold_us: int = 1_000) -> dict:
-    """Feed ('accepted' | 'rejected', reason, AvailableSample) events in availability order."""
+    """Feed accepted/rejected samples and continuity diagnostics by their availability.
+
+    Simultaneously available samples use capture order as a tie-break only. Skips
+    preserve original availability, elapsed denominators and already-issued history.
+    """
     provider = CausalProvider(qpc_hz, rate_prior_ppm, threshold_us)
     segments, t = [], start
     incompatible, rejected_checked, ingested = [], [], 0
+    late_history_skipped = []
+    continuity_invalidations = []
     worst_before_next = None
     worst_uncertainty_before_next = None
 
@@ -78,9 +86,20 @@ def replay(events: list, qpc_hz: int, start: int, end: int, review_interval: tup
                 segments.append((t, to, 'model', provider.stale_from_qpc()))
             t = to
 
-    for kind, reason, item in sorted(events, key=lambda e: e[2].available_qpc):
+    for kind, reason, item in sorted(events, key=lambda e: (e[2].available_qpc, e[2].lower_qpc,
+                                                          e[2].upper_qpc, e[2].sequence)):
         advance(item.available_qpc)
-        if kind == 'accepted':
+        if kind == 'continuity':
+            provider.invalidate(f'sample {item.sequence}: suspected TSF discontinuity; epoch decision required')
+            continuity_invalidations.append(dict(sequence=item.sequence, reason=reason,
+                                                 available_qpc=item.available_qpc))
+        elif kind == 'accepted':
+            if provider.last_capture_end is not None and item.lower_qpc <= provider.last_capture_end:
+                late_history_skipped.append(dict(sequence=item.sequence,
+                    reason='capture_overlaps_or_precedes_last_ingested', lower_qpc=item.lower_qpc,
+                    upper_qpc=item.upper_qpc, available_qpc=item.available_qpc,
+                    last_ingested_capture_end_qpc=provider.last_capture_end))
+                continue
             if provider.count and provider.invalid_reason is None:
                 estimate = provider.estimate(item.available_qpc)
                 width = estimate.half_width_us
@@ -134,6 +153,11 @@ def replay(events: list, qpc_hz: int, start: int, end: int, review_interval: tup
                durations_ticks={k: str(v) for k, v in declared.items()},
                coverage_declared=round(float(declared['tracking'] / (end - start)), 6),
                samples_ingested=ingested, incompatible=incompatible, rejected_checked=rejected_checked,
+               arrival_order_policy_version=ARRIVAL_ORDER_POLICY_VERSION,
+               arrival_order_policy=('availability order; capture order breaks equal-availability ties; '
+                                     'skip and account for historical captures without changing availability'),
+               late_history_skipped=late_history_skipped,
+               continuity_invalidations=continuity_invalidations,
                max_half_width_before_next_sample_us=None if worst_before_next is None else round(float(worst_before_next), 3),
                max_half_width_before_next_sample_exact=None if worst_before_next is None else str(worst_before_next),
                max_uncertainty_before_next_sample_us=(None if worst_uncertainty_before_next is None else
@@ -182,8 +206,14 @@ def replay_run(folder: Path, mode: str) -> dict:
                 session=data['identity']['session'], source=_revision(),
                 inputs={name: _sha256(folder / name) for name in files if (folder / name).exists()},
                 screening_policy='sample_screen.screen() over the complete recording',
+                screening_policy_version=result.policy_version,
+                whole_recording_continuity_eligible=not result.continuity_closed,
+                screened_segment_scope=('accepted prefix before suspected discontinuity' if result.continuity_closed
+                                        else 'accepted samples over the complete recording'),
                 screen=dict(accepted=len(accepted), rejected=len(result.rejected),
-                            rejected_with_reports=len(result.rejected_samples)))
+                            rejected_with_reports=len(result.rejected_samples),
+                            continuity_closed=result.continuity_closed,
+                            continuity_breaks=[asdict(item) for item in result.continuity_breaks]))
     if mode == 'retrospective':
         retro = retrospective_max_half_width(accepted, hz)
         meta.update(label='retrospective rate-only bound conditioned on offline sample screening',
@@ -199,15 +229,23 @@ def replay_run(folder: Path, mode: str) -> dict:
         items = [AvailableSample(s.sequence, s.tsf_us, s.lower_qpc, s.upper_qpc,
                                  availability(s, 'causal-arrival', delay_seen, completed)) for s in accepted]
         retro = retrospective_max_half_width(accepted, hz)
+        settled = settle_replay(items, hz, step_qpc=SETTLE_STEP_S * hz)
         meta.update(label='two-phase settled timestamps conditioned on offline sample screening',
                     availability_rule=AVAILABILITY_RULES['causal-arrival'],
                     quantization=retro['quantization'],
-                    settle=settle_replay(items, hz, step_qpc=SETTLE_STEP_S * hz),
+                    settle=settled,
+                    settlement_policy_version=settled['settlement_policy_version'],
+                    actual_settled_grid_max_half_width_us=settled['actual_settled_grid_max_half_width_us'],
+                    actual_settled_grid_max_half_width_exact=settled['actual_settled_grid_max_half_width_exact'],
+                    retrospective_consecutive_pair_max_half_width_us=round(float(retro['max_half_width_us']), 3),
+                    retrospective_consecutive_pair_max_half_width_exact=str(retro['max_half_width_us']),
                     worst_settled_half_width_any_instant_us=round(float(retro['max_half_width_us']), 3),
                     worst_settled_half_width_any_instant_exact=str(retro['max_half_width_us']),
                     worst_settled_half_width_any_instant_scope=(
                         'retrospective consecutive-sample bound; '
-                        'not a bound on earliest-available nonadjacent settlements'))
+                        'not a bound on earliest-available nonadjacent settlements caused by '
+                        'overlapping capture windows or out-of-order arrival; legacy field aliases the '
+                        'retrospective consecutive-pair maximum, not the actual settled grid maximum'))
         return meta
     delay_seen = arrival_map(_lines(folder / 'live-observer.jsonl')) if mode == 'causal-arrival' else {}
     events = [('accepted', None, AvailableSample(s.sequence, s.tsf_us, s.lower_qpc, s.upper_qpc,
@@ -218,8 +256,27 @@ def replay_run(folder: Path, mode: str) -> dict:
             events.append(('rejected', reason, AvailableSample(s.sequence, s.tsf_us, s.lower_qpc, s.upper_qpc,
                                                                availability(s, mode, delay_seen, completed))))
         except (ValueError, KeyError) as error:
+            if reason == 'suspected_tsf_discontinuity':
+                raise ValueError(f'Cannot determine continuity break availability for sample {s.sequence}: {error}') from error
             rejected_uncheckable.append(dict(sequence=s.sequence, reason=reason,
                                              error=f'{type(error).__name__}: {error}'))
+    # The backward comparison needs both observations. Keep rejection receipts
+    # unchanged, and publish a separate diagnostic event once both are available.
+    available_items = {item.sequence: item for _, _, item in events}
+    continuity_diagnostics = []
+    for diagnostic in result.continuity_breaks:
+        try:
+            previous, current = (available_items[diagnostic.previous_sequence], available_items[diagnostic.sequence])
+        except KeyError as error:
+            raise ValueError(f'Cannot determine continuity break availability for sample {diagnostic.sequence}') from error
+        known_at = max(previous.available_qpc, current.available_qpc)
+        continuity_diagnostics.append(dict(sequence=current.sequence, previous_sequence=previous.sequence,
+                                           sample_available_qpc=current.available_qpc,
+                                           previous_available_qpc=previous.available_qpc, available_qpc=known_at))
+        events.append(('continuity', 'suspected_tsf_discontinuity',
+                       AvailableSample(current.sequence, current.tsf_us, current.lower_qpc,
+                                       current.upper_qpc, known_at)))
+    meta['continuity_diagnostics'] = continuity_diagnostics
     start = data['requests'][0].lower_qpc
     end = data['requests'][-1].lower_qpc + LISTEN_TIMEOUT_S * hz
     available = sorted(e[2].available_qpc for e in events if e[0] == 'accepted')

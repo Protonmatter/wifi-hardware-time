@@ -75,6 +75,7 @@ class Sampler:
         self.pending = False
         self.failure: str | None = None
         self.receipt: dict | None = None
+        self.receipt_finalized = False
         self.sequence = 0
         self.deadline = 0.0
         self.close_attempted = False
@@ -112,13 +113,14 @@ class Sampler:
 
     def _fail(self, reason: str) -> None:
         self.failure = self.failure or reason
-        if self.receipt is not None:
+        if self.receipt is not None and not self.receipt_finalized:
             self.receipt.update(success=False, failure=self.failure)
 
     def submit(self, sequence: int) -> None:
         if self.state != State.READY or self.failure or type(sequence) is not int or sequence != self.sequence + 1:
             raise RuntimeError('Session not ready for next sequential authorization')
         self.sequence = sequence
+        self.receipt_finalized = False
         self.receipt = dict(schema=REQUEST_SCHEMA, session_id=self.session_id, sequence=sequence,
                             command='tsf_read_value', firmware_action=4, ioctl='0x00220182',
                             input_bytes=128, output_capacity=100, driver_sha256=QUALIFIED_SHA256,
@@ -128,7 +130,8 @@ class Sampler:
                             initial_success=None, initial_error=None, wait_result=None,
                             deadline_exceeded=False, cancel_requested=False, cancel_accepted=None,
                             cancel_error=None, completion_established=False, terminal_success=None,
-                            terminal_error=None, returned_bytes=None, response_hex=None, success=False)
+                            terminal_error=None, returned_bytes=None, response_hex=None, success=False,
+                            event_close_attempted=False, event_closed=False)
         try:
             self._emit()
             self.operation = self.kernel.allocate(self.payload)
@@ -166,17 +169,23 @@ class Sampler:
         self.state = State.COMPLETED_ERROR if self.failure else State.COMPLETED_SUCCESS
         self.receipt['success'] = self.failure is None and result.success
         self._release_operation()
+        # A later controller/session failure must not rewrite completed request evidence.
+        self.receipt_finalized = self.operation is None
         self.state = State.STOPPED if self.failure else State.READY
 
     def _release_operation(self) -> None:
         if self.operation is not None and not self.pending:
+            if self.receipt['event_close_attempted']:
+                return  # An interrupted native close may already have consumed the handle.
             try:
+                self.receipt['event_close_attempted'] = True
                 if not self.kernel.release(self.operation):
                     self._fail('event close failed')
                 else:
+                    self.receipt['event_closed'] = True
                     self.operation = None
             except BaseException as error:
-                self._fail(f'event close: {error}')
+                self._fail(f'event close outcome uncertain: {type(error).__name__}: {error}')
 
     def stop(self, reason: str) -> None:
         self._fail(reason)
@@ -216,7 +225,7 @@ class Sampler:
             self.receipt['wait_result'] = polled.wait_status
             if polled.wait_status not in (0, 258):
                 self.stop('unexpected or failed wait')
-            elif polled.result is not None:
+            if polled.result is not None:
                 self._terminal(polled.result)
             self._emit()
         except BaseException as error:
@@ -231,7 +240,7 @@ class Sampler:
             self.stop('close requested while I/O unresolved')
             return False
         if self.close_attempted:
-            return self.session['handle_closed'] is True
+            return self.session['handle_closed'] is True and self.operation is None
         self._release_operation()
         self.close_attempted = True
         self.session['handle_close_attempted'] = True
@@ -239,7 +248,7 @@ class Sampler:
             try:
                 self.session['handle_closed'] = bool(self.kernel.close())
             except BaseException as error:
-                self._fail(f'device close: {error}')
+                self._fail(f'device close outcome uncertain: {type(error).__name__}: {error}')
             if not self.session['handle_closed']:
                 self._fail('device close failed')
         self.state = State.CLOSED if self.session['handle_closed'] else State.STOPPED

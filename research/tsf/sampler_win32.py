@@ -26,6 +26,7 @@ class Operation:
     submitted: bool = False
     terminal: bool = False
     released: bool = False
+    close_attempted: bool = False
 
 
 class Win32Kernel:
@@ -37,6 +38,7 @@ class Win32Kernel:
         self.k, self.error = api, last_error or ct.get_last_error
         self.handle = None
         self.operation = None  # Additional strong ownership until terminal release.
+        self.close_attempted = False
         signatures = {
             'CreateFileW': ([ct.c_wchar_p, ct.c_uint32, ct.c_uint32, ct.c_void_p, ct.c_uint32, ct.c_uint32, ct.c_void_p], ct.c_void_p),
             'CreateEventW': ([ct.c_void_p, ct.c_int, ct.c_int, ct.c_wchar_p], ct.c_void_p),
@@ -91,8 +93,8 @@ class Win32Kernel:
         if op is not self.operation or op.released or not 0 < timeout_ms <= 50:
             raise RuntimeError('Invalid bounded poll')
         wait = self.k.WaitForSingleObject(op.overlapped.hEvent, timeout_ms)
-        if wait not in (0, 258):
-            return PollResult(wait, None)
+        # A failed event wait does not itself prove completion. The independent,
+        # nonblocking query can still prove a terminal operation; preserve wait status.
         ok = bool(self.k.GetOverlappedResult(self.handle, ct.byref(op.overlapped), ct.byref(op.returned), False))
         error = 0 if ok else self.error()
         if not ok and (error == 996 or op.overlapped.Internal == 0x103):
@@ -112,6 +114,9 @@ class Win32Kernel:
             raise RuntimeError('Cannot release unresolved native operation')
         if op.released:
             return True
+        if op.close_attempted:
+            return False
+        op.close_attempted = True  # Before the call: never retry an ambiguous numeric handle.
         if not self.k.CloseHandle(op.overlapped.hEvent):
             return False
         op.released = True
@@ -123,6 +128,9 @@ class Win32Kernel:
             raise RuntimeError('Operation resources still owned')
         if self.handle is None:
             return True
+        if self.close_attempted:
+            return False
+        self.close_attempted = True
         if not self.k.CloseHandle(self.handle):
             return False
         self.handle = None

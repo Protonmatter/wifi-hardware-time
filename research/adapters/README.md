@@ -2,9 +2,9 @@
 
 These tools identify the adapter, inspect its advertised services and read cached management-frame information. They establish which device and driver are being studied, not whether its timestamps are accurate. Use their findings to select the correct backend before attempting a separately qualified acquisition experiment.
 
-<!-- current-context:2026-10-04 -->
-**Current context (2026-10-04):** Later archive and installed-file inspection located QUTS client-owned byte returns and corrected vendor package/version assumptions; exact adapter-to-producer association remains open. See [current findings](../../docs/knowledge/current-findings.md).
-<!-- /current-context -->
+<!-- historical-context:2026-10-04 -->
+**Historical context (2026-10-04):** Later archive and installed-file inspection located QUTS client-owned byte returns and corrected vendor package/version assumptions; exact adapter-to-producer association remains open. See [current findings](../../docs/knowledge/current-findings.md).
+<!-- /historical-context -->
 
 ## Files
 

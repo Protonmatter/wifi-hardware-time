@@ -16,6 +16,7 @@ MAX_WINDOW_US = 2_000
 LISTEN_TIMEOUT_S = 5
 FRESHNESS_PPM = 100
 US_PER_S = 1_000_000
+SCREEN_POLICY_VERSION = 'wht/sample-screen-v2'
 
 
 @dataclass(frozen=True)
@@ -35,6 +36,18 @@ class Sample:
 
 
 @dataclass(frozen=True)
+class ContinuityBreak:
+    """Observed backwards counter step; its cause is unproven."""
+
+    previous_sequence: int
+    sequence: int
+    previous_tsf_us: int
+    tsf_us: int
+    lower_qpc: int
+    reason: str = 'backward_tsf_observation'
+
+
+@dataclass(frozen=True)
 class Screen:
     accepted: tuple[Sample, ...]
     rejected: tuple[tuple[int, str], ...]
@@ -45,6 +58,9 @@ class Screen:
     expected_misattributed: Fraction
     # Screened-out samples that still carry a report (late or stale), for diagnostics only.
     rejected_samples: tuple[tuple[str, Sample], ...] = ()
+    policy_version: str = SCREEN_POLICY_VERSION
+    continuity_closed: bool = False
+    continuity_breaks: tuple[ContinuityBreak, ...] = ()
 
 
 def request_from_receipt(sequence: int, receipt: dict, *, session: dict | None = None,
@@ -86,21 +102,59 @@ def _events(records: list[dict]) -> list[dict]:
 
 
 def _fresh(previous: Sample, current: Sample, qpc_hz: int) -> bool:
-    shortest = Fraction((current.lower_qpc - previous.upper_qpc) * US_PER_S, qpc_hz)
-    longest = Fraction((current.upper_qpc - previous.lower_qpc) * US_PER_S, qpc_hz)
-    low = shortest * (US_PER_S - FRESHNESS_PPM) / US_PER_S - 1
+    # Integer QPC upper stamps and TSF values stand for one-tick/unit bins.
+    shortest = Fraction((current.lower_qpc - previous.upper_qpc - 1) * US_PER_S, qpc_hz)
+    longest = Fraction((current.upper_qpc + 1 - previous.lower_qpc) * US_PER_S, qpc_hz)
+    low_rate = US_PER_S - FRESHNESS_PPM if shortest >= 0 else US_PER_S + FRESHNESS_PPM
+    low = shortest * low_rate / US_PER_S - 1
     high = longest * (US_PER_S + FRESHNESS_PPM) / US_PER_S + 1
     return low <= current.tsf_us - previous.tsf_us <= high
 
 
-def freshness_filter(samples: list[Sample], qpc_hz: int) -> tuple[list[Sample], list[tuple[int, str]]]:
-    """Reject a sample whose TSF step cannot fit its host interval at 100 ppm."""
-    accepted, rejected = [], []
+def _freshness_screen(samples: list[Sample], qpc_hz: int
+                      ) -> tuple[list[Sample], list[tuple[int, str]], list[ContinuityBreak]]:
+    if type(qpc_hz) is not int or qpc_hz <= 0:
+        raise ValueError('QPC frequency must be a positive integer')
     for sample in samples:
+        values = (sample.sequence, sample.tsf_us, sample.soc_raw, sample.lower_qpc, sample.upper_qpc)
+        if any(type(value) is not int for value in values):
+            raise ValueError('Samples require integer sequence, counters and QPC windows')
+        if not (sample.sequence >= 0 and 0 <= sample.tsf_us < 1 << 64
+                and 0 <= sample.soc_raw < 1 << 64 and 0 <= sample.lower_qpc <= sample.upper_qpc < 1 << 63):
+            raise ValueError('Sample counter/window outside range')
+    if any(b.lower_qpc <= a.lower_qpc or b.upper_qpc <= a.upper_qpc for a, b in zip(samples, samples[1:])):
+        raise ValueError('Samples must be chronological')
+    accepted, rejected, breaks = [], [], []
+    previous = None
+    for sample in samples:
+        # Compare raw structurally eligible candidates, including freshness rejects.
+        # A backwards observation might be stale/foreign or a reset/wrap; it does
+        # not prove which. Never let a widening drift budget erase the concern.
+        if breaks:
+            rejected.append((sample.sequence, 'continuity_segment_closed'))
+            continue
+        if previous is not None and sample.tsf_us < previous.tsf_us:
+            breaks.append(ContinuityBreak(previous.sequence, sample.sequence, previous.tsf_us,
+                                          sample.tsf_us, sample.lower_qpc))
+            rejected.append((sample.sequence, 'suspected_tsf_discontinuity'))
+            continue
+        previous = sample
         if accepted and not _fresh(accepted[-1], sample, qpc_hz):
             rejected.append((sample.sequence, 'stale_or_inconsistent'))
             continue
         accepted.append(sample)
+    return accepted, rejected, breaks
+
+
+def freshness_filter(samples: list[Sample], qpc_hz: int) -> tuple[list[Sample], list[tuple[int, str]]]:
+    """Screen one explicitly chosen segment; keep the historical two-list API.
+
+    A backwards TSF candidate closes this segment without proving a reset or
+    automatically seeding a new epoch. A separate call is a caller-selected new
+    analysis segment, not evidence that continuity or a new epoch was established.
+    Equal stale repeats remain ordinary freshness rejects and can recover.
+    """
+    accepted, rejected, _ = _freshness_screen(samples, qpc_hz)
     return accepted, rejected
 
 
@@ -160,14 +214,15 @@ def screen(records: list[dict], requests: list[Request], qpc_hz: int) -> Screen:
             own_losses += 1
         if reason:
             rejected.append((request.sequence, reason))
-    accepted, stale = freshness_filter(candidates, qpc_hz)
+    accepted, stale, breaks = _freshness_screen(candidates, qpc_hz)
     rejected.extend(stale)
-    stale_sequences = {sequence for sequence, _ in stale}
-    rejected_samples.extend(('stale_or_inconsistent', s) for s in candidates if s.sequence in stale_sequences)
+    stale_reasons = dict(stale)
+    rejected_samples.extend((stale_reasons[s.sequence], s) for s in candidates if s.sequence in stale_reasons)
     unclaimed = [e for i, e in enumerate(events) if i not in claimed]
     foreign_groups += sum(e['type'] == 'report' for e in unclaimed)
     foreign_commands += sum(e['type'] == 'command' for e in unclaimed)
     duration = Fraction(limits[-1][1] - limits[0][0], qpc_hz)
     expected = own_losses * Fraction(foreign_groups) / duration * Fraction(MAX_WINDOW_US, US_PER_S)
     return Screen(tuple(accepted), tuple(sorted(rejected)), foreign_groups, foreign_commands,
-                  own_losses, duration, expected, tuple(sorted(rejected_samples, key=lambda item: item[1].sequence)))
+                  own_losses, duration, expected, tuple(sorted(rejected_samples, key=lambda item: item[1].sequence)),
+                  continuity_closed=bool(breaks), continuity_breaks=tuple(breaks))

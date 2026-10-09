@@ -37,6 +37,71 @@ def series(clock_at, count=12, spacing=30_000_000, delay=20_000_000):
 
 
 class SettleTests(unittest.TestCase):
+    def test_exact_rate_extremes_contain_truth_at_capture_and_overlap_edges(self):
+        for ppm in (-200, 200):
+            rate = Fraction(1_000_000 + ppm, HZ)
+            clock = lambda q: Fraction(1_000) + Fraction(999, 1_000) + rate * q
+            for offset in (Fraction(0), Fraction(10), Fraction(10) + Fraction(999, 1_000)):
+                samples = [AvailableSample(i + 1, int(clock(lower + offset)), lower, lower + 10, lower + 11)
+                           for i, lower in enumerate((100, 30_000_100, 60_000_100))]
+                for event in (111, 30_000_100, 30_000_110, 30_000_111, 60_000_099):
+                    with self.subTest(ppm=ppm, capture_offset=offset, event=event):
+                        result = settle(event, samples, samples[-1].available_qpc, HZ, affine=False)
+                        self.assertEqual(result.state, 'settled')
+                        self.assertLessEqual(result.low_us, clock(event))
+                        self.assertGreaterEqual(result.high_us, clock(event))
+
+    def test_piecewise_clock_touching_both_extremes_stays_inside_settled_interval(self):
+        clock = VariableClock()
+        clock.rates = (Fraction(1_000_200, HZ), Fraction(999_800, HZ))
+        samples = series(clock.at, count=6, delay=0)
+        for item in samples[1:-1]:
+            for event in (item.lower_qpc, item.upper_qpc, item.upper_qpc + 1):
+                result = settle(event, samples, samples[-1].available_qpc, HZ, affine=False)
+                self.assertEqual(result.state, 'settled')
+                self.assertLessEqual(result.low_us, clock.at(event))
+                self.assertGreaterEqual(result.high_us, clock.at(event))
+
+    def test_overlap_alone_does_not_complete_a_pending_bracket(self):
+        samples = series(lambda q: 9_000_000_000 + q * NOMINAL, count=2, delay=0)
+        for event in (samples[1].lower_qpc, samples[1].upper_qpc):
+            result = settle(event, samples, samples[1].available_qpc, HZ, affine=False)
+            self.assertEqual(result.state, 'pending')
+            self.assertIsNone(result.half_width_us)
+
+    def test_settled_grid_maximum_is_reported_separately_from_retrospective_scope(self):
+        samples = [AvailableSample(i + 1, 9_000_000_000 + lower // 10 + 1_000,
+                                   lower, lower + 20_000, 90_000_000 if i == 1 else lower + 20_001)
+                   for i, lower in enumerate((1_000_000, 31_000_000, 61_000_000))]
+        result = settle_replay(samples, HZ, 29_989_999, affine=False)
+        self.assertEqual(result.get('actual_settled_grid_max_half_width_exact'), '160034999/100000')
+        self.assertEqual(result['actual_settled_grid_max_half_width_us'], 1600.35)
+        self.assertEqual(result['settlement_policy_version'], 'wht/settlement-v2')
+
+    def test_available_overlap_narrows_complete_bracket_without_becoming_a_side(self):
+        samples = [AvailableSample(i + 1, 9_000_000_000 + lower // 10 + 1_000,
+                                   lower, lower + 20_000, lower + 20_001)
+                   for i, lower in enumerate((1_000_000, 31_000_000, 61_000_000))]
+        event = 31_010_000
+        result = settle(event, samples, samples[-1].available_qpc, HZ, affine=False)
+        self.assertEqual((result.earlier_sequence, result.later_sequence), (1, 3))
+        self.assertEqual(result.half_width_us, Fraction('1000.75001'))
+        self.assertEqual(result.rate_bound_sequences, (1, 2, 3))
+        self.assertEqual(result.settled_at_qpc, 61_020_001)
+        self.assertLessEqual(result.low_us, Fraction(9_003_101_000))
+        self.assertGreaterEqual(result.high_us, Fraction(9_003_101_000))
+
+    def test_overlap_arriving_after_reported_settle_time_cannot_narrow_a_late_call(self):
+        samples = [AvailableSample(i + 1, 9_000_000_000 + lower // 10 + 1_000,
+                                   lower, lower + 20_000, 90_000_000 if i == 1 else lower + 20_001)
+                   for i, lower in enumerate((1_000_000, 31_000_000, 61_000_000))]
+        early = settle(31_010_000, samples, 61_020_001, HZ, affine=False)
+        late = settle(31_010_000, samples, 90_000_000, HZ, affine=False)
+        self.assertEqual(early, late)
+        self.assertEqual(late.half_width_us, Fraction('1600.34999'))
+        self.assertEqual(late.rate_bound_sequences, (1, 3))
+        self.assertEqual(late.settled_at_qpc, 61_020_001)
+
     def test_settled_interval_contains_a_variable_rate_clock(self):
         clock = VariableClock()
         samples = series(clock.at)
@@ -177,6 +242,12 @@ class SettleTests(unittest.TestCase):
             self.assertEqual(result['quantization'], 'window widened by 1 QPC tick; TSF value widened by 1 us')
             self.assertIn('not a bound on earliest-available nonadjacent settlements',
                           result['worst_settled_half_width_any_instant_scope'])
+            self.assertEqual(result.get('retrospective_consecutive_pair_max_half_width_exact'),
+                             result['worst_settled_half_width_any_instant_exact'])
+            self.assertEqual(result['actual_settled_grid_max_half_width_exact'],
+                             result['settle']['actual_settled_grid_max_half_width_exact'])
+            self.assertIn('overlapping capture windows', result['worst_settled_half_width_any_instant_scope'])
+            self.assertIn('out-of-order arrival', result['worst_settled_half_width_any_instant_scope'])
 
 
 if __name__ == '__main__':
