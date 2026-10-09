@@ -11,3 +11,4 @@ research/evidence/Update-ResearchKnowledge.ps1 text eol=lf
 docs/reproductions/** text eol=lf
 research/acquisition/live_observer.c text eol=lf
 research/tsf/decode_tsf_etl.c text eol=lf
+*.svg text eol=lf

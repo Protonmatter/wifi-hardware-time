@@ -19,6 +19,7 @@ jobs:
         run: |
           python research/evidence/build_knowledge_index.py --check
           python research/evidence/sync_workflow_diagrams.py --check
+          python research/evidence/publish_archify_previews.py --check
           python research/evidence/sync_tsf_headlines.py --check
       - name: Native FTM result regression (offline)
         run: |
