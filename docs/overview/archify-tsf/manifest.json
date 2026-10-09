@@ -7,43 +7,50 @@
       "slug": "layers",
       "type": "architecture",
       "title": "Persistent TSF: system layers",
-      "specification_sha256": "c2e30ce20182873c7ce68465ab8836d7e83cdbf985b758e4e20f48a82ddbe885"
+      "specification_sha256": "78334dc1fd535c13eced13c221769664998f71e30984d45597d8113c33a4cc9a",
+      "preview_sha256": "e6d0475c3814519a6bc66f411b25a6bde9cb5f66a4492ef29c4b56c38b967a5c"
     },
     {
       "slug": "workflow",
       "type": "workflow",
       "title": "Persistent acquisition: guarded workflow",
-      "specification_sha256": "a869f802a67a416976d96e9866bdc5831103045a0350dfb604a3c2b3ded5eb7f"
+      "specification_sha256": "5c7f26cdc1a982043018c1db9f989a51bade71307e260fc081fe696090bc1448",
+      "preview_sha256": "68067326262fc6183fa8e3ab0fcf738c79516b4cc739ccaec81cf7d8057183f0"
     },
     {
       "slug": "lifecycle",
       "type": "lifecycle",
       "title": "Sampler lifecycle: completion is the release boundary",
-      "specification_sha256": "44c6931ca2f3e1d1c73b5e1d1bb362aa063696f1d1846281498f0fac797d7aea"
+      "specification_sha256": "5d3c3cab0537037785faec793aa4ae8016f4e26a379715cafb0455798f1948bb",
+      "preview_sha256": "ef3c6e636ba5506469bbb3b06ffd112bd36ce81e48765a8cf4dff38c1e3c89cf"
     },
     {
       "slug": "time-source",
       "type": "architecture",
       "title": "Time sources: TSF observation and QPC relationship",
-      "specification_sha256": "dcb15207cfc289e03928969bc59d2828660a3bc001dbda6ce2f161ea57acce18"
+      "specification_sha256": "e4dca3fa8010fe8d39b55136f3e2982efa2f949490f99f903a39baa047aa5a32",
+      "preview_sha256": "8eab5d32ba7757dabac12c492415844d9fbe404ab6b01f30ba1c981c8885695b"
     },
     {
       "slug": "timestamps",
       "type": "sequence",
       "title": "Timestamp sequence: sampling, completion and availability",
-      "specification_sha256": "9da2798764541dad619b398c06d1dc80e244b3c9bcfce0a09e7bc72bb6a00ff3"
+      "specification_sha256": "8152eb665a6c0c96773ca336833c2a44ce860e111675acf12ec53bd60073deae",
+      "preview_sha256": "b66909f15e17d21056520b630335911215f02df2a3c3c65978c5e5195ad1c5cf"
     },
     {
       "slug": "algorithm",
       "type": "workflow",
       "title": "Clock algorithm: preserve event, bound now, settle later",
-      "specification_sha256": "f4426673e91a740eb3833368ec168f8fb84878a850d1f4b140a4f188344fdd7d"
+      "specification_sha256": "f4426673e91a740eb3833368ec168f8fb84878a850d1f4b140a4f188344fdd7d",
+      "preview_sha256": "434350c7fb93f500638ccf7ef86a4498c597490cd11628acfb8aded2ecc50b90"
     },
     {
       "slug": "adapters",
       "type": "architecture",
       "title": "Live and offline adapters: shared contract, different evidence",
-      "specification_sha256": "f0552b0cb4f8931f165a7c4a8b5930a1e65f6528ced8afc0ac15de743614d8a0"
+      "specification_sha256": "da18ceb87b2f690ae4ddafe524676ff26d813f8bb0f4be38f5cc4a641ab74898",
+      "preview_sha256": "f899b1391612d1f9da9200f164381553e33ff1b7df0e5f7d15f74c6fb04a8ede"
     }
   ],
   "algorithm_policy_update": "wht/settlement-v2 and rounding-inclusive uncertainty; research source 0f41db0175e3601e899c51143b46bb8b3df02135"
