@@ -12,6 +12,7 @@ Start with [goals and current position](../research-history/README.md), then fol
 
 ## Documents
 
+- [Sub-millisecond TSF timing: implementation plan](2026-10-09-sub-millisecond-plan.md).
 - [Causal TSF provider: design contract](2026-10-08-causal-provider-design.md).
 - [TSF-to-host bound: sub-millisecond proof design](2026-10-07-tsf-host-bound-design.md).
 - [TSF-to-host bound: implementation plan](2026-10-07-tsf-host-bound-plan.md).

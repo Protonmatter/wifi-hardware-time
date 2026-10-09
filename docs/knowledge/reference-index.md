@@ -10,7 +10,7 @@ Find the calls, file names, terms and short strings recorded in this research. T
 
 ## Search
 
-Indexed **369 source files** and **11165 distinct terms**.
+Indexed **370 source files** and **11334 distinct terms**.
 
 The [JSON index](research-index.json) includes Python definitions/calls, C/Java/PowerShell call-shaped tokens, authored short strings and Markdown code terms. Vendor binaries, local artifacts, historical reproduction sources and generated indexes are excluded. Unresolved call-shaped tokens are explicitly labeled.
 
@@ -135,8 +135,9 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [docs/overview/2026-10-07-tsf-host-bound-design.md](../../docs/overview/2026-10-07-tsf-host-bound-design.md) | `9e3850f11b50` |
 | [docs/overview/2026-10-07-tsf-host-bound-plan.md](../../docs/overview/2026-10-07-tsf-host-bound-plan.md) | `84cc59143b88` |
 | [docs/overview/2026-10-08-causal-provider-design.md](../../docs/overview/2026-10-08-causal-provider-design.md) | `53c15d633f7f` |
+| [docs/overview/2026-10-09-sub-millisecond-plan.md](../../docs/overview/2026-10-09-sub-millisecond-plan.md) | `1298ce73d122` |
 | [docs/overview/OPERATIONS.md](../../docs/overview/OPERATIONS.md) | `bc4c2e2398a4` |
-| [docs/overview/README.md](../../docs/overview/README.md) | `3a7241f7d546` |
+| [docs/overview/README.md](../../docs/overview/README.md) | `e7b9e849b32b` |
 | [docs/overview/archify-studio/README.md](../../docs/overview/archify-studio/README.md) | `b83ac4b4cb07` |
 | [docs/overview/archify-tsf/README.md](../../docs/overview/archify-tsf/README.md) | `0ab6721d9474` |
 | [docs/overview/complete-event-2026-10-05/context-map.md](../../docs/overview/complete-event-2026-10-05/context-map.md) | `4f3de91475d3` |
