@@ -61,13 +61,23 @@ def tokens(text: str, suffix: str) -> list[tuple[str, str, int]]:
     result: list[tuple[str, str, int]] = []
     if suffix == '.py':
         tree = ast.parse(text)
+        # Python 3.11 attributes f-string literal fragments to the whole
+        # expression, while newer parsers report individual fragment lines.
+        # Anchor literal fragments at their containing expression consistently;
+        # ordinary replacement strings and nested f-strings retain their origins.
+        string_origins: dict[int, int] = {}
+        for expression in ast.walk(tree):
+            if isinstance(expression, ast.JoinedStr):
+                for fragment in expression.values:
+                    if isinstance(fragment, ast.Constant) and isinstance(fragment.value, str):
+                        string_origins.setdefault(id(fragment), expression.lineno)
         for node in ast.walk(tree):
             if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
                 result.append((node.name, 'definition', node.lineno))
             elif isinstance(node, ast.Call):
                 result.append((ast.unparse(node.func), 'python-call', node.lineno))
             elif isinstance(node, ast.Constant) and isinstance(node.value, str):
-                result.append((node.value, 'authored-string', node.lineno))
+                result.append((node.value, 'authored-string', string_origins.get(id(node), node.lineno)))
     for number, line in enumerate(text.splitlines(), 1):
         if suffix in {'.md', '.mmd'}:
             result.extend((m.group(1), 'documented-term', number)

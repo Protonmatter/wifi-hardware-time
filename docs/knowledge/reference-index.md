@@ -10,7 +10,7 @@ Find the calls, file names, terms and short strings recorded in this research. T
 
 ## Search
 
-Indexed **353 source files** and **10488 distinct terms**.
+Indexed **353 source files** and **10497 distinct terms**.
 
 The [JSON index](research-index.json) includes Python definitions/calls, C/Java/PowerShell call-shaped tokens, authored short strings and Markdown code terms. Vendor binaries, local artifacts, historical reproduction sources and generated indexes are excluded. Unresolved call-shaped tokens are explicitly labeled.
 
@@ -147,7 +147,7 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [docs/overview/complete-event-2026-10-05/test-matrix.md](../../docs/overview/complete-event-2026-10-05/test-matrix.md) | `76b88fdb0da5` |
 | [docs/overview/gap-closure-ledger.md](../../docs/overview/gap-closure-ledger.md) | `91f4613e3911` |
 | [docs/overview/persistent-tsf-next-steps.md](../../docs/overview/persistent-tsf-next-steps.md) | `91eb711bc739` |
-| [docs/overview/postmerge-corrections-2026-10-08.md](../../docs/overview/postmerge-corrections-2026-10-08.md) | `84eb3172bf73` |
+| [docs/overview/postmerge-corrections-2026-10-08.md](../../docs/overview/postmerge-corrections-2026-10-08.md) | `c6075ba2daf8` |
 | [docs/overview/pr-reconciliation-2026-10-08.md](../../docs/overview/pr-reconciliation-2026-10-08.md) | `a46188a58f1c` |
 | [docs/overview/pr3-component-review-map-2026-10-06.md](../../docs/overview/pr3-component-review-map-2026-10-06.md) | `ca9f272db098` |
 | [docs/overview/pr3-review-2026-10-06.md](../../docs/overview/pr3-review-2026-10-06.md) | `ebcce676c2f1` |
@@ -234,7 +234,7 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [research/clock_models/soc_domain_test.py](../../research/clock_models/soc_domain_test.py) | `8d105806ba47` |
 | [research/evidence/README.md](../../research/evidence/README.md) | `17b375c230ea` |
 | [research/evidence/Update-ResearchKnowledge.ps1](../../research/evidence/Update-ResearchKnowledge.ps1) | `4547d8e08593` |
-| [research/evidence/build_knowledge_index.py](../../research/evidence/build_knowledge_index.py) | `2f278bec5ed2` |
+| [research/evidence/build_knowledge_index.py](../../research/evidence/build_knowledge_index.py) | `5ae18af16221` |
 | [research/evidence/export_clock_evidence.py](../../research/evidence/export_clock_evidence.py) | `a9c4e6892f90` |
 | [research/evidence/hardware_observation.py](../../research/evidence/hardware_observation.py) | `ee18d8e79d2c` |
 | [research/evidence/sync_tsf_headlines.py](../../research/evidence/sync_tsf_headlines.py) | `0d9edb5889bf` |
@@ -340,7 +340,7 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [tests/test_ftm_selection.py](../../tests/test_ftm_selection.py) | `0a0f6a22f67c` |
 | [tests/test_hardware_observation.py](../../tests/test_hardware_observation.py) | `373ac4bb5f56` |
 | [tests/test_ihv_queries.py](../../tests/test_ihv_queries.py) | `aea92d30a26e` |
-| [tests/test_knowledge_index.py](../../tests/test_knowledge_index.py) | `a570433b307b` |
+| [tests/test_knowledge_index.py](../../tests/test_knowledge_index.py) | `3722eeea4063` |
 | [tests/test_lifecycle_evidence.py](../../tests/test_lifecycle_evidence.py) | `a5a8e1a98125` |
 | [tests/test_management_rx_path.py](../../tests/test_management_rx_path.py) | `7d6b16367baf` |
 | [tests/test_management_tsf.py](../../tests/test_management_tsf.py) | `4d910521c97c` |
