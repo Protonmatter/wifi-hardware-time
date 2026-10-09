@@ -12,3 +12,5 @@ docs/reproductions/** text eol=lf
 research/acquisition/live_observer.c text eol=lf
 research/tsf/decode_tsf_etl.c text eol=lf
 *.svg text eol=lf
+# Preserve the standalone atlas digest in Windows checkouts.
+docs/overview/archify-studio/index.html text eol=lf

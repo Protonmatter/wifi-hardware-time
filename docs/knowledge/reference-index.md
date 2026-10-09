@@ -10,7 +10,7 @@ Find the calls, file names, terms and short strings recorded in this research. T
 
 ## Search
 
-Indexed **355 source files** and **10685 distinct terms**.
+Indexed **356 source files** and **10688 distinct terms**.
 
 The [JSON index](research-index.json) includes Python definitions/calls, C/Java/PowerShell call-shaped tokens, authored short strings and Markdown code terms. Vendor binaries, local artifacts, historical reproduction sources and generated indexes are excluded. Unresolved call-shaped tokens are explicitly labeled.
 
@@ -34,7 +34,7 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | File | Normalized text SHA-256 prefix |
 |---|---|
 | [.github/workflows/offline-checks.yml](../../.github/workflows/offline-checks.yml) | `8f03e34a0760` |
-| [README.md](../../README.md) | `5f3c0db88ffb` |
+| [README.md](../../README.md) | `68e61812ad56` |
 | [docs/README.md](../../docs/README.md) | `f325db23340e` |
 | [docs/acquisition/README.md](../../docs/acquisition/README.md) | `ab17d2d62b8d` |
 | [docs/acquisition/acquisition-campaign-2026-10-02-results.md](../../docs/acquisition/acquisition-campaign-2026-10-02-results.md) | `09b608486344` |
@@ -122,7 +122,7 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [docs/knowledge/current-findings.md](../../docs/knowledge/current-findings.md) | `e7482f56acf9` |
 | [docs/knowledge/interface-directory.md](../../docs/knowledge/interface-directory.md) | `d58d6c2fd787` |
 | [docs/knowledge/refresh-validation.md](../../docs/knowledge/refresh-validation.md) | `13243a024baa` |
-| [docs/knowledge/workflow-diagrams.md](../../docs/knowledge/workflow-diagrams.md) | `b8c181f3970f` |
+| [docs/knowledge/workflow-diagrams.md](../../docs/knowledge/workflow-diagrams.md) | `1d5bc6602432` |
 | [docs/memory-ring/README.md](../../docs/memory-ring/README.md) | `888ab387a7e1` |
 | [docs/memory-ring/diagrams/report-vs-ring.mmd](../../docs/memory-ring/diagrams/report-vs-ring.mmd) | `6c655d36bf66` |
 | [docs/memory-ring/mlo-cache-and-symbol-search.md](../../docs/memory-ring/mlo-cache-and-symbol-search.md) | `6beabadf4315` |
@@ -137,6 +137,7 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [docs/overview/2026-10-08-causal-provider-design.md](../../docs/overview/2026-10-08-causal-provider-design.md) | `e2e6023ed4cc` |
 | [docs/overview/OPERATIONS.md](../../docs/overview/OPERATIONS.md) | `9374e5f4d1c8` |
 | [docs/overview/README.md](../../docs/overview/README.md) | `17f219d58a2f` |
+| [docs/overview/archify-studio/README.md](../../docs/overview/archify-studio/README.md) | `a4a72b894490` |
 | [docs/overview/archify-tsf/README.md](../../docs/overview/archify-tsf/README.md) | `8d4d2cc068ad` |
 | [docs/overview/complete-event-2026-10-05/context-map.md](../../docs/overview/complete-event-2026-10-05/context-map.md) | `ea57333f0cba` |
 | [docs/overview/complete-event-2026-10-05/decision-log.md](../../docs/overview/complete-event-2026-10-05/decision-log.md) | `c089c83e1be6` |
