@@ -8,7 +8,6 @@ import copy
 from fractions import Fraction
 import io
 import json
-from pathlib import Path
 import tempfile
 import unittest
 from unittest.mock import patch
@@ -17,7 +16,7 @@ from research.clock_models.sample_screen import ContinuityBreak, Request, Sample
 from research.clock_models.sub_ms_acceptance import ACCEPTANCE_VERSION, CRITERIA, evaluate, main
 
 PASSING = {
-    'causal-v3': dict(coverage_review_interval=0.9991, incompatible=[], whole_recording_continuity_eligible=True,
+    'causal-v3': dict(coverage_request_interval=0.9991, incompatible=[], whole_recording_continuity_eligible=True,
                   continuity_invalidations=[], durations_ticks=dict(acquiring='0', tracking='9', stale='0', invalid='0')),
     'settle-v3': dict(settle=dict(sub_millisecond_share=1.0, half_width_us=dict(median=199.1))),
     'wander': dict(wander=dict(model_half_width_us=dict(median=148.3), holdout_violations=0)),
@@ -34,7 +33,7 @@ class AcceptanceTests(unittest.TestCase):
 
     def test_each_criterion_can_fail_alone(self):
         breaks = {
-            'guaranteed_live_coverage_min': lambda r, t: r['causal-v3'].update(coverage_review_interval=0.93),
+            'guaranteed_live_coverage_min': lambda r, t: r['causal-v3'].update(coverage_request_interval=0.93),
             'incompatible_max': lambda r, t: r['causal-v3'].update(incompatible=[dict(sequence=4)]),
             'settled_sub_ms_share_min': lambda r, t: r['settle-v3']['settle'].update(sub_millisecond_share=0.99),
             'settled_median_max_us': lambda r, t: r['settle-v3']['settle']['half_width_us'].update(median=281.0),
@@ -96,7 +95,7 @@ class AcceptanceTests(unittest.TestCase):
 
     def test_missing_review_interval_is_rejected(self):
         replays = copy.deepcopy(PASSING)
-        del replays['causal-v3']['coverage_review_interval']
+        del replays['causal-v3']['coverage_request_interval']
         with self.assertRaises(KeyError):
             evaluate(replays, TIMING)
 
@@ -110,7 +109,7 @@ class AcceptanceTests(unittest.TestCase):
 
     def test_todays_smoke_numbers_fail_on_delivery_cadence_and_width(self):
         today = copy.deepcopy(PASSING)
-        today['causal-v3']['coverage_review_interval'] = 0.92884
+        today['causal-v3']['coverage_request_interval'] = 0.92884
         today['settle-v3']['settle']['half_width_us']['median'] = 280.429
         timing = dict(completed=True, spacing_s=1.0, delivery_s=dict(median=1.486, p99=1.999, max=2.167),
                       accepted_gap_s=dict(median=2.005, max=4.009), delivery_missing=0)
@@ -179,7 +178,8 @@ class AcceptanceEndToEndTests(unittest.TestCase):
         self.assertTrue(all(c['passed'] for c in result['checks']))
 
     def test_lifecycle_unclean_run_is_rejected(self):
-        # load_run reports completed False for an unclean lifecycle even when the result says success.
+        # load_run's lifecycle-to-completed path is covered by tests/test_persistent_receipts.py; this test
+        # covers the acceptance half: completed=False rejects the run.
         code, result = run_cli(completed=False)
         self.assertEqual(code, 2)
         self.assertFalse(result['passed'])
@@ -192,6 +192,63 @@ class AcceptanceEndToEndTests(unittest.TestCase):
         self.assertEqual(failed, {'whole_recording_continuity_eligible', 'no_continuity_invalidations',
                                   'no_invalid_time'})
         self.assertTrue(all(c['passed'] for c in result['checks']))
+
+
+def build_real(count=300, jump_from=None, jump_us=0, fail_from=None):
+    """Raw ETW-shaped records so the real screen() runs; only the file loaders are patched."""
+    records, live, receipts, requests = [], [], [], []
+    for i in range(1, count + 1):
+        lower, upper = i * HZ, i * HZ + 2_540
+        ok = fail_from is None or i < fail_from
+        requests.append(Request(i, lower, ok))
+        receipts.append(dict(sequence=i, qpc_request_completed=upper + 10))
+        if not ok:
+            continue
+        value = tsf(lower + 800) + (jump_us if jump_from is not None and i >= jump_from else 0)
+        soc = 12345
+        records += [dict(kind='command', raw_timestamp=lower + 100, vdev=0, action=4),
+                    dict(kind='report', raw_timestamp=upper, vdev=0, tsf_raw=value),
+                    dict(kind='soc_timer', raw_timestamp=upper, soc_timer_raw=soc),
+                    dict(kind='delay', raw_timestamp=upper, vdev=0, tsf_delay_raw=(value - soc) & 0xffffffff)]
+        live += [dict(kind='report', raw_timestamp=upper), dict(kind='delay', received_qpc=upper + 50_000)]
+    data = dict(qpc_hz=HZ, records=records, requests=requests, completed=True,
+                identity=dict(folder='synthetic', session='synthetic'))
+    return data, live, receipts
+
+
+def run_real(**kwargs):
+    data, live, receipts = build_real(**kwargs)
+    lines = lambda path: live if path.name == 'live-observer.jsonl' else receipts
+    with tempfile.TemporaryDirectory() as directory:
+        folder = Path(directory)
+        (folder / 'session.json').write_text(json.dumps(dict(Plan=dict(spacing_s=1.0))), encoding='utf-8')
+        out = io.StringIO()
+        with patch('research.clock_models.replay_causal_provider.load_run', return_value=data),                 patch('research.clock_models.replay_causal_provider._revision', return_value={}),                 patch('research.clock_models.replay_causal_provider._lines', side_effect=lines),                 patch.object(sub_ms_acceptance, 'load_run', return_value=data),                 patch.object(sub_ms_acceptance, '_lines', side_effect=lines),                 patch.object(sys, 'argv', ['sub_ms_acceptance.py', str(folder)]),                 contextlib.redirect_stdout(out):
+            code = main()
+    return code, json.loads(out.getvalue())
+
+
+class AcceptanceTailTests(unittest.TestCase):
+    def failed(self, result):
+        return [c['name'] for c in result['prerequisites'] + result['checks'] if not c['passed']]
+
+    def test_clean_300_request_run_passes(self):
+        code, result = run_real()
+        self.assertEqual(code, 0, self.failed(result))
+        self.assertGreater(result['replays']['causal-v3']['coverage_request_interval'], 0.995)
+
+    def test_forward_tsf_jump_over_the_tail_is_rejected(self):
+        code, result = run_real(jump_from=271, jump_us=1_000_000)
+        self.assertEqual(code, 2)
+        self.assertIn('guaranteed_live_coverage_min', self.failed(result))
+        causal = result['replays']['causal-v3']
+        self.assertGreater(causal['screen']['rejected'], 0)
+        self.assertLess(causal['coverage_request_interval'], 0.995)
+
+    def test_failed_requests_over_the_tail_are_rejected(self):
+        code, result = run_real(fail_from=271)
+        self.assertEqual(code, 2)
+        self.assertIn('guaranteed_live_coverage_min', self.failed(result))
 
 
 if __name__ == '__main__':

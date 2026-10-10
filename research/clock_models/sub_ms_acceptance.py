@@ -21,7 +21,7 @@ from research.clock_models.sample_screen import screen
 
 ACCEPTANCE_VERSION = 'wht/sub-ms-acceptance-v2'
 CRITERIA = dict(
-    guaranteed_live_coverage_min=0.995,   # causal-v3 coverage_review_interval (first to last sample availability)
+    guaranteed_live_coverage_min=0.995,   # causal-v3 coverage_request_interval (first to last request submission)
     incompatible_max=0,                   # causal-v3 incompatible samples
     settled_sub_ms_share_min=1.0,         # settle-v3 sub_millisecond_share
     settled_median_max_us=250,            # settle-v3 rate-only median half-width
@@ -57,7 +57,7 @@ def run_timing(folder: Path) -> dict:
 def evaluate(replays: dict, timing: dict, criteria: dict = CRITERIA) -> dict:
     causal, settle, model = replays['causal-v3'], replays['settle-v3']['settle'], replays['wander']['wander']
     observed = dict(
-        guaranteed_live_coverage_min=causal['coverage_review_interval'],
+        guaranteed_live_coverage_min=causal['coverage_request_interval'],
         incompatible_max=len(causal['incompatible']),
         settled_sub_ms_share_min=settle['sub_millisecond_share'],
         settled_median_max_us=(settle['half_width_us'] or {}).get('median'),

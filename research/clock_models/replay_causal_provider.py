@@ -64,7 +64,7 @@ def availability(sample, mode: str, delay_seen: dict[int, int], completed: dict[
 
 
 def replay(events: list, qpc_hz: int, start: int, end: int, review_interval: tuple[int, int] | None = None,
-           rate_prior_ppm: int = 200, threshold_us: int = 1_000, jump_us=0) -> dict:
+           request_interval: tuple[int, int] | None = None, rate_prior_ppm: int = 200, threshold_us: int = 1_000, jump_us=0) -> dict:
     """Feed accepted/rejected samples and continuity diagnostics by their availability.
 
     Simultaneously available samples use capture order as a tie-break only. Skips
@@ -177,6 +177,10 @@ def replay(events: list, qpc_hz: int, start: int, end: int, review_interval: tup
         window = durations(lo, hi)
         out['review_interval_qpc'] = [lo, hi]
         out['coverage_review_interval'] = round(float(window['tracking'] / (hi - lo)), 6)
+    if request_interval is not None:
+        lo, hi = request_interval
+        out['request_interval_qpc'] = [lo, hi]
+        out['coverage_request_interval'] = round(float(durations(lo, hi)['tracking'] / (hi - lo)), 6)
     return out
 
 
@@ -316,7 +320,9 @@ def replay_run(folder: Path, mode: str) -> dict:
     meta['availability_rule'] = AVAILABILITY_RULES[mode]
     meta['rejected_uncheckable'] = rejected_uncheckable
     review_interval = (available[0], available[-1]) if len(available) >= 2 and available[0] < available[-1] else None
-    meta.update(replay(events, hz, start, end, review_interval, jump_us=jump_us))
+    first, last = data['requests'][0].lower_qpc, data['requests'][-1].lower_qpc
+    meta.update(replay(events, hz, start, end, review_interval, (first, last) if first < last else None,
+                       jump_us=jump_us))
     return meta
 
 

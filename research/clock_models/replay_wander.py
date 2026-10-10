@@ -24,7 +24,7 @@ def _quantiles(values: list[Fraction]) -> dict | None:
 
 
 def _diagnostic(item) -> dict:
-    """Accept a mapping or any object (dataclass, namedtuple) with sequence and available_qpc."""
+    """Accept a mapping or named object with available_qpc and sequence."""
     get = item.__getitem__ if isinstance(item, dict) else lambda key: getattr(item, key)
     return dict(sequence=get('sequence'), available_qpc=get('available_qpc'))
 
@@ -75,6 +75,9 @@ def replay_wander(items: list[AvailableSample], qpc_hz: int, start: int, end: in
             widths_g.append(result.guaranteed.half_width_us)
         if result.half_width_us is not None:
             widths_m.append(result.half_width_us)
+    # Diagnostics that become available at or after the replay end do not change any state.
+    for diagnostic in diagnostics[diag_index:]:
+        continuity_invalidations.append(diagnostic)
     total = sum(states_g.values())
     violations = [h['sequence'] for h in holdout if not h['compatible']]
     return dict(label='grid replay: guaranteed rate-only provider and labeled learned-rate model',

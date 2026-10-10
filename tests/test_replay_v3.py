@@ -9,7 +9,7 @@ import unittest
 from unittest.mock import patch
 from research.clock_models.causal_provider import PROVIDER_POLICY_VERSION, AvailableSample
 from research.clock_models.rate_bound import DEFAULT_JUMP_US
-from research.clock_models.replay_causal_provider import V3_MODES, replay_run
+from research.clock_models.replay_causal_provider import V3_MODES, replay, replay_run
 from research.clock_models.replay_wander import replay_wander
 from research.clock_models.sample_screen import LISTEN_TIMEOUT_S, ContinuityBreak, Request, Sample, Screen
 from research.clock_models.settle import SETTLEMENT_POLICY_VERSION_V3
@@ -202,6 +202,41 @@ class WanderHistoryTests(unittest.TestCase):
         result = run_mode('wander')['wander']
         self.assertEqual(result['late_history_skipped'], [])
         self.assertEqual(result['continuity_invalidations'], [])
+
+
+class RequestIntervalCoverageTests(unittest.TestCase):
+    def coverage(self, end, request_interval):
+        samples = [AvailableSample(i, tsf(i * HZ + 800), i * HZ, i * HZ + 2_540, i * HZ + 2_541) for i in range(1, 11)]
+        events = [('accepted', None, s) for s in samples]
+        return replay(events, HZ, HZ, end, (samples[0].available_qpc, samples[-1].available_qpc),
+                      request_interval)
+
+    def test_stale_tail_before_the_last_request_counts_and_later_time_is_excluded(self):
+        short = self.coverage(30 * HZ, (HZ, 30 * HZ))
+        self.assertEqual(short['request_interval_qpc'], [HZ, 30 * HZ])
+        self.assertEqual(short['coverage_review_interval'], 1.0)  # ends at the last accepted sample
+        self.assertLess(short['coverage_request_interval'], 0.5)  # the silent tail is stale
+        # Time after the last request does not enter the figure.
+        self.assertEqual(self.coverage(60 * HZ, (HZ, 30 * HZ))['coverage_request_interval'],
+                         short['coverage_request_interval'])
+        self.assertNotIn('coverage_request_interval', self.coverage(30 * HZ, None))
+
+    def test_run_replay_reports_request_interval_for_causal_modes(self):
+        result = run_mode('causal-v3')
+        self.assertEqual(result['request_interval_qpc'], [HZ, 40 * HZ])
+        self.assertGreater(result['coverage_request_interval'], 0.95)
+
+
+class WanderLateDiagnosticTests(unittest.TestCase):
+    def test_diagnostic_after_the_replay_end_is_recorded_without_changing_states(self):
+        items = available(30)
+        end = items[-1].available_qpc
+        late = dict(sequence=99, available_qpc=end + HZ)
+        base = replay_wander(items, HZ, items[0].lower_qpc, end, wander_ppm=2)
+        result = replay_wander(items, HZ, items[0].lower_qpc, end, wander_ppm=2, continuity=[late])
+        self.assertEqual(result['continuity_invalidations'], [late])
+        self.assertEqual(result['guaranteed_states'], base['guaranteed_states'])
+        self.assertEqual(result['model_states'], base['model_states'])
 
 
 if __name__ == '__main__':
