@@ -19,7 +19,7 @@ PASSING = {
     'causal-v3': dict(coverage_request_interval=0.9991, incompatible=[], whole_recording_continuity_eligible=True,
                   continuity_invalidations=[], durations_ticks=dict(acquiring='0', tracking='9', stale='0', invalid='0')),
     'settle-v3': dict(settle=dict(sub_millisecond_share=1.0, half_width_us=dict(median=199.1))),
-    'wander': dict(wander=dict(model_half_width_us=dict(median=148.3), holdout_violations=0)),
+    'wander': dict(wander=dict(model_half_width_us=dict(median=148.3), holdout_violations=0, after_interval=[])),
 }
 TIMING = dict(completed=True, spacing_s=1.0, delivery_s=dict(median=0.006, p99=0.012, max=0.05),
               accepted_gap_s=dict(median=1.004, max=3.1), delivery_missing=0)
@@ -58,7 +58,7 @@ class AcceptanceTests(unittest.TestCase):
         self.assertEqual(result['schema'], ACCEPTANCE_VERSION)
         self.assertEqual([p['name'] for p in result['prerequisites']],
                          ['run_completed', 'whole_recording_continuity_eligible', 'no_continuity_invalidations',
-                          'no_invalid_time'])
+                          'no_invalid_time', 'no_samples_after_replay_end'])
         self.assertTrue(all(p['passed'] for p in result['prerequisites']))
 
     def test_each_prerequisite_fails_alone_while_numerical_checks_pass(self):
@@ -69,6 +69,8 @@ class AcceptanceTests(unittest.TestCase):
             'no_continuity_invalidations':
                 lambda r, t: r['causal-v3'].update(continuity_invalidations=[dict(sequence=9)]),
             'no_invalid_time': lambda r, t: r['causal-v3']['durations_ticks'].update(invalid='49797460'),
+            'no_samples_after_replay_end':
+                lambda r, t: r['wander']['wander'].update(after_interval=[dict(sequence=3, available_qpc=1)]),
         }
         for name, mutate in breaks.items():
             replays, timing = copy.deepcopy(PASSING), copy.deepcopy(TIMING)
@@ -88,6 +90,10 @@ class AcceptanceTests(unittest.TestCase):
             del replays['causal-v3'][key]
             with self.subTest(key=key), self.assertRaises(KeyError):
                 evaluate(replays, TIMING)
+        replays = copy.deepcopy(PASSING)
+        del replays['wander']['wander']['after_interval']
+        with self.assertRaises(KeyError):
+            evaluate(replays, TIMING)
         timing = copy.deepcopy(TIMING)
         del timing['completed']
         with self.assertRaises(KeyError):
@@ -269,6 +275,15 @@ class AcceptanceTailTests(unittest.TestCase):
         code, result = run_real(final_extra_us=300)
         self.assertEqual(code, 2)
         self.assertEqual(self.failed(result), ['model_holdout_violations_max'])
+
+    def test_violating_sample_available_at_or_after_the_replay_end_is_rejected(self):
+        end = 300 * HZ + 5 * HZ
+        for received in (end, end + 1):
+            with self.subTest(received=received):
+                code, result = run_real(final_extra_us=300, final_received=received)
+                self.assertEqual(code, 2)
+                self.assertEqual(self.failed(result), ['no_samples_after_replay_end'])
+                self.assertEqual(len(result['replays']['wander']['wander']['after_interval']), 1)
 
 
 if __name__ == '__main__':

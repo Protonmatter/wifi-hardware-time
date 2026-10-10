@@ -1,9 +1,10 @@
 """Grid replay of the guaranteed provider beside the learned-rate model. Offline only.
 
 Queries run on a fixed QPC grid; samples are ingested in availability order before
-any query at or after their availability; arrivals between the last query and the end are
-processed too, and samples available at or after the end are listed in after_interval. Each model check happens before ingest
-(out of sample), so holdout violations measure the declared learned-rate assumption.
+any query at or after their availability. Arrivals between the last query and the end are
+processed too; samples available at or after the end are listed in after_interval. Each
+model check happens before ingest (out of sample), so holdout violations measure the declared
+learned-rate assumption.
 """
 from __future__ import annotations
 

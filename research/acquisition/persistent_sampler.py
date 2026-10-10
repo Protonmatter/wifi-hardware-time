@@ -167,6 +167,8 @@ class IdentityMonitor:
     def _run(self) -> None:
         started_monotonic = started_qpc = None
         error_text = None
+        with self.lock:
+            origin = self.running_since
         try:
             started_monotonic, started_qpc = self.monotonic(), self.now_qpc()
             self.check()
@@ -176,7 +178,7 @@ class IdentityMonitor:
             with self.lock:
                 try:
                     if error_text is None:
-                        elapsed = self.monotonic() - started_monotonic
+                        elapsed = self.monotonic() - (origin)
                         if elapsed > self.deadline_s:
                             error_text = f'Identity check overran its {self.deadline_s:g} s deadline ({elapsed:.3f} s)'
                     if error_text is None:
@@ -213,8 +215,9 @@ class IdentityMonitor:
             with self.lock:
                 if self.running_since is None:
                     return True
-                deadline = min(call_deadline, self.running_since + self.deadline_s)
-            if self.monotonic() >= deadline:
+                running_deadline = self.running_since + self.deadline_s
+            now = self.monotonic()
+            if now >= call_deadline or now > running_deadline:
                 return False
             wait(0.02)
 

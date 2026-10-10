@@ -11,7 +11,7 @@ from research.acquisition.run_bound_campaign import parse
 
 class ControllerTests(unittest.TestCase):
     def run_execute(self, root, observer_fails=False, fail_identity_call=None, duration_s='60', starter=None,
-                    slow_identity_call=None, slow_identity_s=0.0):
+                    slow_identity_call=None, slow_identity_s=0.0, monitor_factory=None):
         """Drive _execute with fakes only; identity checks run synchronously through the patched starter."""
         import research.acquisition.run_bound_campaign as bound
         import research.acquisition.run_acquisition_campaign as acquisition
@@ -75,6 +75,7 @@ class ControllerTests(unittest.TestCase):
                                      (acquisition, 'same_identity', lambda *args: None),
                                      (bss, 'BssReader', Reader), (api, 'PersistentClient', Client),
                                      (api, 'start_identity_check', starter or (lambda fn: fn())),
+                                     *(((api, 'IdentityMonitor', monitor_factory(api, now)),) if monitor_factory else ()),
                                      (bound, 'finalize', lambda *args: None)):
                 stack.enter_context(patch.object(obj, name, value))
             code = bound._execute(args, clock, dict(InterfaceGuid='fixture'), {}, root / 'marker.json')
@@ -152,6 +153,49 @@ class ControllerTests(unittest.TestCase):
             failed = [record for record in persisted if not record['ok']]
             self.assertEqual(len(failed), 1)
             self.assertIn('overran', failed[0]['error'])
+
+    def test_background_check_completing_late_during_the_end_of_run_wait_fails_the_campaign(self):
+        import threading
+        release, threads = threading.Event(), []
+        main = threading.current_thread()
+
+        def factory(api, now):
+            class Monitor(api.IdentityMonitor):
+                def __init__(self, check, *args, **kwargs):
+                    def gated():
+                        if threading.current_thread() is not main:
+                            release.wait(10.0)
+                            now[0] += 61.0  # the check finishes 61 s after it began, with no gate() call between
+                        check()
+                    super().__init__(gated, *args, **kwargs)
+
+                def wait_idle(self, wait, timeout_s):
+                    def release_then_wait(seconds):
+                        release.set()
+                        for thread in threads:
+                            thread.join(5.0)
+                        wait(seconds)
+                    return super().wait_idle(release_then_wait, timeout_s)
+            return Monitor
+
+        def starter(fn):
+            threads.append(threading.Thread(target=fn, name='identity-check', daemon=True))
+            threads[-1].start()
+
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            code, submitted, checks, closed, _ = self.run_execute(root, duration_s='60', starter=starter,
+                                                                  monitor_factory=factory)
+            self.assertEqual(code, 1)
+            self.assertTrue((root / 'marker.json').exists())
+            self.assertEqual(closed, [True])
+            self.assertEqual(len(threads), 1)
+            tail = json.loads(next((root / 'artifacts').rglob('background-identity-tail.json')).read_text())
+            self.assertIn('overran', tail['monitor_failure'])
+            rows = [json.loads(line) for path in (root / 'artifacts').rglob('sampler-schedule.jsonl')
+                    for line in path.read_text().splitlines()]
+            persisted = [record for row in rows for record in row['background_identity_checks']] + tail['checks']
+            self.assertEqual([record['ok'] for record in persisted].count(False), 1)
 
     def test_hung_background_check_never_lets_sampling_continue_on_stale_identity(self):
         with tempfile.TemporaryDirectory() as d:

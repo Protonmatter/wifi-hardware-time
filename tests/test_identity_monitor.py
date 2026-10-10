@@ -208,6 +208,30 @@ class IdentityMonitorTests(unittest.TestCase):
         self.assertFalse(h.monitor.wait_idle(h.advance, 1000.0))
         self.assertAlmostEqual(h.now[0] - started, 60.0, delta=0.05)
 
+    def test_overrun_is_measured_from_the_running_since_origin(self):
+        def check():
+            h.advance(25.0)
+        h = Harness(check)
+        h.advance(30.0)
+        self.assertTrue(h.monitor.maybe_start())  # running_since 130; the thread starts late
+        h.advance(40.0)
+        h.pending.pop()()  # check starts at 170, ends at 195: 25 s from its start, 65 s from running_since
+        self.assertIn('overran its 60 s deadline (65.000 s)', h.monitor.failure)
+        self.assertEqual(h.monitor.last_success, 100.0)
+        self.assertEqual([r['ok'] for r in h.monitor.drain_completed()], [False])
+
+    def test_wait_idle_at_exactly_the_check_deadline_still_waits(self):
+        h = Harness()
+        h.advance(30.0)
+        h.monitor.maybe_start()
+        h.now[0] = 130.0 + 60.0  # exactly running_since + deadline: not yet overdue (gate uses strict >)
+        calls = []
+        def wait(seconds):
+            calls.append(seconds)
+            h.pending.pop()()
+        self.assertTrue(h.monitor.wait_idle(wait, 1000.0))
+        self.assertEqual(calls, [0.02])
+
     def test_default_start_runs_the_check_on_a_thread(self):
         release, entered = threading.Event(), threading.Event()
         def check():

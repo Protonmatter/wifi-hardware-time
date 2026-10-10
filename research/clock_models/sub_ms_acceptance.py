@@ -74,7 +74,8 @@ def evaluate(replays: dict, timing: dict, criteria: dict = CRITERIA) -> dict:
          causal['whole_recording_continuity_eligible'] is True),
         ('no_continuity_invalidations', causal['continuity_invalidations'],
          len(causal['continuity_invalidations']) == 0),
-        ('no_invalid_time', durations['invalid'], Fraction(durations['invalid']) == 0))]
+        ('no_invalid_time', durations['invalid'], Fraction(durations['invalid']) == 0),
+        ('no_samples_after_replay_end', model['after_interval'], len(model['after_interval']) == 0))]
     checks = []
     for name, limit in criteria.items():
         value = observed[name]
