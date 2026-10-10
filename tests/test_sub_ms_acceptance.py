@@ -194,7 +194,7 @@ class AcceptanceEndToEndTests(unittest.TestCase):
         self.assertTrue(all(c['passed'] for c in result['checks']))
 
 
-def build_real(count=300, jump_from=None, jump_us=0, fail_from=None):
+def build_real(count=300, jump_from=None, jump_us=0, fail_from=None, final_extra_us=0, final_received=None):
     """Raw ETW-shaped records so the real screen() runs; only the file loaders are patched."""
     records, live, receipts, requests = [], [], [], []
     for i in range(1, count + 1):
@@ -205,12 +205,15 @@ def build_real(count=300, jump_from=None, jump_us=0, fail_from=None):
         if not ok:
             continue
         value = tsf(lower + 800) + (jump_us if jump_from is not None and i >= jump_from else 0)
+        if i == count:
+            value += final_extra_us
         soc = 12345
         records += [dict(kind='command', raw_timestamp=lower + 100, vdev=0, action=4),
                     dict(kind='report', raw_timestamp=upper, vdev=0, tsf_raw=value),
                     dict(kind='soc_timer', raw_timestamp=upper, soc_timer_raw=soc),
                     dict(kind='delay', raw_timestamp=upper, vdev=0, tsf_delay_raw=(value - soc) & 0xffffffff)]
-        live += [dict(kind='report', raw_timestamp=upper), dict(kind='delay', received_qpc=upper + 50_000)]
+        received = final_received if i == count and final_received else upper + 50_000
+        live += [dict(kind='report', raw_timestamp=upper), dict(kind='delay', received_qpc=received)]
     data = dict(qpc_hz=HZ, records=records, requests=requests, completed=True,
                 identity=dict(folder='synthetic', session='synthetic'))
     return data, live, receipts
@@ -255,6 +258,17 @@ class AcceptanceTailTests(unittest.TestCase):
         code, result = run_real(fail_from=271)
         self.assertEqual(code, 2)
         self.assertIn('guaranteed_live_coverage_min', self.failed(result))
+
+    def test_late_final_sample_violating_learned_rate_is_rejected(self):
+        # The final accepted sample arrives after the last 0.1 s grid query but before the replay end.
+        end = 300 * HZ + 5 * HZ
+        code, result = run_real(final_extra_us=300, final_received=end - 1)
+        self.assertEqual(code, 2)
+        self.assertEqual(result['replays']['wander']['wander']['holdout_violations'], 1)
+        self.assertEqual(self.failed(result), ['model_holdout_violations_max'])
+        code, result = run_real(final_extra_us=300)
+        self.assertEqual(code, 2)
+        self.assertEqual(self.failed(result), ['model_holdout_violations_max'])
 
 
 if __name__ == '__main__':

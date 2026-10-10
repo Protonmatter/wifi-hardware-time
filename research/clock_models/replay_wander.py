@@ -1,7 +1,8 @@
 """Grid replay of the guaranteed provider beside the learned-rate model. Offline only.
 
 Queries run on a fixed QPC grid; samples are ingested in availability order before
-any query at or after their availability. Each model check happens before ingest
+any query at or after their availability; arrivals between the last query and the end are
+processed too, and samples available at or after the end are listed in after_interval. Each model check happens before ingest
 (out of sample), so holdout violations measure the declared learned-rate assumption.
 """
 from __future__ import annotations
@@ -42,10 +43,12 @@ def replay_wander(items: list[AvailableSample], qpc_hz: int, start: int, end: in
     states_g: dict[str, int] = {}
     states_m: dict[str, int] = {}
     widths_g, widths_m, holdout, index = [], [], [], 0
-    for query in range(start, end, step):
+    def consume(limit: int) -> None:
+        """Process every pending event with available_qpc <= limit; diagnostics first on ties."""
+        nonlocal index, diag_index
         while True:
-            diag_due = diag_index < len(diagnostics) and diagnostics[diag_index]['available_qpc'] <= query
-            sample_due = index < len(order) and order[index].available_qpc <= query
+            diag_due = diag_index < len(diagnostics) and diagnostics[diag_index]['available_qpc'] <= limit
+            sample_due = index < len(order) and order[index].available_qpc <= limit
             if diag_due and (not sample_due or diagnostics[diag_index]['available_qpc'] <= order[index].available_qpc):
                 diagnostic = diagnostics[diag_index]
                 diag_index += 1
@@ -68,6 +71,9 @@ def replay_wander(items: list[AvailableSample], qpc_hz: int, start: int, end: in
             if verdict is not None:
                 holdout.append(dict(sequence=item.sequence, compatible=verdict))
             provider.ingest(item)
+
+    for query in range(start, end, step):
+        consume(query)
         result = provider.estimate(query)
         states_g[result.guaranteed.state] = states_g.get(result.guaranteed.state, 0) + 1
         states_m[result.state] = states_m.get(result.state, 0) + 1
@@ -75,7 +81,11 @@ def replay_wander(items: list[AvailableSample], qpc_hz: int, start: int, end: in
             widths_g.append(result.guaranteed.half_width_us)
         if result.half_width_us is not None:
             widths_m.append(result.half_width_us)
-    # Diagnostics that become available at or after the replay end do not change any state.
+    # Arrivals after the last grid query but before the end are still checked and ingested.
+    consume(end - 1)
+    # Samples available at or after the replay end are not checked; diagnostics there change no state.
+    after_interval = [dict(sequence=o.sequence, available_qpc=o.available_qpc, lower_qpc=o.lower_qpc,
+                           upper_qpc=o.upper_qpc) for o in order[index:]]
     for diagnostic in diagnostics[diag_index:]:
         continuity_invalidations.append(diagnostic)
     total = sum(states_g.values())
@@ -89,5 +99,6 @@ def replay_wander(items: list[AvailableSample], qpc_hz: int, start: int, end: in
                 guaranteed_half_width_us=_quantiles(widths_g), model_half_width_us=_quantiles(widths_m),
                 holdout_checked=len(holdout), holdout_violations=len(violations),
                 holdout_violation_sequences=violations[:50],
-                late_history_skipped=late_history_skipped, continuity_invalidations=continuity_invalidations,
+                late_history_skipped=late_history_skipped, after_interval=after_interval,
+                continuity_invalidations=continuity_invalidations,
                 conditions=list(provider.conditions))

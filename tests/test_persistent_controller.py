@@ -10,7 +10,8 @@ from research.acquisition.run_bound_campaign import parse
 
 
 class ControllerTests(unittest.TestCase):
-    def run_execute(self, root, observer_fails=False, fail_identity_call=None, duration_s='60', starter=None):
+    def run_execute(self, root, observer_fails=False, fail_identity_call=None, duration_s='60', starter=None,
+                    slow_identity_call=None, slow_identity_s=0.0):
         """Drive _execute with fakes only; identity checks run synchronously through the patched starter."""
         import research.acquisition.run_bound_campaign as bound
         import research.acquisition.run_acquisition_campaign as acquisition
@@ -60,6 +61,8 @@ class ControllerTests(unittest.TestCase):
         def identity(index):
             checks.append(now[0])
             now[0] += 1.1
+            if len(checks) == slow_identity_call:
+                now[0] += slow_identity_s
             if len(checks) == fail_identity_call:
                 raise RuntimeError('Identity/state changed: Status')
             return dict(InterfaceGuid='fixture')
@@ -130,6 +133,25 @@ class ControllerTests(unittest.TestCase):
             self.assertTrue(any(moment > checks[1] for moment in submitted))  # sampling ran past check 2
             self.assertTrue(all(moment < failed_at for moment in submitted))
             self.assertEqual(len(checks), 4)  # the final synchronous identity check still runs
+
+    def test_background_check_completing_after_its_deadline_fails_the_campaign(self):
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            # Call 1 is the pre-loop check; call 2 is the first background check (about 30 s in). It completes
+            # 61.1 s after it began, with no gate() call in between, and its own result is a pass.
+            code, submitted, checks, closed, _ = self.run_execute(root, duration_s='120', slow_identity_call=2,
+                                                                  slow_identity_s=60.0)
+            self.assertEqual(code, 1)
+            self.assertTrue((root / 'marker.json').exists())
+            self.assertEqual(closed, [True])
+            tail = json.loads(next((root / 'artifacts').rglob('background-identity-tail.json')).read_text())
+            self.assertIn('overran its 60 s deadline', tail['monitor_failure'])
+            rows = [json.loads(line) for path in (root / 'artifacts').rglob('sampler-schedule.jsonl')
+                    for line in path.read_text().splitlines()]
+            persisted = [record for row in rows for record in row['background_identity_checks']] + tail['checks']
+            failed = [record for record in persisted if not record['ok']]
+            self.assertEqual(len(failed), 1)
+            self.assertIn('overran', failed[0]['error'])
 
     def test_hung_background_check_never_lets_sampling_continue_on_stale_identity(self):
         with tempfile.TemporaryDirectory() as d:

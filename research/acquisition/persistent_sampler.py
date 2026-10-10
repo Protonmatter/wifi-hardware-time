@@ -176,6 +176,10 @@ class IdentityMonitor:
             with self.lock:
                 try:
                     if error_text is None:
+                        elapsed = self.monotonic() - started_monotonic
+                        if elapsed > self.deadline_s:
+                            error_text = f'Identity check overran its {self.deadline_s:g} s deadline ({elapsed:.3f} s)'
+                    if error_text is None:
                         self.last_success = started_monotonic
                     elif self.failure is None:
                         self.failure = error_text
@@ -203,11 +207,13 @@ class IdentityMonitor:
             return records
 
     def wait_idle(self, wait, timeout_s: float) -> bool:
-        deadline = self.monotonic() + timeout_s
+        """True once no check is running; False at timeout_s or at the running check's own deadline."""
+        call_deadline = self.monotonic() + timeout_s
         while True:
             with self.lock:
                 if self.running_since is None:
                     return True
+                deadline = min(call_deadline, self.running_since + self.deadline_s)
             if self.monotonic() >= deadline:
                 return False
             wait(0.02)

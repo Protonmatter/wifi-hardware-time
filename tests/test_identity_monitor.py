@@ -151,6 +151,63 @@ class IdentityMonitorTests(unittest.TestCase):
         h.pending.pop()()
         self.assertTrue(h.monitor.wait_idle(h.advance, 1.0))
 
+    def real_thread_monitor(self, clock, release):
+        entered = threading.Event()
+        def check():
+            entered.set()
+            if not release.wait(10.0):
+                raise RuntimeError('test check never released')
+        monitor = api.IdentityMonitor(check, lambda: clock[0], lambda: int(clock[0] * 1000), interval_s=0.0)
+        clock[0] = 30.0
+        self.assertTrue(monitor.maybe_start())
+        self.assertTrue(entered.wait(5.0))
+        return monitor
+
+    def test_check_finishing_after_its_deadline_latches_without_a_gate_call(self):
+        clock, release = [0.0], threading.Event()
+        monitor = self.real_thread_monitor(clock, release)
+        clock[0] = 91.0
+        release.set()
+        deadline = time.monotonic() + 5.0
+        while monitor.running_since is not None and time.monotonic() < deadline:
+            time.sleep(0.005)
+        self.assertIsNone(monitor.running_since)
+        self.assertIn('overran its 60 s deadline (61.000 s)', monitor.failure)
+        self.assertEqual(monitor.last_success, 0.0)
+        records = monitor.drain_completed()
+        self.assertEqual([r['ok'] for r in records], [False])
+        self.assertIn('overran', records[0]['error'])
+        with self.assertRaisesRegex(RuntimeError, 'Identity check failed: Identity check overran'):
+            monitor.gate()
+
+    def test_check_finishing_exactly_at_the_deadline_is_a_success(self):
+        def check():
+            h.advance(60.0)
+        h = Harness(check, run_now=True)
+        h.advance(30.0)
+        self.assertTrue(h.monitor.maybe_start())
+        self.assertIsNone(h.monitor.failure)
+        self.assertEqual(h.monitor.last_success, 130.0)
+        self.assertEqual([r['ok'] for r in h.monitor.drain_completed()], [True])
+
+    def test_overrun_keeps_the_first_failure(self):
+        def check():
+            h.advance(61.0)
+        h = Harness(check, run_now=True)
+        h.monitor.failure = 'earlier failure'
+        h.monitor.running_since = h.now[0]
+        h.monitor._run()
+        self.assertEqual(h.monitor.failure, 'earlier failure')
+        self.assertEqual([r['ok'] for r in h.monitor.drain_completed()], [False])
+
+    def test_wait_idle_gives_up_at_the_running_checks_own_deadline(self):
+        h = Harness()
+        h.advance(30.0)
+        h.monitor.maybe_start()  # stored, never run
+        started = h.now[0]
+        self.assertFalse(h.monitor.wait_idle(h.advance, 1000.0))
+        self.assertAlmostEqual(h.now[0] - started, 60.0, delta=0.05)
+
     def test_default_start_runs_the_check_on_a_thread(self):
         release, entered = threading.Event(), threading.Event()
         def check():

@@ -92,6 +92,44 @@ class ReplayV3Tests(unittest.TestCase):
 
 
 class ReplayWanderTests(unittest.TestCase):
+    def late_case(self, final_available, end=32 * HZ):
+        rate = Fraction(1_000_037, 1_000_000)
+        at = lambda q: int(Fraction(9_000_000_000) + Fraction(q, 10) * rate)
+        items = [AvailableSample(i, at(i * HZ + 800), i * HZ, i * HZ + 2_540, i * HZ + 2_541) for i in range(1, 31)]
+        lower = 31 * HZ
+        bad = AvailableSample(31, at(lower + 800) + 700, lower, lower + 2_540, final_available)
+        return replay_wander(items + [bad], HZ, HZ, end, wander_ppm=2)
+
+    def test_arrival_between_last_grid_query_and_end_is_checked(self):
+        normal = self.late_case(31 * HZ + 2_541)
+        late = self.late_case(32 * HZ - 1)
+        self.assertEqual(normal['holdout_violations'], 1)
+        self.assertEqual(late['holdout_violations'], 1)
+        self.assertEqual(late['holdout_checked'], normal['holdout_checked'])
+        self.assertEqual(late['after_interval'], [])
+
+    def test_sample_available_at_end_is_not_checked_and_is_listed(self):
+        result = self.late_case(32 * HZ)
+        self.assertEqual(result['holdout_violations'], 0)
+        self.assertEqual(result['holdout_checked'], 25)
+        self.assertEqual(result['after_interval'], [dict(sequence=31, available_qpc=32 * HZ, lower_qpc=31 * HZ,
+                                                         upper_qpc=31 * HZ + 2_540)])
+
+    def test_grid_results_unchanged_when_no_late_arrivals(self):
+        items = available(30)
+        end = items[-1].available_qpc + HZ
+        result = replay_wander(items, HZ, items[0].lower_qpc, end, wander_ppm=2)
+        self.assertEqual(result['after_interval'], [])
+        self.assertEqual(result['queries'], 301)
+        self.assertEqual(result['guaranteed_states'], dict(acquiring=1, tracking=300))
+        self.assertEqual(result['model_states'], dict(acquiring=1, unavailable=40, tracking=260))
+        self.assertEqual(result['guaranteed_half_width_us'],
+                         dict(median=227.525, p90=307.525, p99=327.525, max=327.525))
+        self.assertEqual(result['model_half_width_us'],
+                         dict(median=137.317, p90=154.059, p99=180.57, max=193.324))
+        self.assertEqual(result['holdout_checked'], 25)
+        self.assertEqual(result['holdout_violations'], 0)
+
     def test_grid_replay_reports_both_layers_and_holdout(self):
         items = available(30)
         result = replay_wander(items, HZ, items[0].lower_qpc, items[-1].available_qpc, wander_ppm=2, jump_us=0)
