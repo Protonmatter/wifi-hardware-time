@@ -123,6 +123,25 @@ The current implementation enumerates candidate boundary intersections using exa
 
 This narrower constant-rate result is labeled as a stronger-assumption estimate. It does not replace the rate-only result. Exact polygon clipping is a proposed optimization, not an implemented change; equivalence must be proven against this reference before replacement. Bounded-wander estimates require an explicit, independently qualified wander parameter.
 
+## Version 3 policies
+
+These policies are opt-in. Every historical default and published result is unchanged.
+
+**Phase-jump allowance (`wht/causal-provider-v2`, `wht/settlement-v3`).** In an infrastructure network the station rewrites its TSF to the access point's beacon value, so the TSF is not a smooth rate-bounded trajectory at microsecond scale. The v3 envelope assumes only that over any interval the TSF advance lies within the rate prior times the elapsed QPC time, widened by `J` microseconds on each side:
+
+    lower_i(Q) = T_i     - J + (a or b) * (Q - (U_i + 1))
+    upper_i(Q) = T_i + 1 + J + (b or a) * (Q - L_i)
+
+The default `J = 25` us is six 102.4 ms beacon periods at 40 ppm relative drift, rounded up. It is a declared prior, not a measurement, and adds `J` to every half-width.
+
+**Nearby-sample settlement (`wht/settlement-v3`).** The bracket rule and settle time are unchanged. The result additionally intersects the envelope of every sample available by the reported cutoff whose window lies within 10 seconds of the event. A farther sample with a narrow window can be tighter than the nearest one with a wide window.
+
+**Learned-rate model (`wht/wander-model-v1`).** A stronger, labeled assumption: across the trailing 60 seconds and the holdover to the query, the TSF rate stays within the exact constant-rate interval of the trailing samples widened by `wander_ppm` (default 2). A common offset exists for rate `r` exactly when every ordered sample pair satisfies `r * (L_j - U_i - 1) <= T_j - T_i + 1 + 2J`. The model interval is intersected with the guaranteed interval and never replaces it. Each new sample is first checked against the model (out of sample); any holdout violation is evidence that the assumption failed.
+
+**Explicit ETW flush.** Real-time trace delivery waits for the one-second flush timer. With `--etw-flush` the persistent campaign calls `ControlTraceW(EVENT_TRACE_CONTROL_FLUSH)` after each completion, so a sample becomes available in milliseconds. Availability semantics (`A_i = max(D_i, C_i, U_i + 1)`) are unchanged; only `D_i` arrives sooner.
+
+None of this narrows the capture window, which sets a floor of about half its width (about 127 us at the median smoke width). Locating the read point inside the window needs an independent reference or a different capture path.
+
 ## What the current results mean
 
 <!-- tsf-headlines:smoke -->

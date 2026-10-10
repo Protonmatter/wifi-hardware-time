@@ -76,6 +76,8 @@ python research/acquisition/run_bound_campaign.py --sampler persistent --if-inde
 
 Campaign exit 0 requires successful persisted outcome and verified worker lifecycle; exit 1 means stopped/failed/quarantined. Invalid CLI arguments exit 2. Unexpected setup errors are nonzero and do not clear unfinished evidence. `--execute` does not self-elevate. Default campaign preview still uses existing read-only identity discovery; phase 1 validation invokes help and injected tests only.
 
+`--etw-flush` (persistent sampler only) flushes the trace session after each completed request so the report group reaches the observer in milliseconds instead of waiting for the one-second flush timer. The plan records `etw_flush_after_completion`, and each `sampler-schedule.jsonl` row records the flush receipts in `etw_flushes`. A failed flush is recorded, not fatal; delivery then falls back to the timer. The flag does not authorize a run.
+
 Rollback to legacy operation selects `--sampler per-request` or omits the option. Do so only after a completed lifecycle; changing mode never bypasses an unfinished/quarantined run. An unresolved worker must retain its resources, and its marker must not be removed as a convenience. Preserve evidence and reconcile explicitly before any later acquisition.
 
 ## Offline acceptance map

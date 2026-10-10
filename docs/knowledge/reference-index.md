@@ -45,7 +45,7 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [docs/acquisition/observer-passive-qualification-2026-10-03.md](../../docs/acquisition/observer-passive-qualification-2026-10-03.md) | `2b6ab8b0ecb2` |
 | [docs/acquisition/packet-capture-and-elevation.md](../../docs/acquisition/packet-capture-and-elevation.md) | `0bbfbd50575b` |
 | [docs/acquisition/passive-and-retrieval-validation-2026-10-03.md](../../docs/acquisition/passive-and-retrieval-validation-2026-10-03.md) | `d135884a07b7` |
-| [docs/acquisition/persistent-tsf-sampler.md](../../docs/acquisition/persistent-tsf-sampler.md) | `4ee3ea2eea80` |
+| [docs/acquisition/persistent-tsf-sampler.md](../../docs/acquisition/persistent-tsf-sampler.md) | `396982499c5f` |
 | [docs/acquisition/persistent-tsf-smoke-2026-10-08.md](../../docs/acquisition/persistent-tsf-smoke-2026-10-08.md) | `fbe62f357d01` |
 | [docs/acquisition/private-acquisition-latency.md](../../docs/acquisition/private-acquisition-latency.md) | `4abf1052db42` |
 | [docs/acquisition/private-campaign-2026-10-03-quarantine.md](../../docs/acquisition/private-campaign-2026-10-03-quarantine.md) | `2010c043658e` |
@@ -91,7 +91,7 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [docs/clock-models/qualcomm-observation-matrix.md](../../docs/clock-models/qualcomm-observation-matrix.md) | `06f1f2683f14` |
 | [docs/clock-models/settled-timestamps.md](../../docs/clock-models/settled-timestamps.md) | `cd90407411e3` |
 | [docs/clock-models/tsf-host-bound-preview.md](../../docs/clock-models/tsf-host-bound-preview.md) | `db4e8fe96e46` |
-| [docs/clock-models/tsf-mathematics.md](../../docs/clock-models/tsf-mathematics.md) | `abfbb161b06c` |
+| [docs/clock-models/tsf-mathematics.md](../../docs/clock-models/tsf-mathematics.md) | `42863eee24ec` |
 | [docs/evidence/README.md](../../docs/evidence/README.md) | `161943ce7f58` |
 | [docs/evidence/api-direction.md](../../docs/evidence/api-direction.md) | `1d9d47796e48` |
 | [docs/evidence/complete-event-hardware-handoff.md](../../docs/evidence/complete-event-hardware-handoff.md) | `19c1959121a2` |
@@ -233,7 +233,7 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [research/adapters/package_tools/Read-TypeLibrary.ps1](../../research/adapters/package_tools/Read-TypeLibrary.ps1) | `09fde4ca4dca` |
 | [research/adapters/package_tools/expand_qpst.py](../../research/adapters/package_tools/expand_qpst.py) | `281d00e4f129` |
 | [research/adapters/package_tools/inspect_files.py](../../research/adapters/package_tools/inspect_files.py) | `fa1bc578c3fb` |
-| [research/clock_models/README.md](../../research/clock_models/README.md) | `0966540624c0` |
+| [research/clock_models/README.md](../../research/clock_models/README.md) | `a6c1a5937172` |
 | [research/clock_models/analyze_bound_run.py](../../research/clock_models/analyze_bound_run.py) | `aa4ffeed8f32` |
 | [research/clock_models/analyze_clock_pairing_hypothesis.py](../../research/clock_models/analyze_clock_pairing_hypothesis.py) | `4042e4bbaad5` |
 | [research/clock_models/analyze_observation_quality.py](../../research/clock_models/analyze_observation_quality.py) | `eb5263987e77` |
