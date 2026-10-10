@@ -10,7 +10,7 @@ Find the calls, file names, terms and short strings recorded in this research. T
 
 ## Search
 
-Indexed **385 source files** and **11627 distinct terms**.
+Indexed **386 source files** and **11642 distinct terms**.
 
 The [JSON index](research-index.json) includes Python definitions/calls, C/Java/PowerShell call-shaped tokens, authored short strings and Markdown code terms. Vendor binaries, local artifacts, historical reproduction sources and generated indexes are excluded. Unresolved call-shaped tokens are explicitly labeled.
 
@@ -36,7 +36,7 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [.github/workflows/offline-checks.yml](../../.github/workflows/offline-checks.yml) | `c0b8272ee840` |
 | [README.md](../../README.md) | `d44fcc02ffce` |
 | [docs/README.md](../../docs/README.md) | `f75876c007ca` |
-| [docs/acquisition/README.md](../../docs/acquisition/README.md) | `bbc9c982c3b5` |
+| [docs/acquisition/README.md](../../docs/acquisition/README.md) | `5b939a88f986` |
 | [docs/acquisition/acquisition-campaign-2026-10-02-results.md](../../docs/acquisition/acquisition-campaign-2026-10-02-results.md) | `512c2600c3b7` |
 | [docs/acquisition/experiments.md](../../docs/acquisition/experiments.md) | `4a81a36e932d` |
 | [docs/acquisition/lifecycle-matrix.md](../../docs/acquisition/lifecycle-matrix.md) | `3a6279b432c2` |
@@ -52,6 +52,7 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [docs/acquisition/private-timing-acquisition-plan.md](../../docs/acquisition/private-timing-acquisition-plan.md) | `7eabec8e5ec0` |
 | [docs/acquisition/scan-comparison-plan.md](../../docs/acquisition/scan-comparison-plan.md) | `90547a7f4bca` |
 | [docs/acquisition/scan-tsf-results-2026-10-03.md](../../docs/acquisition/scan-tsf-results-2026-10-03.md) | `29b23a5218fd` |
+| [docs/acquisition/sub-millisecond-qualification-2026-10-10.md](../../docs/acquisition/sub-millisecond-qualification-2026-10-10.md) | `06e7f2b38bef` |
 | [docs/acquisition/timing-qualification-validation-2026-10-04.md](../../docs/acquisition/timing-qualification-validation-2026-10-04.md) | `33ef0ae878ef` |
 | [docs/acquisition/tsf-host-bound-methodology.md](../../docs/acquisition/tsf-host-bound-methodology.md) | `8e8b5f746170` |
 | [docs/acquisition/tsf-host-bound-results.md](../../docs/acquisition/tsf-host-bound-results.md) | `60796d255e52` |
@@ -162,7 +163,7 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [docs/research-history/hypotheses-and-lessons.md](../../docs/research-history/hypotheses-and-lessons.md) | `52e55d1f47df` |
 | [docs/research-history/next-steps.md](../../docs/research-history/next-steps.md) | `5d7c10c28422` |
 | [docs/research-history/publication-boundary.md](../../docs/research-history/publication-boundary.md) | `afecd6c6d7aa` |
-| [docs/research-history/publication-status.md](../../docs/research-history/publication-status.md) | `f9158fb58142` |
+| [docs/research-history/publication-status.md](../../docs/research-history/publication-status.md) | `50eb8d9cca54` |
 | [docs/research-history/results-and-validation.md](../../docs/research-history/results-and-validation.md) | `dfebf9d12be9` |
 | [docs/research-history/source-map.md](../../docs/research-history/source-map.md) | `70c0252285b9` |
 | [docs/research-history/timeline.md](../../docs/research-history/timeline.md) | `b8d233656f12` |

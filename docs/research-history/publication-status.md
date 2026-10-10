@@ -24,6 +24,7 @@ The exact-main [Offline checks run 37877823571](https://github.com/Protonmatter/
 | [#8](https://github.com/Protonmatter/wifi-hardware-time/pull/8) | Merged | Evidence retention, recovery, replay continuity, quantization and versioned summaries; head `d8e9427` |
 | [#9](https://github.com/Protonmatter/wifi-hardware-time/pull/9) | Merged | Directly readable diagram artifacts and preview verification; head `afc395b` |
 | [#10](https://github.com/Protonmatter/wifi-hardware-time/pull/10) | Merged on October 9 at 01:21:21 EDT | Corrected head `71ccc1d4e3b0a98839b8bddbb089a1687527a332`; merge `da4f55e48a368f59ed68ee4427013a83b5c06070` |
+| [#12](https://github.com/Protonmatter/wifi-hardware-time/pull/12) | Open at the 2026-10-10 qualification; not merged | Sub-millisecond sampler changes and the [2026-10-10 live qualification](../acquisition/sub-millisecond-qualification-2026-10-10.md): five runs, last three passing all nine criteria. Raw captures are in the private evidence repository (private PR #4), not here |
 
 The local Git graph contains historical #5/#6 heads within the persistent baseline; the [integrated review](../overview/pr-reconciliation-2026-10-08.md) explains their reconciliation. Closed component PRs should not be described as missing features merely because their standalone merge timestamp is empty.
 

@@ -1,6 +1,6 @@
 # Collecting and qualifying clock reports
 
-These documents explain how clock reports are collected, checked and rejected when their source is uncertain. The persistent bound-campaign profile completed a five-minute idle smoke; its timing conclusions remain conditional and screened offline. The historical strict campaign remains quarantined. Passive or normal-completion success does not qualify physical accuracy or authorize another private run.
+These documents explain how clock reports are collected, checked and rejected when their source is uncertain. The persistent bound-campaign profile completed a five-minute idle smoke, and the 2026-10-10 qualification then passed a five-minute smoke, a one-hour idle run and a one-hour load run; its timing conclusions remain conditional and screened offline. The historical strict campaign remains quarantined. Passive or normal-completion success does not qualify physical accuracy or authorize another private run.
 
 <!-- research-history:2026-10-09 -->
 **Research context (2026-10-09):** Maintained reading guide. Use the linked account for goals, result versions, failed assumptions and remaining qualification gates. [Current account](../research-history/README.md) · [Timeline](../research-history/timeline.md) · [Previous version](../../archive/2026-10-09-pre-refresh-e9d71b8/pages/docs__acquisition__README.md).
@@ -11,6 +11,7 @@ Start with the current results, then use the plans and historical reports for co
 | Question | Read | Evidence and limit |
 |---|---|---|
 | Does one persistent device session work? | [Sampler contract](persistent-tsf-sampler.md) and [first live smoke](persistent-tsf-smoke-2026-10-08.md) | 139 pending-to-success requests; no real cancellation/timeout qualification or physical accuracy proof |
+| Did the sampler reach sub-millisecond settled intervals? | [Sub-millisecond live qualification](sub-millisecond-qualification-2026-10-10.md) and [JSON summary](sub-millisecond-qualification-2026-10-10.json) | Five runs on 2026-10-10; the last three passed all nine criteria (hour idle and hour load: 99.98% declared coverage, 158 and 164 us settled median); conditional on declared assumptions, no AP/UTC calibration, one host |
 | What mathematics and work come next? | [Math reference](../clock-models/tsf-mathematics.md), [roadmap](../overview/persistent-tsf-next-steps.md) and [Archify views](../overview/archify-tsf/README.md) | Separate acquisition, online admission, settlement, physical validation and merge gates |
 | Can the laptop bound its Wi-Fi TSF below 1 ms? | [TSF-to-host bound results](tsf-host-bound-results.md) | Passed 2026-10-08 as a conditional bound: 352 us idle and 191 us loaded worst case over an hour each (895 and 786 us retrospective without the constant-rate assumption; a live causal bound exceeds 1 ms in the longest gaps); access point link assumed; separate profile, the 2026-10-03 quarantine is unchanged |
 | How was the bound measured, tested and debugged? | [TSF-to-host bound methodology](tsf-host-bound-methodology.md) | Every analysis, attempt, measurement and fix, with commands and derived per-run records |

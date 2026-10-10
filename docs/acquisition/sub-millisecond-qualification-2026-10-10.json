@@ -1,0 +1,645 @@
+{
+  "schema": "wht/public-sub-ms-qualification-summary-v1",
+  "date": "2026-10-10",
+  "qualification": "conditional-research",
+  "physical_bound_proven": false,
+  "live_collection_performed": true,
+  "qpc_hz": 10000000,
+  "conditions": [
+    "Intervals are conditional on the declared assumptions (bounded rate, causal capture, continuity, station TSF equals AP TSF, J = 25 us declared jump allowance for v3) and on offline screening."
+  ],
+  "runs": [
+    {
+      "run": 1,
+      "label": "run1_smoke_flush",
+      "condition": "idle",
+      "configured_duration_s": 300,
+      "revision": "5a4e66ea7633f2049243ba98121e49c9bb74afb8",
+      "requests": 146,
+      "accepted_samples": 146,
+      "skipped_slots": 154,
+      "accepted_gap_s": {
+        "median": 1.999,
+        "max": 3.013
+      },
+      "delivery_ms": {
+        "median": 116.36,
+        "p99": 123.56,
+        "max": 125.8,
+        "basis": "accepted samples, delay-record receipt after report timestamp"
+      },
+      "coverage": {
+        "review_interval": 1.0,
+        "declared_interval": 0.997076,
+        "stale_intervals": 1,
+        "longest_stale_s": 0.767123,
+        "max_half_width_before_next_sample_us": 959.035
+      },
+      "settled_v3_half_width_us": {
+        "median": 301.663,
+        "p99": 455.667,
+        "max": 458.616
+      },
+      "settled_v2_half_width_us": {
+        "median": 276.663,
+        "max": 433.616
+      },
+      "v2_causal_arrival": {
+        "coverage_declared": 0.997489,
+        "stale_intervals": 1
+      },
+      "retrospective_rate_only_max_half_width_us": 539.607,
+      "learned_rate": {
+        "median_half_width_us": 161.842,
+        "holdout_violations": 0,
+        "holdout_checked": 141
+      },
+      "acceptance": {
+        "passed_checks": 6,
+        "total_checks": 9,
+        "checks": [
+          {
+            "name": "guaranteed_live_coverage_min",
+            "value": 1.0,
+            "limit": 0.995,
+            "passed": true
+          },
+          {
+            "name": "incompatible_max",
+            "value": 0,
+            "limit": 0,
+            "passed": true
+          },
+          {
+            "name": "settled_sub_ms_share_min",
+            "value": 1.0,
+            "limit": 1.0,
+            "passed": true
+          },
+          {
+            "name": "settled_median_max_us",
+            "value": 301.663,
+            "limit": 250,
+            "passed": false
+          },
+          {
+            "name": "model_median_max_us",
+            "value": 161.842,
+            "limit": 180,
+            "passed": true
+          },
+          {
+            "name": "model_holdout_violations_max",
+            "value": 0,
+            "limit": 0,
+            "passed": true
+          },
+          {
+            "name": "delivery_p99_max_s",
+            "value": 0.1235644,
+            "limit": 0.1,
+            "passed": false
+          },
+          {
+            "name": "delivery_missing_max",
+            "value": 0,
+            "limit": 0,
+            "passed": true
+          },
+          {
+            "name": "median_gap_ratio_max",
+            "value": 1.9990445,
+            "limit": 1.1,
+            "passed": false
+          }
+        ]
+      },
+      "etw_flushes": {
+        "total": 385,
+        "nonzero_status": 0,
+        "events_lost": 0
+      },
+      "etl_bytes": 54591488,
+      "etl_mib_per_min": 10.48
+    },
+    {
+      "run": 2,
+      "label": "run2_smoke_slot_tolerance",
+      "condition": "idle",
+      "configured_duration_s": 300,
+      "revision": "37d450e018c491b6ec4b3b7ba8e1d717c3934f3f",
+      "requests": 289,
+      "accepted_samples": 289,
+      "skipped_slots": 11,
+      "accepted_gap_s": {
+        "median": 0.9974,
+        "max": 6.001
+      },
+      "delivery_ms": {
+        "median": 22.65,
+        "p99": 34.52,
+        "max": 34.9,
+        "basis": "accepted samples, delay-record receipt after report timestamp"
+      },
+      "coverage": {
+        "review_interval": 0.993879,
+        "declared_interval": 0.991437,
+        "stale_intervals": 2,
+        "longest_stale_s": 1.824201,
+        "max_half_width_before_next_sample_us": 1364.34
+      },
+      "settled_v3_half_width_us": {
+        "median": 154.49,
+        "p99": 573.644,
+        "max": 773.644
+      },
+      "settled_v2_half_width_us": {
+        "median": 129.49,
+        "max": 748.644
+      },
+      "v2_causal_arrival": {
+        "coverage_declared": 0.992262,
+        "stale_intervals": 2
+      },
+      "retrospective_rate_only_max_half_width_us": 773.856,
+      "learned_rate": {
+        "median_half_width_us": 154.594,
+        "holdout_violations": 0,
+        "holdout_checked": 284
+      },
+      "acceptance": {
+        "passed_checks": 8,
+        "total_checks": 9,
+        "checks": [
+          {
+            "name": "guaranteed_live_coverage_min",
+            "value": 0.993879,
+            "limit": 0.995,
+            "passed": false
+          },
+          {
+            "name": "incompatible_max",
+            "value": 0,
+            "limit": 0,
+            "passed": true
+          },
+          {
+            "name": "settled_sub_ms_share_min",
+            "value": 1.0,
+            "limit": 1.0,
+            "passed": true
+          },
+          {
+            "name": "settled_median_max_us",
+            "value": 154.49,
+            "limit": 250,
+            "passed": true
+          },
+          {
+            "name": "model_median_max_us",
+            "value": 154.594,
+            "limit": 180,
+            "passed": true
+          },
+          {
+            "name": "model_holdout_violations_max",
+            "value": 0,
+            "limit": 0,
+            "passed": true
+          },
+          {
+            "name": "delivery_p99_max_s",
+            "value": 0.0345165,
+            "limit": 0.1,
+            "passed": true
+          },
+          {
+            "name": "delivery_missing_max",
+            "value": 0,
+            "limit": 0,
+            "passed": true
+          },
+          {
+            "name": "median_gap_ratio_max",
+            "value": 0.9974105,
+            "limit": 1.1,
+            "passed": true
+          }
+        ]
+      },
+      "etw_flushes": {
+        "total": 636,
+        "nonzero_status": 0,
+        "events_lost": 0
+      },
+      "etl_bytes": 53321728,
+      "etl_mib_per_min": 10.24
+    },
+    {
+      "run": 3,
+      "label": "run3_smoke_background_identity",
+      "condition": "idle",
+      "configured_duration_s": 300,
+      "revision": "0976861026c2494a73b4b2e2a309083a6f8d7961",
+      "requests": 297,
+      "accepted_samples": 297,
+      "skipped_slots": 3,
+      "accepted_gap_s": {
+        "median": 1.0001,
+        "max": 1.901
+      },
+      "delivery_ms": {
+        "median": 23.32,
+        "p99": 37.77,
+        "max": 42.2,
+        "basis": "accepted samples, delay-record receipt after report timestamp"
+      },
+      "coverage": {
+        "review_interval": 1.0,
+        "declared_interval": 0.996126,
+        "stale_intervals": 1,
+        "longest_stale_s": 1.151796,
+        "max_half_width_before_next_sample_us": 608.771
+      },
+      "settled_v3_half_width_us": {
+        "median": 153.283,
+        "p99": 328.451,
+        "max": 338.086
+      },
+      "settled_v2_half_width_us": {
+        "median": 128.283,
+        "max": 313.086
+      },
+      "v2_causal_arrival": {
+        "coverage_declared": 0.996539,
+        "stale_intervals": 1
+      },
+      "retrospective_rate_only_max_half_width_us": 346.921,
+      "learned_rate": {
+        "median_half_width_us": 153.579,
+        "holdout_violations": 0,
+        "holdout_checked": 292
+      },
+      "acceptance": {
+        "passed_checks": 9,
+        "total_checks": 9,
+        "checks": [
+          {
+            "name": "guaranteed_live_coverage_min",
+            "value": 1.0,
+            "limit": 0.995,
+            "passed": true
+          },
+          {
+            "name": "incompatible_max",
+            "value": 0,
+            "limit": 0,
+            "passed": true
+          },
+          {
+            "name": "settled_sub_ms_share_min",
+            "value": 1.0,
+            "limit": 1.0,
+            "passed": true
+          },
+          {
+            "name": "settled_median_max_us",
+            "value": 153.283,
+            "limit": 250,
+            "passed": true
+          },
+          {
+            "name": "model_median_max_us",
+            "value": 153.579,
+            "limit": 180,
+            "passed": true
+          },
+          {
+            "name": "model_holdout_violations_max",
+            "value": 0,
+            "limit": 0,
+            "passed": true
+          },
+          {
+            "name": "delivery_p99_max_s",
+            "value": 0.0377691,
+            "limit": 0.1,
+            "passed": true
+          },
+          {
+            "name": "delivery_missing_max",
+            "value": 0,
+            "limit": 0,
+            "passed": true
+          },
+          {
+            "name": "median_gap_ratio_max",
+            "value": 1.0001277000000002,
+            "limit": 1.1,
+            "passed": true
+          }
+        ]
+      },
+      "etw_flushes": {
+        "total": 651,
+        "nonzero_status": 0,
+        "events_lost": 0
+      },
+      "etl_bytes": 59162624,
+      "etl_mib_per_min": 11.36,
+      "background_identity_checks": {
+        "count": 9,
+        "failures": 0,
+        "max_duration_s": 1.13
+      }
+    },
+    {
+      "run": 4,
+      "label": "run4_hour_idle",
+      "condition": "idle",
+      "configured_duration_s": 3600,
+      "revision": "0976861026c2494a73b4b2e2a309083a6f8d7961",
+      "requests": 3589,
+      "accepted_samples": 3588,
+      "skipped_slots": 11,
+      "accepted_gap_s": {
+        "median": 0.9981,
+        "max": 2.003
+      },
+      "delivery_ms": {
+        "median": 23.02,
+        "p99": 37.31,
+        "max": 137.4,
+        "basis": "accepted samples, delay-record receipt after report timestamp"
+      },
+      "coverage": {
+        "review_interval": 1.0,
+        "declared_interval": 0.999764,
+        "stale_intervals": 1,
+        "longest_stale_s": 0.824861,
+        "max_half_width_before_next_sample_us": 651.352
+      },
+      "settled_v3_half_width_us": {
+        "median": 158.371,
+        "p99": 313.612,
+        "max": 429.984
+      },
+      "settled_v2_half_width_us": {
+        "median": 133.371,
+        "max": 473.415
+      },
+      "v2_causal_arrival": {
+        "coverage_declared": 0.999799,
+        "stale_intervals": 1
+      },
+      "retrospective_rate_only_max_half_width_us": 511.345,
+      "learned_rate": {
+        "median_half_width_us": 154.011,
+        "holdout_violations": 0,
+        "holdout_checked": 3583
+      },
+      "acceptance": {
+        "passed_checks": 9,
+        "total_checks": 9,
+        "checks": [
+          {
+            "name": "guaranteed_live_coverage_min",
+            "value": 1.0,
+            "limit": 0.995,
+            "passed": true
+          },
+          {
+            "name": "incompatible_max",
+            "value": 0,
+            "limit": 0,
+            "passed": true
+          },
+          {
+            "name": "settled_sub_ms_share_min",
+            "value": 1.0,
+            "limit": 1.0,
+            "passed": true
+          },
+          {
+            "name": "settled_median_max_us",
+            "value": 158.371,
+            "limit": 250,
+            "passed": true
+          },
+          {
+            "name": "model_median_max_us",
+            "value": 154.011,
+            "limit": 180,
+            "passed": true
+          },
+          {
+            "name": "model_holdout_violations_max",
+            "value": 0,
+            "limit": 0,
+            "passed": true
+          },
+          {
+            "name": "delivery_p99_max_s",
+            "value": 0.0373089,
+            "limit": 0.1,
+            "passed": true
+          },
+          {
+            "name": "delivery_missing_max",
+            "value": 0,
+            "limit": 0,
+            "passed": true
+          },
+          {
+            "name": "median_gap_ratio_max",
+            "value": 0.9981199,
+            "limit": 1.1,
+            "passed": true
+          }
+        ]
+      },
+      "etw_flushes": {
+        "total": 7934,
+        "nonzero_status": 0,
+        "events_lost": 0
+      },
+      "etl_bytes": 628269056,
+      "etl_mib_per_min": 9.99,
+      "background_identity_checks": {
+        "count": 119,
+        "failures": 0,
+        "max_duration_s": 1.358
+      }
+    },
+    {
+      "run": 5,
+      "label": "run5_hour_load",
+      "condition": "load",
+      "configured_duration_s": 3600,
+      "revision": "91a9f07ad44e7c53706d526debcdcd919a0c295c",
+      "requests": 3585,
+      "accepted_samples": 3582,
+      "skipped_slots": 15,
+      "accepted_gap_s": {
+        "median": 0.999,
+        "max": 2.013
+      },
+      "delivery_ms": {
+        "median": 22.93,
+        "p99": 36.43,
+        "max": 149.1,
+        "basis": "accepted samples, delay-record receipt after report timestamp"
+      },
+      "coverage": {
+        "review_interval": 1.0,
+        "declared_interval": 0.999767,
+        "stale_intervals": 1,
+        "longest_stale_s": 0.806865,
+        "max_half_width_before_next_sample_us": 687.33
+      },
+      "settled_v3_half_width_us": {
+        "median": 164.172,
+        "p99": 365.79,
+        "max": 485.208
+      },
+      "settled_v2_half_width_us": {
+        "median": 139.172,
+        "max": 476.761
+      },
+      "v2_causal_arrival": {
+        "coverage_declared": 0.999801,
+        "stale_intervals": 1
+      },
+      "retrospective_rate_only_max_half_width_us": 512.778,
+      "learned_rate": {
+        "median_half_width_us": 159.88,
+        "holdout_violations": 0,
+        "holdout_checked": 3577
+      },
+      "acceptance": {
+        "passed_checks": 9,
+        "total_checks": 9,
+        "checks": [
+          {
+            "name": "guaranteed_live_coverage_min",
+            "value": 1.0,
+            "limit": 0.995,
+            "passed": true
+          },
+          {
+            "name": "incompatible_max",
+            "value": 0,
+            "limit": 0,
+            "passed": true
+          },
+          {
+            "name": "settled_sub_ms_share_min",
+            "value": 1.0,
+            "limit": 1.0,
+            "passed": true
+          },
+          {
+            "name": "settled_median_max_us",
+            "value": 164.172,
+            "limit": 250,
+            "passed": true
+          },
+          {
+            "name": "model_median_max_us",
+            "value": 159.88,
+            "limit": 180,
+            "passed": true
+          },
+          {
+            "name": "model_holdout_violations_max",
+            "value": 0,
+            "limit": 0,
+            "passed": true
+          },
+          {
+            "name": "delivery_p99_max_s",
+            "value": 0.0364314,
+            "limit": 0.1,
+            "passed": true
+          },
+          {
+            "name": "delivery_missing_max",
+            "value": 0,
+            "limit": 0,
+            "passed": true
+          },
+          {
+            "name": "median_gap_ratio_max",
+            "value": 0.9990077,
+            "limit": 1.1,
+            "passed": true
+          }
+        ]
+      },
+      "etw_flushes": {
+        "total": 7622,
+        "nonzero_status": 0,
+        "events_lost": 0
+      },
+      "etl_bytes": 504856576,
+      "etl_mib_per_min": 8.03,
+      "background_identity_checks": {
+        "count": 119,
+        "failures": 0,
+        "max_duration_s": 4.133
+      }
+    }
+  ],
+  "baselines_2026_10_07": {
+    "source": "docs/overview/postmerge-corrections-2026-10-08.json",
+    "hour_idle": {
+      "tracking_percent": 78.632,
+      "stale_intervals": 841,
+      "settled_v2_median_us": 308.456,
+      "requests": 1277,
+      "accepted": 1276
+    },
+    "hour_load": {
+      "tracking_percent": 72.35,
+      "stale_intervals": 977,
+      "settled_v2_median_us": 324.908,
+      "requests": 1212,
+      "accepted": 1210
+    },
+    "note": "Baseline coverage and settled medians use the v2 policies, comparable to settled_v2_half_width_us and v2_causal_arrival above, not to the v3 columns."
+  },
+  "run5_workload": {
+    "wall_seconds": 3603.1,
+    "downloaded_bytes": 31185829888,
+    "mean_download_mbit_s": 69.2,
+    "hash_operations": 9406492,
+    "download_errors": 1,
+    "download_stalled": false,
+    "late_reports_rejected_by_screening": 3
+  },
+  "binaries_sha256": {
+    "live_observer.exe": "906122f00112622803dc684646a63c630d97dd794a0384948a236fbcef48eaa9",
+    "decode_tsf_etl.exe": "ecf4f59990b2fc8b1d8aa578fd42081ef865c62bec15e766bb0531c03f50daee"
+  },
+  "driver": {
+    "version": "1.0.4374.1300",
+    "sha256": "ca884ce1a22113194f3c467f36abc39afb0c137e5a7a8e2697420438b21e4115"
+  },
+  "trace_cap_mib": 3000,
+  "private_evidence": {
+    "repository": "Protonmatter/wifi-hardware-time-evidence",
+    "visibility": "private",
+    "snapshot": "snapshots/sub-millisecond-2026-10-10",
+    "source_id": "e3a4f24bfb249b904bb72606aac3e355dd82d5ccdbb833a03031cacb8f9c1e78",
+    "release": "sub-millisecond-2026-10-10",
+    "pull_request": "private PR #4"
+  },
+  "limits": [
+    "Conditional intervals under the declared assumptions; not measured absolute errors or confidence intervals.",
+    "No AP or UTC calibration.",
+    "The read point inside the roughly 250 us capture window is unknown; the constant-rate settled median of about 121 to 129 us is the floor.",
+    "J = 25 us is declared, not measured.",
+    "One adapter, driver and host.",
+    "Online admission is still offline screening."
+  ]
+}
