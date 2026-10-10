@@ -52,7 +52,7 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [docs/acquisition/private-timing-acquisition-plan.md](../../docs/acquisition/private-timing-acquisition-plan.md) | `7eabec8e5ec0` |
 | [docs/acquisition/scan-comparison-plan.md](../../docs/acquisition/scan-comparison-plan.md) | `90547a7f4bca` |
 | [docs/acquisition/scan-tsf-results-2026-10-03.md](../../docs/acquisition/scan-tsf-results-2026-10-03.md) | `29b23a5218fd` |
-| [docs/acquisition/sub-millisecond-qualification-2026-10-10.md](../../docs/acquisition/sub-millisecond-qualification-2026-10-10.md) | `174d21127bba` |
+| [docs/acquisition/sub-millisecond-qualification-2026-10-10.md](../../docs/acquisition/sub-millisecond-qualification-2026-10-10.md) | `8c0554162737` |
 | [docs/acquisition/timing-qualification-validation-2026-10-04.md](../../docs/acquisition/timing-qualification-validation-2026-10-04.md) | `33ef0ae878ef` |
 | [docs/acquisition/tsf-host-bound-methodology.md](../../docs/acquisition/tsf-host-bound-methodology.md) | `8e8b5f746170` |
 | [docs/acquisition/tsf-host-bound-results.md](../../docs/acquisition/tsf-host-bound-results.md) | `60796d255e52` |
@@ -405,7 +405,7 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [tests/test_source_record.py](../../tests/test_source_record.py) | `86754567b493` |
 | [tests/test_static_inspection.py](../../tests/test_static_inspection.py) | `54ff3c879dab` |
 | [tests/test_studio_previews.py](../../tests/test_studio_previews.py) | `dcc96e96e7db` |
-| [tests/test_sub_ms_acceptance.py](../../tests/test_sub_ms_acceptance.py) | `0f6514b98cc8` |
+| [tests/test_sub_ms_acceptance.py](../../tests/test_sub_ms_acceptance.py) | `6638b5694a77` |
 | [tests/test_timing_boundaries.py](../../tests/test_timing_boundaries.py) | `facac334de65` |
 | [tests/test_trace_bytes.py](../../tests/test_trace_bytes.py) | `24fdc154dbe6` |
 | [tests/test_trace_export_output.py](../../tests/test_trace_export_output.py) | `d6b221723a6c` |

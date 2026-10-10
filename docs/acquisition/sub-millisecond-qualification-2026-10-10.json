@@ -5,6 +5,7 @@
   "physical_bound_proven": false,
   "live_collection_performed": true,
   "qpc_hz": 10000000,
+  "acceptance_version_reevaluated": "wht/sub-ms-acceptance-v2",
   "conditions": [
     "Intervals are conditional on the declared assumptions (bounded rate, causal capture, continuity, station TSF equals AP TSF, J = 25 us declared jump allowance for v3) and on offline screening."
   ],
@@ -30,6 +31,7 @@
       },
       "coverage": {
         "review_interval": 1.0,
+        "request_interval": 0.999601,
         "declared_interval": 0.997076,
         "stale_intervals": 1,
         "longest_stale_s": 0.767123,
@@ -143,6 +145,7 @@
       },
       "coverage": {
         "review_interval": 0.993879,
+        "request_interval": 0.993799,
         "declared_interval": 0.991437,
         "stale_intervals": 2,
         "longest_stale_s": 1.824201,
@@ -256,6 +259,7 @@
       },
       "coverage": {
         "review_interval": 1.0,
+        "request_interval": 0.999926,
         "declared_interval": 0.996126,
         "stale_intervals": 1,
         "longest_stale_s": 1.151796,
@@ -374,6 +378,7 @@
       },
       "coverage": {
         "review_interval": 1.0,
+        "request_interval": 0.999993,
         "declared_interval": 0.999764,
         "stale_intervals": 1,
         "longest_stale_s": 0.824861,
@@ -492,6 +497,7 @@
       },
       "coverage": {
         "review_interval": 1.0,
+        "request_interval": 0.999991,
         "declared_interval": 0.999767,
         "stale_intervals": 1,
         "longest_stale_s": 0.806865,

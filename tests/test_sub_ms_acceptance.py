@@ -223,7 +223,13 @@ def run_real(**kwargs):
         folder = Path(directory)
         (folder / 'session.json').write_text(json.dumps(dict(Plan=dict(spacing_s=1.0))), encoding='utf-8')
         out = io.StringIO()
-        with patch('research.clock_models.replay_causal_provider.load_run', return_value=data),                 patch('research.clock_models.replay_causal_provider._revision', return_value={}),                 patch('research.clock_models.replay_causal_provider._lines', side_effect=lines),                 patch.object(sub_ms_acceptance, 'load_run', return_value=data),                 patch.object(sub_ms_acceptance, '_lines', side_effect=lines),                 patch.object(sys, 'argv', ['sub_ms_acceptance.py', str(folder)]),                 contextlib.redirect_stdout(out):
+        with patch('research.clock_models.replay_causal_provider.load_run', return_value=data), \
+                patch('research.clock_models.replay_causal_provider._revision', return_value={}), \
+                patch('research.clock_models.replay_causal_provider._lines', side_effect=lines), \
+                patch.object(sub_ms_acceptance, 'load_run', return_value=data), \
+                patch.object(sub_ms_acceptance, '_lines', side_effect=lines), \
+                patch.object(sys, 'argv', ['sub_ms_acceptance.py', str(folder)]), \
+                contextlib.redirect_stdout(out):
             code = main()
     return code, json.loads(out.getvalue())
 

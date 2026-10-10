@@ -21,13 +21,14 @@ Raw captures, adapter identity, ETL traces, launcher scripts and per-request rec
 | Median accepted gap (s) | 1.999 | 0.997 | 1.000 | 0.998 | 0.999 |
 | Report delivery median / p99 (ms) | 116.4 / 123.6 | 22.7 / 34.5 | 23.3 / 37.8 | 23.0 / 37.3 | 22.9 / 36.4 |
 | Coverage, review interval / declared interval | 1.0 / 0.997076 | 0.993879 / 0.991437 | 1.0 / 0.996126 | 1.0 / 0.999764 | 1.0 / 0.999767 |
+| Coverage, request interval (acceptance version 2 gate) | 0.999601 | 0.993799 | 0.999926 | 0.999993 | 0.999991 |
 | Settled v3 median half-width (us) | 301.663 | 154.49 | 153.283 | 158.371 | 164.172 |
 | Settled v2 median half-width (us) | 276.663 | 129.49 | 128.283 | 133.371 | 139.172 |
 | Learned-rate median (us), holdout violations / checked | 161.842, 0 / 141 | 154.594, 0 / 284 | 153.579, 0 / 292 | 154.011, 0 / 3,583 | 159.88, 0 / 3,577 |
 | Acceptance criteria passed | 6 / 9 | 8 / 9 | 9 / 9 | 9 / 9 | 9 / 9 |
 | ETL growth (MiB per minute) | 10.48 | 10.24 | 11.36 | 9.99 | 8.03 |
 
-Delivery is the time from the report timestamp to the delay-record receipt, computed over accepted samples with the acceptance checker's nearest-rank p99. Single late deliveries in the hour runs reached 137.4 ms (run 4) and 149.1 ms (run 5), well above the p99. The coverage "review interval" is the interval the acceptance gate reviews; the "declared interval" runs from the first request through five seconds after the last. The v3 rows use the settlement-v3 policy with a declared jump allowance J = 25 us. The v2 rows apply the earlier policy to the same data and are the like-for-like comparison with the 2026-10-07 hour runs.
+Delivery is the time from the report timestamp to the delay-record receipt, computed over accepted samples with the acceptance checker's nearest-rank p99. Single late deliveries in the hour runs reached 137.4 ms (run 4) and 149.1 ms (run 5), well above the p99. The coverage "review interval" runs from the first to the last accepted sample's availability and is what the original (version 1) evaluation gated on; acceptance version 2 instead gates on the "request interval", coverage from the first to the last request submission, with the values in the table (outcomes unchanged); the "declared interval" runs from the first request through five seconds after the last. The v3 rows use the settlement-v3 policy with a declared jump allowance J = 25 us. The v2 rows apply the earlier policy to the same data and are the like-for-like comparison with the 2026-10-07 hour runs.
 
 All ETW flush calls returned status 0 with no lost events or buffers: 385, 636, 651, 7,934 and 7,622 flushes across runs 1 to 5. Background identity checks (runs 3 to 5) numbered 9, 119 and 119, with no failures and maximum durations of 1.13 s, 1.36 s and 4.13 s. Trace growth stayed far below the 3,000 MiB cap: run 4 wrote 599 MiB and run 5 wrote 482 MiB, so the doubling the plan feared did not occur.
 
