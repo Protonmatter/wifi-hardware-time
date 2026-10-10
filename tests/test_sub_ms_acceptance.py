@@ -13,7 +13,7 @@ PASSING = {
     'wander': dict(wander=dict(model_half_width_us=dict(median=148.3), holdout_violations=0)),
 }
 TIMING = dict(spacing_s=1.0, delivery_s=dict(median=0.006, p99=0.012, max=0.05),
-              accepted_gap_s=dict(median=1.004, max=3.1))
+              accepted_gap_s=dict(median=1.004, max=3.1), delivery_missing=0)
 
 
 class AcceptanceTests(unittest.TestCase):
@@ -31,6 +31,7 @@ class AcceptanceTests(unittest.TestCase):
             'model_median_max_us': lambda r, t: r['wander']['wander']['model_half_width_us'].update(median=200.0),
             'model_holdout_violations_max': lambda r, t: r['wander']['wander'].update(holdout_violations=1),
             'delivery_p99_max_s': lambda r, t: t['delivery_s'].update(p99=1.9),
+            'delivery_missing_max': lambda r, t: t.update(delivery_missing=2),
             'median_gap_ratio_max': lambda r, t: t['accepted_gap_s'].update(median=2.005),
         }
         self.assertEqual(set(breaks), set(CRITERIA))
@@ -47,7 +48,7 @@ class AcceptanceTests(unittest.TestCase):
         today['causal-v3']['coverage_declared'] = 0.92884
         today['settle-v3']['settle']['half_width_us']['median'] = 280.429
         timing = dict(spacing_s=1.0, delivery_s=dict(median=1.486, p99=1.999, max=2.167),
-                      accepted_gap_s=dict(median=2.005, max=4.009))
+                      accepted_gap_s=dict(median=2.005, max=4.009), delivery_missing=0)
         failed = {c['name'] for c in evaluate(today, timing)['checks'] if not c['passed']}
         self.assertEqual(failed, {'guaranteed_live_coverage_min', 'settled_median_max_us', 'delivery_p99_max_s',
                                   'median_gap_ratio_max'})

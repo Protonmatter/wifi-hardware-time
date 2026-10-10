@@ -28,6 +28,7 @@ CRITERIA = dict(
     model_median_max_us=180,              # learned-rate model median half-width
     model_holdout_violations_max=0,       # out-of-sample learned-rate failures
     delivery_p99_max_s=0.1,               # report delay-record receipt after report timestamp
+    delivery_missing_max=0,                # accepted samples without a delay-record receipt
     median_gap_ratio_max=1.1,             # median accepted gap / requested spacing
 )
 
@@ -63,6 +64,7 @@ def evaluate(replays: dict, timing: dict, criteria: dict = CRITERIA) -> dict:
         model_median_max_us=model['model_half_width_us']['median'],
         model_holdout_violations_max=model['holdout_violations'],
         delivery_p99_max_s=timing['delivery_s']['p99'],
+        delivery_missing_max=timing['delivery_missing'],
         median_gap_ratio_max=timing['accepted_gap_s']['median'] / timing['spacing_s'],
     )
     checks = []
