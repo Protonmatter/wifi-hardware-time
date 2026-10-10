@@ -21,7 +21,7 @@ from research.clock_models.sample_screen import screen
 
 ACCEPTANCE_VERSION = 'wht/sub-ms-acceptance-v1'
 CRITERIA = dict(
-    guaranteed_live_coverage_min=0.995,   # causal-v3 coverage_declared
+    guaranteed_live_coverage_min=0.995,   # causal-v3 coverage_review_interval (first to last sample availability)
     incompatible_max=0,                   # causal-v3 incompatible samples
     settled_sub_ms_share_min=1.0,         # settle-v3 sub_millisecond_share
     settled_median_max_us=250,            # settle-v3 rate-only median half-width
@@ -57,11 +57,11 @@ def run_timing(folder: Path) -> dict:
 def evaluate(replays: dict, timing: dict, criteria: dict = CRITERIA) -> dict:
     causal, settle, model = replays['causal-v3'], replays['settle-v3']['settle'], replays['wander']['wander']
     observed = dict(
-        guaranteed_live_coverage_min=causal['coverage_declared'],
+        guaranteed_live_coverage_min=causal['coverage_review_interval'],
         incompatible_max=len(causal['incompatible']),
         settled_sub_ms_share_min=settle['sub_millisecond_share'],
-        settled_median_max_us=settle['half_width_us']['median'],
-        model_median_max_us=model['model_half_width_us']['median'],
+        settled_median_max_us=(settle['half_width_us'] or {}).get('median'),
+        model_median_max_us=(model['model_half_width_us'] or {}).get('median'),
         model_holdout_violations_max=model['holdout_violations'],
         delivery_p99_max_s=timing['delivery_s']['p99'],
         delivery_missing_max=timing['delivery_missing'],
@@ -70,7 +70,7 @@ def evaluate(replays: dict, timing: dict, criteria: dict = CRITERIA) -> dict:
     checks = []
     for name, limit in criteria.items():
         value = observed[name]
-        passed = value >= limit if name.endswith('_min') else value <= limit
+        passed = value is not None and (value >= limit if name.endswith('_min') else value <= limit)
         checks.append(dict(name=name, value=value, limit=limit, passed=passed))
     return dict(schema=ACCEPTANCE_VERSION, passed=all(c['passed'] for c in checks), checks=checks,
                 scope='conditional research evidence under the declared v3 assumptions; not AP/UTC calibration')

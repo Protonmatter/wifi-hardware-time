@@ -8,7 +8,7 @@ import unittest
 from research.clock_models.sub_ms_acceptance import CRITERIA, evaluate
 
 PASSING = {
-    'causal-v3': dict(coverage_declared=0.9991, incompatible=[]),
+    'causal-v3': dict(coverage_review_interval=0.9991, incompatible=[]),
     'settle-v3': dict(settle=dict(sub_millisecond_share=1.0, half_width_us=dict(median=199.1))),
     'wander': dict(wander=dict(model_half_width_us=dict(median=148.3), holdout_violations=0)),
 }
@@ -24,7 +24,7 @@ class AcceptanceTests(unittest.TestCase):
 
     def test_each_criterion_can_fail_alone(self):
         breaks = {
-            'guaranteed_live_coverage_min': lambda r, t: r['causal-v3'].update(coverage_declared=0.93),
+            'guaranteed_live_coverage_min': lambda r, t: r['causal-v3'].update(coverage_review_interval=0.93),
             'incompatible_max': lambda r, t: r['causal-v3'].update(incompatible=[dict(sequence=4)]),
             'settled_sub_ms_share_min': lambda r, t: r['settle-v3']['settle'].update(sub_millisecond_share=0.99),
             'settled_median_max_us': lambda r, t: r['settle-v3']['settle']['half_width_us'].update(median=281.0),
@@ -43,9 +43,23 @@ class AcceptanceTests(unittest.TestCase):
                 self.assertFalse(result['passed'])
                 self.assertEqual([c['name'] for c in result['checks'] if not c['passed']], [name])
 
+    def test_missing_review_interval_is_rejected(self):
+        replays = copy.deepcopy(PASSING)
+        del replays['causal-v3']['coverage_review_interval']
+        with self.assertRaises(KeyError):
+            evaluate(replays, TIMING)
+
+    def test_empty_results_fail_instead_of_crashing(self):
+        replays = copy.deepcopy(PASSING)
+        replays['settle-v3']['settle'].update(half_width_us=None, sub_millisecond_share=None)
+        result = evaluate(replays, TIMING)
+        self.assertFalse(result['passed'])
+        failed = {c['name'] for c in result['checks'] if not c['passed']}
+        self.assertEqual(failed, {'settled_sub_ms_share_min', 'settled_median_max_us'})
+
     def test_todays_smoke_numbers_fail_on_delivery_cadence_and_width(self):
         today = copy.deepcopy(PASSING)
-        today['causal-v3']['coverage_declared'] = 0.92884
+        today['causal-v3']['coverage_review_interval'] = 0.92884
         today['settle-v3']['settle']['half_width_us']['median'] = 280.429
         timing = dict(spacing_s=1.0, delivery_s=dict(median=1.486, p99=1.999, max=2.167),
                       accepted_gap_s=dict(median=2.005, max=4.009), delivery_missing=0)

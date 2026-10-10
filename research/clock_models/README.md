@@ -15,7 +15,7 @@ These tools compare saved counter observations with host timing and test competi
 | [bracket_bound.py](bracket_bound.py) | Exact rational affine window constraints; adds a constant-rate assumption within the analyzed span. |
 | [rate_bound.py](rate_bound.py) | Exact bounded-rate envelopes and retrospective bounds without the affine constant-rate assumption. |
 | [causal_provider.py](causal_provider.py) | Availability-aware numerical provider, pre-update feasibility, exact interval/rounding uncertainty, expiry and explicit states. |
-| [replay_causal_provider.py](replay_causal_provider.py) | Read-only retained-run replay in causal, arrival-aware, retrospective and settlement modes; preserves declared denominators and policy metadata. |
+| [replay_causal_provider.py](replay_causal_provider.py) | Read-only retained-run replay in causal, arrival-aware, retrospective and settlement modes, plus the v3 modes `settle-v3`, `causal-v3`, `wander` (`--mode v3` runs all three); preserves declared denominators and policy metadata. |
 | [settle.py](settle.py) | Two-phase event-time settlement using available true-before/true-after brackets and eligible overlapping envelopes. |
 | [wander_provider.py](wander_provider.py) | Exact constant-rate interval and the labeled learned-rate companion to the causal provider; never replaces the guaranteed interval. |
 | [replay_wander.py](replay_wander.py) | Grid replay of guaranteed and learned-rate layers with out-of-sample holdout checks. |

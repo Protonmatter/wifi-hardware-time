@@ -48,13 +48,14 @@ Simulated with the prototype of Tasks 1 to 7 on a synthetic recording (smoke-lik
 
 | Metric | Today (2 s gaps, 1.5 s delivery) | Flush, 1.0 s spacing | Flush, 0.5 s spacing | Acceptance limit |
 |---|---:|---:|---:|---:|
-| Live guaranteed coverage below 1 ms | 0.94 | 1.000 | 1.000 | at least 0.995 |
+| Live guaranteed coverage below 1 ms (first to last sample) | 0.94 | 1.000 | 1.000 | at least 0.995 |
 | Live guaranteed median half-width | not measured | 274 us | 215 us | report only |
 | Live learned-rate median half-width | n/a | 148 us | 140 us | at most 180 us |
 | Settled median half-width, v3 (includes 25 us jump allowance) | 282 us | 199 us | 170 us | at most 250 us |
 | Settled share below 1 ms | 1.0 | 1.0 | 1.0 | 1.0 |
 | Learned-rate holdout violations | 0 | 0 | 0 | 0 |
 | Delivery p99 | about 2 s | under 0.02 s | under 0.02 s | at most 0.1 s |
+| Accepted samples without a delivery receipt | not gated | 0 | 0 | 0 |
 
 These are expectations, not results. Only Task 9 produces evidence, and passing it remains conditional research evidence, not AP or UTC calibration.
 
@@ -1713,9 +1714,9 @@ git commit -m "Flush the trace session during the persistent report wait when re
 
 **Interfaces:**
 - Consumes: `replay_run`, `V3_MODES`, `arrival_map` (Task 4); `load_run`, `_lines`; `screen`.
-- Produces: `CRITERIA` (dict of eight limits, names ending `_min` or `_max`); `ACCEPTANCE_VERSION == 'wht/sub-ms-acceptance-v1'`; `run_timing(folder) -> dict(spacing_s, accepted, delivery_missing, delivery_s{median,p99,max}, accepted_gap_s{median,max})`; `evaluate(replays, timing, criteria=CRITERIA) -> dict(schema, passed, checks[{name, value, limit, passed}], scope)`; CLI exiting 0 on pass, 2 on fail, 1 on rejected input.
+- Produces: `CRITERIA` (dict of nine limits, names ending `_min` or `_max`); `ACCEPTANCE_VERSION == 'wht/sub-ms-acceptance-v1'`; `run_timing(folder) -> dict(spacing_s, accepted, delivery_missing, delivery_s{median,p99,max}, accepted_gap_s{median,max})`; `evaluate(replays, timing, criteria=CRITERIA) -> dict(schema, passed, checks[{name, value, limit, passed}], scope)`; CLI exiting 0 on pass, 2 on fail, 1 on rejected input.
 
-The criteria are the Targets table's acceptance limits. One test feeds today's smoke numbers and expects exactly four failures (coverage, settled width, delivery and cadence), which documents why the current setup does not pass.
+The criteria are the Targets table's acceptance limits. A ninth criterion, `delivery_missing_max = 0`, fails runs whose accepted samples lack delivery receipts. One test feeds today's smoke numbers and expects exactly four failures (coverage, settled width, delivery and cadence), which documents why the current setup does not pass.
 
 - [ ] **Step 1: Write the failing test**
 
@@ -1940,7 +1941,7 @@ The default `J = 25` us is six 102.4 ms beacon periods at 40 ppm relative drift,
 
 **Nearby-sample settlement (`wht/settlement-v3`).** The bracket rule and settle time are unchanged. The result additionally intersects the envelope of every sample available by the reported cutoff whose window lies within 10 seconds of the event. A farther sample with a narrow window can be tighter than the nearest one with a wide window.
 
-**Learned-rate model (`wht/wander-model-v1`).** A stronger, labeled assumption: across the trailing 60 seconds and the holdover to the query, the TSF rate stays within the exact constant-rate interval of the trailing samples widened by `wander_ppm` (default 2). A common offset exists for rate `r` exactly when every ordered sample pair satisfies `r * (L_j - U_i - 1) <= T_j - T_i + 1 + 2J`. The model interval is intersected with the guaranteed interval and never replaces it. Each new sample is first checked against the model (out of sample); any holdout violation is evidence that the assumption failed.
+**Learned-rate model (`wht/wander-model-v1`).** A stronger, labeled assumption: across the trailing 60 seconds and the holdover to the query, the TSF rate stays within the exact constant-rate interval of the trailing samples widened by `wander_ppm` (the replay harness uses 2). A common offset exists for rate `r` exactly when every ordered sample pair satisfies `r * (L_j - U_i - 1) <= T_j - T_i + 1 + 2J`. The model interval is intersected with the guaranteed interval and never replaces it. Each new sample is first checked against the model (out of sample); any holdout violation is evidence that the assumption failed.
 
 **Explicit ETW flush.** Real-time trace delivery waits for the one-second flush timer. With `--etw-flush` the persistent campaign calls `ControlTraceW(EVENT_TRACE_CONTROL_FLUSH)` after each completion, so a sample becomes available in milliseconds. Availability semantics (`A_i = max(D_i, C_i, U_i + 1)`) are unchanged; only `D_i` arrives sooner.
 
@@ -2025,7 +2026,7 @@ Re-run Step 1's command with `--execute` only after the user approves. Then:
 python research/clock_models/sub_ms_acceptance.py artifacts/BoundCampaign-<ID>/idle
 ```
 
-Expected: exit 0. If it fails, record which checks failed and stop; do not tune limits to pass. Check that every `etw_flushes` status is 0, and that `delivery_s.p99` fell from about 2 s to under 0.1 s.
+Expected: exit 0. If it fails, record which checks failed and stop; do not tune limits to pass. Check that every `etw_flushes` status is 0, and that `delivery_s.p99` fell from about 2 s to under 0.1 s. Also record trace growth (`tsf.etl` MiB per minute) and flushes per request from `sampler-schedule.jsonl`. If an hour at the loaded rate would exceed `TRACE_CAP_BYTES` (3,000 MiB), stop: changing the cap is a separate reviewed change before Step 3.
 
 - [ ] **Step 3: Hour-long idle and load runs (authorized runs 2 and 3)**
 
