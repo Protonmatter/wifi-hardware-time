@@ -18,6 +18,8 @@ class CampaignFlushTests(unittest.TestCase):
         flushed = sampler_plan(parse(BASE + ['--sampler', 'persistent', '--etw-flush']))
         self.assertIs(plain['etw_flush_after_completion'], False)
         self.assertIs(flushed['etw_flush_after_completion'], True)
+        self.assertEqual(plain['identity_check_mode'], 'background')
+        self.assertEqual(plain['identity_max_age_s'], 60.0)
         self.assertEqual({k: v for k, v in flushed.items() if k != 'etw_flush_after_completion'},
                          {k: v for k, v in plain.items() if k != 'etw_flush_after_completion'})
 

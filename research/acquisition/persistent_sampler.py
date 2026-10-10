@@ -9,6 +9,7 @@ import os
 from pathlib import Path
 import subprocess
 import sys
+import threading
 import time
 import uuid
 
@@ -114,6 +115,88 @@ class IdentityTimer:
 
     def checked(self, now: float) -> None:
         self.next_check = now + 30.0
+
+
+IDENTITY_EVERY_S = 30.0
+IDENTITY_MAX_AGE_S = 60.0         # a submission needs a successful check started at most this long ago
+IDENTITY_CHECK_DEADLINE_S = 60.0  # one check running longer than this fails the run
+
+
+def start_identity_check(fn) -> None:
+    """Run one identity check off the sampling path (patched with a synchronous runner in tests)."""
+    threading.Thread(target=fn, name='identity-check', daemon=True).start()
+
+
+class IdentityMonitor:
+    """Periodic identity checks off the sampling path; submissions are gated on a recent success.
+
+    Construction counts as the first success, so the caller must validate identity synchronously
+    immediately around construction (starting it right after construction makes the counted instant the
+    check's start) and must not use the monitor if that check fails. A check's validation instant is
+    taken as its start (conservative for age).
+    """
+
+    def __init__(self, check, monotonic, now_qpc, *, start=None, interval_s: float = IDENTITY_EVERY_S,
+                 max_age_s: float = IDENTITY_MAX_AGE_S, deadline_s: float = IDENTITY_CHECK_DEADLINE_S):
+        self.check, self.monotonic, self.now_qpc, self.start = check, monotonic, now_qpc, start
+        self.interval_s, self.max_age_s, self.deadline_s = interval_s, max_age_s, deadline_s
+        self.lock = threading.Lock()
+        self.last_success = monotonic()
+        self.next_due = self.last_success + interval_s
+        self.running_since: float | None = None
+        self.failure: str | None = None
+        self.completed: list[dict] = []
+
+    def maybe_start(self) -> bool:
+        """Start a due check without waiting for it; False if failed, running or not yet due."""
+        with self.lock:
+            if self.failure is not None or self.running_since is not None or self.monotonic() < self.next_due:
+                return False
+            self.running_since = self.monotonic()
+            self.next_due = self.running_since + self.interval_s
+        (self.start or start_identity_check)(self._run)
+        return True
+
+    def _run(self) -> None:
+        started_monotonic, started_qpc = self.monotonic(), self.now_qpc()
+        error_text = None
+        try:
+            self.check()
+        except BaseException as error:
+            error_text = f'{type(error).__name__}: {error}'
+        with self.lock:
+            if error_text is None:
+                self.last_success = started_monotonic
+            elif self.failure is None:
+                self.failure = error_text
+            self.completed.append(dict(started_qpc=started_qpc, finished_qpc=self.now_qpc(),
+                                       ok=error_text is None, error=error_text))
+            self.running_since = None
+
+    def gate(self) -> bool:
+        """True when a submission may proceed; raises on a failed or overdue check."""
+        with self.lock:
+            now = self.monotonic()
+            if self.failure is not None:
+                raise RuntimeError(f'Identity check failed: {self.failure}')
+            if self.running_since is not None and now - self.running_since > self.deadline_s:
+                raise RuntimeError('Identity check overdue')
+            return now - self.last_success <= self.max_age_s
+
+    def drain_completed(self) -> list[dict]:
+        with self.lock:
+            records, self.completed = self.completed, []
+            return records
+
+    def wait_idle(self, wait, timeout_s: float) -> bool:
+        deadline = self.monotonic() + timeout_s
+        while True:
+            with self.lock:
+                if self.running_since is None:
+                    return True
+            if self.monotonic() >= deadline:
+                return False
+            wait(0.02)
 
 
 def wait_for_slot(slots: RequestSlots, end: float, timer: IdentityTimer, pulse, check_identity,

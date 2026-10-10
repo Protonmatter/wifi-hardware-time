@@ -90,6 +90,7 @@ class FlushExecuteTests(unittest.TestCase):
                                          (acquisition, 'Observer', Observer), (acquisition, 'identity', identity),
                                          (acquisition, 'same_identity', lambda *a: None),
                                          (bss, 'BssReader', Reader), (api, 'PersistentClient', Client),
+                                         (api, 'start_identity_check', lambda fn: fn()),
                                          (etw_flush, 'TraceFlusher', FakeFlusher),
                                          (bound, 'finalize', lambda *a: None)):
                     stack.enter_context(patch.object(obj, name, value))
