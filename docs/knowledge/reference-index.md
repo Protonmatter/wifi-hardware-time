@@ -10,7 +10,7 @@ Find the calls, file names, terms and short strings recorded in this research. T
 
 ## Search
 
-Indexed **371 source files** and **11347 distinct terms**.
+Indexed **372 source files** and **11357 distinct terms**.
 
 The [JSON index](research-index.json) includes Python definitions/calls, C/Java/PowerShell call-shaped tokens, authored short strings and Markdown code terms. Vendor binaries, local artifacts, historical reproduction sources and generated indexes are excluded. Unresolved call-shaped tokens are explicitly labeled.
 
@@ -241,7 +241,7 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [research/clock_models/rate_bound.py](../../research/clock_models/rate_bound.py) | `01dec62e9bfe` |
 | [research/clock_models/replay_causal_provider.py](../../research/clock_models/replay_causal_provider.py) | `9ba06be3ee89` |
 | [research/clock_models/sample_screen.py](../../research/clock_models/sample_screen.py) | `69d0fa54c361` |
-| [research/clock_models/settle.py](../../research/clock_models/settle.py) | `ddec0f387764` |
+| [research/clock_models/settle.py](../../research/clock_models/settle.py) | `73a3b4d2dde8` |
 | [research/clock_models/soc_domain_test.py](../../research/clock_models/soc_domain_test.py) | `8d105806ba47` |
 | [research/evidence/README.md](../../research/evidence/README.md) | `e82d343acea5` |
 | [research/evidence/Update-ResearchKnowledge.ps1](../../research/evidence/Update-ResearchKnowledge.ps1) | `4547d8e08593` |
@@ -388,6 +388,7 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [tests/test_scan_comparison.py](../../tests/test_scan_comparison.py) | `61d5ecc0b798` |
 | [tests/test_scan_postmortem.py](../../tests/test_scan_postmortem.py) | `efa6f9491d9a` |
 | [tests/test_settle.py](../../tests/test_settle.py) | `cc6f7bc44c40` |
+| [tests/test_settle_v3.py](../../tests/test_settle_v3.py) | `fad837dd5ff3` |
 | [tests/test_soc_domain.py](../../tests/test_soc_domain.py) | `027c131dcd3c` |
 | [tests/test_source_record.py](../../tests/test_source_record.py) | `86754567b493` |
 | [tests/test_static_inspection.py](../../tests/test_static_inspection.py) | `54ff3c879dab` |
