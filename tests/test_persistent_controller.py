@@ -109,9 +109,31 @@ class ControllerTests(unittest.TestCase):
         slots.submitted(100.2)
         self.assertEqual(slots.reserve(102.96), (103.0, 2))
         slots.submitted(103.1)
-        self.assertEqual(slots.reserve(103.2), (105.0, 1))
-        slots.submitted(105.0)
-        self.assertEqual(slots.reserve(137.0), (137.0, 31))
+        # 103.1 + 1.0 * 0.9 = 104.0 is exactly slot 4, so a 0.1 s late submission skips nothing.
+        self.assertEqual(slots.reserve(103.2), (104.0, 0))
+        slots.submitted(104.0)
+        # Idle until 137.0: slot 37 is next, slots 5..36 (32 of them) are skipped, never caught up.
+        self.assertEqual(slots.reserve(137.0), (137.0, 32))
+
+    def test_submission_jitter_does_not_skip_slots(self):
+        api = self.api()
+        slots = api.RequestSlots(100.0, 1.0)
+        previous = None
+        for i in range(20):
+            scheduled, skipped = slots.reserve(100.0 + i + 0.004)
+            if i:
+                self.assertEqual(skipped, 0)
+                self.assertEqual(scheduled - previous, 1.0)
+            previous = scheduled
+            slots.submitted(scheduled + 0.006)
+
+    def test_late_submission_beyond_tolerance_still_skips(self):
+        api = self.api()
+        slots = api.RequestSlots(100.0, 1.0)
+        self.assertEqual(slots.reserve(100.0), (100.0, 0))
+        slots.submitted(100.15)
+        # 100.15 + 0.9 = 101.05 > 101, so slot 1 is too soon and slot 2 is chosen.
+        self.assertEqual(slots.reserve(100.2), (102.0, 1))
 
     def test_identity_timer_is_monotonic_not_request_count(self):
         api = self.api()
@@ -135,10 +157,12 @@ class ControllerTests(unittest.TestCase):
         scheduled, skipped = api.wait_for_slot(slots, 300.0, timer, lambda: pulses.append(now[0]), identity,
                                                lambda seconds: now.__setitem__(0, now[0] + seconds),
                                                lambda: now[0])
-        self.assertEqual((scheduled, skipped), (220.0, 1))
-        self.assertGreaterEqual(len(checks), 3)
+        # 100.02 + 60 * 0.9 = 154.02 <= 160, so slot 160 is eligible and nothing is skipped.
+        self.assertEqual((scheduled, skipped), (160.0, 0))
+        # The 30 s timer (created at 100) fires at ~130 and next at ~161, after slot 160: exactly one check.
+        self.assertGreaterEqual(len(checks), 1)
         self.assertLess(max(b - a for a, b in zip(pulses, pulses[1:])), 2.0)
-        self.assertGreaterEqual(now[0], 220.0)
+        self.assertGreaterEqual(now[0], 160.0)
 
     def test_fresh_permit_consumed_once_and_revoke_serialized(self):
         api = self.api()

@@ -4,7 +4,7 @@ from pathlib import Path
 if __package__ in (None, ""):
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import unittest
-from research.acquisition.report_wait import wait_for_report
+from research.acquisition.report_wait import FLUSH_RETRY_S, MAX_FLUSHES, wait_for_report
 
 
 class FakeTime:
@@ -32,8 +32,9 @@ class ReportWaitTests(unittest.TestCase):
         clock, calls = FakeTime(), []
         flushes = wait_for_report(lambda: False, pump=lambda: None, monotonic=clock.monotonic, sleep=clock.sleep,
                                   flush=lambda: calls.append(clock.t) or dict(status=0), listen_s=1.0)
-        self.assertEqual(len(flushes), 3)
-        self.assertGreaterEqual(calls[1] - calls[0], 0.05)
+        self.assertEqual(len(flushes), MAX_FLUSHES)
+        self.assertEqual(MAX_FLUSHES, 5)
+        self.assertGreaterEqual(calls[1] - calls[0], FLUSH_RETRY_S)
         self.assertGreaterEqual(clock.t, 101.0)
 
     def test_without_flush_behaves_like_the_retained_wait(self):

@@ -10,7 +10,7 @@ Find the calls, file names, terms and short strings recorded in this research. T
 
 ## Search
 
-Indexed **384 source files** and **11539 distinct terms**.
+Indexed **384 source files** and **11541 distinct terms**.
 
 The [JSON index](research-index.json) includes Python definitions/calls, C/Java/PowerShell call-shaped tokens, authored short strings and Markdown code terms. Vendor binaries, local artifacts, historical reproduction sources and generated indexes are excluded. Unresolved call-shaped tokens are explicitly labeled.
 
@@ -45,7 +45,7 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [docs/acquisition/observer-passive-qualification-2026-10-03.md](../../docs/acquisition/observer-passive-qualification-2026-10-03.md) | `2b6ab8b0ecb2` |
 | [docs/acquisition/packet-capture-and-elevation.md](../../docs/acquisition/packet-capture-and-elevation.md) | `0bbfbd50575b` |
 | [docs/acquisition/passive-and-retrieval-validation-2026-10-03.md](../../docs/acquisition/passive-and-retrieval-validation-2026-10-03.md) | `d135884a07b7` |
-| [docs/acquisition/persistent-tsf-sampler.md](../../docs/acquisition/persistent-tsf-sampler.md) | `f514b9bab3a8` |
+| [docs/acquisition/persistent-tsf-sampler.md](../../docs/acquisition/persistent-tsf-sampler.md) | `fac4f48cadcc` |
 | [docs/acquisition/persistent-tsf-smoke-2026-10-08.md](../../docs/acquisition/persistent-tsf-smoke-2026-10-08.md) | `fbe62f357d01` |
 | [docs/acquisition/private-acquisition-latency.md](../../docs/acquisition/private-acquisition-latency.md) | `4abf1052db42` |
 | [docs/acquisition/private-campaign-2026-10-03-quarantine.md](../../docs/acquisition/private-campaign-2026-10-03-quarantine.md) | `2010c043658e` |
@@ -135,7 +135,7 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [docs/overview/2026-10-07-tsf-host-bound-design.md](../../docs/overview/2026-10-07-tsf-host-bound-design.md) | `9e3850f11b50` |
 | [docs/overview/2026-10-07-tsf-host-bound-plan.md](../../docs/overview/2026-10-07-tsf-host-bound-plan.md) | `84cc59143b88` |
 | [docs/overview/2026-10-08-causal-provider-design.md](../../docs/overview/2026-10-08-causal-provider-design.md) | `53c15d633f7f` |
-| [docs/overview/2026-10-09-sub-millisecond-plan.md](../../docs/overview/2026-10-09-sub-millisecond-plan.md) | `143db8fc42f8` |
+| [docs/overview/2026-10-09-sub-millisecond-plan.md](../../docs/overview/2026-10-09-sub-millisecond-plan.md) | `aa82a25bd088` |
 | [docs/overview/OPERATIONS.md](../../docs/overview/OPERATIONS.md) | `bc4c2e2398a4` |
 | [docs/overview/README.md](../../docs/overview/README.md) | `e7b9e849b32b` |
 | [docs/overview/archify-studio/README.md](../../docs/overview/archify-studio/README.md) | `b83ac4b4cb07` |
@@ -202,9 +202,9 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [research/acquisition/export_registry_trace.c](../../research/acquisition/export_registry_trace.c) | `7139169e81f3` |
 | [research/acquisition/live_observer.c](../../research/acquisition/live_observer.c) | `d9fbeebe8e90` |
 | [research/acquisition/observation_lifecycle.py](../../research/acquisition/observation_lifecycle.py) | `38c030610f30` |
-| [research/acquisition/persistent_sampler.py](../../research/acquisition/persistent_sampler.py) | `c67edf09902a` |
+| [research/acquisition/persistent_sampler.py](../../research/acquisition/persistent_sampler.py) | `355473c9614a` |
 | [research/acquisition/quts-registry.wprp](../../research/acquisition/quts-registry.wprp) | `1fc7a009f62c` |
-| [research/acquisition/report_wait.py](../../research/acquisition/report_wait.py) | `dae926956628` |
+| [research/acquisition/report_wait.py](../../research/acquisition/report_wait.py) | `d9b4d35ce749` |
 | [research/acquisition/run_acquisition_campaign.py](../../research/acquisition/run_acquisition_campaign.py) | `a3f08e3774f0` |
 | [research/acquisition/run_bound_campaign.py](../../research/acquisition/run_bound_campaign.py) | `05c34967e44f` |
 | [research/acquisition/run_passive_observation.py](../../research/acquisition/run_passive_observation.py) | `73f59f63c534` |
@@ -376,7 +376,7 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [tests/test_observer_drain.py](../../tests/test_observer_drain.py) | `e2f9aa288de4` |
 | [tests/test_packetlog_return.py](../../tests/test_packetlog_return.py) | `afebcce544db` |
 | [tests/test_passive_observation.py](../../tests/test_passive_observation.py) | `e737a27dbc7c` |
-| [tests/test_persistent_controller.py](../../tests/test_persistent_controller.py) | `4c35a2c414d4` |
+| [tests/test_persistent_controller.py](../../tests/test_persistent_controller.py) | `e94cb818b7a9` |
 | [tests/test_persistent_receipts.py](../../tests/test_persistent_receipts.py) | `0f898accb1b6` |
 | [tests/test_phase_jump.py](../../tests/test_phase_jump.py) | `61d93a202fb8` |
 | [tests/test_private_export_routes.py](../../tests/test_private_export_routes.py) | `72cf687fa2bb` |
@@ -389,7 +389,7 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [tests/test_read_tsf_evidence.py](../../tests/test_read_tsf_evidence.py) | `c0ea33b069f1` |
 | [tests/test_replay_causal_provider.py](../../tests/test_replay_causal_provider.py) | `ccc695b34338` |
 | [tests/test_replay_v3.py](../../tests/test_replay_v3.py) | `8666f11d739b` |
-| [tests/test_report_wait.py](../../tests/test_report_wait.py) | `07c3e142a26f` |
+| [tests/test_report_wait.py](../../tests/test_report_wait.py) | `7e8305c193af` |
 | [tests/test_research_layout.py](../../tests/test_research_layout.py) | `6cc62e5d0625` |
 | [tests/test_ring_publication_model.py](../../tests/test_ring_publication_model.py) | `9a6fcec1e071` |
 | [tests/test_sample_screen.py](../../tests/test_sample_screen.py) | `eddc2c70f943` |

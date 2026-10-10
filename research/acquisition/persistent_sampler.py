@@ -14,6 +14,7 @@ import uuid
 
 CONTROL_SCHEMA = 'wht/persistent-tsf-control-v1'
 LEASE_S = 60.0  # Allows the existing bounded identity discovery; no future permits are queued.
+MIN_GAP_FRACTION = 0.9  # an actual gap may be up to 10% shorter than the requested spacing (submission jitter)
 
 
 def durable_save(path: Path, data: dict) -> None:
@@ -94,7 +95,7 @@ class RequestSlots:
         self.last_actual: float | None = None
 
     def reserve(self, now: float) -> tuple[float, int]:
-        earliest = max(now, self.last_actual + self.spacing if self.last_actual is not None else now)
+        earliest = max(now, self.last_actual + self.spacing * MIN_GAP_FRACTION if self.last_actual is not None else now)
         index = max(self.next_index, math.ceil((earliest - self.origin) / self.spacing))
         skipped = index - self.next_index
         self.next_index = index + 1

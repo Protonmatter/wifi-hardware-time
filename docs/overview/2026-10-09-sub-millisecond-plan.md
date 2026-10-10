@@ -1450,7 +1450,7 @@ git commit -m "Add an explicit ETW session flush binding"
 - Consumes: `TraceFlusher` from Task 5.
 - Produces: `wait_for_report(arrived, *, pump, monotonic, sleep, flush=None, listen_s=5.0, retry_s=0.05, max_flushes=3) -> list[dict]`; `run_bound_campaign.sampler_plan(args) -> dict` (adds `etw_flush_after_completion`); CLI flag `--etw-flush` (persistent sampler only); each `sampler-schedule.jsonl` row gains `etw_flushes`.
 
-The helper replaces the inline listen loop with identical behavior when `flush` is `None`: pump, poll every 5 ms, stop at report or after `LISTEN_TIMEOUT_S`. With a flusher it flushes at once (the caller enters after terminal completion, which the driver logs after the report), then retries every 50 ms up to three times. The flag is opt-in and recorded in the plan before any request, so earlier run profiles stay reproducible and every run says which delivery mode it used.
+The helper replaces the inline listen loop with identical behavior when `flush` is `None`: pump, poll every 5 ms, stop at report or after `LISTEN_TIMEOUT_S`. With a flusher it flushes at once (the caller enters after terminal completion, which the driver logs after the report), then retries every 50 ms up to three times (changed after the first live smoke to every 10 ms up to five times). The flag is opt-in and recorded in the plan before any request, so earlier run profiles stay reproducible and every run says which delivery mode it used.
 
 - [ ] **Step 1: Write the failing tests**
 

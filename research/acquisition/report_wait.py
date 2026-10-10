@@ -5,8 +5,8 @@ from typing import Callable
 
 LISTEN_S = 5.0
 POLL_S = 0.005
-FLUSH_RETRY_S = 0.05
-MAX_FLUSHES = 3
+FLUSH_RETRY_S = 0.01
+MAX_FLUSHES = 5
 
 
 def wait_for_report(arrived: Callable[[], bool], *, pump: Callable[[], None], monotonic: Callable[[], float],
