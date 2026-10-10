@@ -1,3 +1,4 @@
+import math
 import sys
 from pathlib import Path
 # Resolve repository packages when this file is used as a direct CLI.
@@ -172,7 +173,7 @@ class IdentityMonitorTests(unittest.TestCase):
         while monitor.running_since is not None and time.monotonic() < deadline:
             time.sleep(0.005)
         self.assertIsNone(monitor.running_since)
-        self.assertIn('overran its 60 s deadline (61.000 s)', monitor.failure)
+        self.assertIn('overran its 60 s deadline (61.000000 s)', monitor.failure)
         self.assertEqual(monitor.last_success, 0.0)
         records = monitor.drain_completed()
         self.assertEqual([r['ok'] for r in records], [False])
@@ -216,9 +217,28 @@ class IdentityMonitorTests(unittest.TestCase):
         self.assertTrue(h.monitor.maybe_start())  # running_since 130; the thread starts late
         h.advance(40.0)
         h.pending.pop()()  # check starts at 170, ends at 195: 25 s from its start, 65 s from running_since
-        self.assertIn('overran its 60 s deadline (65.000 s)', h.monitor.failure)
+        self.assertIn('overran its 60 s deadline (65.000000 s)', h.monitor.failure)
         self.assertEqual(h.monitor.last_success, 100.0)
         self.assertEqual([r['ok'] for r in h.monitor.drain_completed()], [False])
+
+    def test_wait_idle_is_bounded_by_call_count_when_the_clock_never_advances(self):
+        h = Harness()
+        h.advance(30.0)
+        h.monitor.maybe_start()  # stored, never run
+        h.now[0] = h.monitor.running_since + h.monitor.deadline_s  # frozen exactly at the deadline
+        calls = []
+        self.assertFalse(h.monitor.wait_idle(lambda seconds: calls.append(seconds), 1.0))
+        self.assertEqual(len(calls), math.ceil(1.0 / 0.02) + 1)
+        self.assertEqual(len(calls), 51)
+
+    def test_overrun_message_never_prints_a_late_check_as_the_deadline(self):
+        def check():
+            h.advance(60.0001)
+        h = Harness(check, run_now=True)
+        h.advance(30.0)
+        h.monitor.maybe_start()
+        self.assertIn('(60.000100 s)', h.monitor.failure)
+        self.assertNotIn('(60.000000 s)', h.monitor.failure)
 
     def test_wait_idle_at_exactly_the_check_deadline_still_waits(self):
         h = Harness()

@@ -10,7 +10,7 @@ Find the calls, file names, terms and short strings recorded in this research. T
 
 ## Search
 
-Indexed **386 source files** and **11749 distinct terms**.
+Indexed **386 source files** and **11756 distinct terms**.
 
 The [JSON index](research-index.json) includes Python definitions/calls, C/Java/PowerShell call-shaped tokens, authored short strings and Markdown code terms. Vendor binaries, local artifacts, historical reproduction sources and generated indexes are excluded. Unresolved call-shaped tokens are explicitly labeled.
 
@@ -203,7 +203,7 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [research/acquisition/export_registry_trace.c](../../research/acquisition/export_registry_trace.c) | `7139169e81f3` |
 | [research/acquisition/live_observer.c](../../research/acquisition/live_observer.c) | `d9fbeebe8e90` |
 | [research/acquisition/observation_lifecycle.py](../../research/acquisition/observation_lifecycle.py) | `38c030610f30` |
-| [research/acquisition/persistent_sampler.py](../../research/acquisition/persistent_sampler.py) | `38ea523e430f` |
+| [research/acquisition/persistent_sampler.py](../../research/acquisition/persistent_sampler.py) | `fb7babc819c8` |
 | [research/acquisition/quts-registry.wprp](../../research/acquisition/quts-registry.wprp) | `1fc7a009f62c` |
 | [research/acquisition/report_wait.py](../../research/acquisition/report_wait.py) | `d9b4d35ce749` |
 | [research/acquisition/run_acquisition_campaign.py](../../research/acquisition/run_acquisition_campaign.py) | `a3f08e3774f0` |
@@ -364,7 +364,7 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [tests/test_ftm_response.py](../../tests/test_ftm_response.py) | `d84a9c2897a8` |
 | [tests/test_ftm_selection.py](../../tests/test_ftm_selection.py) | `0a0f6a22f67c` |
 | [tests/test_hardware_observation.py](../../tests/test_hardware_observation.py) | `373ac4bb5f56` |
-| [tests/test_identity_monitor.py](../../tests/test_identity_monitor.py) | `4e97077ebf82` |
+| [tests/test_identity_monitor.py](../../tests/test_identity_monitor.py) | `bbad644e18be` |
 | [tests/test_ihv_queries.py](../../tests/test_ihv_queries.py) | `aea92d30a26e` |
 | [tests/test_knowledge_index.py](../../tests/test_knowledge_index.py) | `3722eeea4063` |
 | [tests/test_lifecycle_evidence.py](../../tests/test_lifecycle_evidence.py) | `a5a8e1a98125` |
@@ -378,7 +378,7 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [tests/test_observer_drain.py](../../tests/test_observer_drain.py) | `e2f9aa288de4` |
 | [tests/test_packetlog_return.py](../../tests/test_packetlog_return.py) | `afebcce544db` |
 | [tests/test_passive_observation.py](../../tests/test_passive_observation.py) | `e737a27dbc7c` |
-| [tests/test_persistent_controller.py](../../tests/test_persistent_controller.py) | `80d69ab8ffed` |
+| [tests/test_persistent_controller.py](../../tests/test_persistent_controller.py) | `e82e1b8226fa` |
 | [tests/test_persistent_receipts.py](../../tests/test_persistent_receipts.py) | `0f898accb1b6` |
 | [tests/test_phase_jump.py](../../tests/test_phase_jump.py) | `61d93a202fb8` |
 | [tests/test_private_export_routes.py](../../tests/test_private_export_routes.py) | `72cf687fa2bb` |

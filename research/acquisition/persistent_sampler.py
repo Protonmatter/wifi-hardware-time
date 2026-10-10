@@ -180,7 +180,8 @@ class IdentityMonitor:
                     if error_text is None:
                         elapsed = self.monotonic() - (origin)
                         if elapsed > self.deadline_s:
-                            error_text = f'Identity check overran its {self.deadline_s:g} s deadline ({elapsed:.3f} s)'
+                            shown = math.ceil(elapsed * 1_000_000) / 1_000_000  # round up: never prints as the deadline
+                            error_text = f'Identity check overran its {self.deadline_s:g} s deadline ({shown:.6f} s)'
                     if error_text is None:
                         self.last_success = started_monotonic
                     elif self.failure is None:
@@ -211,14 +212,16 @@ class IdentityMonitor:
     def wait_idle(self, wait, timeout_s: float) -> bool:
         """True once no check is running; False at timeout_s or at the running check's own deadline."""
         call_deadline = self.monotonic() + timeout_s
+        max_waits, waits = math.ceil(timeout_s / 0.02) + 1, 0  # terminates even if the clock never advances
         while True:
             with self.lock:
                 if self.running_since is None:
                     return True
                 running_deadline = self.running_since + self.deadline_s
             now = self.monotonic()
-            if now >= call_deadline or now > running_deadline:
+            if now >= call_deadline or now > running_deadline or waits >= max_waits:
                 return False
+            waits += 1
             wait(0.02)
 
 
