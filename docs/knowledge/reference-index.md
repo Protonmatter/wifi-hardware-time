@@ -10,7 +10,7 @@ Find the calls, file names, terms and short strings recorded in this research. T
 
 ## Search
 
-Indexed **372 source files** and **11357 distinct terms**.
+Indexed **374 source files** and **11389 distinct terms**.
 
 The [JSON index](research-index.json) includes Python definitions/calls, C/Java/PowerShell call-shaped tokens, authored short strings and Markdown code terms. Vendor binaries, local artifacts, historical reproduction sources and generated indexes are excluded. Unresolved call-shaped tokens are explicitly labeled.
 
@@ -243,6 +243,7 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [research/clock_models/sample_screen.py](../../research/clock_models/sample_screen.py) | `69d0fa54c361` |
 | [research/clock_models/settle.py](../../research/clock_models/settle.py) | `73a3b4d2dde8` |
 | [research/clock_models/soc_domain_test.py](../../research/clock_models/soc_domain_test.py) | `8d105806ba47` |
+| [research/clock_models/wander_provider.py](../../research/clock_models/wander_provider.py) | `f7689cf8f4e3` |
 | [research/evidence/README.md](../../research/evidence/README.md) | `e82d343acea5` |
 | [research/evidence/Update-ResearchKnowledge.ps1](../../research/evidence/Update-ResearchKnowledge.ps1) | `4547d8e08593` |
 | [research/evidence/apply_studio_export_policy.py](../../research/evidence/apply_studio_export_policy.py) | `1d49fda590d3` |
@@ -402,6 +403,7 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [tests/test_tsf_routes.py](../../tests/test_tsf_routes.py) | `b461867a2900` |
 | [tests/test_tsf_sampler.py](../../tests/test_tsf_sampler.py) | `cbf73592b664` |
 | [tests/test_validation_archive.py](../../tests/test_validation_archive.py) | `4b880ac2bfb0` |
+| [tests/test_wander_provider.py](../../tests/test_wander_provider.py) | `c14b2674fae8` |
 | [tests/test_windows_bss_time.py](../../tests/test_windows_bss_time.py) | `defb090e6d97` |
 | [tests/test_wlanlib_dispatch.py](../../tests/test_wlanlib_dispatch.py) | `300bf34a99a7` |
 | [tests/test_workflow_diagrams.py](../../tests/test_workflow_diagrams.py) | `b1577f449b54` |
