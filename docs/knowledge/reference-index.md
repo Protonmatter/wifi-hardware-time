@@ -10,7 +10,7 @@ Find the calls, file names, terms and short strings recorded in this research. T
 
 ## Search
 
-Indexed **376 source files** and **11421 distinct terms**.
+Indexed **378 source files** and **11457 distinct terms**.
 
 The [JSON index](research-index.json) includes Python definitions/calls, C/Java/PowerShell call-shaped tokens, authored short strings and Markdown code terms. Vendor binaries, local artifacts, historical reproduction sources and generated indexes are excluded. Unresolved call-shaped tokens are explicitly labeled.
 
@@ -198,6 +198,7 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [research/acquisition/bss_reader.py](../../research/acquisition/bss_reader.py) | `161de8e40ee4` |
 | [research/acquisition/campaign_admission.py](../../research/acquisition/campaign_admission.py) | `3fbcc1b190c5` |
 | [research/acquisition/campaign_gate.py](../../research/acquisition/campaign_gate.py) | `1d347eea2011` |
+| [research/acquisition/etw_flush.py](../../research/acquisition/etw_flush.py) | `66ca7d15651c` |
 | [research/acquisition/export_registry_trace.c](../../research/acquisition/export_registry_trace.c) | `7139169e81f3` |
 | [research/acquisition/live_observer.c](../../research/acquisition/live_observer.c) | `d9fbeebe8e90` |
 | [research/acquisition/observation_lifecycle.py](../../research/acquisition/observation_lifecycle.py) | `38c030610f30` |
@@ -348,6 +349,7 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [tests/test_device_service_control.py](../../tests/test_device_service_control.py) | `2ed65785ca04` |
 | [tests/test_documentation_archive.py](../../tests/test_documentation_archive.py) | `a1007a37e40c` |
 | [tests/test_documentation_navigation.py](../../tests/test_documentation_navigation.py) | `5dac016c2228` |
+| [tests/test_etw_flush.py](../../tests/test_etw_flush.py) | `1a43c8800581` |
 | [tests/test_event_export_candidates.py](../../tests/test_event_export_candidates.py) | `df0e9c3801ab` |
 | [tests/test_evidence_contract.py](../../tests/test_evidence_contract.py) | `8d716fe0ed82` |
 | [tests/test_export_clock_evidence.py](../../tests/test_export_clock_evidence.py) | `da39f56697fc` |
