@@ -156,7 +156,7 @@ class ControllerTests(unittest.TestCase):
 
     def test_background_check_completing_late_during_the_end_of_run_wait_fails_the_campaign(self):
         import threading
-        release, threads = threading.Event(), []
+        release, threads, released_by, waited = threading.Event(), [], [], []
         main = threading.current_thread()
 
         def factory(api, now):
@@ -164,13 +164,15 @@ class ControllerTests(unittest.TestCase):
                 def __init__(self, check, *args, **kwargs):
                     def gated():
                         if threading.current_thread() is not main:
-                            release.wait(10.0)
+                            waited.append(release.wait(10.0))
                             now[0] += 61.0  # the check finishes 61 s after it began, with no gate() call between
                         check()
                     super().__init__(gated, *args, **kwargs)
 
                 def wait_idle(self, wait, timeout_s):
                     def release_then_wait(seconds):
+                        if not release.is_set():
+                            released_by.append('wait_idle')
                         release.set()
                         for thread in threads:
                             thread.join(5.0)
@@ -190,6 +192,8 @@ class ControllerTests(unittest.TestCase):
             self.assertTrue((root / 'marker.json').exists())
             self.assertEqual(closed, [True])
             self.assertEqual(len(threads), 1)
+            self.assertEqual(released_by, ['wait_idle'])  # the release came from the wrapped shutdown wait_idle
+            self.assertEqual(waited, [True])  # the check thread was released, not timed out
             tail = json.loads(next((root / 'artifacts').rglob('background-identity-tail.json')).read_text())
             self.assertIn('overran', tail['monitor_failure'])
             rows = [json.loads(line) for path in (root / 'artifacts').rglob('sampler-schedule.jsonl')
