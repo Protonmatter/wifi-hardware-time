@@ -23,25 +23,51 @@ def _quantiles(values: list[Fraction]) -> dict | None:
                 p99=round(float(pick(Fraction(99, 100))), 3), max=round(float(ordered[-1]), 3))
 
 
+def _diagnostic(item) -> dict:
+    """Accept a mapping or any object (dataclass, namedtuple) with sequence and available_qpc."""
+    get = item.__getitem__ if isinstance(item, dict) else lambda key: getattr(item, key)
+    return dict(sequence=get('sequence'), available_qpc=get('available_qpc'))
+
+
 def replay_wander(items: list[AvailableSample], qpc_hz: int, start: int, end: int, *, wander_ppm: int,
-                  jump_us=0, rate_prior_ppm: int = 200, threshold_us: int = 1_000) -> dict:
+                  jump_us=0, rate_prior_ppm: int = 200, threshold_us: int = 1_000, continuity=()) -> dict:
     if not start < end:
         raise ValueError('Empty replay interval')
     provider = WanderProvider(qpc_hz, wander_ppm=wander_ppm, rate_prior_ppm=rate_prior_ppm,
                               threshold_us=threshold_us, jump_us=jump_us)
     order = sorted(items, key=lambda s: (s.available_qpc, s.lower_qpc, s.sequence))
+    diagnostics = sorted((_diagnostic(d) for d in continuity), key=lambda d: (d['available_qpc'], d['sequence']))
+    late_history_skipped, continuity_invalidations, diag_index = [], [], 0
     step = int(GRID_STEP_S * qpc_hz)
     states_g: dict[str, int] = {}
     states_m: dict[str, int] = {}
     widths_g, widths_m, holdout, index = [], [], [], 0
     for query in range(start, end, step):
-        while index < len(order) and order[index].available_qpc <= query:
+        while True:
+            diag_due = diag_index < len(diagnostics) and diagnostics[diag_index]['available_qpc'] <= query
+            sample_due = index < len(order) and order[index].available_qpc <= query
+            if diag_due and (not sample_due or diagnostics[diag_index]['available_qpc'] <= order[index].available_qpc):
+                diagnostic = diagnostics[diag_index]
+                diag_index += 1
+                provider.guaranteed.invalidate(
+                    f"sample {diagnostic['sequence']}: suspected TSF discontinuity; epoch decision required")
+                continuity_invalidations.append(diagnostic)
+                continue
+            if not sample_due:
+                break
             item = order[index]
+            index += 1
+            last_end = provider.guaranteed.last_capture_end
+            if last_end is not None and item.lower_qpc <= last_end:
+                late_history_skipped.append(dict(sequence=item.sequence,
+                    reason='capture_overlaps_or_precedes_last_ingested', lower_qpc=item.lower_qpc,
+                    upper_qpc=item.upper_qpc, available_qpc=item.available_qpc,
+                    last_ingested_capture_end_qpc=last_end))
+                continue
             verdict = provider.check_model(item)
             if verdict is not None:
                 holdout.append(dict(sequence=item.sequence, compatible=verdict))
             provider.ingest(item)
-            index += 1
         result = provider.estimate(query)
         states_g[result.guaranteed.state] = states_g.get(result.guaranteed.state, 0) + 1
         states_m[result.state] = states_m.get(result.state, 0) + 1
@@ -59,4 +85,6 @@ def replay_wander(items: list[AvailableSample], qpc_hz: int, start: int, end: in
                 model_tracking_share=round(states_m.get('tracking', 0) / total, 6),
                 guaranteed_half_width_us=_quantiles(widths_g), model_half_width_us=_quantiles(widths_m),
                 holdout_checked=len(holdout), holdout_violations=len(violations),
-                holdout_violation_sequences=violations[:50], conditions=list(provider.conditions))
+                holdout_violation_sequences=violations[:50],
+                late_history_skipped=late_history_skipped, continuity_invalidations=continuity_invalidations,
+                conditions=list(provider.conditions))

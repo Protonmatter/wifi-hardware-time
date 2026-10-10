@@ -11,7 +11,7 @@ from research.clock_models.causal_provider import PROVIDER_POLICY_VERSION, Avail
 from research.clock_models.rate_bound import DEFAULT_JUMP_US
 from research.clock_models.replay_causal_provider import V3_MODES, replay_run
 from research.clock_models.replay_wander import replay_wander
-from research.clock_models.sample_screen import Request, Sample, Screen
+from research.clock_models.sample_screen import LISTEN_TIMEOUT_S, ContinuityBreak, Request, Sample, Screen
 from research.clock_models.settle import SETTLEMENT_POLICY_VERSION_V3
 from research.clock_models.wander_provider import WANDER_POLICY_VERSION
 
@@ -42,10 +42,19 @@ def recorded(count=40, spacing=10_000_000, delivery=50_000):
     return accepted, live, receipts, requests
 
 
-def run_mode(mode, **kwargs):
+def run_mode(mode, break_last=False, **kwargs):
     accepted, live, receipts, requests = recorded(**kwargs)
     data = dict(qpc_hz=HZ, records=[], requests=requests, identity=dict(folder='synthetic', session='synthetic'))
-    screened = Screen(tuple(accepted), (), 0, 0, 0, Fraction(len(accepted)), Fraction(0), ())
+    rejected, breaks = (), ()
+    if break_last:  # the final report goes backwards: screening closes the accepted segment there
+        bad = accepted.pop()
+        bad = Sample(bad.sequence, 100, 0, bad.lower_qpc, bad.upper_qpc)
+        rejected = (('suspected_tsf_discontinuity', bad),)
+        breaks = (ContinuityBreak(accepted[-1].sequence, bad.sequence, accepted[-1].tsf_us, bad.tsf_us,
+                                  bad.lower_qpc),)
+    screened = Screen(tuple(accepted), tuple((s.sequence, r) for r, s in rejected), 0, 0, 0,
+                      Fraction(len(accepted)), Fraction(0), rejected, continuity_closed=bool(breaks),
+                      continuity_breaks=breaks)
     with tempfile.TemporaryDirectory() as directory, \
             patch('research.clock_models.replay_causal_provider.load_run', return_value=data), \
             patch('research.clock_models.replay_causal_provider.screen', return_value=screened), \
@@ -114,6 +123,85 @@ class ReplayWanderTests(unittest.TestCase):
             self.assertGreater(seq, cutover_qpc // 10_000_000, 'Violations should be after cutover sample')
         # Guaranteed provider should never go invalid despite rate step
         self.assertEqual(result['guaranteed_states'].get('invalid', 0), 0, 'Guaranteed provider should not invalidate')
+
+
+class WanderContinuityTests(unittest.TestCase):
+    def test_continuity_break_reaches_both_wander_layers_at_the_causal_boundary(self):
+        causal, wander = run_mode('causal-v3', break_last=True), run_mode('wander', break_last=True)['wander']
+        self.assertIn('invalid', wander['guaranteed_states'])
+        self.assertIn('invalid', wander['model_states'])
+        known_at = causal['continuity_diagnostics'][0]['available_qpc']
+        self.assertEqual(wander['continuity_invalidations'][0]['available_qpc'], known_at)
+        start, step = HZ, HZ // 10
+        end = 40 * HZ + LISTEN_TIMEOUT_S * HZ
+        queries = list(range(start, end, step))
+        invalid = [q for q in queries if q >= known_at]
+        self.assertEqual(wander['queries'], len(queries))
+        self.assertEqual(wander['guaranteed_states']['invalid'], len(invalid))
+        self.assertEqual(wander['model_states']['invalid'], len(invalid))
+        # The invalid time starts at the same grid boundary as causal-v3's invalid duration.
+        self.assertEqual(Fraction(causal['durations_ticks']['invalid']), end - known_at)
+        # No width is recorded for post-boundary queries: the sum of non-invalid states bounds them.
+        before = len(queries) - len(invalid)
+        recorded_states = sum(n for state, n in wander['guaranteed_states'].items() if state != 'invalid')
+        self.assertEqual(recorded_states, before)
+
+    def test_no_holdout_checks_after_invalidation(self):
+        items = available(30)
+        flagged = dict(sequence=10, available_qpc=items[10].available_qpc)
+        plain = replay_wander(items, HZ, items[0].lower_qpc, items[-1].available_qpc + HZ, wander_ppm=2)
+        broken = replay_wander(items, HZ, items[0].lower_qpc, items[-1].available_qpc + HZ, wander_ppm=2,
+                               continuity=[flagged])
+        self.assertLess(broken['holdout_checked'], plain['holdout_checked'])
+        self.assertEqual(broken['holdout_checked'], 5)
+        self.assertEqual(broken['continuity_invalidations'], [flagged])
+
+    def test_diagnostic_precedes_a_sample_with_equal_availability(self):
+        items = available(30)
+        tie = dict(sequence=10, available_qpc=items[10].available_qpc)
+        result = replay_wander(items, HZ, items[0].lower_qpc, items[-1].available_qpc + HZ, wander_ppm=2,
+                               continuity=[tie])
+        self.assertEqual(result['holdout_checked'], 5)  # samples 0..9 ingested; the model fits from 5 samples
+
+    def test_no_continuity_means_no_invalid_state(self):
+        items = available(30)
+        result = replay_wander(items, HZ, items[0].lower_qpc, items[-1].available_qpc, wander_ppm=2)
+        self.assertNotIn('invalid', result['guaranteed_states'])
+        self.assertEqual(result['continuity_invalidations'], [])
+        self.assertEqual(result['late_history_skipped'], [])
+
+
+class WanderHistoryTests(unittest.TestCase):
+    def delivered(self, late=None, tie=False):
+        out = []
+        for i in range(1, 10):
+            avail = i * HZ + 2_541
+            if i == 6 and late:
+                avail = 7 * HZ + 2_541 + (0 if tie else 1_000)
+            out.append(AvailableSample(i, tsf(i * HZ + 800), i * HZ, i * HZ + 2_540, avail))
+        return out
+
+    def test_reversed_delivery_skips_the_historical_sample_with_accounting(self):
+        items = self.delivered(late=True)
+        result = replay_wander(items, HZ, HZ, 12 * HZ, wander_ppm=2)
+        skipped = result['late_history_skipped']
+        self.assertEqual([s['sequence'] for s in skipped], [6])
+        self.assertEqual(skipped[0]['lower_qpc'], 6 * HZ)
+        self.assertEqual(skipped[0]['upper_qpc'], 6 * HZ + 2_540)
+        self.assertEqual(skipped[0]['available_qpc'], 7 * HZ + 2_541 + 1_000)
+        self.assertEqual(skipped[0]['last_ingested_capture_end_qpc'], 7 * HZ + 2_540)
+        full = replay_wander(self.delivered(), HZ, HZ, 12 * HZ, wander_ppm=2)
+        self.assertEqual(full['late_history_skipped'], [])
+        self.assertEqual(result['holdout_checked'], full['holdout_checked'] - 1)
+
+    def test_equal_availability_ties_keep_capture_order(self):
+        result = replay_wander(self.delivered(late=True, tie=True), HZ, HZ, 12 * HZ, wander_ppm=2)
+        self.assertEqual(result['late_history_skipped'], [])
+
+    def test_replay_run_wander_carries_accounting(self):
+        result = run_mode('wander')['wander']
+        self.assertEqual(result['late_history_skipped'], [])
+        self.assertEqual(result['continuity_invalidations'], [])
 
 
 if __name__ == '__main__':

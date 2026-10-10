@@ -19,7 +19,7 @@ from research.clock_models.analyze_bound_run import _lines, load_run
 from research.clock_models.replay_causal_provider import V3_MODES, arrival_map, replay_run
 from research.clock_models.sample_screen import screen
 
-ACCEPTANCE_VERSION = 'wht/sub-ms-acceptance-v1'
+ACCEPTANCE_VERSION = 'wht/sub-ms-acceptance-v2'
 CRITERIA = dict(
     guaranteed_live_coverage_min=0.995,   # causal-v3 coverage_review_interval (first to last sample availability)
     incompatible_max=0,                   # causal-v3 incompatible samples
@@ -48,7 +48,7 @@ def run_timing(folder: Path) -> dict:
     spacing = json.loads((folder / 'session.json').read_text(encoding='utf-8'))['Plan']['spacing_s']
     if not delivery or not gaps:
         raise ValueError('Run lacks delivery receipts or accepted gaps')
-    return dict(spacing_s=spacing, accepted=len(accepted), delivery_missing=len(accepted) - len(delivery),
+    return dict(completed=data['completed'], spacing_s=spacing, accepted=len(accepted), delivery_missing=len(accepted) - len(delivery),
                 delivery_s=dict(median=statistics.median(delivery), p99=_p(delivery, Fraction(99, 100)),
                                 max=max(delivery)),
                 accepted_gap_s=dict(median=statistics.median(gaps), max=max(gaps)))
@@ -67,12 +67,21 @@ def evaluate(replays: dict, timing: dict, criteria: dict = CRITERIA) -> dict:
         delivery_missing_max=timing['delivery_missing'],
         median_gap_ratio_max=timing['accepted_gap_s']['median'] / timing['spacing_s'],
     )
+    durations = causal['durations_ticks']
+    prerequisites = [dict(name=name, value=value, passed=passed) for name, value, passed in (
+        ('run_completed', timing['completed'], timing['completed'] is True),
+        ('whole_recording_continuity_eligible', causal['whole_recording_continuity_eligible'],
+         causal['whole_recording_continuity_eligible'] is True),
+        ('no_continuity_invalidations', causal['continuity_invalidations'],
+         len(causal['continuity_invalidations']) == 0),
+        ('no_invalid_time', durations['invalid'], Fraction(durations['invalid']) == 0))]
     checks = []
     for name, limit in criteria.items():
         value = observed[name]
         passed = value is not None and (value >= limit if name.endswith('_min') else value <= limit)
         checks.append(dict(name=name, value=value, limit=limit, passed=passed))
-    return dict(schema=ACCEPTANCE_VERSION, passed=all(c['passed'] for c in checks), checks=checks,
+    return dict(schema=ACCEPTANCE_VERSION, passed=all(c['passed'] for c in prerequisites + checks),
+                prerequisites=prerequisites, checks=checks,
                 scope='conditional research evidence under the declared v3 assumptions; not AP/UTC calibration')
 
 

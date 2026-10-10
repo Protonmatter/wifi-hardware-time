@@ -198,6 +198,42 @@ def _revision() -> dict:
         return dict(commit=None, research_tree_modified=None)
 
 
+def _availability_events(result, accepted, mode: str, delay_seen: dict[int, int], completed: dict[int, int]):
+    """Accepted, rejected and continuity events with their availability, plus uncheckable rejections.
+
+    A continuity diagnostic is known once both compared observations are available.
+    """
+    events = [('accepted', None, AvailableSample(s.sequence, s.tsf_us, s.lower_qpc, s.upper_qpc,
+                                                  availability(s, mode, delay_seen, completed))) for s in accepted]
+    rejected_uncheckable = []
+    for reason, s in result.rejected_samples:
+        try:
+            events.append(('rejected', reason, AvailableSample(s.sequence, s.tsf_us, s.lower_qpc, s.upper_qpc,
+                                                               availability(s, mode, delay_seen, completed))))
+        except (ValueError, KeyError) as error:
+            if reason == 'suspected_tsf_discontinuity':
+                raise ValueError(f'Cannot determine continuity break availability for sample {s.sequence}: {error}') from error
+            rejected_uncheckable.append(dict(sequence=s.sequence, reason=reason,
+                                             error=f'{type(error).__name__}: {error}'))
+    # The backward comparison needs both observations. Keep rejection receipts
+    # unchanged, and publish a separate diagnostic event once both are available.
+    available_items = {item.sequence: item for _, _, item in events}
+    continuity_diagnostics = []
+    for diagnostic in result.continuity_breaks:
+        try:
+            previous, current = (available_items[diagnostic.previous_sequence], available_items[diagnostic.sequence])
+        except KeyError as error:
+            raise ValueError(f'Cannot determine continuity break availability for sample {diagnostic.sequence}') from error
+        known_at = max(previous.available_qpc, current.available_qpc)
+        continuity_diagnostics.append(dict(sequence=current.sequence, previous_sequence=previous.sequence,
+                                           sample_available_qpc=current.available_qpc,
+                                           previous_available_qpc=previous.available_qpc, available_qpc=known_at))
+        events.append(('continuity', 'suspected_tsf_discontinuity',
+                       AvailableSample(current.sequence, current.tsf_us, current.lower_qpc,
+                                       current.upper_qpc, known_at)))
+    return events, rejected_uncheckable, continuity_diagnostics
+
+
 def replay_run(folder: Path, mode: str) -> dict:
     data = load_run(folder)
     hz = data['qpc_hz']
@@ -241,7 +277,9 @@ def replay_run(folder: Path, mode: str) -> dict:
             return meta
         start = data['requests'][0].lower_qpc
         end = data['requests'][-1].lower_qpc + LISTEN_TIMEOUT_S * hz
-        meta.update(wander=replay_wander(items, hz, start, end, wander_ppm=WANDER_PPM, jump_us=DEFAULT_JUMP_US))
+        _, _, diagnostics = _availability_events(result, accepted, 'causal-arrival', delay_seen, completed)
+        meta.update(wander=replay_wander(items, hz, start, end, wander_ppm=WANDER_PPM, jump_us=DEFAULT_JUMP_US,
+                                         continuity=diagnostics))
         return meta
     if mode == 'settle':
         delay_seen = arrival_map(_lines(folder / 'live-observer.jsonl'))
@@ -269,34 +307,8 @@ def replay_run(folder: Path, mode: str) -> dict:
     jump_us = DEFAULT_JUMP_US if mode == 'causal-v3' else 0
     mode = 'causal-arrival' if mode == 'causal-v3' else mode
     delay_seen = arrival_map(_lines(folder / 'live-observer.jsonl')) if mode == 'causal-arrival' else {}
-    events = [('accepted', None, AvailableSample(s.sequence, s.tsf_us, s.lower_qpc, s.upper_qpc,
-                                                  availability(s, mode, delay_seen, completed))) for s in accepted]
-    rejected_uncheckable = []
-    for reason, s in result.rejected_samples:
-        try:
-            events.append(('rejected', reason, AvailableSample(s.sequence, s.tsf_us, s.lower_qpc, s.upper_qpc,
-                                                               availability(s, mode, delay_seen, completed))))
-        except (ValueError, KeyError) as error:
-            if reason == 'suspected_tsf_discontinuity':
-                raise ValueError(f'Cannot determine continuity break availability for sample {s.sequence}: {error}') from error
-            rejected_uncheckable.append(dict(sequence=s.sequence, reason=reason,
-                                             error=f'{type(error).__name__}: {error}'))
-    # The backward comparison needs both observations. Keep rejection receipts
-    # unchanged, and publish a separate diagnostic event once both are available.
-    available_items = {item.sequence: item for _, _, item in events}
-    continuity_diagnostics = []
-    for diagnostic in result.continuity_breaks:
-        try:
-            previous, current = (available_items[diagnostic.previous_sequence], available_items[diagnostic.sequence])
-        except KeyError as error:
-            raise ValueError(f'Cannot determine continuity break availability for sample {diagnostic.sequence}') from error
-        known_at = max(previous.available_qpc, current.available_qpc)
-        continuity_diagnostics.append(dict(sequence=current.sequence, previous_sequence=previous.sequence,
-                                           sample_available_qpc=current.available_qpc,
-                                           previous_available_qpc=previous.available_qpc, available_qpc=known_at))
-        events.append(('continuity', 'suspected_tsf_discontinuity',
-                       AvailableSample(current.sequence, current.tsf_us, current.lower_qpc,
-                                       current.upper_qpc, known_at)))
+    events, rejected_uncheckable, continuity_diagnostics = _availability_events(
+        result, accepted, mode, delay_seen, completed)
     meta['continuity_diagnostics'] = continuity_diagnostics
     start = data['requests'][0].lower_qpc
     end = data['requests'][-1].lower_qpc + LISTEN_TIMEOUT_S * hz

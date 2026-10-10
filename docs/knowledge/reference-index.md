@@ -10,7 +10,7 @@ Find the calls, file names, terms and short strings recorded in this research. T
 
 ## Search
 
-Indexed **386 source files** and **11642 distinct terms**.
+Indexed **386 source files** and **11682 distinct terms**.
 
 The [JSON index](research-index.json) includes Python definitions/calls, C/Java/PowerShell call-shaped tokens, authored short strings and Markdown code terms. Vendor binaries, local artifacts, historical reproduction sources and generated indexes are excluded. Unresolved call-shaped tokens are explicitly labeled.
 
@@ -52,7 +52,7 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [docs/acquisition/private-timing-acquisition-plan.md](../../docs/acquisition/private-timing-acquisition-plan.md) | `7eabec8e5ec0` |
 | [docs/acquisition/scan-comparison-plan.md](../../docs/acquisition/scan-comparison-plan.md) | `90547a7f4bca` |
 | [docs/acquisition/scan-tsf-results-2026-10-03.md](../../docs/acquisition/scan-tsf-results-2026-10-03.md) | `29b23a5218fd` |
-| [docs/acquisition/sub-millisecond-qualification-2026-10-10.md](../../docs/acquisition/sub-millisecond-qualification-2026-10-10.md) | `06e7f2b38bef` |
+| [docs/acquisition/sub-millisecond-qualification-2026-10-10.md](../../docs/acquisition/sub-millisecond-qualification-2026-10-10.md) | `eb68daa6b637` |
 | [docs/acquisition/timing-qualification-validation-2026-10-04.md](../../docs/acquisition/timing-qualification-validation-2026-10-04.md) | `33ef0ae878ef` |
 | [docs/acquisition/tsf-host-bound-methodology.md](../../docs/acquisition/tsf-host-bound-methodology.md) | `8e8b5f746170` |
 | [docs/acquisition/tsf-host-bound-results.md](../../docs/acquisition/tsf-host-bound-results.md) | `60796d255e52` |
@@ -92,7 +92,7 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [docs/clock-models/qualcomm-observation-matrix.md](../../docs/clock-models/qualcomm-observation-matrix.md) | `06f1f2683f14` |
 | [docs/clock-models/settled-timestamps.md](../../docs/clock-models/settled-timestamps.md) | `cd90407411e3` |
 | [docs/clock-models/tsf-host-bound-preview.md](../../docs/clock-models/tsf-host-bound-preview.md) | `db4e8fe96e46` |
-| [docs/clock-models/tsf-mathematics.md](../../docs/clock-models/tsf-mathematics.md) | `a3397b58e2c4` |
+| [docs/clock-models/tsf-mathematics.md](../../docs/clock-models/tsf-mathematics.md) | `c2711a991723` |
 | [docs/evidence/README.md](../../docs/evidence/README.md) | `161943ce7f58` |
 | [docs/evidence/api-direction.md](../../docs/evidence/api-direction.md) | `1d9d47796e48` |
 | [docs/evidence/complete-event-hardware-handoff.md](../../docs/evidence/complete-event-hardware-handoff.md) | `19c1959121a2` |
@@ -242,12 +242,12 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [research/clock_models/bracket_bound.py](../../research/clock_models/bracket_bound.py) | `eccb6370fe8c` |
 | [research/clock_models/causal_provider.py](../../research/clock_models/causal_provider.py) | `3d9b56e201c8` |
 | [research/clock_models/rate_bound.py](../../research/clock_models/rate_bound.py) | `01dec62e9bfe` |
-| [research/clock_models/replay_causal_provider.py](../../research/clock_models/replay_causal_provider.py) | `80c7ff422883` |
-| [research/clock_models/replay_wander.py](../../research/clock_models/replay_wander.py) | `dbfdb1f6e548` |
+| [research/clock_models/replay_causal_provider.py](../../research/clock_models/replay_causal_provider.py) | `f1ce6975cd10` |
+| [research/clock_models/replay_wander.py](../../research/clock_models/replay_wander.py) | `dc9005b998ae` |
 | [research/clock_models/sample_screen.py](../../research/clock_models/sample_screen.py) | `69d0fa54c361` |
 | [research/clock_models/settle.py](../../research/clock_models/settle.py) | `73a3b4d2dde8` |
 | [research/clock_models/soc_domain_test.py](../../research/clock_models/soc_domain_test.py) | `8d105806ba47` |
-| [research/clock_models/sub_ms_acceptance.py](../../research/clock_models/sub_ms_acceptance.py) | `4291c4f2c9b7` |
+| [research/clock_models/sub_ms_acceptance.py](../../research/clock_models/sub_ms_acceptance.py) | `e053b9f23a20` |
 | [research/clock_models/wander_provider.py](../../research/clock_models/wander_provider.py) | `f7689cf8f4e3` |
 | [research/evidence/README.md](../../research/evidence/README.md) | `e82d343acea5` |
 | [research/evidence/Update-ResearchKnowledge.ps1](../../research/evidence/Update-ResearchKnowledge.ps1) | `4547d8e08593` |
@@ -390,7 +390,7 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [tests/test_raw_event_broker.py](../../tests/test_raw_event_broker.py) | `cc1ae80f9d63` |
 | [tests/test_read_tsf_evidence.py](../../tests/test_read_tsf_evidence.py) | `c0ea33b069f1` |
 | [tests/test_replay_causal_provider.py](../../tests/test_replay_causal_provider.py) | `ccc695b34338` |
-| [tests/test_replay_v3.py](../../tests/test_replay_v3.py) | `8666f11d739b` |
+| [tests/test_replay_v3.py](../../tests/test_replay_v3.py) | `42bac67c4a52` |
 | [tests/test_report_wait.py](../../tests/test_report_wait.py) | `7e8305c193af` |
 | [tests/test_research_layout.py](../../tests/test_research_layout.py) | `6cc62e5d0625` |
 | [tests/test_ring_publication_model.py](../../tests/test_ring_publication_model.py) | `9a6fcec1e071` |
@@ -405,7 +405,7 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [tests/test_source_record.py](../../tests/test_source_record.py) | `86754567b493` |
 | [tests/test_static_inspection.py](../../tests/test_static_inspection.py) | `54ff3c879dab` |
 | [tests/test_studio_previews.py](../../tests/test_studio_previews.py) | `dcc96e96e7db` |
-| [tests/test_sub_ms_acceptance.py](../../tests/test_sub_ms_acceptance.py) | `06e8f412af57` |
+| [tests/test_sub_ms_acceptance.py](../../tests/test_sub_ms_acceptance.py) | `72002c194584` |
 | [tests/test_timing_boundaries.py](../../tests/test_timing_boundaries.py) | `facac334de65` |
 | [tests/test_trace_bytes.py](../../tests/test_trace_bytes.py) | `24fdc154dbe6` |
 | [tests/test_trace_export_output.py](../../tests/test_trace_export_output.py) | `d6b221723a6c` |
