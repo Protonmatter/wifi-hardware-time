@@ -9,6 +9,27 @@ from __future__ import annotations
 from fractions import Fraction
 
 US_PER_S = 1_000_000
+TU_US = 1_024  # 802.11 time unit
+
+
+def beacon_jump_allowance_us(beacon_interval_tu: int = 100, beacon_intervals: int = 6,
+                             relative_ppm: int = 40) -> int:
+    """Declared pairwise phase-jump allowance from station adoption of AP beacon timestamps.
+
+    Between adoptions the station TSF free-runs; its drift from the AP trajectory over
+    beacon_intervals beacon periods at relative_ppm is the largest correction one
+    adoption can apply. Defaults: 100 TU beacons, six periods without an adopted beacon
+    (power-save/DTIM listening), and two 20-ppm OFDM oscillators. A declared prior,
+    not a measurement; the result is rounded up to whole microseconds.
+    """
+    values = (beacon_interval_tu, beacon_intervals, relative_ppm)
+    if any(type(v) is not int or v <= 0 for v in values):
+        raise ValueError('Beacon jump parameters must be positive integers')
+    drift = Fraction(beacon_interval_tu * TU_US * beacon_intervals * relative_ppm, US_PER_S)
+    return -(-drift.numerator // drift.denominator)
+
+
+DEFAULT_JUMP_US = beacon_jump_allowance_us()
 
 
 def rate_limits(qpc_hz: int, rate_prior_ppm: int = 200) -> tuple[Fraction, Fraction]:
@@ -21,13 +42,24 @@ def rate_limits(qpc_hz: int, rate_prior_ppm: int = 200) -> tuple[Fraction, Fract
     return (nominal * (US_PER_S - rate_prior_ppm) / US_PER_S, nominal * (US_PER_S + rate_prior_ppm) / US_PER_S)
 
 
-def envelope(tsf_us: int, lower_qpc: int, upper_qpc: int, query_qpc, limits: tuple[Fraction, Fraction]):
-    """TSF interval at query_qpc implied by one sample alone (capture anywhere in its widened window)."""
+def check_jump(jump_us) -> None:
+    if type(jump_us) not in (int, Fraction) or jump_us < 0:
+        raise ValueError('Phase-jump allowance must be a non-negative int or Fraction')
+
+
+def envelope(tsf_us: int, lower_qpc: int, upper_qpc: int, query_qpc, limits: tuple[Fraction, Fraction],
+             jump_us=0):
+    """TSF interval at query_qpc implied by one sample alone (capture anywhere in its widened window).
+
+    jump_us widens both sides for a bounded pairwise phase jump, such as station TSF
+    adoption of the access point's beacon timestamp; 0 keeps the historical envelope.
+    """
+    check_jump(jump_us)
     a, b = limits
     toward_low = query_qpc - (upper_qpc + 1)  # latest possible capture gives the lowest value later
     toward_high = query_qpc - lower_qpc       # earliest possible capture gives the highest value later
-    low = tsf_us + (a if toward_low >= 0 else b) * toward_low
-    high = tsf_us + 1 + (b if toward_high >= 0 else a) * toward_high
+    low = tsf_us - jump_us + (a if toward_low >= 0 else b) * toward_low
+    high = tsf_us + 1 + jump_us + (b if toward_high >= 0 else a) * toward_high
     return low, high
 
 

@@ -10,7 +10,7 @@ Find the calls, file names, terms and short strings recorded in this research. T
 
 ## Search
 
-Indexed **370 source files** and **11334 distinct terms**.
+Indexed **371 source files** and **11347 distinct terms**.
 
 The [JSON index](research-index.json) includes Python definitions/calls, C/Java/PowerShell call-shaped tokens, authored short strings and Markdown code terms. Vendor binaries, local artifacts, historical reproduction sources and generated indexes are excluded. Unresolved call-shaped tokens are explicitly labeled.
 
@@ -236,9 +236,9 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [research/clock_models/analyze_clock_pairing_hypothesis.py](../../research/clock_models/analyze_clock_pairing_hypothesis.py) | `4042e4bbaad5` |
 | [research/clock_models/analyze_observation_quality.py](../../research/clock_models/analyze_observation_quality.py) | `eb5263987e77` |
 | [research/clock_models/beacon_consistency.py](../../research/clock_models/beacon_consistency.py) | `ecee7ff91357` |
-| [research/clock_models/bracket_bound.py](../../research/clock_models/bracket_bound.py) | `c8b07e06adcc` |
-| [research/clock_models/causal_provider.py](../../research/clock_models/causal_provider.py) | `472b4fcc2b46` |
-| [research/clock_models/rate_bound.py](../../research/clock_models/rate_bound.py) | `cf4ec7326cef` |
+| [research/clock_models/bracket_bound.py](../../research/clock_models/bracket_bound.py) | `eccb6370fe8c` |
+| [research/clock_models/causal_provider.py](../../research/clock_models/causal_provider.py) | `3d9b56e201c8` |
+| [research/clock_models/rate_bound.py](../../research/clock_models/rate_bound.py) | `01dec62e9bfe` |
 | [research/clock_models/replay_causal_provider.py](../../research/clock_models/replay_causal_provider.py) | `9ba06be3ee89` |
 | [research/clock_models/sample_screen.py](../../research/clock_models/sample_screen.py) | `69d0fa54c361` |
 | [research/clock_models/settle.py](../../research/clock_models/settle.py) | `ddec0f387764` |
@@ -370,6 +370,7 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [tests/test_passive_observation.py](../../tests/test_passive_observation.py) | `e737a27dbc7c` |
 | [tests/test_persistent_controller.py](../../tests/test_persistent_controller.py) | `4c35a2c414d4` |
 | [tests/test_persistent_receipts.py](../../tests/test_persistent_receipts.py) | `0f898accb1b6` |
+| [tests/test_phase_jump.py](../../tests/test_phase_jump.py) | `61d93a202fb8` |
 | [tests/test_private_export_routes.py](../../tests/test_private_export_routes.py) | `72cf687fa2bb` |
 | [tests/test_qik_inventory.py](../../tests/test_qik_inventory.py) | `e14b563d2cb6` |
 | [tests/test_qualcomm_protocol.py](../../tests/test_qualcomm_protocol.py) | `dcf25de3126f` |
