@@ -1,3 +1,4 @@
+import inspect
 import sys
 from pathlib import Path
 # Resolve repository packages when this file is used as a direct CLI.
@@ -204,12 +205,34 @@ class WanderHistoryTests(unittest.TestCase):
         self.assertEqual(result['continuity_invalidations'], [])
 
 
+class ReplaySignatureCompatibilityTests(unittest.TestCase):
+    def test_historical_positional_call_still_binds_rate_prior_and_threshold(self):
+        events = [('accepted', None, s) for s in available(count=10)]
+        review = (events[0][2].available_qpc, events[-1][2].available_qpc)
+        start, end = 1_000_000, 100_000_000
+        positional = replay(events, HZ, start, end, review, 100, 500)
+        keyword = replay(events, HZ, start, end, review_interval=review, rate_prior_ppm=100, threshold_us=500)
+        self.assertEqual(positional['rate_prior_ppm'], 100)
+        self.assertEqual(positional['threshold_us'], 500)
+        self.assertEqual(positional, keyword)
+
+    def test_request_interval_is_keyword_only(self):
+        params = inspect.signature(replay).parameters
+        self.assertIs(params['request_interval'].kind, inspect.Parameter.KEYWORD_ONLY)
+
+    def test_positional_parameter_order_is_stable(self):
+        positional = [name for name, p in inspect.signature(replay).parameters.items()
+                      if p.kind is inspect.Parameter.POSITIONAL_OR_KEYWORD]
+        self.assertEqual(positional, ['events', 'qpc_hz', 'start', 'end', 'review_interval',
+                                      'rate_prior_ppm', 'threshold_us', 'jump_us'])
+
+
 class RequestIntervalCoverageTests(unittest.TestCase):
     def coverage(self, end, request_interval):
         samples = [AvailableSample(i, tsf(i * HZ + 800), i * HZ, i * HZ + 2_540, i * HZ + 2_541) for i in range(1, 11)]
         events = [('accepted', None, s) for s in samples]
         return replay(events, HZ, HZ, end, (samples[0].available_qpc, samples[-1].available_qpc),
-                      request_interval)
+                      request_interval=request_interval)
 
     def test_stale_tail_before_the_last_request_counts_and_later_time_is_excluded(self):
         short = self.coverage(30 * HZ, (HZ, 30 * HZ))
