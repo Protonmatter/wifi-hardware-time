@@ -93,6 +93,28 @@ class ReplayWanderTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             replay_wander(items, HZ, 5, 5, wander_ppm=2)
 
+    def test_holdout_violations_surface_in_replay_on_rate_step(self):
+        cutover_qpc = 400_000_000
+        fast_rate = Fraction(1_000_187, 1_000_000)  # +187 ppm: inside the 200-ppm prior
+        def step_tsf(qpc):
+            if qpc < cutover_qpc:
+                return int(Fraction(9_000_000_000) + Fraction(qpc, 10) * Fraction(1_000_037, 1_000_000))
+            else:
+                at_cutover = int(Fraction(9_000_000_000) + Fraction(cutover_qpc, 10) * Fraction(1_000_037, 1_000_000))
+                return at_cutover + int(fast_rate * (qpc - cutover_qpc) // 10)
+        items = []
+        for i in range(60):
+            lower = 1_000_000 + i * 10_000_000
+            items.append(AvailableSample(i, step_tsf(lower + 2_540 // 3), lower, lower + 2_540, lower + 2_540 + 40_000))
+        result = replay_wander(items, HZ, items[0].lower_qpc, items[-1].available_qpc, wander_ppm=1, jump_us=0)
+        self.assertGreater(result['holdout_violations'], 0, 'Expected violations with wander_ppm=1 on rate step')
+        self.assertTrue(len(result['holdout_violation_sequences']) > 0, 'Violations should be non-empty')
+        # All violations should come from samples after the cutover
+        for seq in result['holdout_violation_sequences']:
+            self.assertGreater(seq, cutover_qpc // 10_000_000, 'Violations should be after cutover sample')
+        # Guaranteed provider should never go invalid despite rate step
+        self.assertEqual(result['guaranteed_states'].get('invalid', 0), 0, 'Guaranteed provider should not invalidate')
+
 
 if __name__ == '__main__':
     unittest.main()

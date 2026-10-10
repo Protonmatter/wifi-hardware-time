@@ -10,7 +10,7 @@ Find the calls, file names, terms and short strings recorded in this research. T
 
 ## Search
 
-Indexed **376 source files** and **11413 distinct terms**.
+Indexed **376 source files** and **11421 distinct terms**.
 
 The [JSON index](research-index.json) includes Python definitions/calls, C/Java/PowerShell call-shaped tokens, authored short strings and Markdown code terms. Vendor binaries, local artifacts, historical reproduction sources and generated indexes are excluded. Unresolved call-shaped tokens are explicitly labeled.
 
@@ -382,7 +382,7 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [tests/test_raw_event_broker.py](../../tests/test_raw_event_broker.py) | `cc1ae80f9d63` |
 | [tests/test_read_tsf_evidence.py](../../tests/test_read_tsf_evidence.py) | `c0ea33b069f1` |
 | [tests/test_replay_causal_provider.py](../../tests/test_replay_causal_provider.py) | `ccc695b34338` |
-| [tests/test_replay_v3.py](../../tests/test_replay_v3.py) | `22371732f677` |
+| [tests/test_replay_v3.py](../../tests/test_replay_v3.py) | `8666f11d739b` |
 | [tests/test_research_layout.py](../../tests/test_research_layout.py) | `6cc62e5d0625` |
 | [tests/test_ring_publication_model.py](../../tests/test_ring_publication_model.py) | `9a6fcec1e071` |
 | [tests/test_sample_screen.py](../../tests/test_sample_screen.py) | `eddc2c70f943` |
