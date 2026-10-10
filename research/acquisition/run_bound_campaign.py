@@ -28,6 +28,7 @@ import uuid
 from research.acquisition.campaign_admission import Admission, transition
 from research.acquisition.campaign_gate import ReportGate
 from research.acquisition.persistent_sampler import record_quarantine
+from research.acquisition.report_wait import wait_for_report
 from research.clock_models.sample_screen import LISTEN_TIMEOUT_S, MAX_WINDOW_US, TIMING_KINDS
 
 MARKER_NAME = 'bound-campaign-quarantine.json'
@@ -349,6 +350,8 @@ def parse(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument('--duration-s', type=int, default=3600)
     parser.add_argument('--sampler', choices=('per-request', 'persistent'), default='per-request')
     parser.add_argument('--spacing-s', type=float, default=None)
+    parser.add_argument('--etw-flush', action='store_true',
+                        help='Persistent only: flush the trace session after each completion to deliver reports')
     parser.add_argument('--execute', action='store_true', help='Send private requests; default is preview only')
     parser.add_argument('--workload', nargs=3, metavar=('STOP', 'OUTPUT', 'SECONDS'), help=argparse.SUPPRESS)
     args = parser.parse_args(argv)
@@ -361,7 +364,17 @@ def parse(argv: list[str] | None = None) -> argparse.Namespace:
             parser.error('--duration-s must be 60 to 3600')
         if not 0.5 <= args.spacing_s <= 60:
             parser.error('--spacing-s must be 0.5 to 60')
+        if args.etw_flush and args.sampler != 'persistent':
+            parser.error('--etw-flush requires --sampler persistent')
     return args
+
+
+def sampler_plan(args: argparse.Namespace) -> dict:
+    """Plan fields that change acquisition behavior; recorded before any request."""
+    if args.sampler != 'persistent':
+        return {}
+    return dict(sampler='persistent', identity_every=None, identity_every_s=30, report_wait_retained=True,
+                etw_flush_after_completion=args.etw_flush)
 
 
 def campaign(args: argparse.Namespace) -> int:
@@ -377,8 +390,7 @@ def campaign(args: argparse.Namespace) -> int:
     plan = dict(condition=args.condition, duration_s=args.duration_s, spacing_s=args.spacing_s, action=4,
                 provider=PROVIDER, trace_cap_bytes=TRACE_CAP_BYTES, identity_every=IDENTITY_EVERY,
                 beacon_every_s=BEACON_EVERY_S, own_loss_limit=OWN_LOSS_LIMIT, marker=str(marker))
-    if args.sampler == 'persistent':
-        plan.update(sampler='persistent', identity_every=None, identity_every_s=30, report_wait_retained=True)
+    plan.update(sampler_plan(args))
     if not args.execute:
         print(json.dumps(dict(preview=True, plan=plan, adapter_status=baseline['Status'],
                               driver_version=baseline['DriverVersion']), indent=2))
@@ -436,6 +448,10 @@ def _execute(args: argparse.Namespace, clock, baseline: dict, plan: dict, marker
                                        in_progress_path(ROOT / 'artifacts', baseline['InterfaceGuid']),
                                        clock, observer, gate)
             sampler.start()
+        flusher = None
+        if persistent and args.etw_flush:
+            from research.acquisition.etw_flush import TraceFlusher
+            flusher = TraceFlusher(session, clock.now, live=True)
         reader = BssReader(baseline['InterfaceGuid'])
         if args.condition == 'load':
             worker = subprocess.Popen([sys.executable, __file__, '--workload', str(folder / 'workload-stop'),
@@ -496,13 +512,16 @@ def _execute(args: argparse.Namespace, clock, baseline: dict, plan: dict, marker
                 requests_file.write(json.dumps(receipt) + '\n')
                 requests_file.flush()
                 receipts.append(receipt)
-                listen_end = time.monotonic() + LISTEN_TIMEOUT_S
                 listen_started_qpc = clock.now() if persistent else None
-                while not gate.report_after(receipt['qpc_request_before']) and time.monotonic() < listen_end:
+
+                def pump() -> None:
                     if persistent:
                         sampler.pulse()
                     observer.pump(gate)
-                    time.sleep(0.005)
+                flushes = wait_for_report(lambda: gate.report_after(receipt['qpc_request_before']), pump=pump,
+                                          monotonic=time.monotonic, sleep=time.sleep,
+                                          flush=flusher.flush if flusher is not None else None,
+                                          listen_s=LISTEN_TIMEOUT_S)
                 if not gate.report_in_window(receipt['qpc_request_before'], clock.frequency):
                     losses += 1
                 if loss_budget_exceeded(losses, number):
@@ -518,7 +537,7 @@ def _execute(args: argparse.Namespace, clock, baseline: dict, plan: dict, marker
                         report_wait_started_qpc=listen_started_qpc, report_wait_finished_qpc=clock.now(),
                         identity_checked=checked_identity, identity_started_qpc=identity_started,
                         identity_finished_qpc=identity_finished, slot_identity_checks=slot_identity_checks,
-                        processing_finished_qpc=clock.now(),
+                        processing_finished_qpc=clock.now(), etw_flushes=flushes,
                         actual_spacing_s=((receipt['qpc_request_before'] - previous_submission) / clock.frequency
                                           if previous_submission is not None else None))) + '\n')
                     schedule_file.flush()

@@ -10,7 +10,7 @@ Find the calls, file names, terms and short strings recorded in this research. T
 
 ## Search
 
-Indexed **378 source files** and **11457 distinct terms**.
+Indexed **381 source files** and **11479 distinct terms**.
 
 The [JSON index](research-index.json) includes Python definitions/calls, C/Java/PowerShell call-shaped tokens, authored short strings and Markdown code terms. Vendor binaries, local artifacts, historical reproduction sources and generated indexes are excluded. Unresolved call-shaped tokens are explicitly labeled.
 
@@ -204,8 +204,9 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [research/acquisition/observation_lifecycle.py](../../research/acquisition/observation_lifecycle.py) | `38c030610f30` |
 | [research/acquisition/persistent_sampler.py](../../research/acquisition/persistent_sampler.py) | `c67edf09902a` |
 | [research/acquisition/quts-registry.wprp](../../research/acquisition/quts-registry.wprp) | `1fc7a009f62c` |
+| [research/acquisition/report_wait.py](../../research/acquisition/report_wait.py) | `dae926956628` |
 | [research/acquisition/run_acquisition_campaign.py](../../research/acquisition/run_acquisition_campaign.py) | `a3f08e3774f0` |
-| [research/acquisition/run_bound_campaign.py](../../research/acquisition/run_bound_campaign.py) | `7e95e0814ee5` |
+| [research/acquisition/run_bound_campaign.py](../../research/acquisition/run_bound_campaign.py) | `05c34967e44f` |
 | [research/acquisition/run_passive_observation.py](../../research/acquisition/run_passive_observation.py) | `73f59f63c534` |
 | [research/acquisition/run_scan_comparison.py](../../research/acquisition/run_scan_comparison.py) | `d9d4a3596ed5` |
 | [research/acquisition/wifi-path.wprp](../../research/acquisition/wifi-path.wprp) | `f04eb0db9934` |
@@ -342,6 +343,7 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [tests/test_bracket_bound.py](../../tests/test_bracket_bound.py) | `ea61de1d279f` |
 | [tests/test_bss_reader.py](../../tests/test_bss_reader.py) | `a5dcf05d5293` |
 | [tests/test_campaign_controller.py](../../tests/test_campaign_controller.py) | `4a67efa7608b` |
+| [tests/test_campaign_flush.py](../../tests/test_campaign_flush.py) | `101e9d183682` |
 | [tests/test_campaign_gate.py](../../tests/test_campaign_gate.py) | `d7590b368736` |
 | [tests/test_causal_provider.py](../../tests/test_causal_provider.py) | `e03efebccf80` |
 | [tests/test_clock_pairing_hypothesis.py](../../tests/test_clock_pairing_hypothesis.py) | `3576e1bfb79b` |
@@ -385,6 +387,7 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [tests/test_read_tsf_evidence.py](../../tests/test_read_tsf_evidence.py) | `c0ea33b069f1` |
 | [tests/test_replay_causal_provider.py](../../tests/test_replay_causal_provider.py) | `ccc695b34338` |
 | [tests/test_replay_v3.py](../../tests/test_replay_v3.py) | `8666f11d739b` |
+| [tests/test_report_wait.py](../../tests/test_report_wait.py) | `07c3e142a26f` |
 | [tests/test_research_layout.py](../../tests/test_research_layout.py) | `6cc62e5d0625` |
 | [tests/test_ring_publication_model.py](../../tests/test_ring_publication_model.py) | `9a6fcec1e071` |
 | [tests/test_sample_screen.py](../../tests/test_sample_screen.py) | `eddc2c70f943` |
