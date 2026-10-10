@@ -10,7 +10,7 @@ from dataclasses import dataclass
 from fractions import Fraction
 import math
 
-from research.clock_models.rate_bound import rate_limits
+from research.clock_models.rate_bound import check_jump, rate_limits
 
 THRESHOLD_US = 1_000
 ROUNDING_ALLOWANCE_US = Fraction(1, 2)
@@ -20,6 +20,18 @@ CONDITIONS = (
     'continuity: one continuous TSF within the epoch',
     'station TSF equals access point TSF (802.11 synchronization; not checked here)',
 )
+PROVIDER_POLICY_VERSION = 'wht/causal-provider-v2'
+
+
+def conditions(jump_us=0) -> tuple[str, ...]:
+    """Declared conditions; a nonzero jump allowance replaces the no-phase-step condition."""
+    check_jump(jump_us)
+    if jump_us == 0:
+        return CONDITIONS
+    return (CONDITIONS[0],
+            f'bounded rate with phase jumps: over any interval the TSF advance lies within the rate prior '
+            f'times the elapsed QPC time, widened by {jump_us} us on each side',
+            *CONDITIONS[2:])
 
 
 @dataclass(frozen=True)
@@ -71,10 +83,13 @@ class CausalProvider:
     high(Q) = c_high + b*Q with c_high = min(T_k + 1 - b*L_k), over the epoch's samples k.
     Availability at least one tick after each window end makes every allowed query satisfy that."""
 
-    def __init__(self, qpc_hz: int, rate_prior_ppm: int = 200, threshold_us: int = THRESHOLD_US):
+    def __init__(self, qpc_hz: int, rate_prior_ppm: int = 200, threshold_us: int = THRESHOLD_US,
+                 jump_us=0):
         self.qpc_hz = qpc_hz
         self.rate_prior_ppm = rate_prior_ppm
         self.threshold_us = threshold_us
+        self.jump_us = jump_us
+        self.conditions = conditions(jump_us)
         self.a, self.b = rate_limits(qpc_hz, rate_prior_ppm)
         self.epoch = -1
         self.last_available: int | None = None
@@ -125,8 +140,8 @@ class CausalProvider:
             if self.invalid_reason is None:
                 self.invalid_reason = f'sample {sample.sequence}: {result.reason}'
             return result
-        low = sample.tsf_us - self.a * (sample.upper_qpc + 1)
-        high = sample.tsf_us + 1 - self.b * sample.lower_qpc
+        low = sample.tsf_us - self.jump_us - self.a * (sample.upper_qpc + 1)
+        high = sample.tsf_us + 1 + self.jump_us - self.b * sample.lower_qpc
         self.c_low = low if self.c_low is None else max(self.c_low, low)
         self.c_high = high if self.c_high is None else min(self.c_high, high)
         self.count += 1
@@ -146,10 +161,10 @@ class CausalProvider:
             raise ValueError('Query precedes the latest available sample; that would use future information')
         if self.invalid_reason is not None:
             return Estimate(query_qpc, 'invalid', self.epoch, None, None, None, None, None, None,
-                            self.last_available, self.invalid_reason)
+                            self.last_available, self.invalid_reason, self.conditions)
         if self.count == 0:
             return Estimate(query_qpc, 'acquiring', self.epoch, None, None, None, None, None, None,
-                            self.last_available, 'no usable sample in the current epoch')
+                            self.last_available, 'no usable sample in the current epoch', self.conditions)
         low = self.c_low + self.a * query_qpc
         high = self.c_high + self.b * query_qpc
         midpoint, half_width = (low + high) / 2, (high - low) / 2
@@ -161,4 +176,4 @@ class CausalProvider:
         state = 'tracking' if uncertainty < self.threshold_us else 'stale'
         reason = 'uncertainty below threshold' if state == 'tracking' else 'uncertainty at or above threshold'
         return Estimate(query_qpc, state, self.epoch, low, high, midpoint, half_width, rounded, uncertainty,
-                        self.last_available, reason)
+                        self.last_available, reason, self.conditions)

@@ -21,13 +21,17 @@ import json
 import subprocess
 
 from research.clock_models.analyze_bound_run import _lines, load_run
-from research.clock_models.causal_provider import CONDITIONS, ROUNDING_ALLOWANCE_US, AvailableSample, CausalProvider
-from research.clock_models.rate_bound import retrospective_max_half_width
+from research.clock_models.causal_provider import (CONDITIONS, PROVIDER_POLICY_VERSION, ROUNDING_ALLOWANCE_US,
+                                                   AvailableSample, CausalProvider)
+from research.clock_models.rate_bound import DEFAULT_JUMP_US, retrospective_max_half_width
 from research.clock_models.sample_screen import LISTEN_TIMEOUT_S, screen
-from research.clock_models.settle import settle_replay
+from research.clock_models.settle import INTERSECT_SPAN_S, settle_replay
+from research.clock_models.replay_wander import replay_wander
 
 ROOT = Path(__file__).resolve().parents[2]
 SETTLE_STEP_S = 1
+WANDER_PPM = 2
+V3_MODES = ('settle-v3', 'causal-v3', 'wander')
 SCREENING_LABEL = 'causal clock-model replay conditioned on offline sample screening'
 ARRIVAL_ORDER_POLICY_VERSION = 'wht/arrival-order-v2'
 AVAILABILITY_RULES = {
@@ -60,13 +64,14 @@ def availability(sample, mode: str, delay_seen: dict[int, int], completed: dict[
 
 
 def replay(events: list, qpc_hz: int, start: int, end: int, review_interval: tuple[int, int] | None = None,
-           rate_prior_ppm: int = 200, threshold_us: int = 1_000) -> dict:
+           rate_prior_ppm: int = 200, threshold_us: int = 1_000, jump_us=0, *,
+           request_interval: tuple[int, int] | None = None) -> dict:
     """Feed accepted/rejected samples and continuity diagnostics by their availability.
 
     Simultaneously available samples use capture order as a tie-break only. Skips
     preserve original availability, elapsed denominators and already-issued history.
     """
-    provider = CausalProvider(qpc_hz, rate_prior_ppm, threshold_us)
+    provider = CausalProvider(qpc_hz, rate_prior_ppm, threshold_us, jump_us)
     segments, t = [], start
     incompatible, rejected_checked, ingested = [], [], 0
     late_history_skipped = []
@@ -166,12 +171,17 @@ def replay(events: list, qpc_hz: int, start: int, end: int, review_interval: tup
                                                         str(worst_uncertainty_before_next)),
                stale_interval_count=len(stale_runs),
                longest_stale_s=round(float(max(stale_runs) / qpc_hz), 6) if stale_runs else 0.0,
-               conditions=list(CONDITIONS))
+               provider_policy_version=PROVIDER_POLICY_VERSION, jump_us=str(jump_us),
+               conditions=list(provider.conditions))
     if review_interval is not None:
         lo, hi = review_interval
         window = durations(lo, hi)
         out['review_interval_qpc'] = [lo, hi]
         out['coverage_review_interval'] = round(float(window['tracking'] / (hi - lo)), 6)
+    if request_interval is not None:
+        lo, hi = request_interval
+        out['request_interval_qpc'] = [lo, hi]
+        out['coverage_request_interval'] = round(float(durations(lo, hi)['tracking'] / (hi - lo)), 6)
     return out
 
 
@@ -191,6 +201,42 @@ def _revision() -> dict:
         return dict(commit=head or None, research_tree_modified=dirty)
     except (OSError, subprocess.SubprocessError):
         return dict(commit=None, research_tree_modified=None)
+
+
+def _availability_events(result, accepted, mode: str, delay_seen: dict[int, int], completed: dict[int, int]):
+    """Accepted, rejected and continuity events with their availability, plus uncheckable rejections.
+
+    A continuity diagnostic is known once both compared observations are available.
+    """
+    events = [('accepted', None, AvailableSample(s.sequence, s.tsf_us, s.lower_qpc, s.upper_qpc,
+                                                  availability(s, mode, delay_seen, completed))) for s in accepted]
+    rejected_uncheckable = []
+    for reason, s in result.rejected_samples:
+        try:
+            events.append(('rejected', reason, AvailableSample(s.sequence, s.tsf_us, s.lower_qpc, s.upper_qpc,
+                                                               availability(s, mode, delay_seen, completed))))
+        except (ValueError, KeyError) as error:
+            if reason == 'suspected_tsf_discontinuity':
+                raise ValueError(f'Cannot determine continuity break availability for sample {s.sequence}: {error}') from error
+            rejected_uncheckable.append(dict(sequence=s.sequence, reason=reason,
+                                             error=f'{type(error).__name__}: {error}'))
+    # The backward comparison needs both observations. Keep rejection receipts
+    # unchanged, and publish a separate diagnostic event once both are available.
+    available_items = {item.sequence: item for _, _, item in events}
+    continuity_diagnostics = []
+    for diagnostic in result.continuity_breaks:
+        try:
+            previous, current = (available_items[diagnostic.previous_sequence], available_items[diagnostic.sequence])
+        except KeyError as error:
+            raise ValueError(f'Cannot determine continuity break availability for sample {diagnostic.sequence}') from error
+        known_at = max(previous.available_qpc, current.available_qpc)
+        continuity_diagnostics.append(dict(sequence=current.sequence, previous_sequence=previous.sequence,
+                                           sample_available_qpc=current.available_qpc,
+                                           previous_available_qpc=previous.available_qpc, available_qpc=known_at))
+        events.append(('continuity', 'suspected_tsf_discontinuity',
+                       AvailableSample(current.sequence, current.tsf_us, current.lower_qpc,
+                                       current.upper_qpc, known_at)))
+    return events, rejected_uncheckable, continuity_diagnostics
 
 
 def replay_run(folder: Path, mode: str) -> dict:
@@ -224,6 +270,22 @@ def replay_run(folder: Path, mode: str) -> dict:
                     conditions=list(CONDITIONS))
         return meta
     completed = {r['sequence']: r['qpc_request_completed'] for r in _lines(folder / 'requests.jsonl')}
+    if mode in ('settle-v3', 'wander'):
+        delay_seen = arrival_map(_lines(folder / 'live-observer.jsonl'))
+        items = [AvailableSample(s.sequence, s.tsf_us, s.lower_qpc, s.upper_qpc,
+                                 availability(s, 'causal-arrival', delay_seen, completed)) for s in accepted]
+        meta['availability_rule'] = AVAILABILITY_RULES['causal-arrival']
+        if mode == 'settle-v3':
+            meta.update(label='two-phase settled timestamps (v3) conditioned on offline sample screening',
+                        settle=settle_replay(items, hz, step_qpc=SETTLE_STEP_S * hz, jump_us=DEFAULT_JUMP_US,
+                                             intersect_span_s=INTERSECT_SPAN_S))
+            return meta
+        start = data['requests'][0].lower_qpc
+        end = data['requests'][-1].lower_qpc + LISTEN_TIMEOUT_S * hz
+        _, _, diagnostics = _availability_events(result, accepted, 'causal-arrival', delay_seen, completed)
+        meta.update(wander=replay_wander(items, hz, start, end, wander_ppm=WANDER_PPM, jump_us=DEFAULT_JUMP_US,
+                                         continuity=diagnostics))
+        return meta
     if mode == 'settle':
         delay_seen = arrival_map(_lines(folder / 'live-observer.jsonl'))
         items = [AvailableSample(s.sequence, s.tsf_us, s.lower_qpc, s.upper_qpc,
@@ -247,35 +309,11 @@ def replay_run(folder: Path, mode: str) -> dict:
                         'overlapping capture windows or out-of-order arrival; legacy field aliases the '
                         'retrospective consecutive-pair maximum, not the actual settled grid maximum'))
         return meta
+    jump_us = DEFAULT_JUMP_US if mode == 'causal-v3' else 0
+    mode = 'causal-arrival' if mode == 'causal-v3' else mode
     delay_seen = arrival_map(_lines(folder / 'live-observer.jsonl')) if mode == 'causal-arrival' else {}
-    events = [('accepted', None, AvailableSample(s.sequence, s.tsf_us, s.lower_qpc, s.upper_qpc,
-                                                  availability(s, mode, delay_seen, completed))) for s in accepted]
-    rejected_uncheckable = []
-    for reason, s in result.rejected_samples:
-        try:
-            events.append(('rejected', reason, AvailableSample(s.sequence, s.tsf_us, s.lower_qpc, s.upper_qpc,
-                                                               availability(s, mode, delay_seen, completed))))
-        except (ValueError, KeyError) as error:
-            if reason == 'suspected_tsf_discontinuity':
-                raise ValueError(f'Cannot determine continuity break availability for sample {s.sequence}: {error}') from error
-            rejected_uncheckable.append(dict(sequence=s.sequence, reason=reason,
-                                             error=f'{type(error).__name__}: {error}'))
-    # The backward comparison needs both observations. Keep rejection receipts
-    # unchanged, and publish a separate diagnostic event once both are available.
-    available_items = {item.sequence: item for _, _, item in events}
-    continuity_diagnostics = []
-    for diagnostic in result.continuity_breaks:
-        try:
-            previous, current = (available_items[diagnostic.previous_sequence], available_items[diagnostic.sequence])
-        except KeyError as error:
-            raise ValueError(f'Cannot determine continuity break availability for sample {diagnostic.sequence}') from error
-        known_at = max(previous.available_qpc, current.available_qpc)
-        continuity_diagnostics.append(dict(sequence=current.sequence, previous_sequence=previous.sequence,
-                                           sample_available_qpc=current.available_qpc,
-                                           previous_available_qpc=previous.available_qpc, available_qpc=known_at))
-        events.append(('continuity', 'suspected_tsf_discontinuity',
-                       AvailableSample(current.sequence, current.tsf_us, current.lower_qpc,
-                                       current.upper_qpc, known_at)))
+    events, rejected_uncheckable, continuity_diagnostics = _availability_events(
+        result, accepted, mode, delay_seen, completed)
     meta['continuity_diagnostics'] = continuity_diagnostics
     start = data['requests'][0].lower_qpc
     end = data['requests'][-1].lower_qpc + LISTEN_TIMEOUT_S * hz
@@ -283,17 +321,21 @@ def replay_run(folder: Path, mode: str) -> dict:
     meta['availability_rule'] = AVAILABILITY_RULES[mode]
     meta['rejected_uncheckable'] = rejected_uncheckable
     review_interval = (available[0], available[-1]) if len(available) >= 2 and available[0] < available[-1] else None
-    meta.update(replay(events, hz, start, end, review_interval))
+    first, last = data['requests'][0].lower_qpc, data['requests'][-1].lower_qpc
+    meta.update(replay(events, hz, start, end, review_interval,
+                       request_interval=(first, last) if first < last else None, jump_us=jump_us))
     return meta
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('folder', type=Path)
-    parser.add_argument('--mode', choices=('retrospective', 'settle', 'causal-etw', 'causal-arrival', 'all'), default='all')
+    parser.add_argument('--mode', choices=('retrospective', 'settle', 'causal-etw', 'causal-arrival', 'all',
+                                           *V3_MODES, 'v3'), default='all')
     args = parser.parse_args()
     try:
-        modes = ('retrospective', 'settle', 'causal-etw', 'causal-arrival') if args.mode == 'all' else (args.mode,)
+        modes = {'all': ('retrospective', 'settle', 'causal-etw', 'causal-arrival'), 'v3': V3_MODES}.get(
+            args.mode, (args.mode,))
         print(json.dumps({mode: replay_run(args.folder, mode) for mode in modes}, indent=2))
         return 0
     except (OSError, ValueError, KeyError, TypeError) as error:

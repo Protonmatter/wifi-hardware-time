@@ -27,7 +27,9 @@ import uuid
 
 from research.acquisition.campaign_admission import Admission, transition
 from research.acquisition.campaign_gate import ReportGate
-from research.acquisition.persistent_sampler import record_quarantine
+from research.acquisition.persistent_sampler import (IDENTITY_CHECK_DEADLINE_S, IDENTITY_MAX_AGE_S,
+                                                     record_quarantine)
+from research.acquisition.report_wait import wait_for_report
 from research.clock_models.sample_screen import LISTEN_TIMEOUT_S, MAX_WINDOW_US, TIMING_KINDS
 
 MARKER_NAME = 'bound-campaign-quarantine.json'
@@ -349,6 +351,8 @@ def parse(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument('--duration-s', type=int, default=3600)
     parser.add_argument('--sampler', choices=('per-request', 'persistent'), default='per-request')
     parser.add_argument('--spacing-s', type=float, default=None)
+    parser.add_argument('--etw-flush', action='store_true',
+                        help='Persistent only: flush the trace session after each completion to deliver reports')
     parser.add_argument('--execute', action='store_true', help='Send private requests; default is preview only')
     parser.add_argument('--workload', nargs=3, metavar=('STOP', 'OUTPUT', 'SECONDS'), help=argparse.SUPPRESS)
     args = parser.parse_args(argv)
@@ -361,7 +365,18 @@ def parse(argv: list[str] | None = None) -> argparse.Namespace:
             parser.error('--duration-s must be 60 to 3600')
         if not 0.5 <= args.spacing_s <= 60:
             parser.error('--spacing-s must be 0.5 to 60')
+        if args.etw_flush and args.sampler != 'persistent':
+            parser.error('--etw-flush requires --sampler persistent')
     return args
+
+
+def sampler_plan(args: argparse.Namespace) -> dict:
+    """Plan fields that change acquisition behavior; recorded before any request."""
+    if args.sampler != 'persistent':
+        return {}
+    return dict(sampler='persistent', identity_every=None, identity_every_s=30, report_wait_retained=True,
+                etw_flush_after_completion=args.etw_flush, identity_check_mode='background',
+                identity_max_age_s=IDENTITY_MAX_AGE_S)
 
 
 def campaign(args: argparse.Namespace) -> int:
@@ -377,8 +392,7 @@ def campaign(args: argparse.Namespace) -> int:
     plan = dict(condition=args.condition, duration_s=args.duration_s, spacing_s=args.spacing_s, action=4,
                 provider=PROVIDER, trace_cap_bytes=TRACE_CAP_BYTES, identity_every=IDENTITY_EVERY,
                 beacon_every_s=BEACON_EVERY_S, own_loss_limit=OWN_LOSS_LIMIT, marker=str(marker))
-    if args.sampler == 'persistent':
-        plan.update(sampler='persistent', identity_every=None, identity_every_s=30, report_wait_retained=True)
+    plan.update(sampler_plan(args))
     if not args.execute:
         print(json.dumps(dict(preview=True, plan=plan, adapter_status=baseline['Status'],
                               driver_version=baseline['DriverVersion']), indent=2))
@@ -416,10 +430,11 @@ def _execute(args: argparse.Namespace, clock, baseline: dict, plan: dict, marker
     session = 'WifiBound-' + uuid.uuid4().hex[:12]
     gate, trace = BoundGate(), TraceOwner(session, folder)
     observer = worker = reader = None
-    sampler = None
+    sampler = monitor = None
     persistent = args.sampler == 'persistent'
     failure, receipts, beacon_count, losses, beacon_skips = None, [], 0, 0, []
     cleanup_errors: list[str] = []
+    identity_wait_done = False
     _save(folder / 'session.json', dict(SessionName=session, StartedUtc=utc(), Plan=plan))
     try:
         _save(folder / 'adapter-before.json', baseline)
@@ -431,11 +446,21 @@ def _execute(args: argparse.Namespace, clock, baseline: dict, plan: dict, marker
             raise RuntimeError('Observer readiness or association not established')
         if persistent:
             from research.acquisition.persistent_sampler import (PersistentClient, RequestSlots, IdentityTimer,
-                                                                  wait_for_slot)
+                                                                  IdentityMonitor, wait_for_slot)
             sampler = PersistentClient(ROOT, folder, args.if_index, clock.frequency, baseline, marker,
                                        in_progress_path(ROOT / 'artifacts', baseline['InterfaceGuid']),
                                        clock, observer, gate)
             sampler.start()
+            # The monitor counts its construction as the first success, and the startup check in campaign()
+            # precedes trace, observer and worker setup by seconds, so validate again here. The check starts
+            # after construction, so the counted instant is this check's start; a failure ends setup.
+            monitor = IdentityMonitor(lambda: same_identity(identity(args.if_index), baseline),
+                                      time.monotonic, clock.now)
+            same_identity(identity(args.if_index), baseline)
+        flusher = None
+        if persistent and args.etw_flush:
+            from research.acquisition.etw_flush import TraceFlusher
+            flusher = TraceFlusher(session, clock.now, live=True)
         reader = BssReader(baseline['InterfaceGuid'])
         if args.condition == 'load':
             worker = subprocess.Popen([sys.executable, __file__, '--workload', str(folder / 'workload-stop'),
@@ -452,13 +477,13 @@ def _execute(args: argparse.Namespace, clock, baseline: dict, plan: dict, marker
               else contextlib.nullcontext()) as schedule_file:
             while time.monotonic() < end:
                 cycle = time.monotonic()
-                identity_started = clock.now() if persistent else None
-                checked_identity = identity_timer.due(cycle) if persistent else number % IDENTITY_EVERY == 0
-                if checked_identity:
-                    same_identity(identity(args.if_index), baseline)
-                    if persistent:
-                        identity_timer.checked(time.monotonic())
-                identity_finished = clock.now() if persistent else None
+                if persistent:
+                    cycle_due = monitor.next_due  # changes whenever a background check starts
+                    checked_identity = monitor.maybe_start()
+                else:
+                    checked_identity = number % IDENTITY_EVERY == 0
+                    if checked_identity:
+                        same_identity(identity(args.if_index), baseline)
                 if worker is not None and worker.poll() is not None:
                     raise RuntimeError('Workload exited prematurely')
                 if (folder / 'tsf.etl').stat().st_size > TRACE_CAP_BYTES:
@@ -476,15 +501,18 @@ def _execute(args: argparse.Namespace, clock, baseline: dict, plan: dict, marker
                     next_beacon = time.monotonic() + BEACON_EVERY_S
                 if persistent:
                     sampler.pulse()
-                    slot_identity_checks = []
-                    def check_slot_identity():
-                        before = clock.now()
-                        same_identity(identity(args.if_index), baseline)
-                        slot_identity_checks.append(dict(started_qpc=before, finished_qpc=clock.now()))
                     scheduled, skipped = wait_for_slot(slots, end, identity_timer, sampler.pulse,
-                        check_slot_identity, lambda seconds: observer.wait(seconds, gate), time.monotonic)
+                        monitor.maybe_start, lambda seconds: observer.wait(seconds, gate), time.monotonic)
                     if scheduled >= end:
                         break
+                    # No submission without a successful check started at most 60 s ago; gate() raises
+                    # on a failed or overdue check, which reaches the quarantine path below.
+                    while not monitor.gate():
+                        if time.monotonic() >= end:
+                            break
+                        monitor.maybe_start()
+                        sampler.pulse()
+                        observer.wait(0.02, gate)
                     if time.monotonic() >= end:
                         break
                 number += 1
@@ -496,18 +524,22 @@ def _execute(args: argparse.Namespace, clock, baseline: dict, plan: dict, marker
                 requests_file.write(json.dumps(receipt) + '\n')
                 requests_file.flush()
                 receipts.append(receipt)
-                listen_end = time.monotonic() + LISTEN_TIMEOUT_S
                 listen_started_qpc = clock.now() if persistent else None
-                while not gate.report_after(receipt['qpc_request_before']) and time.monotonic() < listen_end:
+
+                def pump() -> None:
                     if persistent:
                         sampler.pulse()
                     observer.pump(gate)
-                    time.sleep(0.005)
+                flushes = wait_for_report(lambda: gate.report_after(receipt['qpc_request_before']), pump=pump,
+                                          monotonic=time.monotonic, sleep=time.sleep,
+                                          flush=flusher.flush if flusher is not None else None,
+                                          listen_s=LISTEN_TIMEOUT_S)
                 if not gate.report_in_window(receipt['qpc_request_before'], clock.frequency):
                     losses += 1
                 if loss_budget_exceeded(losses, number):
                     raise RuntimeError('Own-loss budget exceeded')
                 if persistent:
+                    monitor.maybe_start()  # prefer starting checks between requests
                     reports = [event for event in gate.timing[-16:] if event['kind'] == 'report'
                                and event['raw_timestamp'] >= receipt['qpc_request_before']]
                     schedule_file.write(json.dumps(dict(sequence=number, scheduled_monotonic=scheduled,
@@ -516,15 +548,23 @@ def _execute(args: argparse.Namespace, clock, baseline: dict, plan: dict, marker
                         report_raw_qpc=reports[0]['raw_timestamp'] if reports else None,
                         report_received_qpc=reports[0].get('received_qpc') if reports else None,
                         report_wait_started_qpc=listen_started_qpc, report_wait_finished_qpc=clock.now(),
-                        identity_checked=checked_identity, identity_started_qpc=identity_started,
-                        identity_finished_qpc=identity_finished, slot_identity_checks=slot_identity_checks,
-                        processing_finished_qpc=clock.now(),
+                        identity_checked=monitor.next_due != cycle_due, identity_started_qpc=None,
+                        identity_finished_qpc=None, slot_identity_checks=[],
+                        background_identity_checks=monitor.drain_completed(),
+                        processing_finished_qpc=clock.now(), etw_flushes=flushes,
                         actual_spacing_s=((receipt['qpc_request_before'] - previous_submission) / clock.frequency
                                           if previous_submission is not None else None))) + '\n')
                     schedule_file.flush()
                     previous_submission = receipt['qpc_request_before']
                 else:
                     observer.wait(remaining_sleep(args.spacing_s, time.monotonic() - cycle), gate)
+        if monitor is not None:
+            idle = monitor.wait_idle(lambda seconds: observer.wait(seconds, gate), IDENTITY_CHECK_DEADLINE_S)
+            identity_wait_done = True
+            if not idle:
+                failure = failure or 'Background identity check did not finish'
+            if monitor.failure:
+                failure = failure or f'Identity check failed: {monitor.failure}'
         observer.wait(2.0, gate)
     except BaseException as error:
         gate.quarantine(str(error))
@@ -571,6 +611,19 @@ def _execute(args: argparse.Namespace, clock, baseline: dict, plan: dict, marker
                 observer.close(gate)
             except BaseException as error:
                 failure = failure or f'Observer cleanup: {error}'
+        if monitor is not None:
+            # Exception paths skip the wait above; the final check must not overlap a background check.
+            # A wait that already ran (and perhaps timed out) is not repeated.
+            if not identity_wait_done and not monitor.wait_idle(time.sleep, IDENTITY_CHECK_DEADLINE_S):
+                failure = failure or 'Background identity check did not finish'
+            if monitor.failure:
+                failure = failure or f'Identity check failed: {monitor.failure}'
+            try:
+                _save(folder / 'background-identity-tail.json',
+                      dict(schema='wht/background-identity-tail-v1', checks=monitor.drain_completed(),
+                           monitor_failure=monitor.failure))
+            except BaseException as error:
+                failure = failure or f'Identity tail evidence: {error}'
         try:
             after = identity(args.if_index)
             _save(folder / 'adapter-after.json', after)

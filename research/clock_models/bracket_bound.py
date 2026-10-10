@@ -10,6 +10,8 @@ from dataclasses import dataclass, field
 from fractions import Fraction
 from itertools import combinations
 
+from research.clock_models.rate_bound import check_jump
+
 US_PER_S = 1_000_000
 RATE_PRIOR_PPM = 200  # Physical prior on |TSF rate / QPC rate - 1|.
 
@@ -57,7 +59,8 @@ class Bound:
         return (min(rates) - 1) * US_PER_S, (max(rates) - 1) * US_PER_S
 
 
-def window_bound(windows: list[Window], qpc_hz: int, rate_prior_ppm: int = RATE_PRIOR_PPM) -> Bound:
+def window_bound(windows: list[Window], qpc_hz: int, rate_prior_ppm: int = RATE_PRIOR_PPM, jump_us=0) -> Bound:
+    check_jump(jump_us)
     if type(qpc_hz) is not int or qpc_hz <= 0:
         raise ValueError('QPC frequency must be a positive integer')
     if type(rate_prior_ppm) is not int or not 0 < rate_prior_ppm < 10_000:
@@ -70,12 +73,13 @@ def window_bound(windows: list[Window], qpc_hz: int, rate_prior_ppm: int = RATE_
     nominal = Fraction(US_PER_S, qpc_hz)
     r_low = nominal * (US_PER_S - rate_prior_ppm) / US_PER_S
     r_high = nominal * (US_PER_S + rate_prior_ppm) / US_PER_S
-    # Offset limits per window: y - r*upper <= c <= y + 1 - r*lower.
-    lines = [(y, upper) for y, lower, upper in rows] + [(y + 1, lower) for y, lower, upper in rows]
+    # Offset limits per window: y - J - r*upper <= c <= y + 1 + J - r*lower (J: phase-jump allowance).
+    lines = ([(y - jump_us, upper) for y, lower, upper in rows]
+             + [(y + 1 + jump_us, lower) for y, lower, upper in rows])
 
     def inside(rate: Fraction, offset: Fraction) -> bool:
         return r_low <= rate <= r_high and all(
-            y - rate * upper <= offset <= y + 1 - rate * lower for y, lower, upper in rows)
+            y - jump_us - rate * upper <= offset <= y + 1 + jump_us - rate * lower for y, lower, upper in rows)
 
     candidates = {(r, y - r * x) for r in (r_low, r_high) for y, x in lines}
     for (y1, x1), (y2, x2) in combinations(lines, 2):
