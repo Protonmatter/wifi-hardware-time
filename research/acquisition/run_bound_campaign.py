@@ -434,6 +434,7 @@ def _execute(args: argparse.Namespace, clock, baseline: dict, plan: dict, marker
     persistent = args.sampler == 'persistent'
     failure, receipts, beacon_count, losses, beacon_skips = None, [], 0, 0, []
     cleanup_errors: list[str] = []
+    identity_wait_done = False
     _save(folder / 'session.json', dict(SessionName=session, StartedUtc=utc(), Plan=plan))
     try:
         _save(folder / 'adapter-before.json', baseline)
@@ -558,7 +559,9 @@ def _execute(args: argparse.Namespace, clock, baseline: dict, plan: dict, marker
                 else:
                     observer.wait(remaining_sleep(args.spacing_s, time.monotonic() - cycle), gate)
         if monitor is not None:
-            if not monitor.wait_idle(lambda seconds: observer.wait(seconds, gate), IDENTITY_CHECK_DEADLINE_S):
+            idle = monitor.wait_idle(lambda seconds: observer.wait(seconds, gate), IDENTITY_CHECK_DEADLINE_S)
+            identity_wait_done = True
+            if not idle:
                 failure = failure or 'Background identity check did not finish'
             if monitor.failure:
                 failure = failure or f'Identity check failed: {monitor.failure}'
@@ -610,10 +613,17 @@ def _execute(args: argparse.Namespace, clock, baseline: dict, plan: dict, marker
                 failure = failure or f'Observer cleanup: {error}'
         if monitor is not None:
             # Exception paths skip the wait above; the final check must not overlap a background check.
-            if not monitor.wait_idle(time.sleep, IDENTITY_CHECK_DEADLINE_S):
+            # A wait that already ran (and perhaps timed out) is not repeated.
+            if not identity_wait_done and not monitor.wait_idle(time.sleep, IDENTITY_CHECK_DEADLINE_S):
                 failure = failure or 'Background identity check did not finish'
             if monitor.failure:
                 failure = failure or f'Identity check failed: {monitor.failure}'
+            try:
+                _save(folder / 'background-identity-tail.json',
+                      dict(schema='wht/background-identity-tail-v1', checks=monitor.drain_completed(),
+                           monitor_failure=monitor.failure))
+            except BaseException as error:
+                failure = failure or f'Identity tail evidence: {error}'
         try:
             after = identity(args.if_index)
             _save(folder / 'adapter-after.json', after)

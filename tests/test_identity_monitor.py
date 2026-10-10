@@ -102,6 +102,29 @@ class IdentityMonitorTests(unittest.TestCase):
         self.assertTrue(h.monitor.gate())
         self.assertAlmostEqual(h.monitor.last_success, 160.01)  # the check began when its runner called it
 
+    def test_exception_outside_the_check_is_recorded_and_clears_running(self):
+        h = Harness(run_now=True)
+        h.monitor.now_qpc = lambda: (_ for _ in ()).throw(OSError('qpc unavailable'))
+        h.advance(30.0)
+        h.monitor.maybe_start()
+        self.assertIsNone(h.monitor.running_since)
+        self.assertIn('qpc unavailable', h.monitor.failure)
+        with self.assertRaisesRegex(RuntimeError, 'Identity check failed'):
+            h.monitor.gate()
+
+    def test_start_failure_is_recorded_not_raised(self):
+        h = Harness()
+        def boom(fn):
+            raise RuntimeError("can't start new thread")
+        h.monitor.start = boom
+        h.advance(30.0)
+        self.assertFalse(h.monitor.maybe_start())
+        self.assertIsNone(h.monitor.running_since)
+        self.assertIn('Identity check start failed: RuntimeError', h.monitor.failure)
+        with self.assertRaisesRegex(RuntimeError, 'Identity check failed'):
+            h.monitor.gate()
+        self.assertFalse(h.monitor.maybe_start())
+
     def test_drain_completed_returns_each_record_once(self):
         outcomes = [None, RuntimeError('mismatch')]
         def check():

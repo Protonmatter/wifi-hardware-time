@@ -154,24 +154,38 @@ class IdentityMonitor:
                 return False
             self.running_since = self.monotonic()
             self.next_due = self.running_since + self.interval_s
-        (self.start or start_identity_check)(self._run)
+        try:
+            (self.start or start_identity_check)(self._run)
+        except BaseException as error:
+            with self.lock:
+                if self.failure is None:
+                    self.failure = f'Identity check start failed: {type(error).__name__}: {error}'
+                self.running_since = None
+            return False
         return True
 
     def _run(self) -> None:
-        started_monotonic, started_qpc = self.monotonic(), self.now_qpc()
+        started_monotonic = started_qpc = None
         error_text = None
         try:
+            started_monotonic, started_qpc = self.monotonic(), self.now_qpc()
             self.check()
         except BaseException as error:
             error_text = f'{type(error).__name__}: {error}'
-        with self.lock:
-            if error_text is None:
-                self.last_success = started_monotonic
-            elif self.failure is None:
-                self.failure = error_text
-            self.completed.append(dict(started_qpc=started_qpc, finished_qpc=self.now_qpc(),
-                                       ok=error_text is None, error=error_text))
-            self.running_since = None
+        finally:
+            with self.lock:
+                try:
+                    if error_text is None:
+                        self.last_success = started_monotonic
+                    elif self.failure is None:
+                        self.failure = error_text
+                    self.completed.append(dict(started_qpc=started_qpc, finished_qpc=self.now_qpc(),
+                                               ok=error_text is None, error=error_text))
+                except BaseException as error:
+                    if self.failure is None:
+                        self.failure = f'{type(error).__name__}: {error}'
+                finally:
+                    self.running_since = None
 
     def gate(self) -> bool:
         """True when a submission may proceed; raises on a failed or overdue check."""

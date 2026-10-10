@@ -101,7 +101,10 @@ class ControllerTests(unittest.TestCase):
                     background = [record for row in rows for record in row['background_identity_checks']]
                     self.assertTrue(background)
                     self.assertTrue(all(record['ok'] for record in background))
+                    # Equality holds only with the synchronous test starter; with real threads a check
+                    # started in one cycle can complete in a later one.
                     self.assertEqual(sum(row['identity_checked'] for row in rows), len(background))
+                    self.assertTrue((schedules[0].parent / 'background-identity-tail.json').exists())
                     self.assertTrue(all(row['slot_identity_checks'] == [] and row['identity_started_qpc'] is None
                                         and row['identity_finished_qpc'] is None for row in rows))
 
@@ -114,6 +117,15 @@ class ControllerTests(unittest.TestCase):
             self.assertEqual(code, 1)
             self.assertTrue((root / 'marker.json').exists())
             self.assertEqual(closed, [True])
+            tail = json.loads(next((root / 'artifacts').rglob('background-identity-tail.json')).read_text())
+            self.assertEqual(tail['schema'], 'wht/background-identity-tail-v1')
+            # With the synchronous starter the failing record finishes inside the last cycle's maybe_start and
+            # is drained into that cycle's schedule row, so the tail is empty; it must be in exactly one place.
+            rows = [json.loads(line) for path in (root / 'artifacts').rglob('sampler-schedule.jsonl')
+                    for line in path.read_text().splitlines()]
+            persisted = [record for row in rows for record in row['background_identity_checks']] + tail['checks']
+            self.assertEqual([record['ok'] for record in persisted].count(False), 1)
+            self.assertIn('Identity/state changed', tail['monitor_failure'])
             failed_at = checks[2]
             self.assertTrue(any(moment > checks[1] for moment in submitted))  # sampling ran past check 2
             self.assertTrue(all(moment < failed_at for moment in submitted))
@@ -134,6 +146,20 @@ class ControllerTests(unittest.TestCase):
             # The overdue check (about 30 + 60 s after construction) stops the run long before 300 s.
             self.assertLess(finished, validated + 30 + 60 + 60 + 10)
             self.assertEqual(len(checks), 2)  # pre-loop and final; the final check waited for the deadline
+            tail = json.loads(next((root / 'artifacts').rglob('background-identity-tail.json')).read_text())
+            self.assertEqual(tail['checks'], [])  # written even when empty
+
+    def test_post_loop_wait_timeout_is_not_repeated_during_teardown(self):
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            hung = []
+            # The loop ends about 61 s after the pre-loop check (duration 60 s) with the hung check started
+            # at about +30 s and not yet overdue. The post-loop wait_idle then times out after 60 s, so the
+            # final check runs at about +61 + 2 + 60 = +123 s. The old fallback waited another 60 s (+183 s).
+            code, submitted, checks, closed, finished = self.run_execute(root, duration_s='60', starter=hung.append)
+            self.assertEqual(code, 1)
+            self.assertEqual(len(checks), 2)
+            self.assertLess(checks[1] - checks[0], 130.0)
 
     def test_mode_defaults_and_limits(self):
         base = ['--if-index', '7', '--condition', 'idle']
