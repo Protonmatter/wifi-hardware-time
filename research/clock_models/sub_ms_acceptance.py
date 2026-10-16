@@ -13,6 +13,7 @@ if __package__ in (None, ""):
 import argparse
 from fractions import Fraction
 import json
+import math
 import statistics
 
 from research.clock_models.analyze_bound_run import _lines, load_run
@@ -46,12 +47,33 @@ def run_timing(folder: Path) -> dict:
     delivery = [(seen[s.upper_qpc] - s.upper_qpc) / hz for s in accepted if s.upper_qpc in seen]
     gaps = [(b.lower_qpc - a.lower_qpc) / hz for a, b in zip(accepted, accepted[1:])]
     spacing = json.loads((folder / 'session.json').read_text(encoding='utf-8'))['Plan']['spacing_s']
+    if type(spacing) not in (int, float) or not math.isfinite(spacing) or spacing <= 0:
+        raise ValueError('Run spacing_s must be finite and positive')
     if not delivery or not gaps:
         raise ValueError('Run lacks delivery receipts or accepted gaps')
+    if any(value < 0 or not math.isfinite(value) for value in delivery):
+        raise ValueError('Delivery receipt precedes its sample capture end')
+    if any(value < 0 or not math.isfinite(value) for value in gaps):
+        raise ValueError('Accepted samples are not in capture order')
     return dict(completed=data['completed'], spacing_s=spacing, accepted=len(accepted), delivery_missing=len(accepted) - len(delivery),
                 delivery_s=dict(median=statistics.median(delivery), p99=_p(delivery, Fraction(99, 100)),
                                 max=max(delivery)),
                 accepted_gap_s=dict(median=statistics.median(gaps), max=max(gaps)))
+
+
+_SHARE_CRITERIA = frozenset({'guaranteed_live_coverage_min', 'settled_sub_ms_share_min'})
+_COUNT_CRITERIA = frozenset({'incompatible_max', 'model_holdout_violations_max', 'delivery_missing_max'})
+
+
+def _plausible(name: str, value) -> bool:
+    """Impossible observed values fail the check instead of passing by comparison."""
+    if value is None or isinstance(value, bool) or type(value) not in (int, float) or not math.isfinite(value):
+        return False
+    if name in _SHARE_CRITERIA:
+        return 0 <= value <= 1
+    if name in _COUNT_CRITERIA:
+        return type(value) is int and value >= 0
+    return value >= 0
 
 
 def evaluate(replays: dict, timing: dict, criteria: dict = CRITERIA) -> dict:
@@ -79,7 +101,9 @@ def evaluate(replays: dict, timing: dict, criteria: dict = CRITERIA) -> dict:
     checks = []
     for name, limit in criteria.items():
         value = observed[name]
-        passed = value is not None and (value >= limit if name.endswith('_min') else value <= limit)
+        if type(limit) not in (int, float) or isinstance(limit, bool) or not math.isfinite(limit):
+            raise ValueError(f'Invalid acceptance limit for {name}: {limit!r}')
+        passed = _plausible(name, value) and (value >= limit if name.endswith('_min') else value <= limit)
         checks.append(dict(name=name, value=value, limit=limit, passed=passed))
     return dict(schema=ACCEPTANCE_VERSION, passed=all(c['passed'] for c in prerequisites + checks),
                 prerequisites=prerequisites, checks=checks,

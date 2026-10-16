@@ -71,6 +71,11 @@ def replay(events: list, qpc_hz: int, start: int, end: int, review_interval: tup
     Simultaneously available samples use capture order as a tie-break only. Skips
     preserve original availability, elapsed denominators and already-issued history.
     """
+    if not start < end:
+        raise ValueError('Empty replay interval')
+    for name, interval in (('review_interval', review_interval), ('request_interval', request_interval)):
+        if interval is not None and not interval[0] < interval[1]:
+            raise ValueError(f'Empty {name}')
     provider = CausalProvider(qpc_hz, rate_prior_ppm, threshold_us, jump_us)
     segments, t = [], start
     incompatible, rejected_checked, ingested = [], [], 0

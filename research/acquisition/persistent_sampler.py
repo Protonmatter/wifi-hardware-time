@@ -138,6 +138,10 @@ class IdentityMonitor:
 
     def __init__(self, check, monotonic, now_qpc, *, start=None, interval_s: float = IDENTITY_EVERY_S,
                  max_age_s: float = IDENTITY_MAX_AGE_S, deadline_s: float = IDENTITY_CHECK_DEADLINE_S):
+        for name, value, allow_zero in (('interval_s', interval_s, True), ('max_age_s', max_age_s, False),
+                                        ('deadline_s', deadline_s, False)):
+            if type(value) not in (int, float) or not math.isfinite(value) or value < 0 or (value == 0 and not allow_zero):
+                raise ValueError(f'IdentityMonitor {name} must be finite and {"non-negative" if allow_zero else "positive"}')
         self.check, self.monotonic, self.now_qpc, self.start = check, monotonic, now_qpc, start
         self.interval_s, self.max_age_s, self.deadline_s = interval_s, max_age_s, deadline_s
         self.lock = threading.Lock()
@@ -211,6 +215,8 @@ class IdentityMonitor:
 
     def wait_idle(self, wait, timeout_s: float) -> bool:
         """True once no check is running; False at timeout_s or at the running check's own deadline."""
+        if type(timeout_s) not in (int, float) or not math.isfinite(timeout_s) or timeout_s < 0:
+            raise ValueError('wait_idle timeout_s must be finite and non-negative')
         call_deadline = self.monotonic() + timeout_s
         max_waits, waits = math.ceil(timeout_s / 0.02) + 1, 0  # terminates even if the clock never advances
         while True:
