@@ -84,6 +84,40 @@ class AcceptanceTests(unittest.TestCase):
     def test_non_boolean_completed_is_not_accepted(self):
         self.assertFalse(evaluate(PASSING, dict(TIMING, completed=1))['passed'])
 
+    def test_impossible_observed_values_fail_instead_of_passing(self):
+        cases = {
+            'coverage_over_one': lambda r, t: r['causal-v3'].update(coverage_request_interval=1.5),
+            'share_over_one': lambda r, t: r['settle-v3']['settle'].update(sub_millisecond_share=2.0),
+            'negative_median': lambda r, t: r['settle-v3']['settle']['half_width_us'].update(median=-1.0),
+            'nan_delivery': lambda r, t: t['delivery_s'].update(p99=float('nan')),
+            'negative_missing': lambda r, t: t.update(delivery_missing=-1),
+            'string_coverage': lambda r, t: r['causal-v3'].update(coverage_request_interval='0.999'),
+        }
+        for name, mutate in cases.items():
+            replays, timing = copy.deepcopy(PASSING), copy.deepcopy(TIMING)
+            if name == 'negative_missing':
+                replays['wander']['wander'].update(holdout_violations=-1)
+            mutate(replays, timing)
+            with self.subTest(case=name):
+                self.assertFalse(evaluate(replays, timing)['passed'])
+
+    def test_invalid_criterion_limit_is_rejected(self):
+        with self.assertRaises(ValueError):
+            evaluate(PASSING, TIMING, criteria=dict(CRITERIA, delivery_p99_max_s=float('nan')))
+
+    def test_run_timing_rejects_non_positive_spacing(self):
+        accepted = [Sample(1, 100, 0, 0, 10), Sample(2, 200, 0, HZ, HZ + 10)]
+        screened = type('S', (), {'accepted': accepted})()
+        data = dict(qpc_hz=HZ, records=[], requests=[], completed=True)
+        with tempfile.TemporaryDirectory() as directory:
+            folder = Path(directory)
+            (folder / 'session.json').write_text(json.dumps(dict(Plan=dict(spacing_s=0))), encoding='utf-8')
+            with patch.object(sub_ms_acceptance, 'load_run', return_value=data), \
+                    patch.object(sub_ms_acceptance, 'screen', return_value=screened), \
+                    patch.object(sub_ms_acceptance, '_lines', return_value=[]):
+                with self.assertRaisesRegex(ValueError, 'spacing_s'):
+                    sub_ms_acceptance.run_timing(folder)
+
     def test_missing_prerequisite_inputs_are_rejected(self):
         for key in ('whole_recording_continuity_eligible', 'continuity_invalidations', 'durations_ticks'):
             replays = copy.deepcopy(PASSING)

@@ -288,6 +288,21 @@ class RequestIntervalCoverageTests(unittest.TestCase):
         self.assertGreater(result['coverage_request_interval'], 0.95)
 
 
+class ReplayValidationTests(unittest.TestCase):
+    def test_causal_replay_rejects_empty_interval_and_intervals(self):
+        events = [('accepted', None, s) for s in available(count=3)]
+        with self.assertRaisesRegex(ValueError, 'Empty replay interval'):
+            replay(events, HZ, 10, 10)
+        with self.assertRaisesRegex(ValueError, 'Empty review_interval'):
+            replay(events, HZ, 0, 100 * HZ, (50, 50))
+        with self.assertRaisesRegex(ValueError, 'Empty request_interval'):
+            replay(events, HZ, 0, 100 * HZ, request_interval=(60, 50))
+
+    def test_wander_replay_rejects_qpc_too_low_for_grid(self):
+        with self.assertRaisesRegex(ValueError, 'too low for the 0.1 s replay grid'):
+            replay_wander([], 5, 0, 100, wander_ppm=2)
+
+
 class WanderLateDiagnosticTests(unittest.TestCase):
     def test_diagnostic_after_the_replay_end_is_recorded_without_changing_states(self):
         items = available(30)

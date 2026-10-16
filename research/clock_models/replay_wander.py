@@ -37,6 +37,8 @@ def replay_wander(items: list[AvailableSample], qpc_hz: int, start: int, end: in
         raise ValueError('Empty replay interval')
     provider = WanderProvider(qpc_hz, wander_ppm=wander_ppm, rate_prior_ppm=rate_prior_ppm,
                               threshold_us=threshold_us, jump_us=jump_us)
+    if int(GRID_STEP_S * qpc_hz) < 1:
+        raise ValueError('QPC frequency too low for the 0.1 s replay grid')
     order = sorted(items, key=lambda s: (s.available_qpc, s.lower_qpc, s.sequence))
     diagnostics = sorted((_diagnostic(d) for d in continuity), key=lambda d: (d['available_qpc'], d['sequence']))
     late_history_skipped, continuity_invalidations, diag_index = [], [], 0

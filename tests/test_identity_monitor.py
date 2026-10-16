@@ -41,6 +41,23 @@ class IdentityMonitorTests(unittest.TestCase):
         self.assertEqual((api.IDENTITY_EVERY_S, api.IDENTITY_MAX_AGE_S, api.IDENTITY_CHECK_DEADLINE_S),
                          (30.0, 60.0, 60.0))
 
+    def test_invalid_timing_parameters_are_rejected(self):
+        for kwargs in (dict(interval_s=-1.0), dict(interval_s=math.nan), dict(max_age_s=0),
+                       dict(max_age_s=math.inf), dict(deadline_s=0), dict(deadline_s=-5.0),
+                       dict(interval_s='30')):
+            with self.subTest(kwargs=kwargs), self.assertRaises(ValueError):
+                api.IdentityMonitor(lambda: None, lambda: 0.0, lambda: 0, **kwargs)
+
+    def test_zero_interval_remains_allowed_for_immediate_checks(self):
+        monitor = api.IdentityMonitor(lambda: None, lambda: 0.0, lambda: 0, interval_s=0.0)
+        self.assertEqual(monitor.interval_s, 0.0)
+
+    def test_wait_idle_rejects_invalid_timeout(self):
+        h = Harness()
+        for bad in (-1.0, math.nan, math.inf, '1'):
+            with self.subTest(timeout=bad), self.assertRaises(ValueError):
+                h.monitor.wait_idle(lambda seconds: None, bad)
+
     def test_starts_on_the_30_second_cadence_and_never_twice_while_running(self):
         h = Harness()
         h.advance(29.99)
