@@ -10,7 +10,7 @@ Find the calls, file names, terms and short strings recorded in this research. T
 
 ## Search
 
-Indexed **386 source files** and **11756 distinct terms**.
+Indexed **389 source files** and **11852 distinct terms**.
 
 The [JSON index](research-index.json) includes Python definitions/calls, C/Java/PowerShell call-shaped tokens, authored short strings and Markdown code terms. Vendor binaries, local artifacts, historical reproduction sources and generated indexes are excluded. Unresolved call-shaped tokens are explicitly labeled.
 
@@ -88,6 +88,7 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [docs/clock-models/diagrams/ftm-reduction.mmd](../../docs/clock-models/diagrams/ftm-reduction.mmd) | `75cab435f2de` |
 | [docs/clock-models/diagrams/packets-timestamp-path.mmd](../../docs/clock-models/diagrams/packets-timestamp-path.mmd) | `4382b7f2c647` |
 | [docs/clock-models/diagrams/uncertainty-timestamp-path.mmd](../../docs/clock-models/diagrams/uncertainty-timestamp-path.mmd) | `e6e28e10885e` |
+| [docs/clock-models/microsecond-feasibility.md](../../docs/clock-models/microsecond-feasibility.md) | `b83971a6d897` |
 | [docs/clock-models/packet-to-clock-map.md](../../docs/clock-models/packet-to-clock-map.md) | `7f0b0b8c3157` |
 | [docs/clock-models/qualcomm-observation-matrix.md](../../docs/clock-models/qualcomm-observation-matrix.md) | `06f1f2683f14` |
 | [docs/clock-models/settled-timestamps.md](../../docs/clock-models/settled-timestamps.md) | `cd90407411e3` |
@@ -241,6 +242,7 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [research/clock_models/beacon_consistency.py](../../research/clock_models/beacon_consistency.py) | `ecee7ff91357` |
 | [research/clock_models/bracket_bound.py](../../research/clock_models/bracket_bound.py) | `eccb6370fe8c` |
 | [research/clock_models/causal_provider.py](../../research/clock_models/causal_provider.py) | `3d9b56e201c8` |
+| [research/clock_models/microsecond_feasibility.py](../../research/clock_models/microsecond_feasibility.py) | `d1d01448489a` |
 | [research/clock_models/rate_bound.py](../../research/clock_models/rate_bound.py) | `01dec62e9bfe` |
 | [research/clock_models/replay_causal_provider.py](../../research/clock_models/replay_causal_provider.py) | `c7c08ff7b316` |
 | [research/clock_models/replay_wander.py](../../research/clock_models/replay_wander.py) | `afc2e09deee7` |
@@ -370,6 +372,7 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [tests/test_lifecycle_evidence.py](../../tests/test_lifecycle_evidence.py) | `a5a8e1a98125` |
 | [tests/test_management_rx_path.py](../../tests/test_management_rx_path.py) | `7d6b16367baf` |
 | [tests/test_management_tsf.py](../../tests/test_management_tsf.py) | `4d910521c97c` |
+| [tests/test_microsecond_feasibility.py](../../tests/test_microsecond_feasibility.py) | `db7b86052dad` |
 | [tests/test_mlo_cache.py](../../tests/test_mlo_cache.py) | `b948ba1080f6` |
 | [tests/test_native_export_contract.py](../../tests/test_native_export_contract.py) | `5276cdc81137` |
 | [tests/test_ndis_evidence.py](../../tests/test_ndis_evidence.py) | `6cbfc9194192` |
