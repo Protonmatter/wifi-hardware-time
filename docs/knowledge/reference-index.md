@@ -10,7 +10,7 @@ Find the calls, file names, terms and short strings recorded in this research. T
 
 ## Search
 
-Indexed **386 source files** and **11756 distinct terms**.
+Indexed **389 source files** and **11948 distinct terms**.
 
 The [JSON index](research-index.json) includes Python definitions/calls, C/Java/PowerShell call-shaped tokens, authored short strings and Markdown code terms. Vendor binaries, local artifacts, historical reproduction sources and generated indexes are excluded. Unresolved call-shaped tokens are explicitly labeled.
 
@@ -167,6 +167,7 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [docs/research-history/results-and-validation.md](../../docs/research-history/results-and-validation.md) | `dfebf9d12be9` |
 | [docs/research-history/source-map.md](../../docs/research-history/source-map.md) | `70c0252285b9` |
 | [docs/research-history/timeline.md](../../docs/research-history/timeline.md) | `b8d233656f12` |
+| [docs/spectrum/iq-analyzer.md](../../docs/spectrum/iq-analyzer.md) | `31962c9cd14f` |
 | [docs/tsf/README.md](../../docs/tsf/README.md) | `977203e6b8a7` |
 | [docs/tsf/action4-completion-and-report-contract.md](../../docs/tsf/action4-completion-and-report-contract.md) | `a4854af408ff` |
 | [docs/tsf/autonomous-management-tsf.md](../../docs/tsf/autonomous-management-tsf.md) | `cef4012cd653` |
@@ -284,6 +285,7 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [research/memory_ring/inspect_packetlog_return.py](../../research/memory_ring/inspect_packetlog_return.py) | `2b2bf5d45eb6` |
 | [research/memory_ring/inspect_timing_boundaries.py](../../research/memory_ring/inspect_timing_boundaries.py) | `2b0afe150ec9` |
 | [research/memory_ring/model_ring_publication.py](../../research/memory_ring/model_ring_publication.py) | `adbf0e478923` |
+| [research/spectrum/analyze_iq.py](../../research/spectrum/analyze_iq.py) | `73fb5a4eb184` |
 | [research/tsf/Build-TsfTraceBytes.ps1](../../research/tsf/Build-TsfTraceBytes.ps1) | `d4f207eee1bc` |
 | [research/tsf/Capture-LatchExperiment.ps1](../../research/tsf/Capture-LatchExperiment.ps1) | `dd61f470c07f` |
 | [research/tsf/Capture-TsfReport.ps1](../../research/tsf/Capture-TsfReport.ps1) | `3229c4b2185e` |
@@ -366,6 +368,7 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [tests/test_hardware_observation.py](../../tests/test_hardware_observation.py) | `373ac4bb5f56` |
 | [tests/test_identity_monitor.py](../../tests/test_identity_monitor.py) | `bbad644e18be` |
 | [tests/test_ihv_queries.py](../../tests/test_ihv_queries.py) | `aea92d30a26e` |
+| [tests/test_iq_spectrum.py](../../tests/test_iq_spectrum.py) | `74aa83fb12c3` |
 | [tests/test_knowledge_index.py](../../tests/test_knowledge_index.py) | `3722eeea4063` |
 | [tests/test_lifecycle_evidence.py](../../tests/test_lifecycle_evidence.py) | `a5a8e1a98125` |
 | [tests/test_management_rx_path.py](../../tests/test_management_rx_path.py) | `7d6b16367baf` |
