@@ -269,6 +269,7 @@ a concrete operation or integration package satisfying the handoff above.
 
 ## Continue or reproduce
 
+- [Replacement timestamp acquisition assessment and offline evidence intake](../clock-models/replacement-timestamp-acquisition.md): no new qualified capture path; Windows OEM latch and instrumented AP are conditional routes, Linux ath9k is a separate research option.
 - [Archive and installed transport evidence](../adapters/qualcomm-archive-transport-findings.md).
 - [Offline qualification and signatures](../evidence/qualification-audit-2026-10-04.md).
 - [Live QUTS enumeration and its limits](../evidence/quts-enumeration-2026-10-04.md).
