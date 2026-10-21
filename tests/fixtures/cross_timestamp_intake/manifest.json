@@ -1,0 +1,37 @@
+{
+  "schema": "wht/cross-timestamp-intake-v1",
+  "provenance": "synthetic",
+  "scope": {
+    "adapter": "synthetic-adapter",
+    "driver_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "firmware": "unknown",
+    "os_build": "synthetic",
+    "host": "synthetic-host",
+    "clock_domain": "unknown"
+  },
+  "qpc_frequency_hz": 10000000,
+  "pairing_limit_us": 3,
+  "references": {
+    "source": {
+      "path": "synthetic-source.txt",
+      "sha256": "786b9ea249beb2332abe34f65db4d2482a82acbef6d5defc76857f58ed1423ec"
+    }
+  },
+  "claims": {
+    "known_read_point": {"basis": "unknown", "statement": "No real event read point", "references": []},
+    "bounded_pairing": {"basis": "unknown", "statement": "Bracket arithmetic only", "references": []},
+    "fresh": {"basis": "unknown", "statement": "No acquired hardware samples", "references": []},
+    "attributable": {"basis": "unknown", "statement": "Synthetic attempt identifiers only", "references": []}
+  },
+  "attempt_accounting": {
+    "idle": {"issued": 1, "reference": "source"},
+    "load": {"issued": 2, "reference": "source"}
+  },
+  "attempts": [
+    {"condition": "idle", "epoch": "synthetic-epoch", "attempt_id": "0", "reference": "source", "status": 0,
+     "qpc_before": 1152921504606846976, "hardware_ticks": 100, "qpc_after": 1152921504606847016},
+    {"condition": "load", "epoch": "synthetic-epoch", "attempt_id": "1", "reference": "source", "status": 0,
+     "qpc_before": 1152921504606847076, "hardware_ticks": 200, "qpc_after": 1152921504606847116},
+    {"condition": "load", "epoch": "synthetic-epoch", "attempt_id": "2", "reference": "source", "status": 23}
+  ]
+}

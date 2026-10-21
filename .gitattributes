@@ -17,3 +17,5 @@ docs/overview/archify-studio/index.html text eol=lf
 docs/overview/archify-studio/static-export-policy.js text eol=lf
 # Archive originals retain their exact Git/source bytes on every platform.
 archive/**/originals/** -text
+# Keep the authored intake fixture's SHA-256 stable across Windows/Linux checkouts.
+tests/fixtures/cross_timestamp_intake/synthetic-source.txt text eol=lf

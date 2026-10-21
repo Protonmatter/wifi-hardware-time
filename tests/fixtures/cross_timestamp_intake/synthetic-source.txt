@@ -1,0 +1,6 @@
+Synthetic NIC/QPC tuples for offline intake demonstration only.
+No hardware was queried and no capture qualification is claimed.
+condition,epoch,attempt_id,status,qpc_before,hardware_ticks,qpc_after
+idle,synthetic-epoch,0,0,1152921504606846976,100,1152921504606847016
+load,synthetic-epoch,1,0,1152921504606847076,200,1152921504606847116
+load,synthetic-epoch,2,23,,,

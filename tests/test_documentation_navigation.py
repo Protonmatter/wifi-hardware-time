@@ -35,7 +35,7 @@ class DocumentationTests(unittest.TestCase):
                     continue
                 file = target.split('#', 1)[0]
                 with self.subTest(document=str(path.relative_to(ROOT)), target=target):
-                    self.assertTrue((path.parent / file).exists())
+                    self.assertTrue((path.parent / file).resolve().exists())
 
     def test_canonical_diagrams_match_overview_embeds(self):
         overview = (ROOT / 'docs/clock-models/packet-to-clock-map.md').read_text(encoding='utf-8')
