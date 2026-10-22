@@ -1,0 +1,6 @@
+{
+  "provenance": "synthetic",
+  "notice": "Authored policy fixture only; not an executable collector or qualified timing policy",
+  "model_kind": "adaptive",
+  "reference_values_used_for_candidate": false
+}

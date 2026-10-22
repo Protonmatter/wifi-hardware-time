@@ -16,6 +16,7 @@ not evidence of the currently installed adapter, driver or running firmware.
 | [Qualcomm/OEM evidence request](qualcomm-oem-evidence-request.md) | OEM support owner and Qualcomm driver/firmware engineering | A source-referenced answer to Q01-Q13, including explicit unknowns and unsupported operations |
 | [AP-side reference design](ap-reference-design.md) | Measurement and Windows timing engineers | A reviewed independent reference chain, clock/event identities and a complete uncertainty ledger |
 | [Acceptance criteria](acceptance-criteria.md) | Evidence reviewer and experiment approver | An evidence-linked decision for each criterion; unfilled or unsupported fields remain blocking |
+| [Machine-readable dossier and validator](machine-readable-dossier.md) | Offline evidence preparer and reviewer | Versioned JSON, source/hash/locator reviews, cutoff and ledger checks, synthetic regressions; qualification flags remain false |
 
 First review the [merged feasibility gates](../microsecond-feasibility.md) and
 [replacement-path assessment](../replacement-timestamp-acquisition.md). Use the
@@ -78,10 +79,11 @@ For saved Windows NIC/QPC tuples, use the existing
 [intake contract](../replacement-timestamp-acquisition.md#offline-evidence-intake).
 The auditor only checks file/record structure and supplied assertions. Its exit 0
 is not Gate 1 acceptance, and its flags must remain false. AP, reference and
-exchange records need their separate dossier; do not relabel them as Windows
-cross-timestamp tuples just to fit the existing schema.
+exchange records use the [separate dossier format](machine-readable-dossier.md);
+do not relabel them as Windows cross-timestamp tuples to fit the existing schema.
 
-Rollback for this package is limited to removing its four documents and added
-navigation lines, then regenerating the knowledge index. There is no endpoint
+Rollback for the document package removes its documents and added navigation
+lines, then regenerates the knowledge index. The dossier implementation has its
+own [removal scope](machine-readable-dossier.md). There is no endpoint
 or runtime state to restore. Commit, publication and sending the request are
 separate actions from preparing it.

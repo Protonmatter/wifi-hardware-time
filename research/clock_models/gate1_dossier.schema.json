@@ -1,0 +1,1863 @@
+{
+  "type": "object",
+  "properties": {
+    "schema": {
+      "const": "wht/gate1-dossier-v1"
+    },
+    "package_id": {
+      "const": "WHT-G1-2026-10-22"
+    },
+    "package_revision": {
+      "const": 1,
+      "type": "integer"
+    },
+    "provenance": {
+      "type": "string",
+      "enum": [
+        "synthetic",
+        "retained_evidence"
+      ]
+    },
+    "stage": {
+      "type": "string",
+      "enum": [
+        "contract_review",
+        "candidate_evidence_review"
+      ]
+    },
+    "scope": {
+      "type": "object",
+      "properties": {
+        "adapter_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "firmware_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "host_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "host_boot_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "os_build": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "candidate_clock_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "reference_clock_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "host_reference_clock_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "ap_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "ap_epoch": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "link_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "clock_domain": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "clock_epoch": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "driver_sha256": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 64,
+          "pattern": "^[0-9a-f]{64}$",
+          "maxLength": 64
+        },
+        "qpc_frequency_hz": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 18446744073709551615
+        }
+      },
+      "required": [
+        "adapter_id",
+        "firmware_id",
+        "host_id",
+        "host_boot_id",
+        "os_build",
+        "candidate_clock_id",
+        "reference_clock_id",
+        "host_reference_clock_id",
+        "ap_id",
+        "ap_epoch",
+        "link_id",
+        "clock_domain",
+        "clock_epoch",
+        "driver_sha256",
+        "qpc_frequency_hz"
+      ],
+      "additionalProperties": false
+    },
+    "references": {
+      "type": "object",
+      "minProperties": 1,
+      "maxProperties": 256,
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "sha256": {
+            "type": "string",
+            "minLength": 64,
+            "pattern": "^[0-9a-f]{64}$",
+            "maxLength": 64
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "synthetic",
+              "retained_evidence",
+              "documentation"
+            ]
+          }
+        },
+        "required": [
+          "path",
+          "sha256",
+          "kind"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "vendor_answers": {
+      "type": "object",
+      "properties": {
+        "Q01": {
+          "$ref": "#/$defs/vendor_review"
+        },
+        "Q02": {
+          "$ref": "#/$defs/vendor_review"
+        },
+        "Q03": {
+          "$ref": "#/$defs/vendor_review"
+        },
+        "Q04": {
+          "$ref": "#/$defs/vendor_review"
+        },
+        "Q05": {
+          "$ref": "#/$defs/vendor_review"
+        },
+        "Q06": {
+          "$ref": "#/$defs/vendor_review"
+        },
+        "Q07": {
+          "$ref": "#/$defs/vendor_review"
+        },
+        "Q08": {
+          "$ref": "#/$defs/vendor_review"
+        },
+        "Q09": {
+          "$ref": "#/$defs/vendor_review"
+        },
+        "Q10": {
+          "$ref": "#/$defs/vendor_review"
+        },
+        "Q11": {
+          "$ref": "#/$defs/vendor_review"
+        },
+        "Q12": {
+          "$ref": "#/$defs/vendor_review"
+        },
+        "Q13": {
+          "$ref": "#/$defs/vendor_review"
+        }
+      },
+      "required": [
+        "Q01",
+        "Q02",
+        "Q03",
+        "Q04",
+        "Q05",
+        "Q06",
+        "Q07",
+        "Q08",
+        "Q09",
+        "Q10",
+        "Q11",
+        "Q12",
+        "Q13"
+      ],
+      "additionalProperties": false
+    },
+    "dossier_reviews": {
+      "type": "object",
+      "properties": {
+        "D01": {
+          "$ref": "#/$defs/criterion_review"
+        },
+        "D02": {
+          "$ref": "#/$defs/criterion_review"
+        },
+        "D03": {
+          "$ref": "#/$defs/criterion_review"
+        },
+        "D04": {
+          "$ref": "#/$defs/criterion_review"
+        },
+        "D05": {
+          "$ref": "#/$defs/criterion_review"
+        },
+        "D06": {
+          "$ref": "#/$defs/criterion_review"
+        },
+        "D07": {
+          "$ref": "#/$defs/criterion_review"
+        },
+        "D08": {
+          "$ref": "#/$defs/criterion_review"
+        }
+      },
+      "required": [
+        "D01",
+        "D02",
+        "D03",
+        "D04",
+        "D05",
+        "D06",
+        "D07",
+        "D08"
+      ],
+      "additionalProperties": false
+    },
+    "gate1_reviews": {
+      "type": "object",
+      "properties": {
+        "G1-R": {
+          "$ref": "#/$defs/criterion_review"
+        },
+        "G1-P": {
+          "$ref": "#/$defs/criterion_review"
+        },
+        "G1-F": {
+          "$ref": "#/$defs/criterion_review"
+        },
+        "G1-A": {
+          "$ref": "#/$defs/criterion_review"
+        }
+      },
+      "required": [
+        "G1-R",
+        "G1-P",
+        "G1-F",
+        "G1-A"
+      ],
+      "additionalProperties": false
+    },
+    "interfaces": {
+      "type": "object",
+      "properties": {
+        "I-CQ": {
+          "type": "object",
+          "properties": {
+            "from": {
+              "const": "C"
+            },
+            "to": {
+              "const": "Q"
+            },
+            "status": {
+              "type": "string",
+              "enum": [
+                "documented",
+                "measured",
+                "unknown",
+                "unsupported"
+              ]
+            },
+            "bound_ns": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 0,
+              "maximum": 18446744073709551615
+            },
+            "independent_of_candidate": {
+              "type": [
+                "boolean",
+                "null"
+              ]
+            },
+            "citations": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "reference": {
+                    "type": "string",
+                    "minLength": 1,
+                    "pattern": "\\S"
+                  },
+                  "locator": {
+                    "type": "string",
+                    "minLength": 1,
+                    "pattern": "\\S"
+                  }
+                },
+                "required": [
+                  "reference",
+                  "locator"
+                ],
+                "additionalProperties": false
+              },
+              "minItems": 0,
+              "maxItems": 10000
+            }
+          },
+          "required": [
+            "from",
+            "to",
+            "status",
+            "bound_ns",
+            "independent_of_candidate",
+            "citations"
+          ],
+          "additionalProperties": false
+        },
+        "I-CA": {
+          "type": "object",
+          "properties": {
+            "from": {
+              "const": "C"
+            },
+            "to": {
+              "const": "A"
+            },
+            "status": {
+              "type": "string",
+              "enum": [
+                "documented",
+                "measured",
+                "unknown",
+                "unsupported"
+              ]
+            },
+            "bound_ns": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 0,
+              "maximum": 18446744073709551615
+            },
+            "independent_of_candidate": {
+              "type": [
+                "boolean",
+                "null"
+              ]
+            },
+            "citations": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "reference": {
+                    "type": "string",
+                    "minLength": 1,
+                    "pattern": "\\S"
+                  },
+                  "locator": {
+                    "type": "string",
+                    "minLength": 1,
+                    "pattern": "\\S"
+                  }
+                },
+                "required": [
+                  "reference",
+                  "locator"
+                ],
+                "additionalProperties": false
+              },
+              "minItems": 0,
+              "maxItems": 10000
+            }
+          },
+          "required": [
+            "from",
+            "to",
+            "status",
+            "bound_ns",
+            "independent_of_candidate",
+            "citations"
+          ],
+          "additionalProperties": false
+        },
+        "I-AR": {
+          "type": "object",
+          "properties": {
+            "from": {
+              "const": "A"
+            },
+            "to": {
+              "const": "R"
+            },
+            "status": {
+              "type": "string",
+              "enum": [
+                "documented",
+                "measured",
+                "unknown",
+                "unsupported"
+              ]
+            },
+            "bound_ns": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 0,
+              "maximum": 18446744073709551615
+            },
+            "independent_of_candidate": {
+              "type": [
+                "boolean",
+                "null"
+              ]
+            },
+            "citations": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "reference": {
+                    "type": "string",
+                    "minLength": 1,
+                    "pattern": "\\S"
+                  },
+                  "locator": {
+                    "type": "string",
+                    "minLength": 1,
+                    "pattern": "\\S"
+                  }
+                },
+                "required": [
+                  "reference",
+                  "locator"
+                ],
+                "additionalProperties": false
+              },
+              "minItems": 0,
+              "maxItems": 10000
+            }
+          },
+          "required": [
+            "from",
+            "to",
+            "status",
+            "bound_ns",
+            "independent_of_candidate",
+            "citations"
+          ],
+          "additionalProperties": false
+        },
+        "I-HR": {
+          "type": "object",
+          "properties": {
+            "from": {
+              "const": "H"
+            },
+            "to": {
+              "const": "R"
+            },
+            "status": {
+              "type": "string",
+              "enum": [
+                "documented",
+                "measured",
+                "unknown",
+                "unsupported"
+              ]
+            },
+            "bound_ns": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 0,
+              "maximum": 18446744073709551615
+            },
+            "independent_of_candidate": {
+              "type": [
+                "boolean",
+                "null"
+              ]
+            },
+            "citations": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "reference": {
+                    "type": "string",
+                    "minLength": 1,
+                    "pattern": "\\S"
+                  },
+                  "locator": {
+                    "type": "string",
+                    "minLength": 1,
+                    "pattern": "\\S"
+                  }
+                },
+                "required": [
+                  "reference",
+                  "locator"
+                ],
+                "additionalProperties": false
+              },
+              "minItems": 0,
+              "maxItems": 10000
+            }
+          },
+          "required": [
+            "from",
+            "to",
+            "status",
+            "bound_ns",
+            "independent_of_candidate",
+            "citations"
+          ],
+          "additionalProperties": false
+        },
+        "I-HQ": {
+          "type": "object",
+          "properties": {
+            "from": {
+              "const": "H"
+            },
+            "to": {
+              "const": "Q"
+            },
+            "status": {
+              "type": "string",
+              "enum": [
+                "documented",
+                "measured",
+                "unknown",
+                "unsupported"
+              ]
+            },
+            "bound_ns": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 0,
+              "maximum": 18446744073709551615
+            },
+            "independent_of_candidate": {
+              "type": [
+                "boolean",
+                "null"
+              ]
+            },
+            "citations": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "reference": {
+                    "type": "string",
+                    "minLength": 1,
+                    "pattern": "\\S"
+                  },
+                  "locator": {
+                    "type": "string",
+                    "minLength": 1,
+                    "pattern": "\\S"
+                  }
+                },
+                "required": [
+                  "reference",
+                  "locator"
+                ],
+                "additionalProperties": false
+              },
+              "minItems": 0,
+              "maxItems": 10000
+            }
+          },
+          "required": [
+            "from",
+            "to",
+            "status",
+            "bound_ns",
+            "independent_of_candidate",
+            "citations"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "I-CQ",
+        "I-CA",
+        "I-AR",
+        "I-HR",
+        "I-HQ"
+      ],
+      "additionalProperties": false
+    },
+    "plan": {
+      "type": "object",
+      "properties": {
+        "max_requests_per_condition": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1,
+          "maximum": 18446744073709551615
+        },
+        "max_duration_s": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1,
+          "maximum": 18446744073709551615
+        },
+        "max_concurrency": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1,
+          "maximum": 18446744073709551615
+        },
+        "minimum_interval_ms": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1,
+          "maximum": 18446744073709551615
+        },
+        "call_timeout_ms": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1,
+          "maximum": 18446744073709551615
+        },
+        "cancel_timeout_ms": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1,
+          "maximum": 18446744073709551615
+        },
+        "close_timeout_ms": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1,
+          "maximum": 18446744073709551615
+        },
+        "max_return_latency_ms": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1,
+          "maximum": 18446744073709551615
+        },
+        "operation": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "idle_definition": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "load_definition": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "stop_criteria": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "rollback": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "operator": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "publication_mode": {
+          "type": "string",
+          "enum": [
+            "immediate",
+            "settled"
+          ]
+        },
+        "model_kind": {
+          "type": "string",
+          "enum": [
+            "static",
+            "adaptive"
+          ]
+        },
+        "artifact_references": {
+          "type": "object",
+          "properties": {
+            "collector_source": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            "collector_build": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            "collector_config": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            "policy": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "minLength": 1,
+              "pattern": "\\S"
+            }
+          },
+          "required": [
+            "collector_source",
+            "collector_build",
+            "collector_config",
+            "policy"
+          ],
+          "additionalProperties": false
+        },
+        "request_ledger_layer": {
+          "type": "string",
+          "enum": [
+            "api_call",
+            "driver_operation",
+            "firmware_event"
+          ]
+        },
+        "policy_sha256": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 64,
+          "pattern": "^[0-9a-f]{64}$",
+          "maxLength": 64
+        },
+        "training_freeze_qpc": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1,
+          "maximum": 18446744073709551615
+        },
+        "reference_values_used_for_candidate": {
+          "type": "boolean"
+        },
+        "rate_bound_ppm": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1,
+          "maximum": 18446744073709551615
+        },
+        "state_effects": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "minItems": 1,
+          "maxItems": 10000
+        }
+      },
+      "required": [
+        "max_requests_per_condition",
+        "max_duration_s",
+        "max_concurrency",
+        "minimum_interval_ms",
+        "call_timeout_ms",
+        "cancel_timeout_ms",
+        "close_timeout_ms",
+        "max_return_latency_ms",
+        "operation",
+        "idle_definition",
+        "load_definition",
+        "stop_criteria",
+        "rollback",
+        "operator",
+        "publication_mode",
+        "model_kind",
+        "artifact_references",
+        "request_ledger_layer",
+        "policy_sha256",
+        "training_freeze_qpc",
+        "reference_values_used_for_candidate",
+        "rate_bound_ppm",
+        "state_effects"
+      ],
+      "additionalProperties": false
+    },
+    "budget": {
+      "type": "object",
+      "properties": {
+        "proposed_ceilings_ns": {
+          "type": "object",
+          "properties": {
+            "event_placement_ns": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 18446744073709551615
+            },
+            "pairing_ns": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 18446744073709551615
+            },
+            "rate_error_times_age_ns": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 18446744073709551615
+            },
+            "asymmetry_ns": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 18446744073709551615
+            },
+            "epoch_changes_ns": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 18446744073709551615
+            },
+            "reference_ns": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 18446744073709551615
+            }
+          },
+          "required": [
+            "event_placement_ns",
+            "pairing_ns",
+            "rate_error_times_age_ns",
+            "asymmetry_ns",
+            "epoch_changes_ns",
+            "reference_ns"
+          ],
+          "additionalProperties": false
+        },
+        "actual_bounds_ns": {
+          "type": "object",
+          "properties": {
+            "event_placement_ns": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 0,
+              "maximum": 18446744073709551615
+            },
+            "pairing_ns": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 0,
+              "maximum": 18446744073709551615
+            },
+            "rate_error_times_age_ns": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 0,
+              "maximum": 18446744073709551615
+            },
+            "asymmetry_ns": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 0,
+              "maximum": 18446744073709551615
+            },
+            "epoch_changes_ns": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 0,
+              "maximum": 18446744073709551615
+            },
+            "reference_ns": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 0,
+              "maximum": 18446744073709551615
+            }
+          },
+          "required": [
+            "event_placement_ns",
+            "pairing_ns",
+            "rate_error_times_age_ns",
+            "asymmetry_ns",
+            "epoch_changes_ns",
+            "reference_ns"
+          ],
+          "additionalProperties": false
+        },
+        "bound_evidence": {
+          "type": "object",
+          "properties": {
+            "event_placement_ns": {
+              "type": "object",
+              "properties": {
+                "citations": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "reference": {
+                        "type": "string",
+                        "minLength": 1,
+                        "pattern": "\\S"
+                      },
+                      "locator": {
+                        "type": "string",
+                        "minLength": 1,
+                        "pattern": "\\S"
+                      }
+                    },
+                    "required": [
+                      "reference",
+                      "locator"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "minItems": 0,
+                  "maxItems": 10000
+                },
+                "justification": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "minLength": 1,
+                  "pattern": "\\S"
+                }
+              },
+              "required": [
+                "citations",
+                "justification"
+              ],
+              "additionalProperties": false
+            },
+            "pairing_ns": {
+              "type": "object",
+              "properties": {
+                "citations": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "reference": {
+                        "type": "string",
+                        "minLength": 1,
+                        "pattern": "\\S"
+                      },
+                      "locator": {
+                        "type": "string",
+                        "minLength": 1,
+                        "pattern": "\\S"
+                      }
+                    },
+                    "required": [
+                      "reference",
+                      "locator"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "minItems": 0,
+                  "maxItems": 10000
+                },
+                "justification": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "minLength": 1,
+                  "pattern": "\\S"
+                }
+              },
+              "required": [
+                "citations",
+                "justification"
+              ],
+              "additionalProperties": false
+            },
+            "rate_error_times_age_ns": {
+              "type": "object",
+              "properties": {
+                "citations": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "reference": {
+                        "type": "string",
+                        "minLength": 1,
+                        "pattern": "\\S"
+                      },
+                      "locator": {
+                        "type": "string",
+                        "minLength": 1,
+                        "pattern": "\\S"
+                      }
+                    },
+                    "required": [
+                      "reference",
+                      "locator"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "minItems": 0,
+                  "maxItems": 10000
+                },
+                "justification": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "minLength": 1,
+                  "pattern": "\\S"
+                }
+              },
+              "required": [
+                "citations",
+                "justification"
+              ],
+              "additionalProperties": false
+            },
+            "asymmetry_ns": {
+              "type": "object",
+              "properties": {
+                "citations": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "reference": {
+                        "type": "string",
+                        "minLength": 1,
+                        "pattern": "\\S"
+                      },
+                      "locator": {
+                        "type": "string",
+                        "minLength": 1,
+                        "pattern": "\\S"
+                      }
+                    },
+                    "required": [
+                      "reference",
+                      "locator"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "minItems": 0,
+                  "maxItems": 10000
+                },
+                "justification": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "minLength": 1,
+                  "pattern": "\\S"
+                }
+              },
+              "required": [
+                "citations",
+                "justification"
+              ],
+              "additionalProperties": false
+            },
+            "epoch_changes_ns": {
+              "type": "object",
+              "properties": {
+                "citations": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "reference": {
+                        "type": "string",
+                        "minLength": 1,
+                        "pattern": "\\S"
+                      },
+                      "locator": {
+                        "type": "string",
+                        "minLength": 1,
+                        "pattern": "\\S"
+                      }
+                    },
+                    "required": [
+                      "reference",
+                      "locator"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "minItems": 0,
+                  "maxItems": 10000
+                },
+                "justification": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "minLength": 1,
+                  "pattern": "\\S"
+                }
+              },
+              "required": [
+                "citations",
+                "justification"
+              ],
+              "additionalProperties": false
+            },
+            "reference_ns": {
+              "type": "object",
+              "properties": {
+                "citations": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "reference": {
+                        "type": "string",
+                        "minLength": 1,
+                        "pattern": "\\S"
+                      },
+                      "locator": {
+                        "type": "string",
+                        "minLength": 1,
+                        "pattern": "\\S"
+                      }
+                    },
+                    "required": [
+                      "reference",
+                      "locator"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "minItems": 0,
+                  "maxItems": 10000
+                },
+                "justification": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "minLength": 1,
+                  "pattern": "\\S"
+                }
+              },
+              "required": [
+                "citations",
+                "justification"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "event_placement_ns",
+            "pairing_ns",
+            "rate_error_times_age_ns",
+            "asymmetry_ns",
+            "epoch_changes_ns",
+            "reference_ns"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "proposed_ceilings_ns",
+        "actual_bounds_ns",
+        "bound_evidence"
+      ],
+      "additionalProperties": false
+    },
+    "ledger_snapshots": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "condition": {
+            "type": "string",
+            "enum": [
+              "idle",
+              "load"
+            ]
+          },
+          "session_id": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "epoch": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "layer": {
+            "type": "string",
+            "enum": [
+              "api_call",
+              "driver_operation",
+              "firmware_event"
+            ]
+          },
+          "snapshot_qpc": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 18446744073709551615
+          },
+          "issued": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 0,
+            "maximum": 18446744073709551615
+          },
+          "completed_success": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 0,
+            "maximum": 18446744073709551615
+          },
+          "completed_failure": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 0,
+            "maximum": 18446744073709551615
+          },
+          "confirmed_cancelled": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 0,
+            "maximum": 18446744073709551615
+          },
+          "unresolved": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 0,
+            "maximum": 18446744073709551615
+          },
+          "host_timeouts": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 0,
+            "maximum": 18446744073709551615
+          },
+          "export_lost": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 0,
+            "maximum": 18446744073709551615
+          },
+          "firmware_lost": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 0,
+            "maximum": 18446744073709551615
+          },
+          "duplicates": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 0,
+            "maximum": 18446744073709551615
+          },
+          "foreign": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 0,
+            "maximum": 18446744073709551615
+          },
+          "timing_invalid": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 0,
+            "maximum": 18446744073709551615
+          },
+          "citations": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "reference": {
+                  "type": "string",
+                  "minLength": 1,
+                  "pattern": "\\S"
+                },
+                "locator": {
+                  "type": "string",
+                  "minLength": 1,
+                  "pattern": "\\S"
+                }
+              },
+              "required": [
+                "reference",
+                "locator"
+              ],
+              "additionalProperties": false
+            },
+            "minItems": 0,
+            "maxItems": 10000
+          }
+        },
+        "required": [
+          "condition",
+          "session_id",
+          "epoch",
+          "layer",
+          "snapshot_qpc",
+          "issued",
+          "completed_success",
+          "completed_failure",
+          "confirmed_cancelled",
+          "unresolved",
+          "host_timeouts",
+          "export_lost",
+          "firmware_lost",
+          "duplicates",
+          "foreign",
+          "timing_invalid",
+          "citations"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0,
+      "maxItems": 10000
+    },
+    "comparisons": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "condition": {
+            "type": "string",
+            "enum": [
+              "idle",
+              "load"
+            ]
+          },
+          "session_id": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "epoch": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "ledger_layer": {
+            "type": "string",
+            "enum": [
+              "api_call",
+              "driver_operation",
+              "firmware_event"
+            ]
+          },
+          "event_qpc": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 18446744073709551615
+          },
+          "capture_qpc_lower": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 18446744073709551615
+          },
+          "capture_qpc_upper": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 18446744073709551615
+          },
+          "available_qpc": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 18446744073709551615
+          },
+          "evidence_cutoff_qpc": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 18446744073709551615
+          },
+          "returned_qpc": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 18446744073709551615
+          },
+          "deadline_qpc": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 18446744073709551615
+          },
+          "raw_hardware_ticks": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 18446744073709551615
+          },
+          "capture_error_bound_ns": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 0,
+            "maximum": 18446744073709551615
+          },
+          "hidden_age_bound_ns": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 0,
+            "maximum": 18446744073709551615
+          },
+          "admitted": {
+            "type": "boolean"
+          },
+          "reason": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "citations": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "reference": {
+                  "type": "string",
+                  "minLength": 1,
+                  "pattern": "\\S"
+                },
+                "locator": {
+                  "type": "string",
+                  "minLength": 1,
+                  "pattern": "\\S"
+                }
+              },
+              "required": [
+                "reference",
+                "locator"
+              ],
+              "additionalProperties": false
+            },
+            "minItems": 0,
+            "maxItems": 10000
+          }
+        },
+        "required": [
+          "id",
+          "condition",
+          "session_id",
+          "epoch",
+          "ledger_layer",
+          "event_qpc",
+          "capture_qpc_lower",
+          "capture_qpc_upper",
+          "available_qpc",
+          "evidence_cutoff_qpc",
+          "returned_qpc",
+          "deadline_qpc",
+          "raw_hardware_ticks",
+          "capture_error_bound_ns",
+          "hidden_age_bound_ns",
+          "admitted",
+          "reason",
+          "citations"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0,
+      "maxItems": 10000
+    }
+  },
+  "required": [
+    "schema",
+    "package_id",
+    "package_revision",
+    "provenance",
+    "stage",
+    "scope",
+    "references",
+    "vendor_answers",
+    "dossier_reviews",
+    "gate1_reviews",
+    "interfaces",
+    "plan",
+    "budget",
+    "ledger_snapshots",
+    "comparisons"
+  ],
+  "additionalProperties": false,
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:wht:gate1-dossier-v1",
+  "title": "Gate 1 offline evidence dossier v1",
+  "$defs": {
+    "vendor_review": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "established",
+            "unsupported",
+            "unknown",
+            "not_applicable"
+          ]
+        },
+        "basis": {
+          "type": "string",
+          "enum": [
+            "contract",
+            "static",
+            "measurement",
+            "synthetic",
+            "unknown"
+          ]
+        },
+        "statement": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "reviewer": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "reviewed_on": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "citations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "reference": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "\\S"
+              },
+              "locator": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "\\S"
+              }
+            },
+            "required": [
+              "reference",
+              "locator"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 0,
+          "maxItems": 10000
+        },
+        "owner": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "open_action": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1,
+          "pattern": "\\S"
+        }
+      },
+      "required": [
+        "status",
+        "basis",
+        "statement",
+        "reviewer",
+        "reviewed_on",
+        "citations",
+        "owner",
+        "open_action"
+      ],
+      "additionalProperties": false
+    },
+    "criterion_review": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "met",
+            "not_met",
+            "unknown"
+          ]
+        },
+        "basis": {
+          "type": "string",
+          "enum": [
+            "contract",
+            "static",
+            "measurement",
+            "synthetic",
+            "unknown"
+          ]
+        },
+        "statement": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "reviewer": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "reviewed_on": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "citations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "reference": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "\\S"
+              },
+              "locator": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "\\S"
+              }
+            },
+            "required": [
+              "reference",
+              "locator"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 0,
+          "maxItems": 10000
+        },
+        "owner": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "open_action": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1,
+          "pattern": "\\S"
+        }
+      },
+      "required": [
+        "status",
+        "basis",
+        "statement",
+        "reviewer",
+        "reviewed_on",
+        "citations",
+        "owner",
+        "open_action"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

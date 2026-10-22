@@ -10,7 +10,7 @@ Find the calls, file names, terms and short strings recorded in this research. T
 
 ## Search
 
-Indexed **396 source files** and **12050 distinct terms**.
+Indexed **400 source files** and **12457 distinct terms**.
 
 The [JSON index](research-index.json) includes Python definitions/calls, C/Java/PowerShell call-shaped tokens, authored short strings and Markdown code terms. Vendor binaries, local artifacts, historical reproduction sources and generated indexes are excluded. Unresolved call-shaped tokens are explicitly labeled.
 
@@ -88,9 +88,10 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [docs/clock-models/diagrams/ftm-reduction.mmd](../../docs/clock-models/diagrams/ftm-reduction.mmd) | `75cab435f2de` |
 | [docs/clock-models/diagrams/packets-timestamp-path.mmd](../../docs/clock-models/diagrams/packets-timestamp-path.mmd) | `4382b7f2c647` |
 | [docs/clock-models/diagrams/uncertainty-timestamp-path.mmd](../../docs/clock-models/diagrams/uncertainty-timestamp-path.mmd) | `e6e28e10885e` |
-| [docs/clock-models/gate1-reopening/README.md](../../docs/clock-models/gate1-reopening/README.md) | `7b240be2c8de` |
+| [docs/clock-models/gate1-reopening/README.md](../../docs/clock-models/gate1-reopening/README.md) | `d8b21e48cdca` |
 | [docs/clock-models/gate1-reopening/acceptance-criteria.md](../../docs/clock-models/gate1-reopening/acceptance-criteria.md) | `788ac095244a` |
 | [docs/clock-models/gate1-reopening/ap-reference-design.md](../../docs/clock-models/gate1-reopening/ap-reference-design.md) | `43e5919e7b29` |
+| [docs/clock-models/gate1-reopening/machine-readable-dossier.md](../../docs/clock-models/gate1-reopening/machine-readable-dossier.md) | `e65cf0f68c67` |
 | [docs/clock-models/gate1-reopening/qualcomm-oem-evidence-request.md](../../docs/clock-models/gate1-reopening/qualcomm-oem-evidence-request.md) | `6ba1c2d917f1` |
 | [docs/clock-models/microsecond-feasibility.md](../../docs/clock-models/microsecond-feasibility.md) | `b83971a6d897` |
 | [docs/clock-models/packet-to-clock-map.md](../../docs/clock-models/packet-to-clock-map.md) | `7f0b0b8c3157` |
@@ -126,7 +127,7 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [docs/ftm/ftm-result-provenance.md](../../docs/ftm/ftm-result-provenance.md) | `70daef4b8aeb` |
 | [docs/glossary.md](../../docs/glossary.md) | `a36590887ee7` |
 | [docs/knowledge/assumptions-and-corrections.md](../../docs/knowledge/assumptions-and-corrections.md) | `a1007fa9dbdb` |
-| [docs/knowledge/current-findings.md](../../docs/knowledge/current-findings.md) | `5e7123857476` |
+| [docs/knowledge/current-findings.md](../../docs/knowledge/current-findings.md) | `9d691e2e354a` |
 | [docs/knowledge/interface-directory.md](../../docs/knowledge/interface-directory.md) | `f817301094b7` |
 | [docs/knowledge/refresh-validation.md](../../docs/knowledge/refresh-validation.md) | `47f19bc9a6f2` |
 | [docs/knowledge/workflow-diagrams.md](../../docs/knowledge/workflow-diagrams.md) | `210453d7d5c3` |
@@ -240,7 +241,7 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [research/adapters/package_tools/Read-TypeLibrary.ps1](../../research/adapters/package_tools/Read-TypeLibrary.ps1) | `09fde4ca4dca` |
 | [research/adapters/package_tools/expand_qpst.py](../../research/adapters/package_tools/expand_qpst.py) | `281d00e4f129` |
 | [research/adapters/package_tools/inspect_files.py](../../research/adapters/package_tools/inspect_files.py) | `fa1bc578c3fb` |
-| [research/clock_models/README.md](../../research/clock_models/README.md) | `5f515b9be966` |
+| [research/clock_models/README.md](../../research/clock_models/README.md) | `a97c3c695823` |
 | [research/clock_models/analyze_bound_run.py](../../research/clock_models/analyze_bound_run.py) | `aa4ffeed8f32` |
 | [research/clock_models/analyze_clock_pairing_hypothesis.py](../../research/clock_models/analyze_clock_pairing_hypothesis.py) | `4042e4bbaad5` |
 | [research/clock_models/analyze_observation_quality.py](../../research/clock_models/analyze_observation_quality.py) | `eb5263987e77` |
@@ -248,6 +249,7 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [research/clock_models/bracket_bound.py](../../research/clock_models/bracket_bound.py) | `eccb6370fe8c` |
 | [research/clock_models/causal_provider.py](../../research/clock_models/causal_provider.py) | `3d9b56e201c8` |
 | [research/clock_models/cross_timestamp_intake.py](../../research/clock_models/cross_timestamp_intake.py) | `8ebf11525b25` |
+| [research/clock_models/gate1_dossier.py](../../research/clock_models/gate1_dossier.py) | `2c55b68a37f4` |
 | [research/clock_models/microsecond_feasibility.py](../../research/clock_models/microsecond_feasibility.py) | `d1d01448489a` |
 | [research/clock_models/rate_bound.py](../../research/clock_models/rate_bound.py) | `01dec62e9bfe` |
 | [research/clock_models/replay_causal_provider.py](../../research/clock_models/replay_causal_provider.py) | `c7c08ff7b316` |
@@ -337,6 +339,7 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [tests/Test-QutsRegistryHelpers.ps1](../../tests/Test-QutsRegistryHelpers.ps1) | `620cf9862868` |
 | [tests/Test-ScanContextSummary.ps1](../../tests/Test-ScanContextSummary.ps1) | `84ed8746f69b` |
 | [tests/Test-WifiPathHelpers.ps1](../../tests/Test-WifiPathHelpers.ps1) | `63b23d5444f5` |
+| [tests/fixtures/gate1_dossier/README.md](../../tests/fixtures/gate1_dossier/README.md) | `7d414a89807e` |
 | [tests/native_ftm_result.c](../../tests/native_ftm_result.c) | `e23553339699` |
 | [tests/native_raw_event_broker.c](../../tests/native_raw_event_broker.c) | `60ccd27fec3d` |
 | [tests/native_timestamp_export.c](../../tests/native_timestamp_export.c) | `c8202461af14` |
@@ -372,6 +375,7 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [tests/test_ftm_ingress.py](../../tests/test_ftm_ingress.py) | `e24f1ce27c6e` |
 | [tests/test_ftm_response.py](../../tests/test_ftm_response.py) | `d84a9c2897a8` |
 | [tests/test_ftm_selection.py](../../tests/test_ftm_selection.py) | `0a0f6a22f67c` |
+| [tests/test_gate1_dossier.py](../../tests/test_gate1_dossier.py) | `fe46434e8375` |
 | [tests/test_hardware_observation.py](../../tests/test_hardware_observation.py) | `373ac4bb5f56` |
 | [tests/test_identity_monitor.py](../../tests/test_identity_monitor.py) | `bbad644e18be` |
 | [tests/test_ihv_queries.py](../../tests/test_ihv_queries.py) | `aea92d30a26e` |
