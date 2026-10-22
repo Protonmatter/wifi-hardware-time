@@ -9,6 +9,7 @@ A counter value becomes useful time only when its clock, event and conversion ar
 ## Documents
 
 - [Microsecond-class feasibility gates](microsecond-feasibility.md) and [replacement acquisition options and offline intake](replacement-timestamp-acquisition.md).
+- [Next offline Gate 1 work package: OEM evidence request, AP reference design and acceptance criteria](gate1-reopening/README.md).
 - [Current mathematics: rate envelopes, availability, settlement and affine polygon](tsf-mathematics.md).
 - [Persistent sampler live smoke and interpretation](../acquisition/persistent-tsf-smoke-2026-10-08.md).
 - [Next research, implementation and testing gates](../overview/persistent-tsf-next-steps.md).

@@ -10,7 +10,7 @@ Find the calls, file names, terms and short strings recorded in this research. T
 
 ## Search
 
-Indexed **392 source files** and **12036 distinct terms**.
+Indexed **396 source files** and **12050 distinct terms**.
 
 The [JSON index](research-index.json) includes Python definitions/calls, C/Java/PowerShell call-shaped tokens, authored short strings and Markdown code terms. Vendor binaries, local artifacts, historical reproduction sources and generated indexes are excluded. Unresolved call-shaped tokens are explicitly labeled.
 
@@ -81,13 +81,17 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [docs/adapters/static-inspection-runbook.md](../../docs/adapters/static-inspection-runbook.md) | `e3a4f628a8bc` |
 | [docs/adapters/windows-bss-host-time.md](../../docs/adapters/windows-bss-host-time.md) | `54128af75401` |
 | [docs/adapters/wlanlib-dispatch-and-completion.md](../../docs/adapters/wlanlib-dispatch-and-completion.md) | `03169af20a5f` |
-| [docs/clock-models/README.md](../../docs/clock-models/README.md) | `5a7c25b075f8` |
+| [docs/clock-models/README.md](../../docs/clock-models/README.md) | `91fdcb852d1f` |
 | [docs/clock-models/causal-provider-replay.md](../../docs/clock-models/causal-provider-replay.md) | `68208a1f64c2` |
 | [docs/clock-models/clock-relationship-investigation.md](../../docs/clock-models/clock-relationship-investigation.md) | `b36e445cffba` |
 | [docs/clock-models/counter-rate-identifiability.md](../../docs/clock-models/counter-rate-identifiability.md) | `ef3e433be864` |
 | [docs/clock-models/diagrams/ftm-reduction.mmd](../../docs/clock-models/diagrams/ftm-reduction.mmd) | `75cab435f2de` |
 | [docs/clock-models/diagrams/packets-timestamp-path.mmd](../../docs/clock-models/diagrams/packets-timestamp-path.mmd) | `4382b7f2c647` |
 | [docs/clock-models/diagrams/uncertainty-timestamp-path.mmd](../../docs/clock-models/diagrams/uncertainty-timestamp-path.mmd) | `e6e28e10885e` |
+| [docs/clock-models/gate1-reopening/README.md](../../docs/clock-models/gate1-reopening/README.md) | `7b240be2c8de` |
+| [docs/clock-models/gate1-reopening/acceptance-criteria.md](../../docs/clock-models/gate1-reopening/acceptance-criteria.md) | `788ac095244a` |
+| [docs/clock-models/gate1-reopening/ap-reference-design.md](../../docs/clock-models/gate1-reopening/ap-reference-design.md) | `43e5919e7b29` |
+| [docs/clock-models/gate1-reopening/qualcomm-oem-evidence-request.md](../../docs/clock-models/gate1-reopening/qualcomm-oem-evidence-request.md) | `6ba1c2d917f1` |
 | [docs/clock-models/microsecond-feasibility.md](../../docs/clock-models/microsecond-feasibility.md) | `b83971a6d897` |
 | [docs/clock-models/packet-to-clock-map.md](../../docs/clock-models/packet-to-clock-map.md) | `7f0b0b8c3157` |
 | [docs/clock-models/qualcomm-observation-matrix.md](../../docs/clock-models/qualcomm-observation-matrix.md) | `06f1f2683f14` |
@@ -122,7 +126,7 @@ Hashes use UTF-8 text with LF newlines so the navigation index is portable acros
 | [docs/ftm/ftm-result-provenance.md](../../docs/ftm/ftm-result-provenance.md) | `70daef4b8aeb` |
 | [docs/glossary.md](../../docs/glossary.md) | `a36590887ee7` |
 | [docs/knowledge/assumptions-and-corrections.md](../../docs/knowledge/assumptions-and-corrections.md) | `a1007fa9dbdb` |
-| [docs/knowledge/current-findings.md](../../docs/knowledge/current-findings.md) | `757fbab6c467` |
+| [docs/knowledge/current-findings.md](../../docs/knowledge/current-findings.md) | `5e7123857476` |
 | [docs/knowledge/interface-directory.md](../../docs/knowledge/interface-directory.md) | `f817301094b7` |
 | [docs/knowledge/refresh-validation.md](../../docs/knowledge/refresh-validation.md) | `47f19bc9a6f2` |
 | [docs/knowledge/workflow-diagrams.md](../../docs/knowledge/workflow-diagrams.md) | `210453d7d5c3` |
