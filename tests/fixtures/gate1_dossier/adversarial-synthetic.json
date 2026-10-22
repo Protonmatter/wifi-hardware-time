@@ -1,0 +1,662 @@
+{
+  "schema": "wht/gate1-dossier-v1",
+  "package_id": "WHT-G1-2026-10-22",
+  "package_revision": 1,
+  "provenance": "synthetic",
+  "stage": "candidate_evidence_review",
+  "scope": {
+    "adapter_id": "synthetic-adapter_id",
+    "firmware_id": "synthetic-firmware_id",
+    "host_id": "synthetic-host_id",
+    "host_boot_id": "synthetic-host_boot_id",
+    "os_build": "synthetic-os_build",
+    "candidate_clock_id": "synthetic-candidate_clock_id",
+    "reference_clock_id": "synthetic-reference_clock_id",
+    "host_reference_clock_id": "synthetic-host_reference_clock_id",
+    "ap_id": "synthetic-ap_id",
+    "ap_epoch": "synthetic-ap_epoch",
+    "link_id": "synthetic-link_id",
+    "clock_domain": "synthetic-clock_domain",
+    "clock_epoch": "synthetic-clock_epoch",
+    "driver_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "qpc_frequency_hz": 10000000
+  },
+  "references": {
+    "source": {
+      "path": "source.json",
+      "sha256": "783076a85e111726b1a706639ad27d049060d812bea88e715163a375424f8c64",
+      "kind": "synthetic"
+    },
+    "policy": {
+      "path": "policy.json",
+      "sha256": "3ad75ba5a28c75448a962535594fede4be778d0465bd2ec8c7ef37c9b3bfc598",
+      "kind": "synthetic"
+    }
+  },
+  "vendor_answers": {
+    "Q01": {
+      "status": "established",
+      "basis": "synthetic",
+      "statement": "Authored synthetic assertion only",
+      "reviewer": "synthetic-reviewer",
+      "reviewed_on": "2026-10-22",
+      "citations": [
+        {
+          "reference": "source",
+          "locator": "/vendor_answers/Q01"
+        }
+      ],
+      "owner": "synthetic-owner",
+      "open_action": null
+    },
+    "Q02": {
+      "status": "established",
+      "basis": "synthetic",
+      "statement": "Authored synthetic assertion only",
+      "reviewer": "synthetic-reviewer",
+      "reviewed_on": "2026-10-22",
+      "citations": [
+        {
+          "reference": "source",
+          "locator": "/vendor_answers/Q02"
+        }
+      ],
+      "owner": "synthetic-owner",
+      "open_action": null
+    },
+    "Q03": {
+      "status": "established",
+      "basis": "synthetic",
+      "statement": "Authored synthetic assertion only",
+      "reviewer": "synthetic-reviewer",
+      "reviewed_on": "2026-10-22",
+      "citations": [
+        {
+          "reference": "source",
+          "locator": "/vendor_answers/Q03"
+        }
+      ],
+      "owner": "synthetic-owner",
+      "open_action": null
+    },
+    "Q04": {
+      "status": "established",
+      "basis": "synthetic",
+      "statement": "Authored synthetic assertion only",
+      "reviewer": "synthetic-reviewer",
+      "reviewed_on": "2026-10-22",
+      "citations": [
+        {
+          "reference": "source",
+          "locator": "/vendor_answers/Q04"
+        }
+      ],
+      "owner": "synthetic-owner",
+      "open_action": null
+    },
+    "Q05": {
+      "status": "established",
+      "basis": "synthetic",
+      "statement": "Authored synthetic assertion only",
+      "reviewer": "synthetic-reviewer",
+      "reviewed_on": "2026-10-22",
+      "citations": [
+        {
+          "reference": "source",
+          "locator": "/vendor_answers/Q05"
+        }
+      ],
+      "owner": "synthetic-owner",
+      "open_action": null
+    },
+    "Q06": {
+      "status": "established",
+      "basis": "synthetic",
+      "statement": "Authored synthetic assertion only",
+      "reviewer": "synthetic-reviewer",
+      "reviewed_on": "2026-10-22",
+      "citations": [
+        {
+          "reference": "source",
+          "locator": "/vendor_answers/Q06"
+        }
+      ],
+      "owner": "synthetic-owner",
+      "open_action": null
+    },
+    "Q07": {
+      "status": "established",
+      "basis": "synthetic",
+      "statement": "Authored synthetic assertion only",
+      "reviewer": "synthetic-reviewer",
+      "reviewed_on": "2026-10-22",
+      "citations": [
+        {
+          "reference": "source",
+          "locator": "/vendor_answers/Q07"
+        }
+      ],
+      "owner": "synthetic-owner",
+      "open_action": null
+    },
+    "Q08": {
+      "status": "established",
+      "basis": "synthetic",
+      "statement": "Authored synthetic assertion only",
+      "reviewer": "synthetic-reviewer",
+      "reviewed_on": "2026-10-22",
+      "citations": [
+        {
+          "reference": "source",
+          "locator": "/vendor_answers/Q08"
+        }
+      ],
+      "owner": "synthetic-owner",
+      "open_action": null
+    },
+    "Q09": {
+      "status": "established",
+      "basis": "synthetic",
+      "statement": "Authored synthetic assertion only",
+      "reviewer": "synthetic-reviewer",
+      "reviewed_on": "2026-10-22",
+      "citations": [
+        {
+          "reference": "source",
+          "locator": "/vendor_answers/Q09"
+        }
+      ],
+      "owner": "synthetic-owner",
+      "open_action": null
+    },
+    "Q10": {
+      "status": "established",
+      "basis": "synthetic",
+      "statement": "Authored synthetic assertion only",
+      "reviewer": "synthetic-reviewer",
+      "reviewed_on": "2026-10-22",
+      "citations": [
+        {
+          "reference": "source",
+          "locator": "/vendor_answers/Q10"
+        }
+      ],
+      "owner": "synthetic-owner",
+      "open_action": null
+    },
+    "Q11": {
+      "status": "established",
+      "basis": "synthetic",
+      "statement": "Authored synthetic assertion only",
+      "reviewer": "synthetic-reviewer",
+      "reviewed_on": "2026-10-22",
+      "citations": [
+        {
+          "reference": "source",
+          "locator": "/vendor_answers/Q11"
+        }
+      ],
+      "owner": "synthetic-owner",
+      "open_action": null
+    },
+    "Q12": {
+      "status": "established",
+      "basis": "synthetic",
+      "statement": "Authored synthetic assertion only",
+      "reviewer": "synthetic-reviewer",
+      "reviewed_on": "2026-10-22",
+      "citations": [
+        {
+          "reference": "source",
+          "locator": "/vendor_answers/Q12"
+        }
+      ],
+      "owner": "synthetic-owner",
+      "open_action": null
+    },
+    "Q13": {
+      "status": "established",
+      "basis": "synthetic",
+      "statement": "Authored synthetic assertion only",
+      "reviewer": "synthetic-reviewer",
+      "reviewed_on": "2026-10-22",
+      "citations": [
+        {
+          "reference": "source",
+          "locator": "/vendor_answers/Q13"
+        }
+      ],
+      "owner": "synthetic-owner",
+      "open_action": null
+    }
+  },
+  "dossier_reviews": {
+    "D01": {
+      "status": "met",
+      "basis": "synthetic",
+      "statement": "Authored synthetic assertion only",
+      "reviewer": "synthetic-reviewer",
+      "reviewed_on": "2026-10-22",
+      "citations": [
+        {
+          "reference": "source",
+          "locator": "/dossier_reviews/D01"
+        }
+      ],
+      "owner": "synthetic-owner",
+      "open_action": null
+    },
+    "D02": {
+      "status": "met",
+      "basis": "synthetic",
+      "statement": "Authored synthetic assertion only",
+      "reviewer": "synthetic-reviewer",
+      "reviewed_on": "2026-10-22",
+      "citations": [
+        {
+          "reference": "source",
+          "locator": "/dossier_reviews/D02"
+        }
+      ],
+      "owner": "synthetic-owner",
+      "open_action": null
+    },
+    "D03": {
+      "status": "met",
+      "basis": "synthetic",
+      "statement": "Authored synthetic assertion only",
+      "reviewer": "synthetic-reviewer",
+      "reviewed_on": "2026-10-22",
+      "citations": [
+        {
+          "reference": "source",
+          "locator": "/dossier_reviews/D03"
+        }
+      ],
+      "owner": "synthetic-owner",
+      "open_action": null
+    },
+    "D04": {
+      "status": "met",
+      "basis": "synthetic",
+      "statement": "Authored synthetic assertion only",
+      "reviewer": "synthetic-reviewer",
+      "reviewed_on": "2026-10-22",
+      "citations": [
+        {
+          "reference": "source",
+          "locator": "/dossier_reviews/D04"
+        }
+      ],
+      "owner": "synthetic-owner",
+      "open_action": null
+    },
+    "D05": {
+      "status": "met",
+      "basis": "synthetic",
+      "statement": "Authored synthetic assertion only",
+      "reviewer": "synthetic-reviewer",
+      "reviewed_on": "2026-10-22",
+      "citations": [
+        {
+          "reference": "source",
+          "locator": "/dossier_reviews/D05"
+        }
+      ],
+      "owner": "synthetic-owner",
+      "open_action": null
+    },
+    "D06": {
+      "status": "met",
+      "basis": "synthetic",
+      "statement": "Authored synthetic assertion only",
+      "reviewer": "synthetic-reviewer",
+      "reviewed_on": "2026-10-22",
+      "citations": [
+        {
+          "reference": "source",
+          "locator": "/dossier_reviews/D06"
+        }
+      ],
+      "owner": "synthetic-owner",
+      "open_action": null
+    },
+    "D07": {
+      "status": "met",
+      "basis": "synthetic",
+      "statement": "Authored synthetic assertion only",
+      "reviewer": "synthetic-reviewer",
+      "reviewed_on": "2026-10-22",
+      "citations": [
+        {
+          "reference": "source",
+          "locator": "/dossier_reviews/D07"
+        }
+      ],
+      "owner": "synthetic-owner",
+      "open_action": null
+    },
+    "D08": {
+      "status": "met",
+      "basis": "synthetic",
+      "statement": "Authored synthetic assertion only",
+      "reviewer": "synthetic-reviewer",
+      "reviewed_on": "2026-10-22",
+      "citations": [
+        {
+          "reference": "source",
+          "locator": "/dossier_reviews/D08"
+        }
+      ],
+      "owner": "synthetic-owner",
+      "open_action": null
+    }
+  },
+  "gate1_reviews": {
+    "G1-R": {
+      "status": "met",
+      "basis": "synthetic",
+      "statement": "Authored synthetic assertion only",
+      "reviewer": "synthetic-reviewer",
+      "reviewed_on": "2026-10-22",
+      "citations": [
+        {
+          "reference": "source",
+          "locator": "/gate1_reviews/G1-R"
+        }
+      ],
+      "owner": "synthetic-owner",
+      "open_action": null
+    },
+    "G1-P": {
+      "status": "met",
+      "basis": "synthetic",
+      "statement": "Authored synthetic assertion only",
+      "reviewer": "synthetic-reviewer",
+      "reviewed_on": "2026-10-22",
+      "citations": [
+        {
+          "reference": "source",
+          "locator": "/gate1_reviews/G1-P"
+        }
+      ],
+      "owner": "synthetic-owner",
+      "open_action": null
+    },
+    "G1-F": {
+      "status": "met",
+      "basis": "synthetic",
+      "statement": "Authored synthetic assertion only",
+      "reviewer": "synthetic-reviewer",
+      "reviewed_on": "2026-10-22",
+      "citations": [
+        {
+          "reference": "source",
+          "locator": "/gate1_reviews/G1-F"
+        }
+      ],
+      "owner": "synthetic-owner",
+      "open_action": null
+    },
+    "G1-A": {
+      "status": "met",
+      "basis": "synthetic",
+      "statement": "Authored synthetic assertion only",
+      "reviewer": "synthetic-reviewer",
+      "reviewed_on": "2026-10-22",
+      "citations": [
+        {
+          "reference": "source",
+          "locator": "/gate1_reviews/G1-A"
+        }
+      ],
+      "owner": "synthetic-owner",
+      "open_action": null
+    }
+  },
+  "interfaces": {
+    "I-CQ": {
+      "from": "C",
+      "to": "Q",
+      "status": "documented",
+      "bound_ns": null,
+      "independent_of_candidate": null,
+      "citations": [
+        {
+          "reference": "source",
+          "locator": "/interfaces/I-CQ"
+        }
+      ]
+    },
+    "I-CA": {
+      "from": "C",
+      "to": "A",
+      "status": "documented",
+      "bound_ns": null,
+      "independent_of_candidate": null,
+      "citations": [
+        {
+          "reference": "source",
+          "locator": "/interfaces/I-CA"
+        }
+      ]
+    },
+    "I-AR": {
+      "from": "A",
+      "to": "R",
+      "status": "documented",
+      "bound_ns": null,
+      "independent_of_candidate": true,
+      "citations": [
+        {
+          "reference": "source",
+          "locator": "/interfaces/I-AR"
+        }
+      ]
+    },
+    "I-HR": {
+      "from": "H",
+      "to": "R",
+      "status": "documented",
+      "bound_ns": null,
+      "independent_of_candidate": true,
+      "citations": [
+        {
+          "reference": "source",
+          "locator": "/interfaces/I-HR"
+        }
+      ]
+    },
+    "I-HQ": {
+      "from": "H",
+      "to": "Q",
+      "status": "documented",
+      "bound_ns": null,
+      "independent_of_candidate": true,
+      "citations": [
+        {
+          "reference": "source",
+          "locator": "/interfaces/I-HQ"
+        }
+      ]
+    }
+  },
+  "plan": {
+    "max_requests_per_condition": 100,
+    "max_duration_s": 100,
+    "minimum_interval_ms": 100,
+    "call_timeout_ms": 100,
+    "cancel_timeout_ms": 100,
+    "close_timeout_ms": 100,
+    "max_return_latency_ms": 100,
+    "max_concurrency": 1,
+    "operation": "Synthetic description only; not an operation instruction",
+    "idle_definition": "Synthetic description only; not an operation instruction",
+    "load_definition": "Synthetic description only; not an operation instruction",
+    "stop_criteria": "Synthetic description only; not an operation instruction",
+    "rollback": "Synthetic description only; not an operation instruction",
+    "operator": "Synthetic description only; not an operation instruction",
+    "publication_mode": "immediate",
+    "model_kind": "adaptive",
+    "policy_sha256": "3ad75ba5a28c75448a962535594fede4be778d0465bd2ec8c7ef37c9b3bfc598",
+    "artifact_references": {
+      "collector_source": "source",
+      "collector_build": "source",
+      "collector_config": "source",
+      "policy": "policy"
+    },
+    "request_ledger_layer": "api_call",
+    "training_freeze_qpc": null,
+    "reference_values_used_for_candidate": false,
+    "rate_bound_ppm": 200,
+    "state_effects": [
+      "Synthetic-only; no operation is authorized"
+    ]
+  },
+  "budget": {
+    "proposed_ceilings_ns": {
+      "event_placement_ns": 2000,
+      "pairing_ns": 2000,
+      "rate_error_times_age_ns": 1000,
+      "asymmetry_ns": 1000,
+      "epoch_changes_ns": 0,
+      "reference_ns": 2000
+    },
+    "actual_bounds_ns": {
+      "event_placement_ns": null,
+      "pairing_ns": null,
+      "rate_error_times_age_ns": null,
+      "asymmetry_ns": null,
+      "epoch_changes_ns": null,
+      "reference_ns": null
+    },
+    "bound_evidence": {
+      "event_placement_ns": {
+        "citations": [],
+        "justification": null
+      },
+      "pairing_ns": {
+        "citations": [],
+        "justification": null
+      },
+      "rate_error_times_age_ns": {
+        "citations": [],
+        "justification": null
+      },
+      "asymmetry_ns": {
+        "citations": [],
+        "justification": null
+      },
+      "epoch_changes_ns": {
+        "citations": [],
+        "justification": null
+      },
+      "reference_ns": {
+        "citations": [],
+        "justification": null
+      }
+    }
+  },
+  "ledger_snapshots": [
+    {
+      "condition": "idle",
+      "session_id": "idle-session",
+      "epoch": "synthetic-clock_epoch",
+      "layer": "api_call",
+      "snapshot_qpc": 1152921504606866976,
+      "issued": 3,
+      "completed_success": 1,
+      "completed_failure": 0,
+      "confirmed_cancelled": 0,
+      "unresolved": 2,
+      "host_timeouts": 2,
+      "export_lost": 0,
+      "firmware_lost": 0,
+      "duplicates": 0,
+      "foreign": 0,
+      "timing_invalid": 0,
+      "citations": [
+        {
+          "reference": "source",
+          "locator": "/ledger_snapshots/0"
+        }
+      ]
+    },
+    {
+      "condition": "load",
+      "session_id": "load-session",
+      "epoch": "synthetic-clock_epoch",
+      "layer": "api_call",
+      "snapshot_qpc": 1152921504606876976,
+      "issued": 1,
+      "completed_success": 1,
+      "completed_failure": 0,
+      "confirmed_cancelled": 0,
+      "unresolved": 0,
+      "host_timeouts": 0,
+      "export_lost": 0,
+      "firmware_lost": 0,
+      "duplicates": 0,
+      "foreign": 0,
+      "timing_invalid": 0,
+      "citations": [
+        {
+          "reference": "source",
+          "locator": "/ledger_snapshots/1"
+        }
+      ]
+    }
+  ],
+  "comparisons": [
+    {
+      "id": "idle-event",
+      "condition": "idle",
+      "session_id": "idle-session",
+      "epoch": "synthetic-clock_epoch",
+      "ledger_layer": "api_call",
+      "event_qpc": 1152921504606847076,
+      "capture_qpc_lower": 1152921504606847066,
+      "capture_qpc_upper": 1152921504606847068,
+      "available_qpc": 1152921504606847086,
+      "evidence_cutoff_qpc": 1152921504606847076,
+      "returned_qpc": 1152921504606847077,
+      "deadline_qpc": 1152921504606856976,
+      "raw_hardware_ticks": 100,
+      "capture_error_bound_ns": 100,
+      "hidden_age_bound_ns": 0,
+      "admitted": true,
+      "reason": null,
+      "citations": [
+        {
+          "reference": "source",
+          "locator": "/comparisons/0"
+        }
+      ]
+    },
+    {
+      "id": "load-event",
+      "condition": "load",
+      "session_id": "load-session",
+      "epoch": "synthetic-clock_epoch",
+      "ledger_layer": "api_call",
+      "event_qpc": 1152921504606857076,
+      "capture_qpc_lower": 1152921504606857066,
+      "capture_qpc_upper": 1152921504606857068,
+      "available_qpc": 1152921504606857071,
+      "evidence_cutoff_qpc": 1152921504606857076,
+      "returned_qpc": 1152921504606857077,
+      "deadline_qpc": 1152921504606866976,
+      "raw_hardware_ticks": 101,
+      "capture_error_bound_ns": 100,
+      "hidden_age_bound_ns": 0,
+      "admitted": true,
+      "reason": null,
+      "citations": [
+        {
+          "reference": "source",
+          "locator": "/comparisons/1"
+        }
+      ]
+    }
+  ]
+}

@@ -10,6 +10,7 @@ These tools compare saved counter observations with host timing and test competi
 
 | File | Role |
 |---|---|
+| [gate1_dossier.py](gate1_dossier.py) | Versioned offline Gate 1 work-package dossier validator: source integrity, review records, exact cutoff/budget arithmetic and separate request ledgers. Synthetic consistency cannot qualify a path. [Format and examples](../../docs/clock-models/gate1-reopening/machine-readable-dossier.md). |
 | [cross_timestamp_intake.py](cross_timestamp_intake.py) | Read-only saved NIC/QPC tuple and evidence-integrity audit; exact bracket arithmetic, complete attempt counts, always leaves Gate 1 unqualified. [Contract and options](../../docs/clock-models/replacement-timestamp-acquisition.md). |
 | [analyze_bound_run.py](analyze_bound_run.py) | Offline run analysis and predeclared idle/load evaluation using actual source, trace, duration and workload evidence. |
 | [sample_screen.py](sample_screen.py) | Full-recording structural/association/freshness screening, rejected/foreign accounting and versioned continuity policy; not a qualified online admission state machine. |

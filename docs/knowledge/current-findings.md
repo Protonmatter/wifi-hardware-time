@@ -270,6 +270,7 @@ a concrete operation or integration package satisfying the handoff above.
 ## Continue or reproduce
 
 - [Gate 1 reopening work package](../clock-models/gate1-reopening/README.md): prepared OEM request, independent AP/reference-to-QPC design and acceptance criteria; no new capture qualification or experiment authorization.
+- [Machine-readable Gate 1 dossier](../clock-models/gate1-reopening/machine-readable-dossier.md): offline source/review/cutoff/budget/ledger consistency checks with synthetic fixtures; all qualification and authorization flags remain false. Unknown physical budget terms stay unknown.
 - [Replacement timestamp acquisition assessment and offline evidence intake](../clock-models/replacement-timestamp-acquisition.md): no new qualified capture path; Windows OEM latch and instrumented AP are conditional routes, Linux ath9k is a separate research option.
 - [Archive and installed transport evidence](../adapters/qualcomm-archive-transport-findings.md).
 - [Offline qualification and signatures](../evidence/qualification-audit-2026-10-04.md).
